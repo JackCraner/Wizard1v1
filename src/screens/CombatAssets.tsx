@@ -22,7 +22,7 @@ export function OrnateMeter({ value, max, mana = false }: { value: number; max: 
   </View>;
 }
 export function PlayerHotbar({ fighter, equipment, compact }: { fighter: Fighter; equipment: Session['equipment']; compact: boolean }) {
-  return <View style={{ height: compact ? 88 : 132, width: '100%', maxWidth: compact ? 440 : 660, overflow: 'hidden' }}>
+  return <View style={{ height: compact ? 64 : 100, width: '100%', maxWidth: compact ? 320 : 500, overflow: 'hidden' }}>
     <Image accessible={false} source={combatArt.hotbar} resizeMode="stretch" style={{ position: 'absolute', left: 0, top: '-24%', width: '100%', height: '167%' }} />
     <View style={{ position: 'absolute', left: '5%', top: '19%', width: '16%', height: '77%', overflow: 'hidden', borderRadius: 100 }}><PortraitArt /></View>
     <View style={{ position: 'absolute', left: '27%', right: '25%', top: '16%', height: '22%', justifyContent: 'center' }}><Text style={{ fontSize: compact ? 9 : 12, color: '#edd6a4', textAlign: 'center' }}>YOU   ·   ◇ {fighter.shield} SHIELD</Text></View>
@@ -37,4 +37,5 @@ function HotbarFill({ value, max, mana }: { value: number; max: number; mana?: b
     <Text style={{ color: '#fff2d9', fontSize: 9, textAlign: 'center', textShadowColor: '#000', textShadowRadius: 3, textShadowOffset: { width: 1, height: 1 } }}>{value} / {max}</Text>
   </View>;
 }
+
 
