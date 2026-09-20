@@ -1,0 +1,30 @@
+{
+  "expo": {
+    "name": "Wizard 1v1",
+    "slug": "wizard1v1",
+    "version": "0.2.0",
+    "orientation": "default",
+    "userInterfaceStyle": "dark",
+    "scheme": "wizard1v1",
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.wizard1v1.app",
+      "requireFullScreen": true
+    },
+    "android": {
+      "package": "com.wizard1v1.app"
+    },
+    "web": {
+      "bundler": "metro",
+      "name": "Wizard 1v1"
+    },
+    "plugins": [
+      [
+        "expo-screen-orientation",
+        {
+          "initialOrientation": "PORTRAIT_UP"
+        }
+      ]
+    ]
+  }
+}
