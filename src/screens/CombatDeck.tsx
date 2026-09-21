@@ -28,7 +28,7 @@ export function CombatDeck({fighter,side,frame,compact,speed,finished,onInspect}
  useEffect(()=>{shuffle.setValue(0);if(!shuffling||finished)return;const a=Animated.sequence([Animated.timing(shuffle,{toValue:1,duration:250/speed,useNativeDriver:true}),Animated.timing(shuffle,{toValue:0,duration:250/speed,useNativeDriver:true})]);a.start();return()=>a.stop();},[frame.tick,shuffling,speed,finished]);
  return <View style={s.root}>
   <Text style={s.title}>{side==='player'?'YOUR DECK':'OPPONENT DECK'}</Text>
-  <View style={{flex:1,minHeight:0,maxHeight:compact?112:168,width:'100%',alignItems:'center'}}>
+  <View style={{flex:1,minHeight:0,maxHeight:compact?144:210,width:'100%',alignItems:'center'}}>
    <View style={{height:'100%',aspectRatio:2/3}}>
     {upcoming.map(({spell,depth,index})=><Animated.View key={depth} style={[StyleSheet.absoluteFill,{zIndex:10-depth,transform:[{translateX:shuffle.interpolate({inputRange:[0,1],outputRange:[direction*depth*10,direction*(depth%2?18:-12)]})},{translateY:-depth*2},{rotate:`${direction*(depth*5-4)}deg`}]}]}><Pressable accessibilityRole="button" accessibilityLabel={`${side==='player'?'Your':'Opponent'} upcoming spell ${depth}: ${SPELLS[spell].name}. Inspect card.`} onPress={()=>inspect(index)} style={StyleSheet.absoluteFill}><SpellCard {...cardAt(spell,fighter.spellXp?.[index])} compact /></Pressable></Animated.View>)}
 

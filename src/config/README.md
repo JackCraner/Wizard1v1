@@ -1,23 +1,21 @@
 # Editable card and combat configuration
 
-- `spells.json`: the 71 cards, stars, mana, castTicks, concise rules, keywords, notes, and executable `combat.effects` or `combat.blockedReason`. Gold cost is always the star value.
-- `keywords.json`: keyword wording and related explanation boxes.
-- `rules.json`: base stats, tick limit, crit multiplier, seed and other shared limits.
-- `statuses.json`: periodic damage/healing values and timed status definitions.
-- `COMBAT_RULES.md`: implemented timing and remaining design questions.
+- Each domain has its own `spell.json`: `nature/spell.json`, `water/spell.json`, `fire/spell.json`, `holy/spell.json`, and `affliction/spell.json` (currently empty).
+- The 98 cards keep their stars, mana, castTicks, rules, keywords, notes, executable `combat.effects` or `combat.blockedReason`, and full `upgrade` object. Gold cost equals stars. `catalogue.ts` combines the domain arrays in a stable order.
+- `keywords.json`: every keyword's wording and related explanation boxes; the root README contains the full glossary.
+- `rules.json`: base stats, tick limit, crit multiplier, deck/domain limits and five spell offers.
+- `statuses.json`: periodic potency and status definitions. `holy.json`: Holy mechanics, including uncapped Penance.
+- `equipment.json`: 80 unlimited stackable items. `itemShop.json`: three item offers and affinity weights.
+- `shopOdds.json`: round-based rank probabilities for spells and items.
+- `bots.json`, `tournament.json`, `playback.json`: difficulty, eight-player race and combat playback.
+- `COMBAT_RULES.md`: timing and unresolved design decisions.
 
-Mana 0 is free, `null` is unknown, and `"half"` is half mana (currently blocked pending its definition). `castTicks: 0` is Instant, a positive number is casting ticks, and null is unknown.
+Mana 0 is free, null is unknown, and "half" pays half current mana rounded down at cast start. castTicks 0 is Instant, positive values are casting ticks, and null is unknown. Instant resolves before periodic effects and still consumes that wizard's tick.
 
-Card text is plain text; `RulesText` bolds recognized keywords. When changing numeric effects, update both the concise rules sentence and its structured `combat.effects` in the same card object. Buff duration uses the effect's amount; periodic potency lives in statuses.json.
+Update both rules text and structured effects when balancing a card, including its upgrade. Effect amounts usually set applied stacks; shared periodic potency lives in statuses.json. Only playable cards with resolved mechanics and costs enter the shop and bot decks; blocked entries remain in the library.
 
-The game, shop, bots and card UI use this catalogue. Only cards with implemented effects and resolved costs are offered. The old six-spell prototype pool is removed. Old in-memory sessions need a new game after the schema change.
-
-SpellCard accepts CardDefinition fields directly as props, plus optional art/compact. CardPreview includes keyword boxes. Art belongs in assets/nature, assets/water, or assets/fire, registered with static require paths in src/components/cards/spellArt.ts. Missing artwork renders an empty area. The 18 supplied Nature illustrations are registered, including Florish.png mapped to Flourish. Matching effect art is reused in status bars; spell art is also reused in the timeline and queue. Unillustrated cards and generic effects keep their existing fallbacks.
-
-Seed Shot used built-in image generation with this prompt: glowing seed projectile, two leaves and curved green magical sparks; dark forest backdrop; bold painted emerald and gold shapes; centered square, no text, border or UI.
+SpellCard accepts CardDefinition plus optional art, compact and shop props. Art is registered with static require paths in src/components/cards/spellArt.ts. Missing illustrations leave an empty opening. Domain cast-time badges are registered in SpellCard.tsx. Add item illustrations to ITEM_ART in ItemInventory.tsx. Spell art is reused for timeline and status icons.
 
 ## Shop rank progression
 
-Edit `shopOdds.json`. Each `rankPercent` array lists the percentages for ranks 1, 2, 3, 4 and 5, in that order, and must total 100. Rank means a card's star value. `fromRound` applies until the next configured row; the last row applies indefinitely. Round 1 must remain [100, 0, 0, 0, 0]. These are initial balancing values, not TFT's odds.
-
-Each of the four shop slots rolls rank independently, including on rerolls. Four cards will not necessarily match the percentage split in any individual shop. Selection then encourages domain variety without changing the rolled rank. The two-domain deck restriction and unavailable-card exclusions still apply. If a rank has no eligible playable cards, its chance is redistributed proportionally among eligible ranks with nonzero odds. Zero-odds ranks never appear. If no configured rank is available, generation reports an explicit configuration error. Repeated cards are allowed when a selected pool is exhausted.
+Each rankPercent array in shopOdds.json lists ranks 1–5 and totals 100. fromRound applies until the next row; the final row applies indefinitely. Round 1 is rank 1 only. Each of the five spell slots and three item slots rolls independently, including on rerolls. Domain constraints and unavailable-card exclusions still apply. Missing ranks redistribute probability among eligible ranks with nonzero odds. Offers are consumed on purchase and refill on reroll or the next round.

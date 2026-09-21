@@ -382,6 +382,8 @@ export function simulate(playerInput: Fighter, botInput: Fighter, seed = RULES.s
     }
     // Pay and queue normal casts before the replay starts animating this tick.
     const normal=alive()?prepare(false):[];
+    // Emit the speed cue only when Combust actually removes casting ticks.
+    for(const side of normal){const f=fighters[side];if(f.statuses.combust&&f.casting&&f.casting.remaining>statusConfig.combust.maxCastTicks!)notify(f,'combust-speed',SPELLS[f.casting.spell].name+' · '+f.casting.remaining+'T → '+statusConfig.combust.maxCastTicks+'T');}
     tickStart={tick,player:cloneSnapshot(fighters.player),bot:cloneSnapshot(fighters.bot),events:cloneSnapshot(events),messages:[...messages],damageEvents:cloneSnapshot(damageEvents),healingEvents:cloneSnapshot(healingEvents),manaEvents:cloneSnapshot(manaEvents),notices:cloneSnapshot(notices),presentationPhase:'start'};
     for(const side of sides) if(shuffleAtStart[side]>0) tickStart[side].reshuffleRemaining=shuffleAtStart[side];
     if(alive())resolveCasts(collect(normal,false));

@@ -1,5 +1,10 @@
 import type { Effect } from '../game/model';
-import rawCards from './spells.json';
+import natureCards from './nature/spell.json';
+import waterCards from './water/spell.json';
+import fireCards from './fire/spell.json';
+import holyCards from './holy/spell.json';
+import afflictionCards from './affliction/spell.json';
+const rawCards = [...natureCards, ...waterCards, ...fireCards, ...holyCards, ...afflictionCards];
 import rawKeywords from './keywords.json';
 
 export type Domain = 'nature' | 'water' | 'fire' | 'holy' | 'affliction';

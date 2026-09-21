@@ -7,7 +7,7 @@ A game contains **you and seven bots**. Race to **8 duel wins**. Every duel star
 ## At a glance
 
 1. Start a run with an empty hand and 10 gold.
-2. Buy spells, merge duplicates for upgrades, equip items, and reorder your hand.
+2. Buy spells, merge duplicates for upgrades, stack items, and reorder your hand.
 3. Lock your deck and fight a 1v1 duel automatically.
 4. Earn a trophy for a win, check the leaderboard, and return to the shop with 10 more gold.
 5. Continue until someone reaches 8 wins.
@@ -19,7 +19,7 @@ Nature focuses on damage over time and healing. Water focuses on mana, healing, 
 ### Gold, offers, and equipment
 
 - The shop has **five spell offers** and three stackable item offers. Equipment also costs its 1–5 star rank and uses the same round-based rarity probabilities as spells. A spell's gold price equals its star rank: a 3-star spell costs 3 gold. Mana is a separate combat resource.
-- Drag a shop spell into your hand to buy it. Each offer can be purchased once; its slot stays empty until a reroll or the next round.
+- Drag a shop spell into your hand to buy it. Drag a shop item into the **Your Items** equipment box to buy it; dropping elsewhere cancels. Tap an item for details and purchase controls. Each offer can be purchased once; its slot stays empty until a reroll or the next round.
 - Rerolling costs **1 gold** and refreshes both shop rows. Unspent gold carries over; each new round adds **10 gold**.
 - Round 1 offers only rank 1 spells. Higher ranks gradually become more likely. The probabilities for each round are in `src/config/shopOdds.json`; rounds beyond the last entry use that entry's probabilities.
 - Items have no equipment slots or ownership limit. Each copy adds one stack; items persist for the run. Each shop offer is consumed on purchase.
@@ -126,17 +126,19 @@ A duel ends when a wizard reaches zero health without reviving, or after 50 tick
 
 Combat speed changes presentation, not the result: **1× = 2 seconds per tick**, **2× = 1 second**, and **4× = 0.5 seconds**. Skip jumps to the result. There are no extra pause ticks. Red numbers show damage, green numbers show healing, and blue numbers show mana gained or lost through abilities. Routine casting costs do not produce floating mana numbers. Critical damage has a glow and an exclamation mark.
 
+Combat keeps HP and mana above each wizard, buffs beside them, and debuffs above their bars. Your items sit to the left of your wizard and opponent items to their right. Combat icons wrap into multiple rows without a +N button; very large inventories can scroll vertically. Tap an icon to inspect its stack bonuses. The bottom duplicate player panel has been removed. The timeline highlights the current tick with a complete gold outline.
+
+### Combat effect cues
+
+Combust shortening a cast shows orange speed streaks and the remaining-time change (for example, 5T to 1T). Tidecaller repeats show two blue expanding rings and a Double cast label. Both are driven by actual combat events for either wizard, follow playback speed, and pause with playback. Merely having a buff does not trigger its animation.
+
 ## Spell keyword reference
 
-The following entries describe the current rules. Values are before other modifiers unless stated otherwise.
+All 48 in-game keywords are listed below, matching `src/config/keywords.json`. Values are before modifiers unless stated otherwise. Base and upgraded spell values are editable separately.
 
 | Keyword | Explanation |
 | --- | --- |
-| **Ward** | A damage shield: 1 Ward absorbs 1 damage before health, then is consumed. Ward stacks, does not count down, and resets each combat. Guard blocks damage without spending Ward. |
-| **Cycle** | One pass through the ordered deck, ending after Reshuffle. Once-per-Cycle effects refresh for the next pass; skips and interrupts still advance the deck. |
-| **Restoration** | Percentage increase to healing done, including HoTs. Separate from healing received bonuses; does not affect mana restoration. |
-| **Spell Power** | Percentage increase to direct spell damage. DoTs require their own bonus unless explicitly included. |
-| **DoT** | Damage over time. Deals damage before normal spells and loses one stack afterward. Reapplication adds stacks. Most DoTs deal fixed damage; Burn scales with remaining stacks. |
+| **DoT** | Damage over time. Deals damage before normal spells and loses one stack afterward. Reapplication adds duration. Most DoTs deal fixed damage; Burn also scales with remaining stacks. |
 | **HoT** | Heals during the HoT phase, then loses 1 stack. Reapplying adds stacks. Most HoTs heal a fixed amount; Lifebloom heals per remaining stack. |
 | **Instant** | Resolves at tick start, before damage over time and duration countdowns. Your next spell waits until the next tick. |
 | **Crit** | A critical hit deals 150% of normal damage. |
@@ -153,7 +155,7 @@ The following entries describe the current rules. Values are before other modifi
 | **Overgrowth** | Your Growth heals 30 health per tick instead of 10 while active. Does not change Lifebloom or the opponent’s Growth. Loses 1 stack each tick. |
 | **Tide** | Grants a 20% chance to trigger Tidecaller. A double cast consumes up to 5 Tide stacks. Maelstrom prevents countdown, but not consumption. |
 | **Tidecaller** | While Tide is active, an eligible spell has a flat 20% chance to resolve twice. Pay its casting cost once. A trigger consumes up to 5 Tide stacks after its effects. |
-| **Steal** | Take available mana from the opponent and restore it to yourself, capped by your maximum mana. |
+| **Steal** | Take mana from the opponent and gain it yourself. |
 | **Rain** | Increases Water spell damage by 20%. |
 | **Veil** | Take 50% less damage. Restore 5 mana each time an opposing spell hits you; periodic damage does not grant mana. |
 | **Cleanse** | Remove one randomly chosen DoT or debuff from yourself, including all its remaining stacks. |
@@ -165,11 +167,25 @@ The following entries describe the current rules. Values are before other modifi
 | **Overheat** | While active, your critical hits deal 200% of normal damage instead of 150%. Each stack adds 1 tick of duration. |
 | **Interrupt** | Stop the current cast or channel and skip that card. Mana already spent is not refunded. Completed casts are unaffected. |
 | **Fury** | Increases damage by 10%. |
-| **Phoenix** | Revive with half maximum health and mana while active (rounded down, at least 1 health). Rebirth does not consume duration, so it can trigger again during the window. |
+| **Phoenix** | On death while active, revive with half maximum health and mana. Each stack adds 1 tick of duration. Rebirth does not consume the remaining duration. |
 | **Celestial Alignment** | Your next started spell deals double direct damage. Consumed when casting starts; the bonus lasts through that cast. Does not boost later DoT ticks. Unused stacks count down each tick. |
 | **Greater Alignment** | Your next started spell deals triple direct damage. Consumed when casting starts; the bonus lasts through that cast. Does not boost later DoT ticks. Unused stacks count down each tick. |
-| **Cloud Heart** | Receive 40% more healing, including HoTs, for 25 ticks. Greater Cloud Heart replaces this with 60%; the bonuses do not multiply together. |
+| **Cloud Heart** | Receive 40% more healing while active (60% for Greater Cloud Heart). Lasts 25 ticks; includes healing over time. |
 | **Greater Cloud Heart** | Receive 60% more healing while active, including healing over time. Lasts 25 ticks. |
+| **Ward** | A damage shield. Each point absorbs 1 damage before Health is lost, then is consumed. Ward adds together and does not count down; it resets each combat. Guard prevents damage without spending Ward. |
+| **Cycle** | One pass through your ordered spell deck, ending after its Reshuffle. Once-per-Cycle equipment refreshes for the next pass. Skipped and interrupted cards still advance the deck. |
+| **Restoration** | Increases healing you do by the stated percentage, including healing over time. Does not increase Mana restoration. Healing received bonuses are separate. |
+| **Spell Power** | Percentage increase to spell damage. Generic item spell-damage bonuses affect direct damage and DoTs; direct-only and DoT-only bonuses apply only to their stated damage type. |
+| **Consecration** | Persistent enemy stacks. Every 5 are consumed to add +1 Penance tick to their next reshuffle, without a cap. Cleanse removes only unconverted stacks. |
+| **Penance** | Extra reshuffle ticks. Damage, healing and timed effects continue normally. Penance gained during a reshuffle waits for the next one. |
+| **Oath** | One active Oath. Meet its condition for a reward; a new Oath replaces it. Its own cast is excluded. Repeated triggers count as one completed card. |
+| **Retribution** | After an opposing direct spell damages your Health, retaliate for 15 damage, at most once per tick. DoTs, absorbed hits and retaliation do not trigger it. |
+| **Templar's Oath** | A timed stance: take 20% less damage and deal 10% less direct spell damage. Does not replace a condition-based Oath. |
+| **Sanctuary** | Take 40% less damage and receive 25% more healing while active. |
+| **Holy Ground** | Heal 15 each tick. Apply 1 Consecration whenever the opponent starts a new spell while active. |
+| **Citadel** | Take 30% less damage. Each opposing direct spell hit that damages your Health applies 1 Consecration to its caster. |
+| **Next Instant** | The next spell started during this window becomes Instant. Consumed when casting starts; unused duration counts down each tick. Slowness can still add a tick. |
+| **Tidal Echo** | Gives the next started spell Tidecaller. Consumed when casting starts; unused duration counts down each tick. Requires active Tide to trigger a repeat. |
 
 ## Special spell interactions
 
@@ -232,7 +248,7 @@ The JSON files are the source of truth for balancing:
 | --- | --- |
 | `src/config/itemShop.json` | Item offer count, affinity weights and timing notes. |
 | `src/config/equipment.json` | All 80 stackable items: 1–5 stars, affinity, per-stack effects and caps. |
-| `src/config/spells.json` | Every spell's base and upgraded values, rules text, keywords, and effects. |
+| `src/config/<domain>/spell.json` | Every spell's base and upgraded values, rules text, keywords, and effects. |
 | `src/config/holy.json` | Consecration-to-Penance threshold and Holy rule notes. |
 | `src/config/statuses.json` | Shared status values, such as Burn damage per stack and crit bonuses. |
 | `src/config/keywords.json` | Keyword names and in-game explanations. |
@@ -243,6 +259,10 @@ The JSON files are the source of truth for balancing:
 | `src/config/playback.json` | Tick duration and playback speeds. |
 
 See `src/config/COMBAT_RULES.md` for implementation conventions and remaining design decisions. Base and upgraded cards may differ; consult the individual spell entry for exact values.
+
+## Spell configuration by domain
+
+The catalogue contains 98 spells: nature (25), water (25), fire (21), holy (27), affliction (0). Edit `src/config/nature/spell.json`, `water/spell.json`, `fire/spell.json`, or `holy/spell.json`. `affliction/spell.json` is an empty array reserved for future cards. `src/config/catalogue.ts` combines these files in the original order for the game, bots, shop and library. Each entry retains its ID, base values and full `upgrade` object; this split changes no balance or saved card IDs.
 
 ## Development
 

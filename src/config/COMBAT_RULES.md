@@ -2,7 +2,7 @@
 
 ## Active rules
 
-- Only ids in `src/config/spells.json` exist in the game. Starting hand: empty. Buy at least one spell before combat. Shop offers are shuffled deterministically across eligible domains. Bots and shop offers use catalogue cards with implemented, sufficiently defined effects. Undefined cards remain browsable, with a `combat.blockedReason`, and cannot enter a loadout.
+- Only ids in `src/config/<domain>/spell.json` exist in the game. Starting hand: empty. Buy at least one spell before combat. Shop offers are shuffled deterministically across eligible domains. Bots and shop offers use catalogue cards with implemented, sufficiently defined effects. Undefined cards remain browsable, with a `combat.blockedReason`, and cannot enter a loadout.
 - `src/config/rules.json`: 500 base health, 100 base mana, 50 maximum ticks, 1.5 critical multiplier. Equipment modifies maximum stats. Gold cost is derived from stars.
 - `src/config/statuses.json`: per-tick effect values. Every existing buff and debuff loses one remaining stack each world tick, including while its owner is casting, except Tide after Maelstrom and persistent Consecration. Condition-based Oaths are separate from timed stacks.
 - Apply 5 Moonfire on tick 1: it remains at 5 in that snapshot; tick 2 deals 10 damage and leaves 4; ticks 3–6 finish the remaining ticks. It deals five ticks of damage total. Moonfire damage per tick does not multiply by remaining duration; Burn does.
@@ -43,10 +43,10 @@ Each remaining Hotstreak stack adds 10 percentage points of crit chance, capped 
 
 - Each owned copy has its own 0–3 XP. Consume a matching non-upgraded hand copy, or buy a shop copy into a chosen target, to add exactly 1 XP. The target upgrades at 3 XP. Upgraded cards cannot be consumed or gain further XP. A partially trained donor still gives exactly 1 XP; its other progress is lost. Merging is free; shop copies cost their normal star value.
 - XP moves with cards when reordered or removed, persists between rounds, and is included in combat/leaderboard snapshots. Channel groups still count matching base spell IDs, including mixed upgraded and base copies.
-- Every spell has an explicit `upgrade` object in `spells.json`. It overrides mana, castTicks, rules, keywords and combat effects; rank and domain are unchanged. Existing undefined mechanics stay blocked at both tiers.
+- Every spell has an explicit `upgrade` object in `<domain>/spell.json`. It overrides mana, castTicks, rules, keywords and combat effects; rank and domain are unchanged. Existing undefined mechanics stay blocked at both tiers.
 - Nature favors longer periodic durations and efficient sustain. Water favors mana recovery, control, Tide combinations and moderate healing. Fire favors direct burst and Hotstreak, with self-damage and health costs retained. Costs and effect amounts are literal JSON values, not runtime scaling.
 - First-pass adjustments: Astral Power now costs 6 mana and deals 65 damage; Riptide heals 65 for 8 mana; Starsurge deals 65 for 8 mana. Undertow deals 8 × channel length for 6 mana. Photosynthesis takes 2T. Healing Surge heals 25. Root Bind and Tidal Echo have 2 stacks so their effects survive countdown before the next normal cast. Flameshield has 2 Guard. Scorch gives 2 Hotstreak, Cinder 4, Flame Fury 3 Hotstreak/6 Fury. This is an initial balance pass, not a claim of competitive balance.
-- Shared status power (e.g. Moonfire damage per tick) remains in `statuses.json`; individual card application durations and both tiers live in `spells.json`. Bot upgrade preference is `deck.mergePriority` in `bots.json`.
+- Shared status power (e.g. Moonfire damage per tick) remains in `statuses.json`; individual card application durations and both tiers live in `<domain>/spell.json`. Bot upgrade preference is `deck.mergePriority` in `bots.json`.
 
 ## Clarified Nature effects
 
@@ -61,7 +61,7 @@ Each remaining Hotstreak stack adds 10 percentage points of crit chance, capped 
 - Celestial Alignment is Unique, free and 1T. It grants a 2-tick window to start the next spell. The next started spell consumes the bonus and retains double direct damage throughout its cast; upgraded Alignment gives triple. Skips do not consume it. Later DoT ticks are not amplified.
 - Trap deals a flat 10 on each new cast start, not per remaining stack, including Instant casts. Continued casting, skips, reshuffles and Tidecaller repeats do not retrigger it. Mana is paid before the trigger. Both sides’ triggers resolve together; lethal Trap stops subsequent resolution. Guard blocks it and Phoenix can revive.
 - Eclipse consumes all remaining DoTs on the opponent and deals their remaining ticks of damage immediately, with current periodic damage buffs. It does not consume HoTs, Trap or caster DoTs. Normal Eclipse uses stacks after this tick’s countdown; Instant Eclipse consumes before periodic damage. Guard blocks the hit but does not prevent consumption.
-- Wild Growth grants 5 Growth and 25 Overgrowth. While Overgrowth is active, its owner’s Growth heals 30 instead of 10. Lifebloom and the opponent’s healing are unchanged. Values live in spells.json and statuses.json.
+- Wild Growth grants 5 Growth and 25 Overgrowth. While Overgrowth is active, its owner’s Growth heals 30 instead of 10. Lifebloom and the opponent’s healing are unchanged. Values live in <domain>/spell.json and statuses.json.
 
 ## Clarified Water and Fire effects
 

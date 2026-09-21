@@ -16,7 +16,8 @@
     },
     "web": {
       "bundler": "metro",
-      "name": "Wizard 1v1"
+      "name": "Wizard 1v1",
+      "favicon": "./assets/game_icon.png"
     },
     "plugins": [
       [
@@ -25,6 +26,7 @@
           "initialOrientation": "PORTRAIT_UP"
         }
       ]
-    ]
+    ],
+    "icon": "./assets/game_icon.png"
   }
 }

@@ -4,7 +4,7 @@
     "aliases": [
       "DoTs"
     ],
-    "description": "Deals damage each tick, before normal spells (including effects just applied by an Instant). Loses 1 stack each tick. Reapplying adds duration, not per-tick power.",
+    "description": "Damage over time. Deals damage before normal spells and loses one stack afterward. Reapplication adds duration. Most DoTs deal fixed damage; Burn also scales with remaining stacks.",
     "related": []
   },
   "hot": {
@@ -78,7 +78,7 @@
   "slowness": {
     "name": "Slowness",
     "aliases": [],
-    "description": "The next spell takes 1 extra tick to cast.",
+    "description": "Adds one tick to the next started spell, then is consumed. Additional stacks extend the window to use it, not the extra cast time.",
     "related": []
   },
   "starfall": {
@@ -122,7 +122,7 @@
   "tidecaller": {
     "name": "Tidecaller",
     "aliases": [],
-    "description": "When triggered, the spell resolves twice.",
+    "description": "While Tide is active, an eligible spell has a flat 20% chance to resolve twice. Pay its casting cost once. A trigger consumes up to 5 Tide stacks after its effects.",
     "related": []
   },
   "steal": {
@@ -146,13 +146,13 @@
   "cleanse": {
     "name": "Cleanse",
     "aliases": [],
-    "description": "Remove a random debuff.",
+    "description": "Remove one randomly chosen DoT or debuff from yourself, including all its remaining stacks.",
     "related": []
   },
   "guard": {
     "name": "Guard",
     "aliases": [],
-    "description": "Immune to all damage while active. Each stack adds 1 tick of duration; taking damage does not consume stacks.",
+    "description": "Immune to direct, self, and periodic damage while active. Hits do not consume stacks. Explicit health costs still apply.",
     "related": []
   },
   "hotstreak": {
@@ -268,7 +268,7 @@
   "spell-power": {
     "name": "Spell Power",
     "aliases": [],
-    "description": "Increases direct spell damage by the stated percentage. Damage over time needs a DoT damage bonus unless an item explicitly says otherwise.",
+    "description": "Percentage increase to spell damage. Generic item spell-damage bonuses affect direct damage and DoTs; direct-only and DoT-only bonuses apply only to their stated damage type.",
     "related": []
   },
   "consecration": {
@@ -324,6 +324,24 @@
     "description": "Take 30% less damage. Each opposing direct spell hit that damages your Health applies 1 Consecration to its caster.",
     "related": [
       "consecration"
+    ]
+  },
+  "next-instant": {
+    "name": "Next Instant",
+    "aliases": [],
+    "description": "The next spell started during this window becomes Instant. Consumed when casting starts; unused duration counts down each tick. Slowness can still add a tick.",
+    "related": [
+      "instant",
+      "slowness"
+    ]
+  },
+  "tidal-echo": {
+    "name": "Tidal Echo",
+    "aliases": [],
+    "description": "Gives the next started spell Tidecaller. Consumed when casting starts; unused duration counts down each tick. Requires active Tide to trigger a repeat.",
+    "related": [
+      "tidecaller",
+      "tide"
     ]
   }
 }
