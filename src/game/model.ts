@@ -11,7 +11,7 @@ export interface DamageEvent { domain?: Domain; side: 'player'|'bot'; amount: nu
 export interface CombatFrame { damageEvents?: DamageEvent[]; tick: number; player: Fighter; bot: Fighter; messages: string[]; events: CastEvent[] }
 export interface Battle { frames: CombatFrame[]; outcome: 'victory'|'defeat'|'draw'; endReason: 'timeout'|'knockout' }
 export interface Session { id: string; revision: number; round: number; gold: number; spells: SpellId[]; shop: SpellId[]; rerolls: number; equipmentShop: EquipmentId[]; equipment: Partial<Record<EquipmentSlot,EquipmentId>>; phase: 'shop'|'result'; wins: number; losses: number; battle: Battle|null }
-export type Command = { type: 'reroll' } | { type:'buyEquipment';item:EquipmentId } | { type:'buy';spell:SpellId } | { type:'move';from:number;to:number } | { type:'fight' } | { type:'next' };
+export type Command = { type: 'reroll' } | { type:'buyEquipment';item:EquipmentId } | { type:'buy';spell:SpellId } | { type:'trash';index:number } | { type:'move';from:number;to:number } | { type:'fight' } | { type:'next' };
 export interface GameGateway { start():Promise<Session>; execute(sessionId:string,expectedRevision:number,command:Command):Promise<Session> }
 export type EquipmentSlot = 'weapon'|'armor'|'ring'|'boots';
 export type EquipmentId = 'wand'|'robe'|'band'|'treads';

@@ -36,6 +36,9 @@ export class LocalGameGateway implements GameGateway {
         if (!canAddSpell(s.spells, spell.id)) throw new Error('A deck can contain spells from at most 2 domains.');
         if (s.gold < spell.price) throw new Error('Not enough gold.');
         s.gold -= spell.price; s.spells.push(spell.id);
+      } else if (command.type === 'trash') {
+        if (!Number.isInteger(command.index) || command.index < 0 || command.index >= s.spells.length) throw new Error('Invalid spell position.');
+        s.spells.splice(command.index, 1);
       } else if (command.type === 'move') {
         const { from, to } = command;
         if (!Number.isInteger(from) || !Number.isInteger(to) || from < 0 || to < 0 || from >= s.spells.length || to >= s.spells.length) throw new Error('Invalid spell position.');

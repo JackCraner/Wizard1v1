@@ -12,7 +12,7 @@ Card text is plain text; `RulesText` bolds recognized keywords. When changing nu
 
 The game, shop, bots and card UI use this catalogue. Only cards with implemented effects and resolved costs are offered. The old six-spell prototype pool is removed. Old in-memory sessions need a new game after the schema change.
 
-SpellCard accepts CardDefinition fields directly as props, plus optional art/compact. CardPreview includes keyword boxes. Art belongs in assets/nature, assets/water, or assets/fire, registered with static require paths in src/components/cards/spellArt.ts. Missing artwork renders an empty area. Seed Shot is the sole integrated generated illustration; further generation was stopped at the user's request.
+SpellCard accepts CardDefinition fields directly as props, plus optional art/compact. CardPreview includes keyword boxes. Art belongs in assets/nature, assets/water, or assets/fire, registered with static require paths in src/components/cards/spellArt.ts. Missing artwork renders an empty area. The 18 supplied Nature illustrations are registered, including Florish.png mapped to Flourish. Matching effect art is reused in status bars; spell art is also reused in the timeline and queue. Unillustrated cards and generic effects keep their existing fallbacks.
 
 Seed Shot used built-in image generation with this prompt: glowing seed projectile, two leaves and curved green magical sparks; dark forest backdrop; bold painted emerald and gold shapes; centered square, no text, border or UI.
 

@@ -1,3 +1,4 @@
+import { SpellIcon } from '../components/cards/SpellIcon';
 import { useState, type ReactNode } from 'react';
 import { Modal, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import type { Battle } from '../game/model';
@@ -12,7 +13,7 @@ export function CombatTimeline({battle,frame,compact,controls}:{battle:Battle;fr
   const end=Math.min(start+29,RULES.maxTicks);
   const cellHeight=compact?17:25;
   return <View style={s.panel}>
-    <View style={s.header}><View style={{flex:1}}><Text style={s.title}>COMBAT TIMELINE · TICK {frame}/{RULES.maxTicks}</Text><Text style={s.legend}>Ticks {start}–{end} · × skipped · ⌛ charging · Tap for details</Text></View>{frame>30&&<Pressable accessibilityRole="button" onPress={()=>setHistory(!history)} style={s.pageButton}><Text style={s.sub}>{history?'31–50 →':'← 1–30'}</Text></Pressable>}{controls}</View>
+    <View style={s.header}><View style={{flex:1}}><Text style={s.title}>COMBAT TIMELINE · TICK {frame}/{RULES.maxTicks}</Text><Text style={s.legend}>Ticks {start}–{end} · × skipped · Tap for details</Text></View>{frame>30&&<Pressable accessibilityRole="button" onPress={()=>setHistory(!history)} style={s.pageButton}><Text style={s.sub}>{history?'31–50 →':'← 1–30'}</Text></Pressable>}{controls}</View>
     <View style={s.tracks}><View style={s.labels}><Text style={[s.rowLabel,{height:12}]}>TICK</Text><Text style={[s.rowLabel,{height:cellHeight,color:'#95cede'}]}>YOU</Text><Text style={[s.rowLabel,{height:cellHeight,color:'#e3a597'}]}>FOE</Text></View>
       {Array.from({length:end-start+1},(_,i)=>{
         const tick=start+i, revealed=tick<=frame&&tick<battle.frames.length;
@@ -20,7 +21,7 @@ export function CombatTimeline({battle,frame,compact,controls}:{battle:Battle;fr
         const description=rows.map(row=>`${row.side==='player'?'You':'Opponent'}: ${row.events.length?row.events.map(e=>`${SPELLS[e.spell].name} ${e.status}${e.critical?', critical':''}`).join(', '):row.charging?`Charging ${SPELLS[row.charging.spell].name}, ${row.charging.remaining} ticks left`:'No cast'}`).join('. ');
         return <Pressable key={tick} accessibilityRole="button" disabled={!revealed} accessibilityLabel={`Tick ${tick}. ${revealed?description:'Not played'}`} onPress={()=>setInspected(tick)} style={[s.column,(i+1)%5===0&&s.groupEdge,tick===frame&&s.current]}>
           <Text style={s.tick}>{i===0||tick%5===0||tick===frame?tick:'·'}</Text>
-          {rows.map((row,index)=>{const e=row.events.at(-1),visual=e?spellVisual(e.spell):null;return <View key={row.side} style={[s.cell,{height:cellHeight},index===0&&s.playerCell]}><Text style={{fontSize:compact?12:19,color:visual?.color??'#8d7958',opacity:e?.status==='skipped'?.35:1}}>{visual?.glyph??(row.charging?'⌛':revealed?'–':'·')}</Text>{e?.status==='skipped'&&<Text style={s.skip}>×</Text>}{row.events.length>1&&<Text style={s.count}>+{row.events.length-1}</Text>}</View>;})}
+          {rows.map((row,index)=>{const e=row.events.at(-1),visual=e?spellVisual(e.spell):null;return <View key={row.side} style={[s.cell,{height:cellHeight},index===0&&s.playerCell]}>{e?<SpellIcon id={e.spell} size={cellHeight-2} opacity={e.status==='skipped'?.35:1}/>:<Text style={{fontSize:compact?12:19,color:'#8d7958'}}>{''}</Text>}{e?.status==='skipped'&&<Text style={s.skip}>×</Text>}{row.events.length>1&&<Text style={s.count}>+{row.events.length-1}</Text>}</View>;})}
         </Pressable>;
       })}
     </View>
@@ -28,7 +29,7 @@ export function CombatTimeline({battle,frame,compact,controls}:{battle:Battle;fr
       <View style={s.header}><Text style={[s.detailTitle,{flex:1}]}>Tick {inspected}</Text><Pressable accessibilityRole="button" onPress={()=>setInspected(null)} style={s.close}><Text style={s.detailName}>Close</Text></Pressable></View>
       <ScrollView contentContainerStyle={{gap:12}}>{inspected!==null&&(['player','bot'] as const).map(side=>{
         const events=castsAt(battle,inspected,side,frame), casting=battle.frames[inspected][side].casting;
-        return <View key={side} style={{gap:5}}><Text style={s.detailTitle}>{side==='player'?'You':'Opponent'}</Text>{events.map((e,i)=><View key={i} style={s.detailRow}><Text style={{fontSize:26,color:spellVisual(e.spell).color}}>{spellVisual(e.spell).glyph}</Text><View style={{flex:1}}><Text style={s.detailName}>{SPELLS[e.spell].name}</Text><Text style={s.detailText}>{e.status==='skipped'?'Skipped — insufficient mana':`Cast · ${e.mana} mana${e.critical?' · Critical (150%)':''}${e.repeats===2?' · Tidecaller ×2':''}`}</Text></View></View>)}{casting&&<Text style={s.detailText}>Charging {SPELLS[casting.spell].name} · {casting.remaining} ticks remaining</Text>}{!events.length&&!casting&&<Text style={s.detailText}>No spell cast.</Text>}</View>;
+        return <View key={side} style={{gap:5}}><Text style={s.detailTitle}>{side==='player'?'You':'Opponent'}</Text>{events.map((e,i)=><View key={i} style={s.detailRow}><SpellIcon id={e.spell} size={32} /><View style={{flex:1}}><Text style={s.detailName}>{SPELLS[e.spell].name}</Text><Text style={s.detailText}>{e.status==='skipped'?'Skipped — insufficient mana':`Cast · ${e.mana} mana${e.critical?' · Critical (150%)':''}${e.repeats===2?' · Tidecaller ×2':''}`}</Text></View></View>)}{casting&&<Text style={s.detailText}>Charging {SPELLS[casting.spell].name} · {casting.remaining} ticks remaining</Text>}{!events.length&&!casting&&<Text style={s.detailText}>No spell cast.</Text>}</View>;
       })}</ScrollView>
     </View></View></Modal>
   </View>;

@@ -5,9 +5,10 @@ import { SPELLS } from '../game/engine';
 import { explainedKeywords } from '../config/catalogue';
 import { dropIndex } from '../game/handLayout';
 
-export function DraggableHand({ spells, disabled, renderCard, renderPreview, onInspect, onMove, onDragging, height = 172 }: {
+export function DraggableHand({ spells, disabled, renderCard, renderPreview, onInspect, onMove, onDrop, onDragPoint, onDragging, height = 172 }: {
   renderPreview?: (id: SpellId, height: number, width: number) => ReactNode;
   height?: number; spells: SpellId[]; disabled: boolean; renderCard: (id: SpellId, expanded?: boolean) => ReactNode;
+  onDrop?: (index:number,x:number,y:number)=>boolean; onDragPoint?: (x:number,y:number)=>void;
   onInspect: (index: number) => void; onMove: (from: number, to: number) => void; onDragging: (dragging: boolean) => void;
 }) {
   const { height: screenHeight } = useWindowDimensions();
@@ -27,7 +28,7 @@ export function DraggableHand({ spells, disabled, renderCard, renderPreview, onI
       return id ? <DragCard key={`${index}-${id}`} id={id} index={index} left={left} top={6 + Math.abs(offset)} height={cardHeight}
         handWidth={width} previewHeight={Math.min(240, screenHeight * .56)} width={cardWidth} angle={offset * 2.5} spacing={spacing} count={spells.length} disabled={disabled}
         selected={drag?.from === index} target={drag?.to === index && drag.from !== index}
-        renderCard={renderCard} renderPreview={renderPreview} onInspect={onInspect} onMove={onMove}
+        renderCard={renderCard} renderPreview={renderPreview} onInspect={onInspect} onMove={onMove} onDrop={onDrop} onDragPoint={onDragPoint}
         onDrag={(target) => { setDrag(target === null ? null : { from: index, to: target }); onDragging(target !== null); }} />
         : <View key={`empty-${index}`} pointerEvents="none" style={[styles.empty, { left, top: 6 + Math.abs(offset), height: cardHeight, width: cardWidth, transform: [{ rotate: `${offset * 2.5}deg` }] }]}><Text style={styles.emptyText}>✧</Text></View>;
     })}
@@ -40,6 +41,7 @@ function DragCard(props: {
   renderPreview?: (id: SpellId, height: number, width: number) => ReactNode;
   handWidth: number; previewHeight: number;
   disabled: boolean; selected: boolean; target: boolean; renderCard: (id: SpellId, expanded?: boolean) => ReactNode;
+  onDrop?: (index:number,x:number,y:number)=>boolean; onDragPoint?: (x:number,y:number)=>void;
   onInspect: (i: number) => void; onMove: (from: number, to: number) => void; onDrag: (target: number | null) => void;
 }) {
   const latest = useRef(props); latest.current = props;
@@ -54,7 +56,7 @@ function DragCard(props: {
     lifted.current = true;
     latest.current.onDrag(from.current);
   };
-  const finish = (dx: number, cancelled: boolean) => {
+  const finish = (dx: number, cancelled: boolean, x=0, y=0) => {
     clearHold();
     if (!active.current) return;
     active.current = false;
@@ -65,6 +67,7 @@ function DragCard(props: {
     p.onDrag(null);
     if (cancelled || p.disabled) return;
     if (wasLifted) {
+      if(p.onDrop?.(from.current,x,y))return;
       const to = dropIndex(from.current, dx, p.spacing, p.count);
       if (to !== from.current) p.onMove(from.current, to);
     } else p.onInspect(p.index);
@@ -83,10 +86,11 @@ function DragCard(props: {
       if (!lifted.current && Math.abs(gesture.dx) > 6) { clearHold(); lift(); }
       if (lifted.current) {
         offset.setValue(gesture.dx);
+        latest.current.onDragPoint?.(gesture.moveX,gesture.moveY);
         latest.current.onDrag(dropIndex(from.current, gesture.dx, latest.current.spacing, latest.current.count));
       }
     },
-    onPanResponderRelease: (_, gesture) => finish(gesture.dx, false),
+    onPanResponderRelease: (_, gesture) => finish(gesture.dx, false, gesture.moveX, gesture.moveY),
     onPanResponderTerminate: () => finish(0, true),
     onPanResponderTerminationRequest: () => false,
   })).current;

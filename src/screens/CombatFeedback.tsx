@@ -1,5 +1,6 @@
+import { STATUS_ART } from '../components/cards/spellArt';
 import { useEffect, useRef, useState } from 'react';
-import { Animated, Modal, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Animated, Image, Modal, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { KEYWORDS, type Domain } from '../config/catalogue';
 import statuses from '../config/statuses.json';
 import type { CombatFrame, Fighter } from '../game/model';
@@ -15,7 +16,7 @@ export function EffectBar({fighter,compact,group}:{fighter:Fighter;compact:boole
    <ScrollView nestedScrollEnabled showsVerticalScrollIndicator={false} contentContainerStyle={{flexDirection:bad?'row':'column',flexWrap:bad?'wrap':'nowrap',gap:2,alignItems:bad?'center':'stretch',justifyContent:bad?'center':'flex-start'}}>
      {!items.length&&<Text style={{color:'#aaa08c',fontSize:8,textAlign:'center'}}>None</Text>}
      {items.map(([id,count])=><Pressable key={id} accessibilityRole="button" accessibilityLabel={`${bad?'Debuff':'Buff'}: ${KEYWORDS[id]?.name??id}, ${count} ticks. Tap for details.`} onPress={()=>setSelected(id)} style={{flexDirection:'row',alignItems:'center',gap:2,borderWidth:1,borderColor:bad?'#9d5750':'#619069',borderRadius:3,backgroundColor:'#10150fee',minHeight:bad?18:24,paddingHorizontal:2}}>
-       <Text style={{color,fontSize:13}}>{icons[id]??'✧'}</Text>
+       {STATUS_ART[id]?<Image accessible={false} source={STATUS_ART[id]} resizeMode="cover" style={{width:bad?16:20,height:bad?16:20,borderRadius:2}}/>:<Text style={{color,fontSize:13}}>{icons[id]??'✧'}</Text>}
        {!bad&&<Text numberOfLines={1} adjustsFontSizeToFit style={{flex:1,color:'#ddedda',fontSize:8}}>{KEYWORDS[id]?.name??id}</Text>}
        <Text style={{color:'#fff',fontSize:10,fontWeight:'900'}}>{count}</Text>
      </Pressable>)}

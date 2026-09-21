@@ -1,3 +1,4 @@
+import { SpellIcon } from '../components/cards/SpellIcon';
 import { CastBar } from './CastBar';
 import { DamageNumbers, EffectBar } from './CombatFeedback';
 import { spellVisual, statusSummary } from '../components/cards/spellVisual';
@@ -65,7 +66,7 @@ export function CombatScreen({ game }: { game: ReturnType<typeof useGame> }) {
           <View style={{ flex: 1, minHeight: 0, gap: 3 }}>{current.player.spells.map((id, index) => {
             const isActive = index === activeIndex;
             const label = finished ? 'Complete' : isActive ? (current.player.casting ? 'Casting · '+current.player.casting.remaining+'T' : skipped ? 'Skipped · no mana' : 'Cast') : index === nextIndex ? 'Next' : 'Queued';
-            return <View key={index} accessibilityLabel={`Slot ${index + 1}: ${SPELLS[id].name}, ${label}`} style={[s.queueRow, isActive && !finished && s.activeRow]}><Text style={s.order}>{index + 1}</Text><Text style={[s.spellGlyph, { fontSize: compact ? 18 : 28 }]}>{spellVisual(id).glyph}</Text><View style={{ flex: 1 }}><Text numberOfLines={1} adjustsFontSizeToFit style={[s.spellName, { fontSize: compact ? (current.player.spells.length > 6 ? 9 : 11) : 15 }]}>{SPELLS[id].name}</Text>{(!compact || current.player.spells.length <= 6) && <Text numberOfLines={1} style={s.queueState}>{label}</Text>}</View></View>;
+            return <View key={index} accessibilityLabel={`Slot ${index + 1}: ${SPELLS[id].name}, ${label}`} style={[s.queueRow, isActive && !finished && s.activeRow]}><Text style={s.order}>{index + 1}</Text><SpellIcon id={id} size={compact?22:32} /><View style={{ flex: 1 }}><Text numberOfLines={1} adjustsFontSizeToFit style={[s.spellName, { fontSize: compact ? (current.player.spells.length > 6 ? 9 : 11) : 15 }]}>{SPELLS[id].name}</Text>{(!compact || current.player.spells.length <= 6) && <Text numberOfLines={1} style={s.queueState}>{label}</Text>}</View></View>;
           })}</View>
           {finished && <Control label="Return to shop →" disabled={busy} selected onPress={() => act({ type: 'next' })} />}
         </View>

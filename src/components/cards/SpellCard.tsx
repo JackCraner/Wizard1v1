@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import Svg, { ClipPath, Defs, Image as SvgImage, Path } from 'react-native-svg';
+import { useId, useState } from 'react';
 import { Image, Platform, StyleSheet, Text, View, type ImageSourcePropType } from 'react-native';
 import { castLabel, manaLabel, goldCost, keywordSpans, explainedKeywords, type CardDefinition, type Domain } from '../../config/catalogue';
 import { SPELL_ART } from './spellArt';
@@ -15,11 +16,20 @@ export function RulesText({ rules, keywords, fontSize = 12, color = '#302117' }:
 export function SpellCard({ compact = false, art, ...card }: SpellCardProps) {
   const [size, setSize] = useState({ width: 160, height: 240 });
   const scale = size.width / 160;
+  const frameRatio = size.height / Math.max(1, size.width);
+  const artClipId = 'card-art-'+useId().replace(/[^a-zA-Z0-9_-]/g,'');
   const artwork = art ?? SPELL_ART[card.id];
   const rulesSize = Math.min(13, Math.max(4, scale * (card.rules.length > 105 ? 9.5 : 11)));
   return <View onLayout={e => setSize(e.nativeEvent.layout)} accessible accessibilityLabel={`${card.name}, ${card.domain}, ${card.stars} stars, ${goldCost(card)} gold, ${manaLabel(card.mana)} mana, ${castLabel(card.castTicks)}. ${card.rules}`} style={s.card}>
     <Image accessible={false} source={frames[card.domain]} resizeMode="stretch" style={[StyleSheet.absoluteFill, { width: '100%', height: '100%' }]} />
-    {artwork && <View style={s.art}><Image accessible={false} source={artwork} resizeMode="cover" style={{ width: '100%', height: '100%' }} /></View>}
+    {artwork && <Svg pointerEvents="none" width={size.width} height={size.height} viewBox={`0 0 1000 ${1000 * frameRatio}`} preserveAspectRatio="none" style={StyleSheet.absoluteFill}>
+      <Defs><ClipPath id={artClipId}>
+        {/* Trace the illustration opening, leaving the gem, stat sockets,
+            corner ornaments and curved lower border on the original frame. */}
+        <Path transform={`scale(1 ${frameRatio})`} d="M 285 62 L 450 62 Q 477 65 500 100 Q 523 65 550 62 L 801 62 Q 777 116 811 145 Q 859 174 919 148 L 929 222 L 929 428 Q 929 502 815 507 L 186 507 Q 72 502 72 428 L 72 222 L 123 188 L 243 110 L 225 92 Z" />
+      </ClipPath></Defs>
+      <SvgImage href={artwork} x={65} y={55 * frameRatio} width={870} height={456 * frameRatio} preserveAspectRatio="xMidYMid slice" clipPath={`url(#${artClipId})`} />
+    </Svg>}
     <View style={s.mana}><Text numberOfLines={1} adjustsFontSizeToFit minimumFontScale={.65} style={[s.value, { fontSize: 17 * scale, color: '#edfbff', textShadowColor: '#032034' }]}>{manaLabel(card.mana)}</Text></View>
     <View style={s.cast}><Text numberOfLines={1} adjustsFontSizeToFit minimumFontScale={.65} style={[s.value, { fontSize: (card.castTicks === null ? 11 : 16) * scale }]}>{card.castTicks === 0 ? 'ϟ' : card.castTicks === null ? '?' : card.castTicks}<Text style={{ fontSize: 7 * scale }}>{card.castTicks ? 'T' : ''}</Text></Text></View>
     <View style={s.name}><Text numberOfLines={1} adjustsFontSizeToFit minimumFontScale={.5} style={{ color: '#f4e1b7', fontFamily: serif, fontWeight: '600', fontSize: 14 * scale, textAlign: 'center' }}>{card.name}</Text></View>

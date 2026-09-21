@@ -15,12 +15,17 @@ export function CompactShop({ session, busy, act, onMenu, onLibrary, error, insp
   renderCard: (id: SpellId, expanded?: boolean) => ReactNode;
 }) {
   const [size, setSize] = useState({ width: 800, height: 360 });
-  const [, setDragging] = useState(false);
+  const [dragging, setDragging] = useState(false);
+  const [overTrash,setOverTrash]=useState(false);
+  const trashRef=useRef<View>(null);
+  const trashBounds=useRef({x:0,y:0,width:0,height:0});
+  const hitsTrash=(x:number,y:number)=>{const b=trashBounds.current;return x>=b.x&&x<=b.x+b.width&&y>=b.y&&y<=b.y+b.height;};
   const rootRef=useRef<View>(null), handRef=useRef<View>(null);
   const bounds=useRef({rootX:0,rootY:0,x:0,y:0,width:0,height:0});
   const [offerDrag,setOfferDrag]=useState<{id:SpellId;x:number;y:number;over:boolean}|null>(null);
   const purchaseReason=(id:SpellId)=>busy?'Please wait':session.spells.length>=RULES.slots?'Your hand is full':!canAddSpell(session.spells,id)?'Only 2 domains per deck':session.gold<SPELLS[id].price?'Not enough gold':null;
   const measure=()=>{
+    trashRef.current?.measureInWindow((x,y,width,height)=>{trashBounds.current={x,y,width,height};});
     rootRef.current?.measureInWindow((x,y)=>{bounds.current.rootX=x;bounds.current.rootY=y;});
     handRef.current?.measureInWindow((x,y,width,height)=>{Object.assign(bounds.current,{x,y,width,height});});
   };
@@ -79,8 +84,9 @@ export function CompactShop({ session, busy, act, onMenu, onLibrary, error, insp
         <View style={s.dock}>
           <View ref={handRef} collapsable={false} onLayout={measure} style={{ flex: 1, minWidth: 0, backgroundColor:offerDrag?(purchaseReason(offerDrag.id)?'#652b2755':offerDrag.over?'#40945c88':'#32644644'):'transparent', borderRadius:5 }}>
             <Text accessibilityLiveRegion="polite" style={s.handLabel}>{offerDrag ? (purchaseReason(offerDrag.id) ?? (offerDrag.over?`Release to buy · ${SPELLS[offerDrag.id].price} gold`:'Drop here to buy · Release elsewhere to cancel')) : `YOUR HAND (${session.spells.length}/${RULES.slots}) · Hold to enlarge · Drag to reorder`}</Text>
-            <DraggableHand height={handHeight} spells={session.spells} disabled={busy || !!offerDrag} renderCard={renderCard} renderPreview={renderPreview} onInspect={inspectHand} onMove={(from,to) => act({ type: 'move', from, to })} onDragging={setDragging} />
+            <DraggableHand height={handHeight} spells={session.spells} disabled={busy || !!offerDrag} renderCard={renderCard} renderPreview={renderPreview} onInspect={inspectHand} onMove={(from,to) => act({ type: 'move', from, to })} onDragging={setDragging} onDragPoint={(x,y)=>setOverTrash(hitsTrash(x,y))} onDrop={(index,x,y)=>{setOverTrash(false);if(!hitsTrash(x,y))return false;act({type:'trash',index});return true;}} />
           </View>
+          <View ref={trashRef} collapsable={false} onLayout={measure} accessibilityLabel="Trash drop target. Drag a hand card here to remove it. No gold refund." style={{width:compact?58:85,minHeight:54,alignItems:'center',justifyContent:'center',borderWidth:2,borderRadius:5,borderColor:dragging&&overTrash?'#ffbf9c':'#9b5e50',backgroundColor:dragging&&overTrash?'#8a342d':'#321e19',gap:3}}><Text style={{color:'#ffcfb8',fontSize:19}}>×</Text><Text style={{color:'#ffcfb8',fontSize:9,fontWeight:'800'}}>{dragging&&overTrash?'RELEASE':'TRASH'}</Text><Text style={{color:'#d8a58e',fontSize:7}}>No refund</Text></View>
           <Pressable accessibilityRole="button" accessibilityLabel="Next round" disabled={busy || !session.spells.length} onPress={() => act({ type: 'fight' })} style={[s.next, { width: compact ? 135 : 210 }, (busy || !session.spells.length) && s.disabled]}><Text style={[s.title, { fontSize: compact ? 17 : 23 }]}>{session.spells.length ? 'Next round →' : 'Buy a spell first'}</Text></Pressable>
         </View>
         {!!error && <Text accessibilityRole="alert" style={s.error}>{error}</Text>}
