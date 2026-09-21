@@ -1,14 +1,14 @@
 import { EQUIPMENT, offersFor, equipmentModifiers } from '../game/shop';
 import { cloneSnapshot } from '../game/clone';
-import { fighter, RULES, simulate, SPELLS } from '../game/engine';
+import { canAddSpell, fighter, RULES, simulate, SPELLS } from '../game/engine';
 import type { Command, GameGateway, Session, SpellId } from '../game/model';
-const bots: SpellId[][] = [['spark', 'fireball', 'ward'], ['fireball', 'mend', 'spark', 'drain'], ['ward', 'bolt', 'spark', 'fireball']];
+const bots: SpellId[][] = [['wrath', 'moonfire', 'regrowth'], ['ember', 'splash', 'brine', 'healing-surge'], ['seed-shot', 'sunfire', 'photosynthesis']];
 // IDs are local-only; a remote adapter receives its IDs from the server.
 let nextSessionId = 0;
 export class LocalGameGateway implements GameGateway {
   private session: Session | null = null;
   async start(): Promise<Session> {
-    this.session = { id: `local-${++nextSessionId}`, revision: 0, round: 1, gold: RULES.gold, spells: ['spark', 'fireball'], ...offersFor(1, 0), rerolls: 0, equipment: {}, phase: 'shop', wins: 0, losses: 0, battle: null };
+    this.session = { id: `local-${++nextSessionId}`, revision: 0, round: 1, gold: RULES.gold, spells: [], ...offersFor(1, 0), rerolls: 0, equipment: {}, phase: 'shop', wins: 0, losses: 0, battle: null };
     return cloneSnapshot(this.session);
   }
   async execute(id: string, revision: number, command: Command): Promise<Session> {
@@ -17,12 +17,12 @@ export class LocalGameGateway implements GameGateway {
     const s = cloneSnapshot(this.session);
     if (command.type === 'next') {
       if (s.phase !== 'result') throw new Error('Finish combat first.');
-      s.phase = 'shop'; s.round++; s.gold += RULES.gold; s.battle = null; s.rerolls = 0; Object.assign(s, offersFor(s.round, 0));
+      s.phase = 'shop'; s.round++; s.gold += RULES.gold; s.battle = null; s.rerolls = 0; Object.assign(s, offersFor(s.round, 0, s.spells));
     } else {
       if (s.phase !== 'shop') throw new Error('Your spell order is locked during combat.');
       if (command.type === 'reroll') {
         if (s.gold < 1) throw new Error('Not enough gold to reroll.');
-        s.gold--; s.rerolls++; Object.assign(s, offersFor(s.round, s.rerolls));
+        s.gold--; s.rerolls++; Object.assign(s, offersFor(s.round, s.rerolls, s.spells));
       } else if (command.type === 'buyEquipment') {
         const item = EQUIPMENT[command.item];
         if (!item || !s.equipmentShop.includes(command.item)) throw new Error('Equipment unavailable.');
@@ -33,6 +33,7 @@ export class LocalGameGateway implements GameGateway {
         const spell = SPELLS[command.spell];
         if (!spell || !s.shop.includes(command.spell)) throw new Error('Spell unavailable.');
         if (s.spells.length >= RULES.slots) throw new Error('Your spellbook is full.');
+        if (!canAddSpell(s.spells, spell.id)) throw new Error('A deck can contain spells from at most 2 domains.');
         if (s.gold < spell.price) throw new Error('Not enough gold.');
         s.gold -= spell.price; s.spells.push(spell.id);
       } else if (command.type === 'move') {

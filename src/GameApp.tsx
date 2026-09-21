@@ -1,4 +1,5 @@
-import { useEffect, useRef } from 'react';
+import { CardLibrary } from './screens/CardLibrary';
+import { useEffect, useRef, useState } from 'react';
 import { Pressable, ScrollView, Text, useWindowDimensions, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import type { GameGateway } from './game/model';
@@ -11,17 +12,20 @@ import { MainMenu } from './screens/MainMenu';
 
 export function GameApp({ gateway }: { gateway: GameGateway }) {
   const game = useGame(gateway);
+  const [library, setLibrary] = useState(false);
   const scroll = useRef<ScrollView>(null);
   const { width, height } = useWindowDimensions();
-  const orientationError = useOrientation(game.screen === 'game');
+  const orientationError = useOrientation(game.screen === 'game' || library);
   const wide = width >= 800;
 
   useEffect(() => { scroll.current?.scrollTo({ y: 0, animated: false }); }, [game.screen, game.session?.phase]);
 
+  if (library) return <CardLibrary onClose={() => setLibrary(false)} />;
+
   // The menu is intentionally outside the scrolling gameplay layout.
   if (game.screen === 'menu') {
     return <MainMenu hasRun={!!game.session} busy={game.busy} round={game.session?.round}
-      error={game.error} onNewGame={game.start} onContinue={() => game.setScreen('game')} />;
+      onLibrary={() => setLibrary(true)} error={game.error} onNewGame={game.start} onContinue={() => game.setScreen('game')} />;
   }
 
   if (game.screen === 'game' && width < height) {
@@ -34,7 +38,7 @@ export function GameApp({ gateway }: { gateway: GameGateway }) {
 
   if (game.screen === 'game' && game.session?.phase === 'shop') {
     return <ShopScreen key={game.session.id} session={game.session} busy={game.busy} act={game.act}
-      error={game.error} onMenu={() => game.setScreen('menu')} />;
+      onLibrary={() => setLibrary(true)} error={game.error} onMenu={() => game.setScreen('menu')} />;
   }
 
   if (game.screen === 'game' && game.session?.battle) return <CombatScreen game={game} />;
@@ -56,10 +60,10 @@ export function GameApp({ gateway }: { gateway: GameGateway }) {
             <Eyebrow>THE FIELD GUIDE</Eyebrow>
             <Title>Think ahead.{'\n'}Cast in order.</Title>
             {[
-              ['01 / Shop', 'Start with Spark, Fireball, and 10 gold. Buy spells for up to ten slots. Duplicate spells are allowed. Unspent gold carries over, and each new round adds 10 gold.'],
+              ['01 / Shop', 'Start with an empty hand and 10 gold. Buy spells for up to ten slots. Duplicate spells are allowed. Unspent gold carries over, and each new round adds 10 gold.'],
               ['02 / Arrange', 'Use the arrows to arrange your spells. Both fighters cast simultaneously from first slot to last, then repeat. Once combat begins, the order is locked.'],
-              ['03 / Battle', 'Every duel starts at 100 health and 50 mana. Mana does not regenerate. Unaffordable spells are skipped; Spark is free. Healing and shields resolve before damage.'],
-              ['04 / Repeat', 'Bring the opponent to zero health to win. A double knockout or 60-beat stalemate is a draw. Return to the shop to refine your spell order.'],
+              ['03 / Battle', 'Every duel starts at 500 health and 100 mana. Mana does not regenerate. Unaffordable spells are skipped; Wrath is free. Healing and shields resolve before damage.'],
+              ['04 / Repeat', 'Bring the opponent to zero health to win. Combat ends after 50 ticks: the lower health total loses; equal health is a draw. Return to the shop to refine your spell order.'],
             ].map(([title, body]) => <Panel key={title}><Heading>{title}</Heading><Body>{body}</Body></Panel>)}
             <Button title="Enter practice grounds" disabled={game.busy} onPress={game.start} />
             <Body>Runs are kept in memory. Reloading or restarting the app starts fresh.</Body>

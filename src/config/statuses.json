@@ -1,0 +1,69 @@
+{
+  "moonfire": {
+    "kind": "dot",
+    "power": 10,
+    "domain": "nature"
+  },
+  "sunfire": {
+    "kind": "dot",
+    "power": 20,
+    "domain": "nature"
+  },
+  "growth": {
+    "kind": "hot",
+    "power": 10
+  },
+  "starfall": {
+    "kind": "dot",
+    "power": 50,
+    "domain": "nature"
+  },
+  "rain": {
+    "kind": "buff",
+    "power": 20
+  },
+  "tide": {
+    "kind": "buff",
+    "power": 20
+  },
+  "slowness": {
+    "kind": "debuff",
+    "power": 1
+  },
+  "next-instant": {
+    "kind": "buff"
+  },
+  "tidal-echo": {
+    "kind": "buff"
+  },
+  "fury": {
+    "kind": "buff",
+    "power": 10
+  },
+  "star-empowerment": {
+    "kind": "buff",
+    "power": 20
+  },
+  "guard": {
+    "kind": "buff"
+  },
+  "phoenix": {
+    "kind": "buff"
+  },
+  "overheat": {
+    "kind": "buff",
+    "critMultiplier": 2
+  },
+  "hotstreak": {
+    "kind": "buff",
+    "critChancePerStack": 0.1,
+    "threshold": 5,
+    "combustDuration": 3
+  },
+  "combust": {
+    "kind": "buff",
+    "maxCastTicks": 1,
+    "selfDamage": 5,
+    "domain": "fire"
+  }
+}

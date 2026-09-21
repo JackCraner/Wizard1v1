@@ -1,0 +1,14 @@
+{
+  "rounds": [
+    { "fromRound": 1, "rankPercent": [100, 0, 0, 0, 0] },
+    { "fromRound": 2, "rankPercent": [80, 20, 0, 0, 0] },
+    { "fromRound": 3, "rankPercent": [65, 30, 5, 0, 0] },
+    { "fromRound": 4, "rankPercent": [50, 35, 15, 0, 0] },
+    { "fromRound": 5, "rankPercent": [35, 40, 23, 2, 0] },
+    { "fromRound": 6, "rankPercent": [25, 35, 30, 10, 0] },
+    { "fromRound": 7, "rankPercent": [20, 30, 35, 14, 1] },
+    { "fromRound": 8, "rankPercent": [15, 25, 35, 22, 3] },
+    { "fromRound": 9, "rankPercent": [10, 20, 35, 30, 5] },
+    { "fromRound": 10, "rankPercent": [5, 15, 30, 40, 10] }
+  ]
+}

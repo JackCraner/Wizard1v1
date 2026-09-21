@@ -1,3 +1,4 @@
+import { COMBAT_TICK_MS } from './game/playback';
 import { useEffect, useRef, useState } from 'react';
 import { AppState, BackHandler } from 'react-native';
 import type { Command, GameGateway, Session } from './game/model';
@@ -30,7 +31,7 @@ export function useGame(gateway: GameGateway) {
 
   useEffect(() => {
     if (!active || screen !== 'game' || !battle || finished) return;
-    const timer = setTimeout(() => setFrame(value => Math.min(value + 1, battle.frames.length - 1)), 950 / speed);
+    const timer = setTimeout(() => setFrame(value => Math.min(value + 1, battle.frames.length - 1)), COMBAT_TICK_MS / speed);
     return () => clearTimeout(timer);
   }, [active, screen, battle, finished, frame, speed]);
 
@@ -61,5 +62,5 @@ export function useGame(gateway: GameGateway) {
     });
   }
 
-  return { session, screen, setScreen, busy, error, frame, setFrame, speed, setSpeed, battle, finished, start, act };
+  return { active, session, screen, setScreen, busy, error, frame, setFrame, speed, setSpeed, battle, finished, start, act };
 }

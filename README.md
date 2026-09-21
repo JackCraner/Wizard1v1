@@ -45,12 +45,12 @@ Official references: [Expo CLI](https://docs.expo.dev/more/expo-cli/) and [Andro
 
 Main menu → shop → buy/reorder → simultaneous automatic bot duel → results → next shop.
 
-- Every duel starts with base 100 health and 50 mana, increased by equipped items.
-- Start with Spark, Fireball, and 10 gold; ten spell slots; duplicates allowed.
+- Every duel starts with base 500 health and 100 mana, increased by equipped items.
+- Start with an empty hand and 10 gold; ten spell slots; duplicates allowed.
 - Gain 10 gold each round; unspent gold carries over.
-- Cast from first slot to last, then repeat. No passive mana regeneration; unaffordable casts are skipped. Spark costs zero mana.
-- Shields/healing resolve before simultaneous damage. Siphon heals actual damage only if its caster survives the beat.
-- Both fighters defeated, or 60 beats without a knockout, means a draw.
+- Cast from first slot to last, then repeat. No passive mana regeneration; unaffordable casts are skipped. Wrath costs zero mana.
+- Periodic effects tick before casting. Multi-tick casts complete after their configured duration, and critical hits deal 150% damage. After 50 ticks, lower remaining health loses.
+- Both fighters defeated, or 50 ticks with equal health, means a draw.
 - Bot loadouts rotate. Full spellbooks can be reordered; selling/replacement is not implemented yet.
 - Runs live in memory and reset on app restart/reload. Returning to the menu preserves the run. Playback pauses when backgrounded; Android Back returns to the menu.
 
@@ -82,4 +82,9 @@ The local gateway generates deterministic rotating offers. Duplicate spell purch
 
 
 Native orientation uses expo-screen-orientation and iOS full-screen mode. If you use a custom native build, rebuild once with npm run android:build after this dependency/configuration change. Expo Go includes the supported module. Reordering is submitted as a single validated move command on drop; cancelled gestures leave the order unchanged.
+
+
+## Catalogue combat
+
+All spells now come from src/config/spells.json. Cards with undefined mechanics stay visible in the library but are excluded from shop and bot loadouts. See src/config/COMBAT_RULES.md for active rules and the remaining decisions. The timeline displays actual completions, charging, and multiple Instant casts.
 

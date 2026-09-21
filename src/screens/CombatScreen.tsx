@@ -1,13 +1,15 @@
+import { CastBar } from './CastBar';
+import { DamageNumbers, EffectBar } from './CombatFeedback';
+import { spellVisual, statusSummary } from '../components/cards/spellVisual';
 import { CombatTimeline } from './CombatTimeline';
 import { combatArt, OrnateMeter, PlayerHotbar, PortraitArt } from './CombatAssets';
 import { Image, Pressable, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import type { useGame } from '../useGame';
-import type { Fighter, Session, SpellId } from '../game/model';
+import type { CastEvent, Fighter, Session, SpellId } from '../game/model';
 import { SPELLS } from '../game/engine';
 import { EQUIPMENT, EQUIPMENT_SLOTS } from '../game/shop';
 
-const glyph: Record<SpellId, string> = { spark: 'ϟ', fireball: '♨', ward: '◇', bolt: '↯', drain: '◎', mend: '✧' };
 function Control({ label, onPress, selected, disabled }: { label: string; onPress: () => void; selected?: boolean; disabled?: boolean }) {
   return <Pressable accessibilityRole="button" accessibilityState={{ selected, disabled }} disabled={disabled} onPress={onPress} style={[s.control, selected && s.selected, disabled && { opacity: .4 }]}><Text style={s.text}>{label}</Text></Pressable>;
 }
@@ -15,13 +17,16 @@ function Gear({ equipment = {}, compact }: { equipment?: Session['equipment']; c
   return <View style={s.gear}>{EQUIPMENT_SLOTS.map(slot => { const id = equipment[slot]; return <View key={slot} accessibilityLabel={`${slot}: ${id ? EQUIPMENT[id].name : 'empty'}`} style={[s.gearSlot, { height: compact ? 26 : 40 }]}><Text style={s.gearIcon}>{id ? EQUIPMENT[id].symbol : '·'}</Text></View>; })}</View>;
 }
 function Status({ fighter, title, compact }: { fighter: Fighter; title: string; compact: boolean }) {
-  return <View style={s.status}><View style={[s.portrait, { width: compact ? 36 : 62, height: compact ? 36 : 62 }]}><PortraitArt /></View><View style={{ flex: 1, gap: 3 }}><View style={s.statusHeading}><Text numberOfLines={1} style={s.name}>{title}</Text><Text style={s.muted}>◇ {fighter.shield} shield</Text></View><OrnateMeter value={fighter.health} max={fighter.maxHealth} /><OrnateMeter value={fighter.mana} max={fighter.maxMana} mana /></View></View>;
+  return <View style={s.status}><View style={[s.portrait, { width: compact ? 36 : 62, height: compact ? 36 : 62 }]}><PortraitArt /></View><View style={{ flex: 1, gap: 3 }}><View style={s.statusHeading}><Text numberOfLines={1} style={s.name}>{title}</Text><Text numberOfLines={1} style={[s.muted, { maxWidth: 110 }]}>{statusSummary(fighter)}</Text></View><OrnateMeter value={fighter.health} max={fighter.maxHealth} /><OrnateMeter value={fighter.mana} max={fighter.maxMana} mana /></View></View>;
 }
-function Mage({ fighter, opponent, compact }: { fighter: Fighter; opponent?: boolean; compact: boolean }) {
-  return <View style={[s.mage, opponent ? { right: '10%', top: '2%' } : { left: '7%', bottom: '1%' }, { width: compact ? 105 : 190, height: '88%' }]}>
-    <Text numberOfLines={1} style={s.mageName}>{opponent ? fighter.name : 'You'}</Text>
-    <View style={{ width: '65%' }}><OrnateMeter value={fighter.health} max={fighter.maxHealth} /></View>
-    <View style={{ flex: 1, width: '100%', overflow: 'hidden' }}><Image source={combatArt.pose} accessible={false} resizeMode="contain" style={{ position: 'absolute', width: '180%', height: '117%', left: '-40%', top: '-9%', transform: [{ scaleX: opponent ? -1 : 1 }], opacity: fighter.health > 0 ? 1 : .4 }} /></View>
+function Mage({ fighter, opponent, compact, finished, tick, speed, playing }: { fighter: Fighter; opponent?: boolean; compact: boolean; finished:boolean; tick:number; speed:number; playing:boolean }) {
+  return <View style={[s.mage, opponent ? { right: '13%', top: 0 } : { left: '13%', bottom: 0 }, { width: compact ? 112 : 190, height: '100%' }]}>
+    <View style={{position:'absolute',top:0,height:32,width:compact?150:210,zIndex:20}}><EffectBar fighter={fighter} compact={compact} group="debuff" /></View>
+    <Text numberOfLines={1} style={[s.mageName,{position:'absolute',top:33}]}>{opponent ? fighter.name : 'You'}</Text>
+    <View style={{position:'absolute',top:44,width:'85%'}}><OrnateMeter value={fighter.health} max={fighter.maxHealth} /></View>
+    <View style={{position:'absolute',top:56,bottom:24,width:'100%',overflow:'hidden'}}><Image source={combatArt.pose} accessible={false} resizeMode="contain" style={{position:'absolute',width:'180%',height:'117%',left:'-40%',top:'-9%',transform:[{scaleX:opponent?-1:1}],opacity:fighter.health>0?1:.4}} /></View>
+    <View style={{position:'absolute',top:56,bottom:24,width:compact?65:90,...(opponent?{left:'100%' as const}:{right:'100%' as const}),zIndex:10}}><EffectBar fighter={fighter} compact={compact} group="buff" /></View>
+    <CastBar fighter={fighter} compact={compact} finished={finished} tick={tick} speed={speed} playing={playing} />
   </View>;
 }
 
@@ -31,10 +36,10 @@ export function CombatScreen({ game }: { game: ReturnType<typeof useGame> }) {
   const compact = height < 500;
   if (!battle || !session) return null;
   const current = battle.frames[frame];
-  const previous = battle.frames[Math.max(0, frame - 1)];
-  const activeIndex = frame > 0 ? (frame - 1) % current.player.spells.length : -1;
-  const nextIndex = frame % current.player.spells.length;
-  const skipped = activeIndex >= 0 && previous.player.mana < SPELLS[current.player.spells[activeIndex]].mana;
+  const lastCast=current.events.filter(e=>e.side==='player').at(-1);
+  const activeIndex=current.player.casting?.index ?? lastCast?.index ?? -1;
+  const nextIndex=current.player.cursor;
+  const skipped=lastCast?.status==='skipped';
   return <View style={s.root}>
     <Image accessible={false} source={combatArt.background} resizeMode="cover" style={[StyleSheet.absoluteFill, { width: '100%', height: '100%' }]} />
     <View pointerEvents="none" style={[StyleSheet.absoluteFill, { backgroundColor: '#130e0928' }]} />
@@ -50,7 +55,7 @@ export function CombatScreen({ game }: { game: ReturnType<typeof useGame> }) {
         <View style={s.leftField}>
           <View style={s.arena}>
             
-            <Mage fighter={current.player} compact={compact} /><Mage fighter={current.bot} opponent compact={compact} />
+            <Mage fighter={current.player} compact={compact} finished={finished} tick={frame} speed={speed} playing={game.active && !finished} /><Mage fighter={current.bot} opponent compact={compact} finished={finished} tick={frame} speed={speed} playing={game.active && !finished} /><DamageNumbers frame={current} />
             <View style={s.beatNotice}><Text numberOfLines={2} style={s.event}>{finished ? { victory: 'Victory', defeat: 'Defeat', draw: 'Draw' }[battle.outcome] : frame === 0 ? 'Spells locked · Duel begins' : current.messages.join('\n')}</Text></View>
           </View>
           <PlayerHotbar fighter={current.player} equipment={session.equipment} compact={compact} />
@@ -59,8 +64,8 @@ export function CombatScreen({ game }: { game: ReturnType<typeof useGame> }) {
           <Text style={s.queueTitle}>Your spell queue</Text>
           <View style={{ flex: 1, minHeight: 0, gap: 3 }}>{current.player.spells.map((id, index) => {
             const isActive = index === activeIndex;
-            const label = finished ? 'Complete' : isActive ? (skipped ? 'Skipped · no mana' : 'Casting') : index === nextIndex ? 'Next' : 'Queued';
-            return <View key={index} accessibilityLabel={`Slot ${index + 1}: ${SPELLS[id].name}, ${label}`} style={[s.queueRow, isActive && !finished && s.activeRow]}><Text style={s.order}>{index + 1}</Text><Text style={[s.spellGlyph, { fontSize: compact ? 18 : 28 }]}>{glyph[id]}</Text><View style={{ flex: 1 }}><Text numberOfLines={1} adjustsFontSizeToFit style={[s.spellName, { fontSize: compact ? (current.player.spells.length > 6 ? 9 : 11) : 15 }]}>{SPELLS[id].name}</Text>{(!compact || current.player.spells.length <= 6) && <Text numberOfLines={1} style={s.queueState}>{label}</Text>}</View></View>;
+            const label = finished ? 'Complete' : isActive ? (current.player.casting ? 'Casting · '+current.player.casting.remaining+'T' : skipped ? 'Skipped · no mana' : 'Cast') : index === nextIndex ? 'Next' : 'Queued';
+            return <View key={index} accessibilityLabel={`Slot ${index + 1}: ${SPELLS[id].name}, ${label}`} style={[s.queueRow, isActive && !finished && s.activeRow]}><Text style={s.order}>{index + 1}</Text><Text style={[s.spellGlyph, { fontSize: compact ? 18 : 28 }]}>{spellVisual(id).glyph}</Text><View style={{ flex: 1 }}><Text numberOfLines={1} adjustsFontSizeToFit style={[s.spellName, { fontSize: compact ? (current.player.spells.length > 6 ? 9 : 11) : 15 }]}>{SPELLS[id].name}</Text>{(!compact || current.player.spells.length <= 6) && <Text numberOfLines={1} style={s.queueState}>{label}</Text>}</View></View>;
           })}</View>
           {finished && <Control label="Return to shop →" disabled={busy} selected onPress={() => act({ type: 'next' })} />}
         </View>

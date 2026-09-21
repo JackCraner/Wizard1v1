@@ -1,0 +1,37 @@
+import { expect, it } from 'vitest';
+import { shopRankOdds, validateShopOdds } from './shopOdds';
+import { offersFor } from '../game/shop';
+import { SPELLS } from '../game/engine';
+
+it('keeps every round-one reroll rank one and advances odds by round',()=>{
+  for(let reroll=0;reroll<300;reroll++) expect(offersFor(1,reroll).shop.every(id=>SPELLS[id].stars===1)).toBe(true);
+  expect(shopRankOdds(1)).toEqual([100,0,0,0,0]);
+  expect(shopRankOdds(2)).toEqual([80,20,0,0,0]);
+  expect(shopRankOdds(100)).toEqual(shopRankOdds(10));
+  expect(()=>shopRankOdds(0)).toThrow();
+});
+it('matches configured rank frequencies without catalogue-size or domain bias',()=>{
+  for(const round of [2,5,10]) {
+    const counts=[0,0,0,0,0];
+    for(let roll=0;roll<5000;roll++)for(const id of offersFor(round,roll).shop)counts[SPELLS[id].stars-1]++;
+    shopRankOdds(round).forEach((percent,i)=>{
+      if(!percent)expect(counts[i]).toBe(0);
+      else expect(Math.abs(counts[i]/20000*100-percent)).toBeLessThan(2);
+    });
+  }
+});
+it('renormalizes unavailable ranks while preserving the two-domain limit',()=>{
+  // No Nature/Water rank-five card currently has fully defined combat rules.
+  const counts=[0,0,0,0,0];
+  for(let roll=0;roll<3000;roll++)for(const id of offersFor(10,roll,['wrath','splash']).shop){
+    expect(['nature','water']).toContain(SPELLS[id].domain);counts[SPELLS[id].stars-1]++;
+  }
+  expect(counts[4]).toBe(0);
+  [5,15,30,40].forEach((weight,i)=>expect(Math.abs(counts[i]/12000-weight/90)).toBeLessThan(.02));
+});
+it('rejects invalid balancing tables with clear errors',()=>{
+  expect(()=>validateShopOdds([])).toThrow('round 1');
+  expect(()=>validateShopOdds([{fromRound:1,rankPercent:[99,0,0,0,0]}])).toThrow('totaling 100');
+  expect(()=>validateShopOdds([{fromRound:1,rankPercent:[90,10,0,0,0]}])).toThrow('only rank 1');
+  expect(()=>validateShopOdds([{fromRound:1,rankPercent:[100,0,0,0,0]},{fromRound:1,rankPercent:[80,20,0,0,0]}])).toThrow('increase');
+});

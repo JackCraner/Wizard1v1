@@ -2,9 +2,11 @@ import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { Animated, PanResponder, Platform, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
 import type { SpellId } from '../game/model';
 import { SPELLS } from '../game/engine';
+import { explainedKeywords } from '../config/catalogue';
 import { dropIndex } from '../game/handLayout';
 
-export function DraggableHand({ spells, disabled, renderCard, onInspect, onMove, onDragging, height = 172 }: {
+export function DraggableHand({ spells, disabled, renderCard, renderPreview, onInspect, onMove, onDragging, height = 172 }: {
+  renderPreview?: (id: SpellId, height: number, width: number) => ReactNode;
   height?: number; spells: SpellId[]; disabled: boolean; renderCard: (id: SpellId, expanded?: boolean) => ReactNode;
   onInspect: (index: number) => void; onMove: (from: number, to: number) => void; onDragging: (dragging: boolean) => void;
 }) {
@@ -25,7 +27,7 @@ export function DraggableHand({ spells, disabled, renderCard, onInspect, onMove,
       return id ? <DragCard key={`${index}-${id}`} id={id} index={index} left={left} top={6 + Math.abs(offset)} height={cardHeight}
         handWidth={width} previewHeight={Math.min(240, screenHeight * .56)} width={cardWidth} angle={offset * 2.5} spacing={spacing} count={spells.length} disabled={disabled}
         selected={drag?.from === index} target={drag?.to === index && drag.from !== index}
-        renderCard={renderCard} onInspect={onInspect} onMove={onMove}
+        renderCard={renderCard} renderPreview={renderPreview} onInspect={onInspect} onMove={onMove}
         onDrag={(target) => { setDrag(target === null ? null : { from: index, to: target }); onDragging(target !== null); }} />
         : <View key={`empty-${index}`} pointerEvents="none" style={[styles.empty, { left, top: 6 + Math.abs(offset), height: cardHeight, width: cardWidth, transform: [{ rotate: `${offset * 2.5}deg` }] }]}><Text style={styles.emptyText}>✧</Text></View>;
     })}
@@ -35,6 +37,7 @@ export function DraggableHand({ spells, disabled, renderCard, onInspect, onMove,
 
 function DragCard(props: {
   id: SpellId; index: number; left: number; top: number; width: number; height: number; angle: number; spacing: number; count: number;
+  renderPreview?: (id: SpellId, height: number, width: number) => ReactNode;
   handWidth: number; previewHeight: number;
   disabled: boolean; selected: boolean; target: boolean; renderCard: (id: SpellId, expanded?: boolean) => ReactNode;
   onInspect: (i: number) => void; onMove: (from: number, to: number) => void; onDrag: (target: number | null) => void;
@@ -87,7 +90,7 @@ function DragCard(props: {
     onPanResponderTerminate: () => finish(0, true),
     onPanResponderTerminationRequest: () => false,
   })).current;
-  const previewWidth = props.previewHeight * 2 / 3;
+  const previewWidth = Math.min(props.handWidth - 8, props.previewHeight * 2 / 3 + (props.renderPreview && explainedKeywords(SPELLS[props.id].keywords).length > 0 ? 180 : 0));
   const previewLeft = (props.width - previewWidth) / 2;
   const minX = -props.left - previewLeft + 4;
   const maxX = props.handWidth - props.left - previewLeft - previewWidth - 4;
@@ -112,7 +115,7 @@ function DragCard(props: {
     {props.selected && <Animated.View pointerEvents="none" style={{ position: 'absolute', left: previewLeft,
       bottom: 16, width: previewWidth, height: props.previewHeight, transform: [{ translateX: previewX }],
       shadowColor: '#000', shadowOpacity: .8, shadowRadius: 18, shadowOffset: { width: 0, height: 8 }, elevation: 20 }}>
-      {props.renderCard(props.id, true)}
+      {props.renderPreview ? props.renderPreview(props.id, props.previewHeight, previewWidth) : props.renderCard(props.id, true)}
     </Animated.View>}
   </View>;
 }

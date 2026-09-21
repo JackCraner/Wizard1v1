@@ -1,3 +1,4 @@
+import { spellVisual } from './components/cards/spellVisual';
 import type { PropsWithChildren } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import type { Fighter, SpellId } from './game/model';
@@ -25,10 +26,8 @@ export function Title({ children }: PropsWithChildren) { return <Text accessibil
 export function Heading({ children }: PropsWithChildren) { return <Text accessibilityRole="header" style={styles.heading}>{children}</Text>; }
 export function Body({ children }: PropsWithChildren) { return <Text style={styles.body}>{children}</Text>; }
 
-const symbols: Record<SpellId, string> = { spark: 'ϟ', fireball: '◈', mend: '+', ward: '◇', drain: '≈', bolt: '↯' };
-const tints: Record<SpellId, string> = { spark: '#d6e99c', fireball: '#e5ad85', mend: '#9fdbaf', ward: '#9bc3d1', drain: '#b6cdb2', bolt: '#cdb2eb' };
 export function SpellIcon({ id }: { id: SpellId }) {
-  return <View accessible={false} style={[styles.spellIcon, { backgroundColor: `${tints[id]}14` }]}><Text style={[styles.symbol, { color: tints[id] }]}>{symbols[id]}</Text></View>;
+  return <View accessible={false} style={[styles.spellIcon, { backgroundColor: `${spellVisual(id).color}14` }]}><Text style={[styles.symbol, { color: spellVisual(id).color }]}>{spellVisual(id).glyph}</Text></View>;
 }
 
 function Meter({ label, value, max, color }: { label: string; value: number; max: number; color: string }) {
@@ -87,3 +86,5 @@ export const styles = StyleSheet.create({
   footer: { color: '#86927d', fontSize: 10, letterSpacing: 1, textAlign: 'center', paddingVertical: 16 },
   error: { padding: 16, backgroundColor: '#4a2622', borderRadius: 8 },
 });
+
+

@@ -1,0 +1,11 @@
+{
+  "health": 500,
+  "mana": 100,
+  "gold": 10,
+  "slots": 10,
+  "maxTicks": 50,
+  "critMultiplier": 1.5,
+  "baseCritChance": 0,
+  "seed": 42,
+  "maxDomains": 2
+}

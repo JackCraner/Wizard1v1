@@ -1,0 +1,1538 @@
+[
+  {
+    "id": "seed-shot",
+    "name": "Seed Shot",
+    "domain": "nature",
+    "stars": 1,
+    "castTicks": 2,
+    "mana": 5,
+    "rules": "Deal 70 damage.",
+    "keywords": [],
+    "notes": [],
+    "combat": {
+      "effects": [
+        {
+          "kind": "damage",
+          "amount": 70
+        }
+      ]
+    }
+  },
+  {
+    "id": "moonfire",
+    "name": "Moonfire",
+    "domain": "nature",
+    "stars": 1,
+    "castTicks": 1,
+    "mana": 5,
+    "rules": "Apply 5 Moonfire.",
+    "keywords": [
+      "moonfire"
+    ],
+    "notes": [],
+    "combat": {
+      "effects": [
+        {
+          "kind": "status",
+          "status": "moonfire",
+          "amount": 5,
+          "target": "enemy"
+        }
+      ]
+    }
+  },
+  {
+    "id": "photosynthesis",
+    "name": "Photosynthesis",
+    "domain": "nature",
+    "stars": 1,
+    "castTicks": 3,
+    "mana": 0,
+    "rules": "Restore 15 mana.",
+    "keywords": [],
+    "notes": [],
+    "combat": {
+      "effects": [
+        {
+          "kind": "mana",
+          "amount": 15
+        }
+      ]
+    }
+  },
+  {
+    "id": "wrath",
+    "name": "Wrath",
+    "domain": "nature",
+    "stars": 1,
+    "castTicks": 1,
+    "mana": 0,
+    "rules": "Deal 20 damage.",
+    "keywords": [],
+    "notes": [],
+    "combat": {
+      "effects": [
+        {
+          "kind": "damage",
+          "amount": 20
+        }
+      ]
+    }
+  },
+  {
+    "id": "regrowth",
+    "name": "Regrowth",
+    "domain": "nature",
+    "stars": 1,
+    "castTicks": 1,
+    "mana": 5,
+    "rules": "Heal 30 health.",
+    "keywords": [],
+    "notes": [],
+    "combat": {
+      "effects": [
+        {
+          "kind": "heal",
+          "amount": 30
+        }
+      ]
+    }
+  },
+  {
+    "id": "sap",
+    "name": "Sap",
+    "domain": "nature",
+    "stars": 1,
+    "castTicks": 2,
+    "mana": 2,
+    "rules": "Deal 20 damage. Restore 5 mana.",
+    "keywords": [],
+    "notes": [],
+    "combat": {
+      "effects": [
+        {
+          "kind": "damage",
+          "amount": 20
+        },
+        {
+          "kind": "mana",
+          "amount": 5
+        }
+      ]
+    }
+  },
+  {
+    "id": "lunar-strike",
+    "name": "Lunar Strike",
+    "domain": "nature",
+    "stars": 2,
+    "castTicks": 2,
+    "mana": 5,
+    "rules": "Deal 50 damage. Crit if Moonfire is active.",
+    "keywords": [
+      "crit",
+      "moonfire"
+    ],
+    "notes": [
+      "Critical condition checks effects on the opponent."
+    ],
+    "combat": {
+      "effects": [
+        {
+          "kind": "damage",
+          "amount": 50,
+          "critWhen": [
+            "moonfire"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "id": "sunfire",
+    "name": "Sunfire",
+    "domain": "nature",
+    "stars": 2,
+    "castTicks": 1,
+    "mana": 8,
+    "rules": "Apply 5 Sunfire.",
+    "keywords": [
+      "sunfire"
+    ],
+    "notes": [],
+    "combat": {
+      "effects": [
+        {
+          "kind": "status",
+          "status": "sunfire",
+          "amount": 5,
+          "target": "enemy"
+        }
+      ]
+    }
+  },
+  {
+    "id": "lifebloom",
+    "name": "Lifebloom",
+    "domain": "nature",
+    "stars": 2,
+    "castTicks": 2,
+    "mana": 10,
+    "rules": "Gain 4 Lifebloom.",
+    "keywords": [
+      "lifebloom"
+    ],
+    "notes": [
+      "Define X in Lifebloom's 10 × X healing per tick."
+    ],
+    "combat": {
+      "blockedReason": "Define X in 10 × X healing."
+    }
+  },
+  {
+    "id": "germination",
+    "name": "Germination",
+    "domain": "nature",
+    "stars": 2,
+    "castTicks": 1,
+    "mana": 5,
+    "rules": "Restore mana equal to the number of DoTs applied.",
+    "keywords": [
+      "dot"
+    ],
+    "notes": [
+      "Does this count active effects, effect types, stacks, or all applications this combat?"
+    ],
+    "combat": {
+      "blockedReason": "Specify whether DoTs means active types, remaining stacks, or all applications."
+    }
+  },
+  {
+    "id": "mend",
+    "name": "Mend",
+    "domain": "nature",
+    "stars": 2,
+    "castTicks": 1,
+    "mana": 3,
+    "rules": "Gain 5 Growth.",
+    "keywords": [
+      "growth"
+    ],
+    "notes": [],
+    "combat": {
+      "effects": [
+        {
+          "kind": "status",
+          "status": "growth",
+          "amount": 5,
+          "target": "self"
+        }
+      ]
+    }
+  },
+  {
+    "id": "root-bind",
+    "name": "Root Bind",
+    "domain": "nature",
+    "stars": 2,
+    "castTicks": 1,
+    "mana": 3,
+    "rules": "Deal 30 damage. Apply 1 Slowness.",
+    "keywords": [
+      "slowness"
+    ],
+    "notes": [],
+    "combat": {
+      "effects": [
+        {
+          "kind": "damage",
+          "amount": 30
+        },
+        {
+          "kind": "status",
+          "status": "slowness",
+          "amount": 1,
+          "target": "enemy"
+        }
+      ]
+    }
+  },
+  {
+    "id": "starsurge",
+    "name": "Starsurge",
+    "domain": "nature",
+    "stars": 3,
+    "castTicks": 0,
+    "mana": 3,
+    "rules": "Instant. Deal 80 damage. Crit if Moonfire and Sunfire are active.",
+    "keywords": [
+      "instant",
+      "crit",
+      "moonfire",
+      "sunfire"
+    ],
+    "notes": [
+      "Critical condition checks effects on the opponent."
+    ],
+    "combat": {
+      "effects": [
+        {
+          "kind": "damage",
+          "amount": 80,
+          "critWhen": [
+            "moonfire",
+            "sunfire"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "id": "moon-blast",
+    "name": "Moon Blast",
+    "domain": "nature",
+    "stars": 3,
+    "castTicks": 1,
+    "mana": 5,
+    "rules": "Deal 50 damage. Apply 3 Moonfire.",
+    "keywords": [
+      "moonfire"
+    ],
+    "notes": [],
+    "combat": {
+      "effects": [
+        {
+          "kind": "damage",
+          "amount": 50
+        },
+        {
+          "kind": "status",
+          "status": "moonfire",
+          "amount": 3,
+          "target": "enemy"
+        }
+      ]
+    }
+  },
+  {
+    "id": "flourish",
+    "name": "Flourish",
+    "domain": "nature",
+    "stars": 3,
+    "castTicks": 2,
+    "mana": 5,
+    "rules": "Unique. Double all HoT durations.",
+    "keywords": [
+      "unique",
+      "hot"
+    ],
+    "notes": [
+      "Confirm whether this affects only your HoTs or both players' HoTs."
+    ],
+    "combat": {
+      "blockedReason": "Define Unique and whose HoTs are extended."
+    }
+  },
+  {
+    "id": "spore-drain",
+    "name": "Spore Drain",
+    "domain": "nature",
+    "stars": 3,
+    "castTicks": 1,
+    "mana": 3,
+    "rules": "Channel. Deal 10 × X damage. Gain X Growth.",
+    "keywords": [
+      "channel",
+      "growth"
+    ],
+    "notes": [],
+    "combat": {
+      "effects": [
+        {
+          "kind": "damage",
+          "amount": 10,
+          "perChannel": true
+        },
+        {
+          "kind": "status",
+          "status": "growth",
+          "amount": 1,
+          "perChannel": true
+        }
+      ]
+    }
+  },
+  {
+    "id": "rejuvenation",
+    "name": "Rejuvenation",
+    "domain": "nature",
+    "stars": 3,
+    "castTicks": 0,
+    "mana": 7,
+    "rules": "Instant. Heal 50 health.",
+    "keywords": [
+      "instant"
+    ],
+    "notes": [],
+    "combat": {
+      "effects": [
+        {
+          "kind": "heal",
+          "amount": 50
+        }
+      ]
+    }
+  },
+  {
+    "id": "renew",
+    "name": "Renew",
+    "domain": "nature",
+    "stars": 3,
+    "castTicks": 1,
+    "mana": 8,
+    "rules": "Heal 50 health. Gain 5 Growth and apply 5 Growth.",
+    "keywords": [
+      "growth"
+    ],
+    "notes": [
+      "The source specifies both gain and apply Growth. Confirm the recipient of the second application."
+    ],
+    "combat": {
+      "blockedReason": "Specify who receives the second Growth application."
+    }
+  },
+  {
+    "id": "starfall",
+    "name": "Starfall",
+    "domain": "nature",
+    "stars": 4,
+    "castTicks": 1,
+    "mana": 5,
+    "rules": "Apply X Starfall. Gain 1 Star Empowerment.",
+    "keywords": [
+      "starfall",
+      "star-empowerment"
+    ],
+    "notes": [
+      "Define X. Confirm Star Empowerment's recipient and stack duration."
+    ],
+    "combat": {
+      "blockedReason": "Define X."
+    }
+  },
+  {
+    "id": "celestial-alignment",
+    "name": "Celestial Alignment",
+    "domain": "nature",
+    "stars": 4,
+    "castTicks": null,
+    "mana": null,
+    "rules": "Unique. Your next spell deals double damage.",
+    "keywords": [
+      "unique"
+    ],
+    "notes": [
+      "Cast time and mana cost were not provided."
+    ],
+    "combat": {
+      "blockedReason": "Provide mana cost, cast time, and Unique restriction."
+    }
+  },
+  {
+    "id": "nettle-trap",
+    "name": "Nettle Trap",
+    "domain": "nature",
+    "stars": 4,
+    "castTicks": 1,
+    "mana": 10,
+    "rules": "Apply 5 Trap.",
+    "keywords": [
+      "trap"
+    ],
+    "notes": [],
+    "combat": {
+      "blockedReason": "Define Trap trigger timing and whose spells count."
+    }
+  },
+  {
+    "id": "greenfire",
+    "name": "Greenfire",
+    "domain": "nature",
+    "stars": 4,
+    "castTicks": 2,
+    "mana": 8,
+    "rules": "Deal 100 damage. Apply 5 Sunfire.",
+    "keywords": [
+      "sunfire"
+    ],
+    "notes": [],
+    "combat": {
+      "effects": [
+        {
+          "kind": "damage",
+          "amount": 100
+        },
+        {
+          "kind": "status",
+          "status": "sunfire",
+          "amount": 5,
+          "target": "enemy"
+        }
+      ]
+    }
+  },
+  {
+    "id": "astral-power",
+    "name": "Astral Power",
+    "domain": "nature",
+    "stars": 4,
+    "castTicks": 1,
+    "mana": 0,
+    "rules": "Restore 10 mana. Deal 100 damage.",
+    "keywords": [],
+    "notes": [],
+    "combat": {
+      "effects": [
+        {
+          "kind": "mana",
+          "amount": 10
+        },
+        {
+          "kind": "damage",
+          "amount": 100
+        }
+      ]
+    }
+  },
+  {
+    "id": "eclipse",
+    "name": "Eclipse",
+    "domain": "nature",
+    "stars": 5,
+    "castTicks": 1,
+    "mana": 10,
+    "rules": "Immediately deal all remaining DoT damage.",
+    "keywords": [
+      "dot"
+    ],
+    "notes": [
+      "Confirm whose DoTs are counted and whether this consumes them."
+    ],
+    "combat": {
+      "blockedReason": "Specify whether remaining DoTs are consumed."
+    }
+  },
+  {
+    "id": "wild-growth",
+    "name": "Wild Growth",
+    "domain": "nature",
+    "stars": 5,
+    "castTicks": 2,
+    "mana": 0,
+    "rules": "Gain 5 Growth and 25 Overgrowth. Growth now heals 3 health per tick.",
+    "keywords": [
+      "growth",
+      "overgrowth"
+    ],
+    "notes": [
+      "Source changes Growth from 10 to 3 healing. Confirm this value and how Overgrowth changes it."
+    ],
+    "combat": {
+      "blockedReason": "Define Overgrowth and confirm the change to 3 healing."
+    }
+  },
+  {
+    "id": "splash",
+    "name": "Splash",
+    "domain": "water",
+    "stars": 1,
+    "castTicks": 1,
+    "mana": 0,
+    "rules": "Restore 5 mana.",
+    "keywords": [],
+    "notes": [],
+    "combat": {
+      "effects": [
+        {
+          "kind": "mana",
+          "amount": 5
+        }
+      ]
+    }
+  },
+  {
+    "id": "brine",
+    "name": "Brine",
+    "domain": "water",
+    "stars": 1,
+    "castTicks": 2,
+    "mana": 2,
+    "rules": "Deal 50 damage.",
+    "keywords": [],
+    "notes": [],
+    "combat": {
+      "effects": [
+        {
+          "kind": "damage",
+          "amount": 50
+        }
+      ]
+    }
+  },
+  {
+    "id": "mist",
+    "name": "Mist",
+    "domain": "water",
+    "stars": 1,
+    "castTicks": 0,
+    "mana": 5,
+    "rules": "Instant. Deal 20 damage.",
+    "keywords": [
+      "instant"
+    ],
+    "notes": [],
+    "combat": {
+      "effects": [
+        {
+          "kind": "damage",
+          "amount": 20
+        }
+      ]
+    }
+  },
+  {
+    "id": "tidal",
+    "name": "Tidal",
+    "domain": "water",
+    "stars": 1,
+    "castTicks": 1,
+    "mana": null,
+    "rules": "Gain 3 Tide.",
+    "keywords": [
+      "tide"
+    ],
+    "notes": [
+      "Mana cost was not provided."
+    ],
+    "combat": {
+      "blockedReason": "Provide mana cost."
+    }
+  },
+  {
+    "id": "healing-surge",
+    "name": "Healing Surge",
+    "domain": "water",
+    "stars": 1,
+    "castTicks": 1,
+    "mana": 3,
+    "rules": "Heal 15 health.",
+    "keywords": [],
+    "notes": [],
+    "combat": {
+      "effects": [
+        {
+          "kind": "heal",
+          "amount": 15
+        }
+      ]
+    }
+  },
+  {
+    "id": "undertow",
+    "name": "Undertow",
+    "domain": "water",
+    "stars": 2,
+    "castTicks": 1,
+    "mana": 10,
+    "rules": "Channel. Deal X damage. Gain X Tide.",
+    "keywords": [
+      "channel",
+      "tide"
+    ],
+    "notes": [],
+    "combat": {
+      "effects": [
+        {
+          "kind": "damage",
+          "amount": 1,
+          "perChannel": true
+        },
+        {
+          "kind": "status",
+          "status": "tide",
+          "amount": 1,
+          "perChannel": true
+        }
+      ]
+    }
+  },
+  {
+    "id": "aqua-steal",
+    "name": "Aqua Steal",
+    "domain": "water",
+    "stars": 2,
+    "castTicks": 2,
+    "mana": 5,
+    "rules": "Steal 10 mana.",
+    "keywords": [
+      "steal"
+    ],
+    "notes": [],
+    "combat": {
+      "effects": [
+        {
+          "kind": "stealMana",
+          "amount": 10
+        }
+      ]
+    }
+  },
+  {
+    "id": "tidal-burst",
+    "name": "Tidal Burst",
+    "domain": "water",
+    "stars": 2,
+    "castTicks": 2,
+    "mana": 5,
+    "rules": "Tidecaller. Deal 80 damage.",
+    "keywords": [
+      "tidecaller"
+    ],
+    "notes": [],
+    "combat": {
+      "effects": [
+        {
+          "kind": "damage",
+          "amount": 80
+        }
+      ]
+    }
+  },
+  {
+    "id": "frostbolt",
+    "name": "Frostbolt",
+    "domain": "water",
+    "stars": 2,
+    "castTicks": 1,
+    "mana": 3,
+    "rules": "Apply 2 Slowness.",
+    "keywords": [
+      "slowness"
+    ],
+    "notes": [],
+    "combat": {
+      "effects": [
+        {
+          "kind": "status",
+          "status": "slowness",
+          "amount": 2,
+          "target": "enemy"
+        }
+      ]
+    }
+  },
+  {
+    "id": "storm",
+    "name": "Storm",
+    "domain": "water",
+    "stars": 2,
+    "castTicks": 2,
+    "mana": 5,
+    "rules": "Gain 5 Rain.",
+    "keywords": [
+      "rain"
+    ],
+    "notes": [],
+    "combat": {
+      "effects": [
+        {
+          "kind": "status",
+          "status": "rain",
+          "amount": 5,
+          "target": "self"
+        }
+      ]
+    }
+  },
+  {
+    "id": "mistveil",
+    "name": "Mistveil",
+    "domain": "water",
+    "stars": 2,
+    "castTicks": 1,
+    "mana": 0,
+    "rules": "Gain 3 Veil.",
+    "keywords": [
+      "veil"
+    ],
+    "notes": [
+      "Confirm who receives the damage penalty and mana gain."
+    ],
+    "combat": {
+      "blockedReason": "Specify whose spells take the penalty and who gains mana."
+    }
+  },
+  {
+    "id": "riptide",
+    "name": "Riptide",
+    "domain": "water",
+    "stars": 3,
+    "castTicks": 1,
+    "mana": 5,
+    "rules": "Tidecaller. Heal 100 health.",
+    "keywords": [
+      "tidecaller"
+    ],
+    "notes": [],
+    "combat": {
+      "effects": [
+        {
+          "kind": "heal",
+          "amount": 100
+        }
+      ]
+    }
+  },
+  {
+    "id": "tidal-echo",
+    "name": "Tidal Echo",
+    "domain": "water",
+    "stars": 3,
+    "castTicks": 1,
+    "mana": 10,
+    "rules": "Your next spell gains Tidecaller.",
+    "keywords": [
+      "tidecaller"
+    ],
+    "notes": [],
+    "combat": {
+      "effects": [
+        {
+          "kind": "status",
+          "status": "tidal-echo",
+          "amount": 1,
+          "target": "self"
+        }
+      ]
+    }
+  },
+  {
+    "id": "deepwater",
+    "name": "Deepwater",
+    "domain": "water",
+    "stars": 3,
+    "castTicks": 3,
+    "mana": 5,
+    "rules": "Both players restore 15 mana. Gain 5 Tide.",
+    "keywords": [
+      "tide"
+    ],
+    "notes": [],
+    "combat": {
+      "effects": [
+        {
+          "kind": "bothMana",
+          "amount": 15
+        },
+        {
+          "kind": "status",
+          "status": "tide",
+          "amount": 5,
+          "target": "self"
+        }
+      ]
+    }
+  },
+  {
+    "id": "cleanse",
+    "name": "Cleanse",
+    "domain": "water",
+    "stars": 3,
+    "castTicks": 1,
+    "mana": 5,
+    "rules": "Cleanse 1 random debuff.",
+    "keywords": [
+      "cleanse"
+    ],
+    "notes": [],
+    "combat": {
+      "effects": [
+        {
+          "kind": "cleanse"
+        }
+      ]
+    }
+  },
+  {
+    "id": "whirlpool",
+    "name": "Whirlpool",
+    "domain": "water",
+    "stars": 3,
+    "castTicks": 1,
+    "mana": 10,
+    "rules": "Tidecaller. Deal 10 damage per Tide.",
+    "keywords": [
+      "tidecaller",
+      "tide"
+    ],
+    "notes": [
+      "Damage uses your current remaining Tide stacks."
+    ],
+    "combat": {
+      "effects": [
+        {
+          "kind": "damage",
+          "amount": 10,
+          "perStatus": "tide"
+        }
+      ]
+    }
+  },
+  {
+    "id": "flood-fury",
+    "name": "Flood Fury",
+    "domain": "water",
+    "stars": 3,
+    "castTicks": 0,
+    "mana": 20,
+    "rules": "Instant. Deal 100 damage.",
+    "keywords": [
+      "instant"
+    ],
+    "notes": [],
+    "combat": {
+      "effects": [
+        {
+          "kind": "damage",
+          "amount": 100
+        }
+      ]
+    }
+  },
+  {
+    "id": "downpour",
+    "name": "Downpour",
+    "domain": "water",
+    "stars": 4,
+    "castTicks": 2,
+    "mana": 15,
+    "rules": "Gain 15 Rain.",
+    "keywords": [
+      "rain"
+    ],
+    "notes": [],
+    "combat": {
+      "effects": [
+        {
+          "kind": "status",
+          "status": "rain",
+          "amount": 15,
+          "target": "self"
+        }
+      ]
+    }
+  },
+  {
+    "id": "tidal-guard",
+    "name": "Tidal Guard",
+    "domain": "water",
+    "stars": 4,
+    "castTicks": 1,
+    "mana": 5,
+    "rules": "Tidecaller. Gain 2 Guard.",
+    "keywords": [
+      "tidecaller",
+      "guard"
+    ],
+    "notes": [],
+    "combat": {
+      "effects": [
+        {
+          "kind": "status",
+          "status": "guard",
+          "amount": 2
+        }
+      ]
+    }
+  },
+  {
+    "id": "tsunami",
+    "name": "Tsunami",
+    "domain": "water",
+    "stars": 4,
+    "castTicks": 2,
+    "mana": "half",
+    "rules": "Spend half your mana. Deal that much damage.",
+    "keywords": [],
+    "notes": [
+      "Confirm rounding and whether half refers to current or maximum mana."
+    ],
+    "combat": {
+      "blockedReason": "Specify current/max mana and rounding."
+    }
+  },
+  {
+    "id": "rainborn",
+    "name": "Rainborn",
+    "domain": "water",
+    "stars": 4,
+    "castTicks": 2,
+    "mana": null,
+    "rules": "Rain also heals 2 health per tick.",
+    "keywords": [
+      "rain",
+      "hot"
+    ],
+    "notes": [
+      "Mana cost was not provided. Confirm whether healing scales with Rain stacks."
+    ],
+    "combat": {
+      "blockedReason": "Provide mana cost."
+    }
+  },
+  {
+    "id": "water-heart",
+    "name": "Water Heart",
+    "domain": "water",
+    "stars": 4,
+    "castTicks": 1,
+    "mana": 0,
+    "rules": "Gain 5 Tide. Restore 5 mana. Heal 10 health.",
+    "keywords": [
+      "tide"
+    ],
+    "notes": [],
+    "combat": {
+      "effects": [
+        {
+          "kind": "status",
+          "status": "tide",
+          "amount": 5,
+          "target": "self"
+        },
+        {
+          "kind": "mana",
+          "amount": 5
+        },
+        {
+          "kind": "heal",
+          "amount": 10
+        }
+      ]
+    }
+  },
+  {
+    "id": "maelstrom",
+    "name": "Maelstrom",
+    "domain": "water",
+    "stars": 5,
+    "castTicks": 3,
+    "mana": 10,
+    "rules": "Your Tide no longer expires.",
+    "keywords": [
+      "tide"
+    ],
+    "notes": [],
+    "combat": {
+      "blockedReason": "Tide not expiring conflicts with the new universal countdown rule."
+    }
+  },
+  {
+    "id": "monsoon",
+    "name": "Monsoon",
+    "domain": "water",
+    "stars": 5,
+    "castTicks": 1,
+    "mana": 0,
+    "rules": "Rain grants 5 mana.",
+    "keywords": [
+      "rain"
+    ],
+    "notes": [
+      "Confirm when Rain grants mana: each tick, on application, or when a spell is cast."
+    ],
+    "combat": {
+      "blockedReason": "Specify when Rain grants mana."
+    }
+  },
+  {
+    "id": "cloud-heart",
+    "name": "Cloud Heart",
+    "domain": "water",
+    "stars": 5,
+    "castTicks": 1,
+    "mana": null,
+    "rules": "Increase healing by 40%.",
+    "keywords": [],
+    "notes": [
+      "Mana cost was not provided. Interpreted 40$ as 40%; confirm duration and recipient."
+    ],
+    "combat": {
+      "blockedReason": "Provide mana cost, duration, and healing recipient."
+    }
+  },
+  {
+    "id": "ember",
+    "name": "Ember",
+    "domain": "fire",
+    "stars": 1,
+    "castTicks": 1,
+    "mana": 5,
+    "rules": "Deal 60 damage.",
+    "keywords": [],
+    "notes": [],
+    "combat": {
+      "effects": [
+        {
+          "kind": "damage",
+          "amount": 60
+        }
+      ]
+    }
+  },
+  {
+    "id": "scorch",
+    "name": "Scorch",
+    "domain": "fire",
+    "stars": 1,
+    "castTicks": 1,
+    "mana": 5,
+    "rules": "Deal 30 damage. Gain 1 Hotstreak.",
+    "keywords": [
+      "hotstreak"
+    ],
+    "notes": [],
+    "combat": {
+      "effects": [
+        {
+          "kind": "damage",
+          "amount": 30
+        },
+        {
+          "kind": "status",
+          "status": "hotstreak",
+          "amount": 1
+        }
+      ]
+    }
+  },
+  {
+    "id": "from-ash",
+    "name": "From Ash",
+    "domain": "fire",
+    "stars": 1,
+    "castTicks": 0,
+    "mana": 0,
+    "rules": "Instant. Take 20 damage. Restore 5 mana.",
+    "keywords": [
+      "instant"
+    ],
+    "notes": [],
+    "combat": {
+      "effects": [
+        {
+          "kind": "selfDamage",
+          "amount": 20
+        },
+        {
+          "kind": "mana",
+          "amount": 5
+        }
+      ]
+    }
+  },
+  {
+    "id": "cinder",
+    "name": "Cinder",
+    "domain": "fire",
+    "stars": 1,
+    "castTicks": 2,
+    "mana": 0,
+    "rules": "Gain 2 Hotstreak.",
+    "keywords": [
+      "hotstreak"
+    ],
+    "notes": [],
+    "combat": {
+      "effects": [
+        {
+          "kind": "status",
+          "status": "hotstreak",
+          "amount": 2
+        }
+      ]
+    }
+  },
+  {
+    "id": "sear",
+    "name": "Sear",
+    "domain": "fire",
+    "stars": 2,
+    "castTicks": 3,
+    "mana": 8,
+    "rules": "Apply 3 Burn.",
+    "keywords": [
+      "burn"
+    ],
+    "notes": [
+      "Burn damage per tick is undefined."
+    ],
+    "combat": {
+      "blockedReason": "Define Burn damage."
+    }
+  },
+  {
+    "id": "fire-bolt",
+    "name": "Fire Bolt",
+    "domain": "fire",
+    "stars": 2,
+    "castTicks": 1,
+    "mana": 8,
+    "rules": "Deal 80 damage.",
+    "keywords": [],
+    "notes": [],
+    "combat": {
+      "effects": [
+        {
+          "kind": "damage",
+          "amount": 80
+        }
+      ]
+    }
+  },
+  {
+    "id": "heatwave",
+    "name": "Heatwave",
+    "domain": "fire",
+    "stars": 2,
+    "castTicks": 1,
+    "mana": 8,
+    "rules": "Gain 2 Hotstreak. Deal 50 damage to both players.",
+    "keywords": [
+      "hotstreak"
+    ],
+    "notes": [],
+    "combat": {
+      "effects": [
+        {
+          "kind": "status",
+          "status": "hotstreak",
+          "amount": 2
+        },
+        {
+          "kind": "bothDamage",
+          "amount": 50
+        }
+      ]
+    }
+  },
+  {
+    "id": "eruption",
+    "name": "Eruption",
+    "domain": "fire",
+    "stars": 2,
+    "castTicks": 2,
+    "mana": 10,
+    "rules": "Gain 8 Eruption.",
+    "keywords": [
+      "eruption"
+    ],
+    "notes": [],
+    "combat": {
+      "blockedReason": "Define critical chance for DoTs."
+    }
+  },
+  {
+    "id": "lava-floor",
+    "name": "Lava Floor",
+    "domain": "fire",
+    "stars": 2,
+    "castTicks": 2,
+    "mana": 5,
+    "rules": "Apply 3 Trap.",
+    "keywords": [
+      "trap"
+    ],
+    "notes": [],
+    "combat": {
+      "blockedReason": "Define Trap trigger timing."
+    }
+  },
+  {
+    "id": "overheat",
+    "name": "Overheat",
+    "domain": "fire",
+    "stars": 3,
+    "castTicks": 1,
+    "mana": 10,
+    "rules": "Lose half your current health. Gain 15 Overheat and 5 Hotstreak.",
+    "keywords": [
+      "overheat",
+      "hotstreak"
+    ],
+    "notes": [
+      "Half-current-health loss rounds down; an odd total leaves the extra health point."
+    ],
+    "combat": {
+      "effects": [
+        {
+          "kind": "loseCurrentHealth",
+          "amount": 0.5
+        },
+        {
+          "kind": "status",
+          "status": "overheat",
+          "amount": 15
+        },
+        {
+          "kind": "status",
+          "status": "hotstreak",
+          "amount": 5
+        }
+      ]
+    }
+  },
+  {
+    "id": "emberstorm",
+    "name": "Emberstorm",
+    "domain": "fire",
+    "stars": 3,
+    "castTicks": 4,
+    "mana": 0,
+    "rules": "Deal 120 damage.",
+    "keywords": [],
+    "notes": [],
+    "combat": {
+      "effects": [
+        {
+          "kind": "damage",
+          "amount": 120
+        }
+      ]
+    }
+  },
+  {
+    "id": "lava-drain",
+    "name": "Lava Drain",
+    "domain": "fire",
+    "stars": 3,
+    "castTicks": 2,
+    "mana": 0,
+    "rules": "Restore 15 mana.",
+    "keywords": [],
+    "notes": [],
+    "combat": {
+      "effects": [
+        {
+          "kind": "mana",
+          "amount": 15
+        }
+      ]
+    }
+  },
+  {
+    "id": "flamewave",
+    "name": "Flamewave",
+    "domain": "fire",
+    "stars": 3,
+    "castTicks": 3,
+    "mana": 8,
+    "rules": "Apply 5 Burn.",
+    "keywords": [
+      "burn"
+    ],
+    "notes": [
+      "Burn damage per tick is undefined."
+    ],
+    "combat": {
+      "blockedReason": "Define Burn damage."
+    }
+  },
+  {
+    "id": "firekick",
+    "name": "Firekick",
+    "domain": "fire",
+    "stars": 3,
+    "castTicks": 2,
+    "mana": 5,
+    "rules": "Interrupt the opponent's current cast or channel.",
+    "keywords": [
+      "interrupt",
+      "channel"
+    ],
+    "notes": [],
+    "combat": {
+      "blockedReason": "Specify interrupted-spell queue advancement and mana refunds."
+    }
+  },
+  {
+    "id": "pyroblast",
+    "name": "Pyroblast",
+    "domain": "fire",
+    "stars": 4,
+    "castTicks": 5,
+    "mana": 10,
+    "rules": "Deal 200 damage.",
+    "keywords": [],
+    "notes": [],
+    "combat": {
+      "effects": [
+        {
+          "kind": "damage",
+          "amount": 200
+        }
+      ]
+    }
+  },
+  {
+    "id": "flame-fury",
+    "name": "Flame Fury",
+    "domain": "fire",
+    "stars": 4,
+    "castTicks": 1,
+    "mana": 8,
+    "rules": "Gain 2 Hotstreak and 5 Fury.",
+    "keywords": [
+      "hotstreak",
+      "fury"
+    ],
+    "notes": [],
+    "combat": {
+      "effects": [
+        {
+          "kind": "status",
+          "status": "hotstreak",
+          "amount": 2
+        },
+        {
+          "kind": "status",
+          "status": "fury",
+          "amount": 5
+        }
+      ]
+    }
+  },
+  {
+    "id": "immolate",
+    "name": "Immolate",
+    "domain": "fire",
+    "stars": 4,
+    "castTicks": 3,
+    "mana": 15,
+    "rules": "Channel. Apply 2 Burn to yourself. Deal 30 × X damage.",
+    "keywords": [
+      "channel",
+      "burn"
+    ],
+    "notes": [
+      "X is the number of consecutive Immolate cards. Burn targets the caster; its damage per tick remains undefined."
+    ],
+    "combat": {
+      "blockedReason": "Define Burn damage per tick.",
+      "effects": [
+        {
+          "kind": "status",
+          "status": "burn",
+          "target": "self",
+          "amount": 2
+        },
+        {
+          "kind": "damage",
+          "amount": 30,
+          "perChannel": true
+        }
+      ]
+    }
+  },
+  {
+    "id": "flameshield",
+    "name": "Flameshield",
+    "domain": "fire",
+    "stars": 4,
+    "castTicks": 2,
+    "mana": 15,
+    "rules": "Gain 1 Guard.",
+    "keywords": [
+      "guard"
+    ],
+    "notes": [],
+    "combat": {
+      "effects": [
+        {
+          "kind": "status",
+          "status": "guard",
+          "amount": 1
+        }
+      ]
+    }
+  },
+  {
+    "id": "conflagrate",
+    "name": "Conflagrate",
+    "domain": "fire",
+    "stars": 5,
+    "castTicks": 1,
+    "mana": 15,
+    "rules": "Deal 20 damage. Your next spell is Instant.",
+    "keywords": [
+      "instant"
+    ],
+    "notes": [],
+    "combat": {
+      "effects": [
+        {
+          "kind": "damage",
+          "amount": 20
+        },
+        {
+          "kind": "status",
+          "status": "next-instant",
+          "amount": 1,
+          "target": "self"
+        }
+      ]
+    }
+  },
+  {
+    "id": "flashfire",
+    "name": "Flashfire",
+    "domain": "fire",
+    "stars": 5,
+    "castTicks": 1,
+    "mana": 20,
+    "rules": "Consume all Burn. Gain 1 Hotstreak and 1 Fury per Burn consumed.",
+    "keywords": [
+      "burn",
+      "hotstreak",
+      "fury"
+    ],
+    "notes": [
+      "Confirm whose Burn is consumed and whether consumption counts stacks or duration."
+    ],
+    "combat": {
+      "blockedReason": "Define whose Burn is consumed."
+    }
+  },
+  {
+    "id": "phoenix",
+    "name": "Phoenix",
+    "domain": "fire",
+    "stars": 5,
+    "castTicks": 2,
+    "mana": 15,
+    "rules": "Gain 5 Phoenix. While active, revive on death with half maximum health and mana.",
+    "keywords": [
+      "phoenix"
+    ],
+    "notes": [],
+    "combat": {
+      "effects": [
+        {
+          "kind": "status",
+          "status": "phoenix",
+          "amount": 5
+        }
+      ]
+    }
+  }
+]

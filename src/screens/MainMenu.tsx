@@ -62,9 +62,9 @@ function useAtmosphere() {
   return { flickers, embers, drift, animate: active && !reduced };
 }
 
-export function MainMenu({ hasRun, busy, round, error, onNewGame, onContinue }: {
+export function MainMenu({ hasRun, busy, round, error, onNewGame, onContinue, onLibrary }: {
   hasRun: boolean; busy: boolean; round?: number; error?: string;
-  onNewGame: () => void; onContinue: () => void;
+  onLibrary: () => void; onNewGame: () => void; onContinue: () => void;
 }) {
   const { width, height, fontScale } = useWindowDimensions();
   const [bounds, setBounds] = useState({ width, height });
@@ -115,21 +115,22 @@ export function MainMenu({ hasRun, busy, round, error, onNewGame, onContinue }: 
           {!compact && <View style={styles.ornament} accessible={false}><Text style={styles.star}>✧</Text><View style={styles.rule} /></View>}
           <Text accessibilityRole="header" style={[styles.title, compact && { fontSize: 28, lineHeight: 34 }]}>WIZARD{'\n'}<Text style={styles.titleAccent}>1V1</Text></Text>
           {!compact && <Text style={styles.subtitle}>YOUR NEXT DUEL AWAITS</Text>}
-          <View style={[styles.options, compact && { marginTop: 18 }]}>
+          <View style={[styles.options, compact && { marginTop: 10 }]}>
             <Pressable accessibilityRole="button" accessibilityLabel="New game" accessibilityState={{ disabled: busy }}
               disabled={busy} onPress={onNewGame}
-              style={({ pressed }) => [styles.button, styles.newGame, pressed && styles.pressed, busy && styles.disabled]}>
+              style={({ pressed }) => [styles.button, compact && { minHeight: 44, paddingVertical: 8 }, styles.newGame, pressed && styles.pressed, busy && styles.disabled]}>
               <Text style={styles.newGameText}>{busy ? 'Preparing…' : 'New game'}</Text>
               <Text style={styles.buttonOrnament} accessible={false}>✦</Text>
             </Pressable>
             <Pressable accessibilityRole="button" accessibilityLabel="Continue" accessibilityHint={hasRun ? `Resume round ${round}` : 'Start a new game to unlock Continue'}
               accessibilityState={{ disabled: !hasRun || busy }} disabled={!hasRun || busy} onPress={onContinue}
-              style={({ pressed }) => [styles.button, styles.continue, pressed && styles.pressed, (!hasRun || busy) && styles.disabled]}>
+              style={({ pressed }) => [styles.button, compact && { minHeight: 44, paddingVertical: 8 }, styles.continue, pressed && styles.pressed, (!hasRun || busy) && styles.disabled]}>
               <Text style={styles.continueText}>Continue</Text>
               <Text style={styles.continueArrow} accessible={false}>›</Text>
             </Pressable>
           </View>
-          <Text style={styles.note}>{hasRun ? `Resume your journey · Round ${round}` : 'Your journey begins with a single spell.'}</Text>
+          <Pressable accessibilityRole="button" accessibilityLabel="Spell library" onPress={onLibrary} style={{ paddingTop: compact ? 8 : 14 }}><Text style={{ color: '#d6be91', fontSize: 13 }}>Spell library →</Text></Pressable>
+          <Text style={[styles.note, compact && { marginTop: 8 }]}>{hasRun ? `Resume your journey · Round ${round}` : 'Your journey begins with a single spell.'}</Text>
           {!!error && <Text accessibilityRole="alert" style={styles.error}>{error}</Text>}
         </View>
       </View>
@@ -143,7 +144,7 @@ const styles = StyleSheet.create({
   safe: { flex: 1 },
   content: { flex: 1, justifyContent: 'flex-start', alignItems: 'flex-start' },
   panel: { width: '100%', maxWidth: 330, padding: 27, paddingTop: 24, backgroundColor: 'rgba(13, 12, 11, 0.80)', borderWidth: 1, borderColor: 'rgba(211, 175, 112, 0.25)', borderRadius: 2, shadowColor: '#000', shadowOpacity: .4, shadowRadius: 22, shadowOffset: { width: 0, height: 12 }, elevation: 12 },
-  compactPanel: { padding: 22 },
+  compactPanel: { padding: 16 },
   innerFrame: { position: 'absolute', top: 7, left: 7, right: 7, bottom: 7, borderWidth: 1, borderColor: 'rgba(211,175,112,.11)' },
   cornerTop: { position: 'absolute', top: -1, left: -1, width: 32, height: 32, borderTopWidth: 2, borderLeftWidth: 2, borderColor: '#b8955f' },
   cornerBottom: { position: 'absolute', bottom: -1, right: -1, width: 32, height: 32, borderBottomWidth: 2, borderRightWidth: 2, borderColor: '#b8955f' },
@@ -167,5 +168,6 @@ const styles = StyleSheet.create({
   error: { color: '#ffc6aa', textAlign: 'center', fontSize: 12, marginTop: 12 },
   footer: { color: '#e3cdae', fontSize: 8, letterSpacing: 1.4, textAlign: 'left', paddingHorizontal: 18, paddingBottom: 18, textShadowColor: '#000', textShadowRadius: 8, textShadowOffset: { width: 0, height: 1 } },
 });
+
 
 

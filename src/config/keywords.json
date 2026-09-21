@@ -1,0 +1,216 @@
+{
+  "dot": {
+    "name": "DoT",
+    "aliases": [
+      "DoTs"
+    ],
+    "description": "Deals damage each tick, starting the tick after application. Loses 1 stack each tick. Reapplying adds duration, not per-tick power.",
+    "related": []
+  },
+  "hot": {
+    "name": "HoT",
+    "aliases": [
+      "HoTs"
+    ],
+    "description": "Heals each tick, starting the tick after application. Loses 1 stack each tick. Reapplying adds duration, not per-tick power.",
+    "related": []
+  },
+  "instant": {
+    "name": "Instant",
+    "aliases": [],
+    "description": "Resolves without a casting delay.",
+    "related": []
+  },
+  "crit": {
+    "name": "Crit",
+    "aliases": [
+      "crits"
+    ],
+    "description": "A critical hit deals 150% of normal damage.",
+    "related": []
+  },
+  "channel": {
+    "name": "Channel",
+    "aliases": [
+      "channel"
+    ],
+    "description": "X is the number of identical Channel cards in a consecutive group in your hand. Each copy casts separately at its listed time and mana cost. Groups do not wrap across the ends of the hand.",
+    "related": []
+  },
+  "unique": {
+    "name": "Unique",
+    "aliases": [],
+    "description": "Special restriction. Copy, cast, and stacking limits: TBD.",
+    "related": []
+  },
+  "moonfire": {
+    "name": "Moonfire",
+    "aliases": [],
+    "description": "A DoT that deals 10 damage per tick.",
+    "related": [
+      "dot"
+    ]
+  },
+  "sunfire": {
+    "name": "Sunfire",
+    "aliases": [],
+    "description": "A DoT that deals 20 damage per tick.",
+    "related": [
+      "dot"
+    ]
+  },
+  "lifebloom": {
+    "name": "Lifebloom",
+    "aliases": [],
+    "description": "Heals 10 × X health per tick. X: TBD.",
+    "related": [
+      "hot"
+    ]
+  },
+  "growth": {
+    "name": "Growth",
+    "aliases": [],
+    "description": "A HoT that heals 10 health per tick.",
+    "related": [
+      "hot"
+    ]
+  },
+  "slowness": {
+    "name": "Slowness",
+    "aliases": [],
+    "description": "The next spell takes 1 extra tick to cast.",
+    "related": []
+  },
+  "starfall": {
+    "name": "Starfall",
+    "aliases": [],
+    "description": "A DoT that deals 50 damage per tick.",
+    "related": [
+      "dot"
+    ]
+  },
+  "star-empowerment": {
+    "name": "Star Empowerment",
+    "aliases": [],
+    "description": "Increases DoT damage by 20%.",
+    "related": [
+      "dot"
+    ]
+  },
+  "trap": {
+    "name": "Trap",
+    "aliases": [],
+    "description": "Deals 10 × the number of spells cast while trapped. Trigger timing: TBD.",
+    "related": []
+  },
+  "overgrowth": {
+    "name": "Overgrowth",
+    "aliases": [],
+    "description": "Wild Growth changes Growth healing to 3 per tick. Other effects: TBD.",
+    "related": [
+      "growth"
+    ]
+  },
+  "tide": {
+    "name": "Tide",
+    "aliases": [],
+    "description": "Grants a 20% chance to trigger Tidecaller.",
+    "related": [
+      "tidecaller"
+    ]
+  },
+  "tidecaller": {
+    "name": "Tidecaller",
+    "aliases": [],
+    "description": "When triggered, the spell resolves twice.",
+    "related": []
+  },
+  "steal": {
+    "name": "Steal",
+    "aliases": [],
+    "description": "Take mana from the opponent and gain it yourself.",
+    "related": []
+  },
+  "rain": {
+    "name": "Rain",
+    "aliases": [],
+    "description": "Increases Water spell damage by 20%.",
+    "related": []
+  },
+  "veil": {
+    "name": "Veil",
+    "aliases": [],
+    "description": "Spells deal 50% less damage and grant 5 mana per spell.",
+    "related": []
+  },
+  "cleanse": {
+    "name": "Cleanse",
+    "aliases": [],
+    "description": "Remove a random debuff.",
+    "related": []
+  },
+  "guard": {
+    "name": "Guard",
+    "aliases": [],
+    "description": "Immune to all damage while active. Each stack adds 1 tick of duration; taking damage does not consume stacks.",
+    "related": []
+  },
+  "hotstreak": {
+    "name": "Hotstreak",
+    "aliases": [],
+    "description": "Each stack grants 10% crit chance (up to 100%) and loses 1 stack per tick. Crossing from below 5 to at least 5 stacks grants 3 Combust. Hotstreak is not consumed.",
+    "related": [
+      "crit",
+      "combust"
+    ]
+  },
+  "combust": {
+    "name": "Combust",
+    "aliases": [],
+    "description": "While active, spells take at most 1 tick; Instant stays Instant. Each completed spell deals 5 damage to you. Each stack adds 1 tick of duration.",
+    "related": []
+  },
+  "burn": {
+    "name": "Burn",
+    "aliases": [],
+    "description": "A DoT that deals X damage per tick. X: TBD.",
+    "related": [
+      "dot"
+    ]
+  },
+  "eruption": {
+    "name": "Eruption",
+    "aliases": [],
+    "description": "Allows DoTs to critically hit.",
+    "related": [
+      "dot",
+      "crit"
+    ]
+  },
+  "overheat": {
+    "name": "Overheat",
+    "aliases": [],
+    "description": "While active, your critical hits deal 200% of normal damage instead of 150%. Each stack adds 1 tick of duration.",
+    "related": [
+      "crit"
+    ]
+  },
+  "interrupt": {
+    "name": "Interrupt",
+    "aliases": [],
+    "description": "Stops the opponent’s current cast or channel.",
+    "related": []
+  },
+  "fury": {
+    "name": "Fury",
+    "aliases": [],
+    "description": "Increases damage by 10%.",
+    "related": []
+  },
+  "phoenix": {
+    "name": "Phoenix",
+    "aliases": [],
+    "description": "On death while active, revive with half maximum health and mana. Each stack adds 1 tick of duration. Rebirth does not consume the remaining duration.",
+    "related": []
+  }
+}

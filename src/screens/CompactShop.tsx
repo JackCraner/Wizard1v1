@@ -1,28 +1,44 @@
-import { useState, type ReactNode } from 'react';
+import { ShopOffer, type ShopPointer } from './ShopOffer';
+import { explainedKeywords } from '../config/catalogue';
+import { useRef, useState, type ReactNode } from 'react';
 import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { RULES, SPELLS, deriveStats } from '../game/engine';
+import { RULES, SPELLS, deriveStats, deckDomains, canAddSpell } from '../game/engine';
 import { EQUIPMENT, EQUIPMENT_SLOTS, equipmentModifiers } from '../game/shop';
 import type { Command, EquipmentId, Session, SpellId } from '../game/model';
 import { DraggableHand } from './DraggableHand';
 
-export function CompactShop({ session, busy, act, onMenu, error, inspectSpell, inspectItem, inspectHand, renderCard }: {
-  session: Session; busy: boolean; act: (command: Command) => void; onMenu: () => void; error?: string;
+export function CompactShop({ session, busy, act, onMenu, onLibrary, error, inspectSpell, inspectItem, inspectHand, renderCard, renderPreview }: {
+  session: Session; busy: boolean; act: (command: Command) => void; onMenu: () => void; onLibrary: () => void; error?: string;
   inspectSpell: (id: SpellId) => void; inspectItem: (id: EquipmentId) => void; inspectHand: (index: number) => void;
+  renderPreview: (id: SpellId, height: number, width: number) => ReactNode;
   renderCard: (id: SpellId, expanded?: boolean) => ReactNode;
 }) {
   const [size, setSize] = useState({ width: 800, height: 360 });
   const [, setDragging] = useState(false);
+  const rootRef=useRef<View>(null), handRef=useRef<View>(null);
+  const bounds=useRef({rootX:0,rootY:0,x:0,y:0,width:0,height:0});
+  const [offerDrag,setOfferDrag]=useState<{id:SpellId;x:number;y:number;over:boolean}|null>(null);
+  const purchaseReason=(id:SpellId)=>busy?'Please wait':session.spells.length>=RULES.slots?'Your hand is full':!canAddSpell(session.spells,id)?'Only 2 domains per deck':session.gold<SPELLS[id].price?'Not enough gold':null;
+  const measure=()=>{
+    rootRef.current?.measureInWindow((x,y)=>{bounds.current.rootX=x;bounds.current.rootY=y;});
+    handRef.current?.measureInWindow((x,y,width,height)=>{Object.assign(bounds.current,{x,y,width,height});});
+  };
+  const overHand=(p:ShopPointer)=>{const b=bounds.current;return p.x>=b.x&&p.x<=b.x+b.width&&p.y>=b.y&&p.y<=b.y+b.height;};
+  const moveOffer=(id:SpellId,p:ShopPointer)=>setOfferDrag({id,x:p.x-bounds.current.rootX,y:p.y-bounds.current.rootY,over:overHand(p)});
+  const previewHeight=Math.min(225,size.height*.59);
+  const previewWidth=previewHeight*2/3+(offerDrag&&explainedKeywords(SPELLS[offerDrag.id].keywords).length?180:0);
   const compact = size.height < 500;
   const stats = deriveStats(equipmentModifiers(session.equipment));
   const handHeight = Math.max(62, Math.min(145, size.height * .23));
-  return <View style={s.root}>
+  return <View ref={rootRef} collapsable={false} onLayout={measure} style={s.root}>
     <Image accessible={false} source={require('../../assets/MainBackground.png')} resizeMode="cover" style={[StyleSheet.absoluteFill, { width: '100%', height: '100%' }]} />
     <View pointerEvents="none" style={[StyleSheet.absoluteFill, { backgroundColor: '#100a08aa' }]} />
     <SafeAreaView style={{ flex: 1 }}>
       <View onLayout={e => setSize(e.nativeEvent.layout)} style={[s.page, { gap: compact ? 5 : 12, padding: compact ? 7 : 16 }]}>
         <View style={s.header}>
           <Pressable accessibilityRole="button" accessibilityLabel="Main menu" onPress={onMenu} style={s.menu}><Text style={s.text}>‹ Menu</Text></Pressable>
+          <Pressable accessibilityRole="button" onPress={onLibrary} style={s.menu}><Text style={s.text}>Spell library</Text></Pressable>
           <Text accessibilityRole="header" style={[s.title, { fontSize: compact ? 17 : 26 }]}>SHOP · ROUND {session.round}</Text>
           <View style={s.headerRight}><Text accessibilityLabel={`${session.gold} gold`} style={s.gold}>◉ {session.gold}</Text>
             <Pressable accessibilityRole="button" accessibilityLabel="Reroll for 1 gold" disabled={busy || session.gold < 1} onPress={() => act({ type: 'reroll' })} style={[s.menu, (busy || session.gold < 1) && s.disabled]}><Text style={s.text}>⟳ Reroll (1)</Text></Pressable>
@@ -35,6 +51,7 @@ export function CompactShop({ session, busy, act, onMenu, error, inspectSpell, i
               <Text accessibilityLabel={`Health ${stats.health} of ${stats.health}`} style={[s.bar, { backgroundColor: '#882e2c' }]}>♥ {stats.health}/{stats.health}</Text>
               <Text accessibilityLabel={`Mana ${stats.mana} of ${stats.mana}`} style={[s.bar, { backgroundColor: '#275d7e' }]}>◈ {stats.mana}/{stats.mana}</Text>
             </View></View>
+            <Text style={s.label}>DOMAINS {deckDomains(session.spells).length}/{RULES.maxDomains} · {(deckDomains(session.spells).join(' / ') || 'Choose up to 2').toUpperCase()}</Text>
             <Text style={s.label}>YOUR EQUIPMENT</Text>
             <View style={s.slots}>{EQUIPMENT_SLOTS.map(slot => {
               const id = session.equipment[slot];
@@ -43,11 +60,13 @@ export function CompactShop({ session, busy, act, onMenu, error, inspectSpell, i
             {!compact && <Text style={s.hint}>Build your strategy. Let your spells do the fighting.</Text>}
           </View>
           <View style={[s.board, { padding: compact ? 6 : 12, gap: compact ? 3 : 8 }]}>
-            <Text style={s.label}>SPELL SHOP</Text>
-            <View style={s.offers}>{session.shop.map(id => <Pressable key={id} accessibilityRole="button" accessibilityLabel={`Inspect ${SPELLS[id].name}, ${SPELLS[id].price} gold`} onPress={() => inspectSpell(id)} style={({ pressed }) => [s.offer, pressed && s.pressed]}>
-              <View style={s.cardSpace}><View style={s.card}>{renderCard(id)}</View></View>
+            <Text style={s.label}>SPELL SHOP · DRAG TO HAND TO BUY · HOLD FOR DETAILS</Text>
+            <View style={s.offers}>{session.shop.map(id => <ShopOffer key={id} label={`Inspect ${SPELLS[id].name}, ${SPELLS[id].price} gold`} disabled={busy}
+              onInspect={()=>inspectSpell(id)} onLift={p=>{measure();moveOffer(id,p);}} onMove={p=>moveOffer(id,p)} onCancel={()=>setOfferDrag(null)}
+              onDrop={p=>{setOfferDrag(null);if(overHand(p)&&!purchaseReason(id))act({type:'buy',spell:id});}}>
+              <View style={[s.cardSpace,{opacity:offerDrag?.id===id? .35 : purchaseReason(id)? .5:1}]}><View style={s.card}>{renderCard(id)}</View></View>
               <Text style={s.cost}>◉ {SPELLS[id].price}</Text>
-            </Pressable>)}</View>
+            </ShopOffer>)}</View>
             <Text style={s.label}>EQUIPMENT SHOP</Text>
             <View style={[s.equipment, { height: compact ? 43 : 76 }]}>{session.equipmentShop.map(id => {
               const item = EQUIPMENT[id];
@@ -58,15 +77,16 @@ export function CompactShop({ session, busy, act, onMenu, error, inspectSpell, i
           </View>
         </View>
         <View style={s.dock}>
-          <View style={{ flex: 1, minWidth: 0 }}>
-            <Text style={s.handLabel}>YOUR HAND ({session.spells.length}/{RULES.slots}) · Hold to enlarge · Drag to reorder</Text>
-            <DraggableHand height={handHeight} spells={session.spells} disabled={busy} renderCard={renderCard} onInspect={inspectHand} onMove={(from,to) => act({ type: 'move', from, to })} onDragging={setDragging} />
+          <View ref={handRef} collapsable={false} onLayout={measure} style={{ flex: 1, minWidth: 0, backgroundColor:offerDrag?(purchaseReason(offerDrag.id)?'#652b2755':offerDrag.over?'#40945c88':'#32644644'):'transparent', borderRadius:5 }}>
+            <Text accessibilityLiveRegion="polite" style={s.handLabel}>{offerDrag ? (purchaseReason(offerDrag.id) ?? (offerDrag.over?`Release to buy · ${SPELLS[offerDrag.id].price} gold`:'Drop here to buy · Release elsewhere to cancel')) : `YOUR HAND (${session.spells.length}/${RULES.slots}) · Hold to enlarge · Drag to reorder`}</Text>
+            <DraggableHand height={handHeight} spells={session.spells} disabled={busy || !!offerDrag} renderCard={renderCard} renderPreview={renderPreview} onInspect={inspectHand} onMove={(from,to) => act({ type: 'move', from, to })} onDragging={setDragging} />
           </View>
-          <Pressable accessibilityRole="button" accessibilityLabel="Next round" disabled={busy} onPress={() => act({ type: 'fight' })} style={[s.next, { width: compact ? 135 : 210 }, busy && s.disabled]}><Text style={[s.title, { fontSize: compact ? 17 : 23 }]}>Next round →</Text></Pressable>
+          <Pressable accessibilityRole="button" accessibilityLabel="Next round" disabled={busy || !session.spells.length} onPress={() => act({ type: 'fight' })} style={[s.next, { width: compact ? 135 : 210 }, (busy || !session.spells.length) && s.disabled]}><Text style={[s.title, { fontSize: compact ? 17 : 23 }]}>{session.spells.length ? 'Next round →' : 'Buy a spell first'}</Text></Pressable>
         </View>
         {!!error && <Text accessibilityRole="alert" style={s.error}>{error}</Text>}
       </View>
     </SafeAreaView>
+    {offerDrag && <View pointerEvents="none" style={{position:'absolute',zIndex:1000,elevation:30,left:Math.max(6,Math.min(size.width-previewWidth-6,offerDrag.x-previewHeight/3)),top:Math.max(48,Math.min(size.height-previewHeight-30,offerDrag.y-previewHeight-18)),width:previewWidth,height:previewHeight}}>{renderPreview(offerDrag.id,previewHeight,previewWidth)}</View>}
   </View>;
 }
 const s = StyleSheet.create({

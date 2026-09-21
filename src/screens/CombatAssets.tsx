@@ -1,3 +1,4 @@
+import { statusSummary } from '../components/cards/spellVisual';
 import { Image, StyleSheet, Text, View } from 'react-native';
 import type { Fighter, Session } from '../game/model';
 import { EQUIPMENT, EQUIPMENT_SLOTS } from '../game/shop';
@@ -25,7 +26,7 @@ export function PlayerHotbar({ fighter, equipment, compact }: { fighter: Fighter
   return <View style={{ height: compact ? 64 : 100, width: '100%', maxWidth: compact ? 320 : 500, overflow: 'hidden' }}>
     <Image accessible={false} source={combatArt.hotbar} resizeMode="stretch" style={{ position: 'absolute', left: 0, top: '-24%', width: '100%', height: '167%' }} />
     <View style={{ position: 'absolute', left: '5%', top: '19%', width: '16%', height: '77%', overflow: 'hidden', borderRadius: 100 }}><PortraitArt /></View>
-    <View style={{ position: 'absolute', left: '27%', right: '25%', top: '16%', height: '22%', justifyContent: 'center' }}><Text style={{ fontSize: compact ? 9 : 12, color: '#edd6a4', textAlign: 'center' }}>YOU   ·   ◇ {fighter.shield} SHIELD</Text></View>
+    <View style={{ position: 'absolute', left: '27%', right: '25%', top: '16%', height: '22%', justifyContent: 'center' }}><Text numberOfLines={1} style={{ fontSize: compact ? 8 : 12, color: '#edd6a4', textAlign: 'center' }}>YOU · {statusSummary(fighter)}</Text></View>
     <View style={{ position: 'absolute', left: '26%', right: '24%', top: '41%', height: '23%' }}><HotbarFill value={fighter.health} max={fighter.maxHealth} /></View>
     <View style={{ position: 'absolute', left: '26%', right: '24%', top: '68%', height: '23%' }}><HotbarFill value={fighter.mana} max={fighter.maxMana} mana /></View>
     {EQUIPMENT_SLOTS.map((slot, i) => { const id = equipment[slot]; return <View key={slot} accessibilityLabel={`${slot}: ${id ? EQUIPMENT[id].name : 'empty'}`} style={{ position: 'absolute', left: i % 2 ? '86.5%' : '78.5%', top: i < 2 ? '21%' : '61%', width: '6%', height: '33%', justifyContent: 'center', alignItems: 'center' }}><Text style={{ color: '#d9ba77', fontSize: compact ? 15 : 26 }}>{id ? EQUIPMENT[id].symbol : '·'}</Text></View>; })}
