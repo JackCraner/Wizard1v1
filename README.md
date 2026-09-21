@@ -1,6 +1,191 @@
-# Wizard 1v1 — Expo / React Native
+# Wizard 1v1
 
-Native mobile auto battler built with Expo SDK 57, React Native 0.86, React 19, and TypeScript. Android, iOS, and web share native components. This project no longer uses Vite, HTML screens, or CSS stylesheets.
+Wizard 1v1 is a mobile spell auto-battler built with Expo, React Native, and TypeScript. Build a spell deck in the shop, choose its casting order, and watch it fight automatically against another wizard.
+
+A game contains **you and seven bots**. Race to **8 duel wins**. Every duel starts at **500 health and 100 mana**, before equipment bonuses, and lasts at most **50 ticks**. Your deck can contain **10 cards from at most two domains**. The strategy comes from balancing damage, mana, cast times, and the timing of buffs and debuffs.
+
+## At a glance
+
+1. Start a run with an empty hand and 10 gold.
+2. Buy spells, merge duplicates for upgrades, equip items, and reorder your hand.
+3. Lock your deck and fight a 1v1 duel automatically.
+4. Earn a trophy for a win, check the leaderboard, and return to the shop with 10 more gold.
+5. Continue until someone reaches 8 wins.
+
+Nature focuses on damage over time and healing. Water focuses on mana, healing, and repeated spell effects. Fire focuses on burst damage, critical hits, and self-damage. Holy and Affliction have visual assets, but no playable spells in the current catalogue.
+
+## Shopping and deck building
+
+### Gold, offers, and equipment
+
+- The shop has **five spell offers** and two equipment offers. A spell's gold price equals its star rank: a 3-star spell costs 3 gold. Mana is a separate combat resource.
+- Drag a shop spell into your hand to buy it. Each offer can be purchased once; its slot stays empty until a reroll or the next round.
+- Rerolling costs **1 gold** and refreshes both shop rows. Unspent gold carries over; each new round adds **10 gold**.
+- Round 1 offers only rank 1 spells. Higher ranks gradually become more likely. The probabilities for each round are in `src/config/shopOdds.json`; rounds beyond the last entry use that entry's probabilities.
+- Weapon, armor, ring, and boots slots provide equipment bonuses. Current equipment increases maximum health or mana. Equipment persists between rounds and cannot currently be replaced or sold.
+
+### Hand order and domains
+
+Your hand holds up to **10 spells**. Drag cards to change their order; that order becomes the combat casting sequence. Hold a card to enlarge it and see explanations for its keywords. Accessible inspection controls also support buying and reordering.
+
+You may use at most **two domains**, determined by the spells currently in your hand. The player panel shows those domains, with empty icons for unused choices. After selecting two domains, new shop rolls are restricted to them. Existing offers from a third domain cannot be purchased. Removing every spell from a domain frees that domain slot.
+
+Drag an owned card to the **trash** to remove it. This gives no gold refund. You need at least one spell to enter combat. Duplicate cards are allowed except for spells marked **Unique**.
+
+### XP and upgraded cards
+
+Each owned card starts at **0/3 XP**. Consume a matching copy to add **1 XP** to the target card. At **3 XP**, it upgrades: one original card plus three donated copies produces one upgraded card.
+
+Drag a shop copy onto a matching hand card to buy and merge it directly. The purchase consumes the shop offer and costs its normal gold price. Owned copies can also be merged through inspection controls. A direct shop merge works even when the hand is full and can upgrade a Unique card without creating a second deck copy.
+
+Upgraded cards use a different border and their configured upgraded mana cost, cast time, and effects. Their star rank and domain stay the same. XP follows a card when reordered and persists between rounds. A partially trained donor still grants only 1 XP; its other progress is lost. Upgraded cards cannot gain more XP or be consumed as donors.
+
+## Combat mechanics
+
+### Casting, mana, and reshuffling
+
+Both wizards act automatically. A **1T** spell completes at the end of its first casting tick; a **2T** spell needs two ticks. Mana is paid **when casting starts**, not when the spell completes. An unaffordable card is skipped, consumes that tick, and does not spend mana.
+
+An **Instant** spell resolves at the start of the tick, but your next card cannot start until the next tick. Instant chains therefore still use one card per tick. There is no passive mana regeneration: spells and their effects must supply mana. Mana and healing cannot exceed their maximums.
+
+After the last card, the wizard spends **two full ticks reshuffling**, then restarts the same order. Reshuffling does not randomize the deck or grant immunity: damage, healing, buffs, and debuffs continue normally.
+
+### What happens during a tick?
+
+The engine follows this order for both fighters:
+
+1. Resolve Instant spells.
+2. Deal damage over time.
+3. Check for death, including active Phoenix revival.
+4. Decrease DoT stacks.
+5. Apply healing over time.
+6. Decrease HoT stacks.
+7. Process other buffs and debuffs, then decrease their stacks.
+8. Progress and resolve normal spells.
+
+A lethal early phase ends the duel before later phases can rescue the defeated wizard. Effects from an Instant can participate in that tick's periodic phases; effects from a normal cast generally begin their periodic work next tick. Effects with immediate reactions, such as Guard, take effect when applied.
+
+### Stacks usually mean duration
+
+Most stacks represent remaining ticks, not increased power. Applying 5 Moonfire to a target that already has 5 adds them together to make 10. A normal cast applying 5 Moonfire leaves 5 stacks that tick; the following five ticks each deal 10 damage and count down through 4, 3, 2, 1, and zero.
+
+Some effects also scale with their remaining stacks:
+
+- **Burn:** 10 damage per stack. Five stacks deal **50 → 40 → 30 → 20 → 10** damage before modifiers.
+- **Lifebloom:** 10 healing per stack, following the same declining sequence.
+- **Hotstreak:** each remaining stack adds 10 percentage points of crit chance.
+- **Channel:** X counts adjacent copies of that spell, rather than status stacks.
+
+Stacks continue to count down during casting and reshuffling. Maelstrom explicitly prevents Tide countdown. Next-spell effects, such as Slowness and Alignment, are consumed when used and can also expire before use.
+
+### Critical hits and damage modifiers
+
+Base random crit chance is currently **0%**. Hotstreak adds **10% per remaining stack**, capped at 100%. A critical hit deals **150% of normal damage**, or **200% while Overheat is active**. Some spells have conditions that guarantee a crit.
+
+Normal spells check their crit chance when they resolve, **after that tick's buff countdown**. For example, Scorch grants 2 Hotstreak; the next 1T spell resolves with 1 stack and a 10% chance. A 2T spell can finish after both stacks expire. Scorch cannot retroactively use the stacks it grants to improve its own crit roll. Instant spells can use stacks before countdown.
+
+DoTs need **Eruption** to crit; their crit chance is sampled from the applying caster at the start of the tick. Direct damage crits and periodic crits are recorded separately. Inspect a cast on the timeline to see its actual crit chance, result, and damage calculation.
+
+Fury increases damage by 10%, Rain increases Water damage by 20%, and Star Empowerment increases DoT damage by 20%. Their stack counts extend duration rather than multiplying those percentages. Different applicable damage bonuses multiply together. Fractional damage rounds to the nearest whole point.
+
+### Targets, protection, and interruption
+
+**Apply** means the opponent; **gain**, **give**, and **grant** mean the caster unless the card explicitly says otherwise. For example, Immolate burns its own caster, and Renew grants Growth to both fighters.
+
+Guard blocks damage while active. Veil reduces incoming damage by 50% and restores 5 mana per opposing spell hit, including repeat hits, but not per periodic damage tick. Explicit health costs, such as Overheat's loss of half current health, bypass damage protection.
+
+Interrupt stops an ongoing cast, skips that card, and does not refund mana. The interrupted wizard waits until the next tick to start another card. A spell that already completed in the same resolution phase is not cancelled.
+
+### Winning and playback
+
+A duel ends when a wizard reaches zero health without reviving, or after 50 ticks. At the limit, the wizard with **less actual remaining health** loses. Equal health or simultaneous knockouts produce a draw. Wins award one trophy; draws award none. Losses do not eliminate players. The run ends when a participant reaches 8 wins; simultaneous qualifiers can share the finish.
+
+Combat speed changes presentation, not the result: **1× = 2 seconds per tick**, **2× = 1 second**, and **4× = 0.5 seconds**. Skip jumps to the result. There are no extra pause ticks. Red numbers show damage, green numbers show healing, and blue numbers show mana gained or lost through abilities. Routine casting costs do not produce floating mana numbers. Critical damage has a glow and an exclamation mark.
+
+## Spell keyword reference
+
+The following entries describe the current rules. Values are before other modifiers unless stated otherwise.
+
+| Keyword | Explanation |
+| --- | --- |
+| **DoT** | Damage over time. Deals damage before normal spells and loses one stack afterward. Reapplication adds stacks. Most DoTs deal fixed damage; Burn scales with remaining stacks. |
+| **HoT** | Heals during the HoT phase, then loses 1 stack. Reapplying adds stacks. Most HoTs heal a fixed amount; Lifebloom heals per remaining stack. |
+| **Instant** | Resolves at tick start, before damage over time and duration countdowns. Your next spell waits until the next tick. |
+| **Crit** | A critical hit deals 150% of normal damage. |
+| **Channel** | X is the number of identical Channel cards in a consecutive group in your hand. Each copy casts separately at its listed time and mana cost. Groups do not wrap across the ends of the hand. |
+| **Unique** | Only one copy of this spell may be in your deck, across base and upgraded versions. Shop copies can still be consumed directly for upgrade XP. |
+| **Moonfire** | A DoT that deals 10 damage per tick. |
+| **Sunfire** | A DoT that deals 20 damage per tick. |
+| **Lifebloom** | Heals 10 health per remaining stack each tick, then loses 1 stack. At 5 stacks, heals 50; next tick at 4 stacks, heals 40. Reapplying adds stacks. |
+| **Growth** | A HoT that heals 10 health per tick. |
+| **Slowness** | Adds one tick to the next started spell, then is consumed. Additional stacks extend the window to use it, not the extra cast time. |
+| **Starfall** | A DoT that deals 50 damage per tick. |
+| **Star Empowerment** | Increases DoT damage by 20%. |
+| **Trap** | Take 10 damage each time you begin casting a spell while active, including Instant spells. Skips and continued casting do not trigger it. Loses 1 stack each tick. |
+| **Overgrowth** | Your Growth heals 30 health per tick instead of 10 while active. Does not change Lifebloom or the opponent’s Growth. Loses 1 stack each tick. |
+| **Tide** | Grants a 20% chance to trigger Tidecaller. A double cast consumes up to 5 Tide stacks. Maelstrom prevents countdown, but not consumption. |
+| **Tidecaller** | While Tide is active, an eligible spell has a flat 20% chance to resolve twice. Pay its casting cost once. A trigger consumes up to 5 Tide stacks after its effects. |
+| **Steal** | Take available mana from the opponent and restore it to yourself, capped by your maximum mana. |
+| **Rain** | Increases Water spell damage by 20%. |
+| **Veil** | Take 50% less damage. Restore 5 mana each time an opposing spell hits you; periodic damage does not grant mana. |
+| **Cleanse** | Remove one randomly chosen DoT or debuff from yourself, including all its remaining stacks. |
+| **Guard** | Immune to direct, self, and periodic damage while active. Hits do not consume stacks. Explicit health costs still apply. |
+| **Hotstreak** | Each stack grants 10% crit chance (up to 100%) and loses 1 stack per tick. Crossing from below 5 to at least 5 stacks grants 3 Combust. Hotstreak is not consumed. |
+| **Combust** | While active, spells take at most 1 tick; Instant stays Instant. Each completed spell deals 5 damage to you. Each stack adds 1 tick of duration. |
+| **Burn** | Deal 10 damage per remaining Burn stack each tick, then remove 1 stack. For example, 5 stacks deal 50, then 40, 30, 20 and 10 damage. |
+| **Eruption** | Your DoTs can critically hit using your crit chance at the start of each tick. |
+| **Overheat** | While active, your critical hits deal 200% of normal damage instead of 150%. Each stack adds 1 tick of duration. |
+| **Interrupt** | Stop the current cast or channel and skip that card. Mana already spent is not refunded. Completed casts are unaffected. |
+| **Fury** | Increases damage by 10%. |
+| **Phoenix** | Revive with half maximum health and mana while active (rounded down, at least 1 health). Rebirth does not consume duration, so it can trigger again during the window. |
+| **Celestial Alignment** | Your next started spell deals double direct damage. Consumed when casting starts; the bonus lasts through that cast. Does not boost later DoT ticks. Unused stacks count down each tick. |
+| **Greater Alignment** | Your next started spell deals triple direct damage. Consumed when casting starts; the bonus lasts through that cast. Does not boost later DoT ticks. Unused stacks count down each tick. |
+| **Cloud Heart** | Receive 40% more healing, including HoTs, for 25 ticks. Greater Cloud Heart replaces this with 60%; the bonuses do not multiply together. |
+| **Greater Cloud Heart** | Receive 60% more healing while active, including healing over time. Lasts 25 ticks. |
+
+## Special spell interactions
+
+| Spell | Current behavior |
+| --- | --- |
+| Germination | Restores mana based on the opponent's total remaining DoT stacks at resolution. |
+| Flourish | Doubles the caster's remaining HoT stacks without immediately triggering healing. Unique. |
+| Renew | Heals the caster, then grants 5 Growth to the caster and 5 to the opponent. |
+| Eclipse | Consumes the opponent's remaining DoTs and deals their remaining damage immediately. Burn's future damage declines as its stacks count down. Guard blocks the damage but not consumption. |
+| Wild Growth | Grants Growth and Overgrowth; Overgrowth changes the caster's Growth healing to 30 per tick. |
+| Tsunami | Pays half current mana, rounded down, at cast start. Damage is based on that paid amount. |
+| Rainborn | Costs 15 mana. For the rest of combat, active Rain also heals 20 each tick. Does not grant Rain itself. |
+| Monsoon | For the rest of combat, active Rain also restores 5 mana each tick. Does not grant Rain itself. |
+| Maelstrom | Prevents Tide countdown for the rest of combat. Tidecaller still consumes up to 5 stacks when triggered. |
+| Whirlpool | Scales with Tide before the double-cast consumption is applied. |
+| Cloud Heart | Costs 10 mana and grants a 25-tick healing bonus: 40%, or 60% when upgraded. |
+| Overheat | Loses half current health, rounded down, then grants Overheat and Hotstreak. The base card grants 15 and 5 stacks respectively. |
+| Flashfire | Consumes Burn on both fighters and grants one Hotstreak and one Fury per remaining stack consumed. |
+| Conflagrate | Makes the next started spell Instant, if the next-spell effect is still active. |
+
+Rainborn, Monsoon, and Maelstrom are combat-long modifiers; recasting them does not stack their power. Each Channel card casts separately and uses the entire contiguous group size, including copies before and after it. For example, three consecutive Undertows each use X = 3. Groups do not wrap across the ends of the deck; upgraded and base copies of the same spell belong to the same group.
+
+## Current scope and balancing
+
+Runs are local and use bots that develop their decks between rounds. Difficulty changes their shopping and deck-building behavior. The shop leaderboard shows all eight participants, their wins, and their decks from the previous combat. Returning to the menu keeps the current run; reloading or restarting the app resets it.
+
+The catalogue contains 71 spells across Nature, Water, and Fire. Cards with unresolved mechanics remain visible in the library but cannot appear in playable decks or shop offers. **Tidal's mana cost and Starfall's application amount remain undefined.** Spell assets are still being added; missing artwork is allowed.
+
+The JSON files are the source of truth for balancing:
+
+| File | Controls |
+| --- | --- |
+| `src/config/spells.json` | Every spell's base and upgraded values, rules text, keywords, and effects. |
+| `src/config/statuses.json` | Shared status values, such as Burn damage per stack and crit bonuses. |
+| `src/config/keywords.json` | Keyword names and in-game explanations. |
+| `src/config/rules.json` | Base resources, hand/shop limits, max ticks, and crit defaults. |
+| `src/config/shopOdds.json` | Spell rank probabilities by round. |
+| `src/config/bots.json` | Bot difficulty and deck-building settings. |
+| `src/config/tournament.json` | Wins required and bot names. |
+| `src/config/playback.json` | Tick duration and playback speeds. |
+
+See `src/config/COMBAT_RULES.md` for implementation conventions and remaining design decisions. Base and upgraded cards may differ; consult the individual spell entry for exact values.
+
+## Development
 
 ## Run on your Android emulator
 
@@ -41,19 +226,6 @@ If LAN connections are unavailable, use `npm run android -- --localhost`. On sys
 
 Official references: [Expo CLI](https://docs.expo.dev/more/expo-cli/) and [Android emulator setup](https://docs.expo.dev/workflow/android-studio-emulator/).
 
-## Game loop
-
-Main menu → shop → buy/reorder → simultaneous automatic bot duel → results → next shop.
-
-- Every duel starts with base 500 health and 100 mana, increased by equipped items.
-- Start with an empty hand and 10 gold; ten spell slots; duplicates allowed.
-- Gain 10 gold each round; unspent gold carries over.
-- Cast from first slot to last, then repeat. No passive mana regeneration; unaffordable casts are skipped. Wrath costs zero mana.
-- Periodic effects tick before casting. Multi-tick casts complete after their configured duration, and critical hits deal 150% damage. After 50 ticks, lower remaining health loses.
-- Both fighters defeated, or 50 ticks with equal health, means a draw.
-- Bot loadouts rotate. Full spellbooks can be reordered; selling/replacement is not implemented yet.
-- Runs live in memory and reset on app restart/reload. Returning to the menu preserves the run. Playback pauses when backgrounded; Android Back returns to the menu.
-
 ## Structure
 
 - `App.tsx`: providers and dependency injection for the game gateway.
@@ -73,18 +245,4 @@ Equipment can feed health/mana modifiers into `deriveStats` and `fighter`. Four 
 ## Validation
 
 `npm test` covers deterministic combat, simultaneous knockouts, shields, healing, mana exhaustion, equipment stats, purchase/slot validation, stale revisions, phase locking, and native-safe snapshots. `npm run build` compiles Android and iOS Hermes bundles plus a web export. Bundle export is not a signed native application build.
-
-## Shop prototype layout
-
-The shop follows the supplied wireframe: player panel on the left, four spell offers above two equipment offers, gold and a 1-gold reroll at the upper right, a fanned ten-slot spell hand below, and Next round on the right. Shopping and combat lock to landscape on Android/iOS; the menu locks to portrait. In a portrait browser viewport the game prompts you to widen the window or rotate. Both shop panels stay side by side, and the hand measures its available width so it never needs horizontal scrolling. The shop sizes its offers and hand to the available landscape height, keeping the main screen free of horizontal and vertical scrolling. Card inspection opens a separate scrollable detail dialog. Mock cards use the supplied Fire, Nature, Water, Affliction, and Holy frame assets with temporary spell sigils. Tap a card to inspect and buy; drag a hand card left or right to reorder; tapping still opens accessible Earlier/Later controls. Purchases apply immediately. Next round locks the hand and starts combat.
-
-The local gateway generates deterministic rotating offers. Duplicate spell purchases are allowed while gold and hand capacity permit. Rerolls update both rows and cost 1 gold. Equipment buys fill one empty matching slot; bonuses persist between rounds and are applied by the shared combat engine. Gear cannot currently be replaced or sold. Player portrait and level are visual placeholders.
-
-
-Native orientation uses expo-screen-orientation and iOS full-screen mode. If you use a custom native build, rebuild once with npm run android:build after this dependency/configuration change. Expo Go includes the supported module. Reordering is submitted as a single validated move command on drop; cancelled gestures leave the order unchanged.
-
-
-## Catalogue combat
-
-All spells now come from src/config/spells.json. Cards with undefined mechanics stay visible in the library but are excluded from shop and bot loadouts. See src/config/COMBAT_RULES.md for active rules and the remaining decisions. The timeline displays actual completions, charging, and multiple Instant casts.
 

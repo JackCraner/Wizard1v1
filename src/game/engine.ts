@@ -102,7 +102,11 @@ export function simulate(playerInput: Fighter, botInput: Fighter, seed = RULES.s
         const forced=effects.some(e=>e.kind==='damage' && e.critWhen?.every(id=>fighters[other(side)].statuses[id]>0));
         event.details=[];
         if(forced){const ids=effects.flatMap(e=>e.critWhen??[]);event.details.push(`Guaranteed critical: ${ids.join(' + ')} on target.`);for(const id of ids)notify(fighters[other(side)],id,`${SPELLS[event.spell].name}: guaranteed critical`);}
-        event.critical=forced || (effects.some(e=>e.kind==='damage'||e.kind==='bothDamage') && random()<Math.min(1,RULES.baseCritChance+(fighters[side].statuses.hotstreak??0)*statusConfig.hotstreak.critChancePerStack!));
+        const canCrit=effects.some(e=>e.kind==='damage'||e.kind==='bothDamage');
+        const stacks=fighters[side].statuses.hotstreak??0;
+        const chance=Math.min(1,RULES.baseCritChance+stacks*statusConfig.hotstreak.critChancePerStack!);
+        event.critical=forced || (canCrit && random()<chance);
+        if(canCrit&&!forced)event.details.push('Crit chance at resolution: '+Math.round(chance*100)+'% ('+stacks+' Hotstreak stacks). '+(event.critical?'Critical hit.':'Normal hit.'));
       }
       // Resolve non-damage effects before applying simultaneous damage.
       for(const {side,event,tidecaller,damageMultiplier:castMultiplier=1} of ready) {

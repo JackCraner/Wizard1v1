@@ -173,7 +173,7 @@
   "burn": {
     "name": "Burn",
     "aliases": [],
-    "description": "Deal damage each tick equal to the remaining Burn stacks, then remove 1 stack.",
+    "description": "Deal 10 damage per remaining Burn stack each tick, then remove 1 stack. For example, 5 stacks deal 50, then 40, 30, 20 and 10 damage.",
     "related": [
       "dot"
     ]

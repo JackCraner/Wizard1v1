@@ -96,7 +96,7 @@
   "burn": {
     "kind": "dot",
     "domain": "fire",
-    "power": 1,
+    "power": 10,
     "perStack": true
   },
   "eruption": {

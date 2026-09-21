@@ -50,10 +50,10 @@ it('Cloud Heart lasts 25 ticks, costs 10 mana and increases HoT healing',()=>{
  expect(b.frames[2].player.health-b.frames[1].player.health).toBe(14);
  expect(b.frames[2].player.statuses['cloud-heart']).toBe(24);
 });
-it('Burn deals its remaining stack count and self-applied Burn uses the caster',()=>{
+it('Burn deals ten times its remaining stack count and self-applied Burn uses the caster',()=>{
  const p=fighter('A',['pyroblast']);p.statuses={burn:3};
  const b=simulate(p,fighter('B',['splash']));
- expect(b.frames.slice(1,4).map(f=>f.damageEvents?.find(e=>e.kind==='dot')?.amount)).toEqual([3,2,1]);
+ expect(b.frames.slice(1,4).map(f=>f.damageEvents?.find(e=>e.kind==='dot')?.amount)).toEqual([30,20,10]);
  const self=fighter('A',['immolate']);self.statuses={eruption:10,hotstreak:20};
  const result=simulate(self,fighter('B',['splash']));
  expect(result.frames[4].damageEvents?.find(e=>e.kind==='dot'&&e.side==='player')?.critical).toBe(true);
@@ -63,7 +63,7 @@ it('Eruption uses current crit chance before stacks count down',()=>{
  const bot=fighter('B',['splash']);bot.statuses={burn:3};
  const b=simulate(p,bot);
  expect(b.frames[1].damageEvents?.find(e=>e.kind==='dot')?.critical).toBe(true);
- expect(b.frames[1].damageEvents?.find(e=>e.kind==='dot')?.amount).toBe(5);
+ expect(b.frames[1].damageEvents?.find(e=>e.kind==='dot')?.amount).toBe(45);
 });
 it('Interrupt skips an ongoing spell with no refund and resumes with the following card',()=>{
  const b=simulate(fighter('A',['firekick']),fighter('B',['pyroblast','wrath']));
