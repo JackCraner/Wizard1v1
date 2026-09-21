@@ -3019,5 +3019,1465 @@
       },
       "notes": []
     }
+  },
+  {
+    "id": "holy_smite",
+    "name": "Smite",
+    "domain": "holy",
+    "stars": 1,
+    "castTicks": 1,
+    "mana": 10,
+    "rules": "Deal 35 damage.",
+    "keywords": [],
+    "notes": [],
+    "combat": {
+      "effects": [
+        {
+          "kind": "damage",
+          "target": "enemy",
+          "amount": 35
+        }
+      ]
+    },
+    "upgrade": {
+      "castTicks": 1,
+      "mana": 8,
+      "rules": "Deal 35 damage.",
+      "keywords": [],
+      "notes": [],
+      "combat": {
+        "effects": [
+          {
+            "kind": "damage",
+            "target": "enemy",
+            "amount": 35
+          }
+        ]
+      }
+    }
+  },
+  {
+    "id": "holy_prayer",
+    "name": "Prayer",
+    "domain": "holy",
+    "stars": 1,
+    "castTicks": 0,
+    "mana": 10,
+    "rules": "Instant. Heal 25 health.",
+    "keywords": [
+      "instant"
+    ],
+    "notes": [],
+    "combat": {
+      "effects": [
+        {
+          "kind": "heal",
+          "target": "self",
+          "amount": 25
+        }
+      ]
+    },
+    "upgrade": {
+      "castTicks": 0,
+      "mana": 8,
+      "rules": "Instant. Heal 25 health.",
+      "keywords": [
+        "instant"
+      ],
+      "notes": [],
+      "combat": {
+        "effects": [
+          {
+            "kind": "heal",
+            "target": "self",
+            "amount": 25
+          }
+        ]
+      }
+    }
+  },
+  {
+    "id": "holy_aegis",
+    "name": "Aegis",
+    "domain": "holy",
+    "stars": 1,
+    "castTicks": 1,
+    "mana": 15,
+    "rules": "Gain 1 Guard.",
+    "keywords": [
+      "guard"
+    ],
+    "notes": [],
+    "combat": {
+      "effects": [
+        {
+          "kind": "status",
+          "target": "self",
+          "status": "guard",
+          "amount": 1
+        }
+      ]
+    },
+    "upgrade": {
+      "castTicks": 1,
+      "mana": 12,
+      "rules": "Gain 1 Guard.",
+      "keywords": [
+        "guard"
+      ],
+      "notes": [],
+      "combat": {
+        "effects": [
+          {
+            "kind": "status",
+            "target": "self",
+            "status": "guard",
+            "amount": 1
+          }
+        ]
+      }
+    }
+  },
+  {
+    "id": "holy_rebuke",
+    "name": "Rebuke",
+    "domain": "holy",
+    "stars": 1,
+    "castTicks": 1,
+    "mana": 15,
+    "rules": "Deal 20 damage and apply 1 Slowness.",
+    "keywords": [
+      "slowness"
+    ],
+    "notes": [],
+    "combat": {
+      "effects": [
+        {
+          "kind": "damage",
+          "target": "enemy",
+          "amount": 20
+        },
+        {
+          "kind": "status",
+          "target": "enemy",
+          "status": "slowness",
+          "amount": 1
+        }
+      ]
+    },
+    "upgrade": {
+      "castTicks": 1,
+      "mana": 12,
+      "rules": "Deal 20 damage and apply 1 Slowness.",
+      "keywords": [
+        "slowness"
+      ],
+      "notes": [],
+      "combat": {
+        "effects": [
+          {
+            "kind": "damage",
+            "target": "enemy",
+            "amount": 20
+          },
+          {
+            "kind": "status",
+            "target": "enemy",
+            "status": "slowness",
+            "amount": 1
+          }
+        ]
+      }
+    }
+  },
+  {
+    "id": "holy_consecrate",
+    "name": "Consecrate",
+    "domain": "holy",
+    "stars": 1,
+    "castTicks": 1,
+    "mana": 10,
+    "rules": "Apply 2 Consecration.",
+    "keywords": [
+      "consecration"
+    ],
+    "notes": [],
+    "combat": {
+      "effects": [
+        {
+          "kind": "status",
+          "target": "enemy",
+          "status": "consecration",
+          "amount": 2
+        }
+      ]
+    },
+    "upgrade": {
+      "castTicks": 1,
+      "mana": 8,
+      "rules": "Apply 2 Consecration.",
+      "keywords": [
+        "consecration"
+      ],
+      "notes": [],
+      "combat": {
+        "effects": [
+          {
+            "kind": "status",
+            "target": "enemy",
+            "status": "consecration",
+            "amount": 2
+          }
+        ]
+      }
+    }
+  },
+  {
+    "id": "holy_brand",
+    "name": "Brand",
+    "domain": "holy",
+    "stars": 1,
+    "castTicks": 1,
+    "mana": 15,
+    "rules": "Deal 20 damage and apply 2 Consecration.",
+    "keywords": [
+      "consecration"
+    ],
+    "notes": [],
+    "combat": {
+      "effects": [
+        {
+          "kind": "damage",
+          "target": "enemy",
+          "amount": 20
+        },
+        {
+          "kind": "status",
+          "target": "enemy",
+          "status": "consecration",
+          "amount": 2
+        }
+      ]
+    },
+    "upgrade": {
+      "castTicks": 1,
+      "mana": 12,
+      "rules": "Deal 20 damage and apply 2 Consecration.",
+      "keywords": [
+        "consecration"
+      ],
+      "notes": [],
+      "combat": {
+        "effects": [
+          {
+            "kind": "damage",
+            "target": "enemy",
+            "amount": 20
+          },
+          {
+            "kind": "status",
+            "target": "enemy",
+            "status": "consecration",
+            "amount": 2
+          }
+        ]
+      }
+    }
+  },
+  {
+    "id": "holy_judgment",
+    "name": "Judgment",
+    "domain": "holy",
+    "stars": 2,
+    "castTicks": 1,
+    "mana": 20,
+    "rules": "Deal 55 damage. If the opponent is currently casting, also apply 1 Consecration.",
+    "keywords": [
+      "consecration"
+    ],
+    "notes": [],
+    "combat": {
+      "effects": [
+        {
+          "kind": "damage",
+          "target": "enemy",
+          "amount": 55
+        },
+        {
+          "kind": "castingStatus",
+          "target": "enemy",
+          "status": "consecration",
+          "amount": 1
+        }
+      ]
+    },
+    "upgrade": {
+      "castTicks": 1,
+      "mana": 16,
+      "rules": "Deal 55 damage. If the opponent is currently casting, also apply 1 Consecration.",
+      "keywords": [
+        "consecration"
+      ],
+      "notes": [],
+      "combat": {
+        "effects": [
+          {
+            "kind": "damage",
+            "target": "enemy",
+            "amount": 55
+          },
+          {
+            "kind": "castingStatus",
+            "target": "enemy",
+            "status": "consecration",
+            "amount": 1
+          }
+        ]
+      }
+    }
+  },
+  {
+    "id": "holy_purify",
+    "name": "Purify",
+    "domain": "holy",
+    "stars": 2,
+    "castTicks": 1,
+    "mana": 15,
+    "rules": "Cleanse one DoT or debuff from yourself and heal 30 health.",
+    "keywords": [
+      "cleanse",
+      "dot"
+    ],
+    "notes": [],
+    "combat": {
+      "effects": [
+        {
+          "kind": "cleanse"
+        },
+        {
+          "kind": "heal",
+          "target": "self",
+          "amount": 30
+        }
+      ]
+    },
+    "upgrade": {
+      "castTicks": 1,
+      "mana": 12,
+      "rules": "Cleanse one DoT or debuff from yourself and heal 30 health.",
+      "keywords": [
+        "cleanse",
+        "dot"
+      ],
+      "notes": [],
+      "combat": {
+        "effects": [
+          {
+            "kind": "cleanse"
+          },
+          {
+            "kind": "heal",
+            "target": "self",
+            "amount": 30
+          }
+        ]
+      }
+    }
+  },
+  {
+    "id": "holy_radiant_chains",
+    "name": "Radiant Chains",
+    "domain": "holy",
+    "stars": 2,
+    "castTicks": 2,
+    "mana": 20,
+    "rules": "Apply 2 Slowness and 2 Consecration.",
+    "keywords": [
+      "slowness",
+      "consecration"
+    ],
+    "notes": [],
+    "combat": {
+      "effects": [
+        {
+          "kind": "status",
+          "target": "enemy",
+          "status": "slowness",
+          "amount": 2
+        },
+        {
+          "kind": "status",
+          "target": "enemy",
+          "status": "consecration",
+          "amount": 2
+        }
+      ]
+    },
+    "upgrade": {
+      "castTicks": 2,
+      "mana": 16,
+      "rules": "Apply 2 Slowness and 2 Consecration.",
+      "keywords": [
+        "slowness",
+        "consecration"
+      ],
+      "notes": [],
+      "combat": {
+        "effects": [
+          {
+            "kind": "status",
+            "target": "enemy",
+            "status": "slowness",
+            "amount": 2
+          },
+          {
+            "kind": "status",
+            "target": "enemy",
+            "status": "consecration",
+            "amount": 2
+          }
+        ]
+      }
+    }
+  },
+  {
+    "id": "holy_sanctify",
+    "name": "Sanctify",
+    "domain": "holy",
+    "stars": 2,
+    "castTicks": 1,
+    "mana": 20,
+    "rules": "Apply 4 Consecration.",
+    "keywords": [
+      "consecration"
+    ],
+    "notes": [],
+    "combat": {
+      "effects": [
+        {
+          "kind": "status",
+          "target": "enemy",
+          "status": "consecration",
+          "amount": 4
+        }
+      ]
+    },
+    "upgrade": {
+      "castTicks": 1,
+      "mana": 16,
+      "rules": "Apply 4 Consecration.",
+      "keywords": [
+        "consecration"
+      ],
+      "notes": [],
+      "combat": {
+        "effects": [
+          {
+            "kind": "status",
+            "target": "enemy",
+            "status": "consecration",
+            "amount": 4
+          }
+        ]
+      }
+    }
+  },
+  {
+    "id": "holy_oath_of_patience",
+    "name": "Oath of Patience",
+    "domain": "holy",
+    "stars": 2,
+    "castTicks": 0,
+    "mana": 20,
+    "rules": "Instant. Oath: Complete 3 non-Instant spells. Reward: gain 2 Guard.",
+    "keywords": [
+      "instant",
+      "oath",
+      "guard"
+    ],
+    "notes": [],
+    "combat": {
+      "effects": [
+        {
+          "kind": "oath",
+          "oath": {
+            "id": "patience",
+            "remaining": 3,
+            "requirement": "nonInstant",
+            "rewards": [
+              {
+                "kind": "status",
+                "target": "self",
+                "status": "guard",
+                "amount": 2
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "upgrade": {
+      "castTicks": 0,
+      "mana": 16,
+      "rules": "Instant. Oath: Complete 3 non-Instant spells. Reward: gain 2 Guard.",
+      "keywords": [
+        "instant",
+        "oath",
+        "guard"
+      ],
+      "notes": [],
+      "combat": {
+        "effects": [
+          {
+            "kind": "oath",
+            "oath": {
+              "id": "patience",
+              "remaining": 3,
+              "requirement": "nonInstant",
+              "rewards": [
+                {
+                  "kind": "status",
+                  "target": "self",
+                  "status": "guard",
+                  "amount": 2
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "id": "holy_penance",
+    "name": "Penance",
+    "domain": "holy",
+    "stars": 2,
+    "castTicks": 2,
+    "mana": 20,
+    "rules": "Deal 35 damage, heal 35 health and apply 1 Consecration.",
+    "keywords": [
+      "consecration"
+    ],
+    "notes": [],
+    "combat": {
+      "effects": [
+        {
+          "kind": "damage",
+          "target": "enemy",
+          "amount": 35
+        },
+        {
+          "kind": "heal",
+          "target": "self",
+          "amount": 35
+        },
+        {
+          "kind": "status",
+          "target": "enemy",
+          "status": "consecration",
+          "amount": 1
+        }
+      ]
+    },
+    "upgrade": {
+      "castTicks": 2,
+      "mana": 16,
+      "rules": "Deal 35 damage, heal 35 health and apply 1 Consecration.",
+      "keywords": [
+        "consecration"
+      ],
+      "notes": [],
+      "combat": {
+        "effects": [
+          {
+            "kind": "damage",
+            "target": "enemy",
+            "amount": 35
+          },
+          {
+            "kind": "heal",
+            "target": "self",
+            "amount": 35
+          },
+          {
+            "kind": "status",
+            "target": "enemy",
+            "status": "consecration",
+            "amount": 1
+          }
+        ]
+      }
+    }
+  },
+  {
+    "id": "holy_bastion",
+    "name": "Bastion",
+    "domain": "holy",
+    "stars": 3,
+    "castTicks": 2,
+    "mana": 30,
+    "rules": "Gain 3 Guard.",
+    "keywords": [
+      "guard"
+    ],
+    "notes": [],
+    "combat": {
+      "effects": [
+        {
+          "kind": "status",
+          "target": "self",
+          "status": "guard",
+          "amount": 3
+        }
+      ]
+    },
+    "upgrade": {
+      "castTicks": 2,
+      "mana": 24,
+      "rules": "Gain 3 Guard.",
+      "keywords": [
+        "guard"
+      ],
+      "notes": [],
+      "combat": {
+        "effects": [
+          {
+            "kind": "status",
+            "target": "self",
+            "status": "guard",
+            "amount": 3
+          }
+        ]
+      }
+    }
+  },
+  {
+    "id": "holy_intercession",
+    "name": "Intercession",
+    "domain": "holy",
+    "stars": 3,
+    "castTicks": 0,
+    "mana": 25,
+    "rules": "Instant. Interrupt the opponent. If no spell was interrupted, gain 1 Guard instead.",
+    "keywords": [
+      "instant",
+      "interrupt",
+      "guard"
+    ],
+    "notes": [],
+    "combat": {
+      "effects": [
+        {
+          "kind": "interrupt",
+          "onSuccess": [],
+          "onFailure": [
+            {
+              "kind": "status",
+              "target": "self",
+              "status": "guard",
+              "amount": 1
+            }
+          ]
+        }
+      ]
+    },
+    "upgrade": {
+      "castTicks": 0,
+      "mana": 20,
+      "rules": "Instant. Interrupt the opponent. If no spell was interrupted, gain 1 Guard instead.",
+      "keywords": [
+        "instant",
+        "interrupt",
+        "guard"
+      ],
+      "notes": [],
+      "combat": {
+        "effects": [
+          {
+            "kind": "interrupt",
+            "onSuccess": [],
+            "onFailure": [
+              {
+                "kind": "status",
+                "target": "self",
+                "status": "guard",
+                "amount": 1
+              }
+            ]
+          }
+        ]
+      }
+    }
+  },
+  {
+    "id": "holy_condemn",
+    "name": "Condemn",
+    "domain": "holy",
+    "stars": 3,
+    "castTicks": 2,
+    "mana": 30,
+    "rules": "Deal 40 damage and apply 5 Consecration.",
+    "keywords": [
+      "consecration"
+    ],
+    "notes": [],
+    "combat": {
+      "effects": [
+        {
+          "kind": "damage",
+          "target": "enemy",
+          "amount": 40
+        },
+        {
+          "kind": "status",
+          "target": "enemy",
+          "status": "consecration",
+          "amount": 5
+        }
+      ]
+    },
+    "upgrade": {
+      "castTicks": 2,
+      "mana": 24,
+      "rules": "Deal 40 damage and apply 5 Consecration.",
+      "keywords": [
+        "consecration"
+      ],
+      "notes": [],
+      "combat": {
+        "effects": [
+          {
+            "kind": "damage",
+            "target": "enemy",
+            "amount": 40
+          },
+          {
+            "kind": "status",
+            "target": "enemy",
+            "status": "consecration",
+            "amount": 5
+          }
+        ]
+      }
+    }
+  },
+  {
+    "id": "holy_retribution",
+    "name": "Retribution",
+    "domain": "holy",
+    "stars": 3,
+    "castTicks": 1,
+    "mana": 25,
+    "rules": "Gain 5 Retribution.",
+    "keywords": [
+      "retribution"
+    ],
+    "notes": [],
+    "combat": {
+      "effects": [
+        {
+          "kind": "status",
+          "target": "self",
+          "status": "retribution",
+          "amount": 5
+        }
+      ]
+    },
+    "upgrade": {
+      "castTicks": 1,
+      "mana": 20,
+      "rules": "Gain 5 Retribution.",
+      "keywords": [
+        "retribution"
+      ],
+      "notes": [],
+      "combat": {
+        "effects": [
+          {
+            "kind": "status",
+            "target": "self",
+            "status": "retribution",
+            "amount": 5
+          }
+        ]
+      }
+    }
+  },
+  {
+    "id": "holy_oath_of_mercy",
+    "name": "Oath of Mercy",
+    "domain": "holy",
+    "stars": 3,
+    "castTicks": 0,
+    "mana": 25,
+    "rules": "Instant. Oath: Complete 3 spells without direct damage. Reward: heal 80 and apply 3 Consecration.",
+    "keywords": [
+      "instant",
+      "oath",
+      "consecration"
+    ],
+    "notes": [],
+    "combat": {
+      "effects": [
+        {
+          "kind": "oath",
+          "oath": {
+            "id": "mercy",
+            "remaining": 3,
+            "requirement": "noDamage",
+            "rewards": [
+              {
+                "kind": "heal",
+                "target": "self",
+                "amount": 80
+              },
+              {
+                "kind": "status",
+                "target": "enemy",
+                "status": "consecration",
+                "amount": 3
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "upgrade": {
+      "castTicks": 0,
+      "mana": 20,
+      "rules": "Instant. Oath: Complete 3 spells without direct damage. Reward: heal 80 and apply 3 Consecration.",
+      "keywords": [
+        "instant",
+        "oath",
+        "consecration"
+      ],
+      "notes": [],
+      "combat": {
+        "effects": [
+          {
+            "kind": "oath",
+            "oath": {
+              "id": "mercy",
+              "remaining": 3,
+              "requirement": "noDamage",
+              "rewards": [
+                {
+                  "kind": "heal",
+                  "target": "self",
+                  "amount": 80
+                },
+                {
+                  "kind": "status",
+                  "target": "enemy",
+                  "status": "consecration",
+                  "amount": 3
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "id": "holy_templars_oath",
+    "name": "Templar's Oath",
+    "domain": "holy",
+    "stars": 3,
+    "castTicks": 1,
+    "mana": 30,
+    "rules": "Gain 6 Templar's Oath.",
+    "keywords": [
+      "templars-oath",
+      "oath"
+    ],
+    "notes": [],
+    "combat": {
+      "effects": [
+        {
+          "kind": "status",
+          "target": "self",
+          "status": "templars-oath",
+          "amount": 6
+        }
+      ]
+    },
+    "upgrade": {
+      "castTicks": 1,
+      "mana": 24,
+      "rules": "Gain 6 Templar's Oath.",
+      "keywords": [
+        "templars-oath",
+        "oath"
+      ],
+      "notes": [],
+      "combat": {
+        "effects": [
+          {
+            "kind": "status",
+            "target": "self",
+            "status": "templars-oath",
+            "amount": 6
+          }
+        ]
+      }
+    }
+  },
+  {
+    "id": "holy_sanctuary",
+    "name": "Sanctuary",
+    "domain": "holy",
+    "stars": 4,
+    "castTicks": 2,
+    "mana": 40,
+    "rules": "Gain 6 Sanctuary.",
+    "keywords": [
+      "sanctuary"
+    ],
+    "notes": [],
+    "combat": {
+      "effects": [
+        {
+          "kind": "status",
+          "target": "self",
+          "status": "sanctuary",
+          "amount": 6
+        }
+      ]
+    },
+    "upgrade": {
+      "castTicks": 2,
+      "mana": 32,
+      "rules": "Gain 6 Sanctuary.",
+      "keywords": [
+        "sanctuary"
+      ],
+      "notes": [],
+      "combat": {
+        "effects": [
+          {
+            "kind": "status",
+            "target": "self",
+            "status": "sanctuary",
+            "amount": 6
+          }
+        ]
+      }
+    }
+  },
+  {
+    "id": "holy_inquisition",
+    "name": "Inquisition",
+    "domain": "holy",
+    "stars": 4,
+    "castTicks": 2,
+    "mana": 40,
+    "rules": "Interrupt the opponent. If successful, apply 5 Consecration.",
+    "keywords": [
+      "interrupt",
+      "consecration"
+    ],
+    "notes": [],
+    "combat": {
+      "effects": [
+        {
+          "kind": "interrupt",
+          "onSuccess": [
+            {
+              "kind": "status",
+              "target": "enemy",
+              "status": "consecration",
+              "amount": 5
+            }
+          ],
+          "onFailure": []
+        }
+      ]
+    },
+    "upgrade": {
+      "castTicks": 2,
+      "mana": 32,
+      "rules": "Interrupt the opponent. If successful, apply 5 Consecration.",
+      "keywords": [
+        "interrupt",
+        "consecration"
+      ],
+      "notes": [],
+      "combat": {
+        "effects": [
+          {
+            "kind": "interrupt",
+            "onSuccess": [
+              {
+                "kind": "status",
+                "target": "enemy",
+                "status": "consecration",
+                "amount": 5
+              }
+            ],
+            "onFailure": []
+          }
+        ]
+      }
+    }
+  },
+  {
+    "id": "holy_divine_intervention",
+    "name": "Divine Intervention",
+    "domain": "holy",
+    "stars": 4,
+    "castTicks": 0,
+    "mana": 45,
+    "rules": "Instant. Gain 3 Guard. If below 30% health, gain 5 Guard instead.",
+    "keywords": [
+      "instant",
+      "guard"
+    ],
+    "notes": [],
+    "combat": {
+      "effects": [
+        {
+          "kind": "healthConditional",
+          "threshold": 0.3,
+          "onSuccess": [
+            {
+              "kind": "status",
+              "target": "self",
+              "status": "guard",
+              "amount": 5
+            }
+          ],
+          "onFailure": [
+            {
+              "kind": "status",
+              "target": "self",
+              "status": "guard",
+              "amount": 3
+            }
+          ]
+        }
+      ]
+    },
+    "upgrade": {
+      "castTicks": 0,
+      "mana": 36,
+      "rules": "Instant. Gain 3 Guard. If below 30% health, gain 5 Guard instead.",
+      "keywords": [
+        "instant",
+        "guard"
+      ],
+      "notes": [],
+      "combat": {
+        "effects": [
+          {
+            "kind": "healthConditional",
+            "threshold": 0.3,
+            "onSuccess": [
+              {
+                "kind": "status",
+                "target": "self",
+                "status": "guard",
+                "amount": 5
+              }
+            ],
+            "onFailure": [
+              {
+                "kind": "status",
+                "target": "self",
+                "status": "guard",
+                "amount": 3
+              }
+            ]
+          }
+        ]
+      }
+    }
+  },
+  {
+    "id": "holy_exorcism",
+    "name": "Exorcism",
+    "domain": "holy",
+    "stars": 4,
+    "castTicks": 2,
+    "mana": 40,
+    "rules": "Remove all DoTs and debuffs from yourself. Heal 25 health for each effect removed, up to 100 health.",
+    "keywords": [
+      "cleanse",
+      "dot"
+    ],
+    "notes": [],
+    "combat": {
+      "effects": [
+        {
+          "kind": "cleanseAll"
+        },
+        {
+          "kind": "healPerCleanse",
+          "amount": 25,
+          "cap": 100
+        }
+      ]
+    },
+    "upgrade": {
+      "castTicks": 2,
+      "mana": 32,
+      "rules": "Remove all DoTs and debuffs from yourself. Heal 25 health for each effect removed, up to 100 health.",
+      "keywords": [
+        "cleanse",
+        "dot"
+      ],
+      "notes": [],
+      "combat": {
+        "effects": [
+          {
+            "kind": "cleanseAll"
+          },
+          {
+            "kind": "healPerCleanse",
+            "amount": 25,
+            "cap": 100
+          }
+        ]
+      }
+    }
+  },
+  {
+    "id": "holy_oath_of_resolve",
+    "name": "Oath of Resolve",
+    "domain": "holy",
+    "stars": 4,
+    "castTicks": 0,
+    "mana": 35,
+    "rules": "Instant. Oath: No mana skips until reshuffle. Reward: gain 3 Guard and apply 5 Consecration.",
+    "keywords": [
+      "instant",
+      "oath",
+      "consecration",
+      "guard"
+    ],
+    "notes": [],
+    "combat": {
+      "effects": [
+        {
+          "kind": "oath",
+          "oath": {
+            "id": "resolve",
+            "requirement": "noSkip",
+            "rewards": [
+              {
+                "kind": "status",
+                "target": "self",
+                "status": "guard",
+                "amount": 3
+              },
+              {
+                "kind": "status",
+                "target": "enemy",
+                "status": "consecration",
+                "amount": 5
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "upgrade": {
+      "castTicks": 0,
+      "mana": 28,
+      "rules": "Instant. Oath: No mana skips until reshuffle. Reward: gain 3 Guard and apply 5 Consecration.",
+      "keywords": [
+        "instant",
+        "oath",
+        "consecration",
+        "guard"
+      ],
+      "notes": [],
+      "combat": {
+        "effects": [
+          {
+            "kind": "oath",
+            "oath": {
+              "id": "resolve",
+              "requirement": "noSkip",
+              "rewards": [
+                {
+                  "kind": "status",
+                  "target": "self",
+                  "status": "guard",
+                  "amount": 3
+                },
+                {
+                  "kind": "status",
+                  "target": "enemy",
+                  "status": "consecration",
+                  "amount": 5
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "id": "holy_holy_ground",
+    "name": "Holy Ground",
+    "domain": "holy",
+    "stars": 4,
+    "castTicks": 2,
+    "mana": 40,
+    "rules": "Gain 6 Holy Ground.",
+    "keywords": [
+      "consecration",
+      "holy-ground"
+    ],
+    "notes": [],
+    "combat": {
+      "effects": [
+        {
+          "kind": "status",
+          "target": "self",
+          "status": "holy-ground",
+          "amount": 6
+        }
+      ]
+    },
+    "upgrade": {
+      "castTicks": 2,
+      "mana": 32,
+      "rules": "Gain 6 Holy Ground.",
+      "keywords": [
+        "consecration",
+        "holy-ground"
+      ],
+      "notes": [],
+      "combat": {
+        "effects": [
+          {
+            "kind": "status",
+            "target": "self",
+            "status": "holy-ground",
+            "amount": 6
+          }
+        ]
+      }
+    }
+  },
+  {
+    "id": "holy_citadel",
+    "name": "Citadel",
+    "domain": "holy",
+    "stars": 5,
+    "castTicks": 2,
+    "mana": 65,
+    "rules": "Unique. Gain 5 Guard and 8 Citadel.",
+    "keywords": [
+      "guard",
+      "consecration",
+      "unique",
+      "citadel"
+    ],
+    "notes": [],
+    "combat": {
+      "effects": [
+        {
+          "kind": "status",
+          "target": "self",
+          "status": "guard",
+          "amount": 5
+        },
+        {
+          "kind": "status",
+          "target": "self",
+          "status": "citadel",
+          "amount": 8
+        }
+      ]
+    },
+    "upgrade": {
+      "castTicks": 2,
+      "mana": 52,
+      "rules": "Unique. Gain 5 Guard and 8 Citadel.",
+      "keywords": [
+        "guard",
+        "consecration",
+        "unique",
+        "citadel"
+      ],
+      "notes": [],
+      "combat": {
+        "effects": [
+          {
+            "kind": "status",
+            "target": "self",
+            "status": "guard",
+            "amount": 5
+          },
+          {
+            "kind": "status",
+            "target": "self",
+            "status": "citadel",
+            "amount": 8
+          }
+        ]
+      }
+    }
+  },
+  {
+    "id": "holy_divine_decree",
+    "name": "Divine Decree",
+    "domain": "holy",
+    "stars": 5,
+    "castTicks": 2,
+    "mana": 65,
+    "rules": "Unique. Interrupt the opponent, apply 2 Slowness and apply 10 Consecration.",
+    "keywords": [
+      "interrupt",
+      "slowness",
+      "consecration",
+      "unique"
+    ],
+    "notes": [],
+    "combat": {
+      "effects": [
+        {
+          "kind": "interrupt"
+        },
+        {
+          "kind": "status",
+          "target": "enemy",
+          "status": "slowness",
+          "amount": 2
+        },
+        {
+          "kind": "status",
+          "target": "enemy",
+          "status": "consecration",
+          "amount": 10
+        }
+      ]
+    },
+    "upgrade": {
+      "castTicks": 2,
+      "mana": 52,
+      "rules": "Unique. Interrupt the opponent, apply 2 Slowness and apply 10 Consecration.",
+      "keywords": [
+        "interrupt",
+        "slowness",
+        "consecration",
+        "unique"
+      ],
+      "notes": [],
+      "combat": {
+        "effects": [
+          {
+            "kind": "interrupt"
+          },
+          {
+            "kind": "status",
+            "target": "enemy",
+            "status": "slowness",
+            "amount": 2
+          },
+          {
+            "kind": "status",
+            "target": "enemy",
+            "status": "consecration",
+            "amount": 10
+          }
+        ]
+      }
+    }
+  },
+  {
+    "id": "holy_oath_of_salvation",
+    "name": "Oath of Salvation",
+    "domain": "holy",
+    "stars": 5,
+    "castTicks": 0,
+    "mana": 60,
+    "rules": "Unique. Instant. Oath: No direct damage until reshuffle. Reward: heal 150, gain 4 Guard and apply 10 Consecration.",
+    "keywords": [
+      "instant",
+      "oath",
+      "guard",
+      "consecration",
+      "unique"
+    ],
+    "notes": [],
+    "combat": {
+      "effects": [
+        {
+          "kind": "oath",
+          "oath": {
+            "id": "salvation",
+            "requirement": "noDamage",
+            "rewards": [
+              {
+                "kind": "heal",
+                "target": "self",
+                "amount": 150
+              },
+              {
+                "kind": "status",
+                "target": "self",
+                "status": "guard",
+                "amount": 4
+              },
+              {
+                "kind": "status",
+                "target": "enemy",
+                "status": "consecration",
+                "amount": 10
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "upgrade": {
+      "castTicks": 0,
+      "mana": 48,
+      "rules": "Unique. Instant. Oath: No direct damage until reshuffle. Reward: heal 150, gain 4 Guard and apply 10 Consecration.",
+      "keywords": [
+        "instant",
+        "oath",
+        "guard",
+        "consecration",
+        "unique"
+      ],
+      "notes": [],
+      "combat": {
+        "effects": [
+          {
+            "kind": "oath",
+            "oath": {
+              "id": "salvation",
+              "requirement": "noDamage",
+              "rewards": [
+                {
+                  "kind": "heal",
+                  "target": "self",
+                  "amount": 150
+                },
+                {
+                  "kind": "status",
+                  "target": "self",
+                  "status": "guard",
+                  "amount": 4
+                },
+                {
+                  "kind": "status",
+                  "target": "enemy",
+                  "status": "consecration",
+                  "amount": 10
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
   }
 ]

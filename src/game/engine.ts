@@ -1,8 +1,11 @@
+import {EQUIPMENT} from './equipment';
+import {equipmentRuntime} from './equipmentRuntime';
 import { cardAt, deckXp, validateXp } from './upgrades';
 import type { Domain } from '../config/catalogue';
 import { cloneSnapshot } from './clone';
 import { CARDS } from '../config/catalogue';
 import settings from '../config/rules.json';
+import holy from '../config/holy.json';
 import statuses from '../config/statuses.json';
 import type { Battle, ManaEvent, CombatNotice, CastEvent, DamageEvent, HealingEvent, Effect, EquipmentModifier, Fighter, Spell, SpellId, Stats } from './model';
 
@@ -38,12 +41,12 @@ export function fighter(name: string, spells: SpellId[], modifiers: EquipmentMod
   validateDeck(spells);
   validateXp(spells,spellXp);
   const stats = deriveStats(modifiers);
-  return { name, spellXp:deckXp(spells,spellXp), spells: [...spells], ...stats, maxHealth: stats.health, maxMana: stats.mana, shield: 0, statuses: {}, cursor: 0, reshuffleRemaining:0, casting: null };
+  return { equipment:Object.fromEntries(modifiers.filter(m=>m.equipmentId&&EQUIPMENT[m.equipmentId]).map(m=>[EQUIPMENT[m.equipmentId!].slot,m.equipmentId!])),name, spellXp:deckXp(spells,spellXp), spells: [...spells], ...stats, maxHealth: stats.health, maxMana: stats.mana, shield: 0, statuses: {}, cursor: 0, reshuffleRemaining:0, casting: null };
 }
 export function criticalDamage(damage: number, multiplier: number = RULES.critMultiplier) { return Math.round(damage * multiplier); }
 type Side = 'player' | 'bot';
 const other = (side: Side): Side => side === 'player' ? 'bot' : 'player';
-const statusConfig = statuses as Record<string, { kind: string; domain?: Domain; power?: number; perStack?: boolean; critMultiplier?: number; critChancePerStack?: number; threshold?: number; combustDuration?: number; maxCastTicks?: number; selfDamage?: number; damageReduction?:number; manaPerSpell?:number; consumeOnTrigger?:number }>;
+const statusConfig = statuses as Record<string, { kind: string; domain?: Domain; power?: number; perStack?: boolean; critMultiplier?: number; critChancePerStack?: number; threshold?: number; combustDuration?: number; maxCastTicks?: number; selfDamage?: number; damageReduction?:number; manaPerSpell?:number; consumeOnTrigger?:number; persistent?:boolean; incomingDamageMultiplier?:number; directDamageMultiplier?:number; healingReceivedMultiplier?:number; retaliationDamage?:number; maxTriggersPerTick?:number; onOpponentSpellStart?:{stacks:number}; onDirectSpellDamageTaken?:{stacks:number} }>;
 
 // Pure, seeded simulation with explicit Instant, periodic, and normal phases. Replays
 // carry real cast events so multi-tick and Instant spells never invent casts.
@@ -52,6 +55,8 @@ export function simulate(playerInput: Fighter, botInput: Fighter, seed = RULES.s
   for (const f of Object.values(fighters)) {validateDeck(f.spells);validateXp(f.spells,f.spellXp);}
   const spellAt=(f:Fighter,index:number)=>cardAt(f.spells[index],f.spellXp?.[index]);
   const interrupted=new Set<Side>();
+  const pendingAdvance=new Set<Fighter>();
+  const retaliationCount=new Map<Fighter,number>();
   let rng = seed >>> 0;
   const random = () => { rng = (Math.imul(rng,1664525)+1013904223) >>> 0; return rng / 4294967296; };
   const frames: Battle['frames'] = [];
@@ -63,38 +68,105 @@ export function simulate(playerInput: Fighter, botInput: Fighter, seed = RULES.s
   let manaEvents:ManaEvent[]=[];
   let tickStart:Battle['frames'][number]|undefined;
   const snapshot = (tick: number) => frames.push({ tick, tickStart, manaEvents:cloneSnapshot(manaEvents), notices:cloneSnapshot(notices), player: cloneSnapshot(fighters.player), bot: cloneSnapshot(fighters.bot), messages: [...messages], events: cloneSnapshot(events), damageEvents:cloneSnapshot(damageEvents), healingEvents:cloneSnapshot(healingEvents) });
-  messages = ['Both spell orders are locked.']; snapshot(0);
-  const applyStatus = (f: Fighter, id: string, amount: number) => {
+  let gear:ReturnType<typeof equipmentRuntime>;
+  const sideOf=(f:Fighter):Side=>f===fighters.player?'player':'bot';
+  const applyStatus = (f: Fighter, id: string, amount: number, source?:Fighter) => {
+    if(source)amount=gear.status(source,f,id,amount);if(amount<=0)return;
+    if(source){f.statusSources??={};f.statusSources[id]=sideOf(source);}
     const previous=f.statuses[id]??0;f.statuses[id]=previous+amount;
+    if(id==='consecration') {
+      const ticks=Math.floor(f.statuses[id]/holy.consecrationPerPenance);
+      if(ticks){f.statuses[id]%=holy.consecrationPerPenance;f.penanceQueued=(f.penanceQueued??0)+ticks;notify(f,'penance','+'+ticks+'T Penance · next reshuffle');}
+      if(!f.statuses[id])delete f.statuses[id];
+    }
     const threshold=statusConfig.hotstreak.threshold!;
     if(id==='hotstreak' && previous<threshold && f.statuses[id]>=threshold) {
       f.statuses.combust=(f.statuses.combust??0)+statusConfig.hotstreak.combustDuration!;
       messages.push(f.name+' gains 3 Combust.'); notify(f,'combust','Combust! Casts ≤1T · 5 HP per cast');
     }
+    gear?.receiveStatus(f,id);
   };
-  const restore = (f: Fighter, amount: number, kind:ManaEvent['kind']='effect') => { const before=f.mana;f.mana = Math.min(f.maxMana,Math.max(0,f.mana+amount));if(f.mana!==before)manaEvents.push({side:f===fighters.player?'player':'bot',amount:f.mana-before,kind}); };
-  const advanceDeck=(f:Fighter)=>{f.cursor++;if(f.cursor===f.spells.length){f.cursor=0;f.reshuffleRemaining=RULES.reshuffleTicks;messages.push(`${f.name} reshuffles for ${RULES.reshuffleTicks} ticks.`);}};
-  const heal = (f: Fighter, amount: number, kind:HealingEvent['kind']='heal') => { const before=f.health; f.health = Math.min(f.maxHealth,f.health+Math.max(0,Math.round(amount*(1+(f.statuses['greater-cloud-heart']?statusConfig['greater-cloud-heart'].power!:f.statuses['cloud-heart']?statusConfig['cloud-heart'].power!:0)/100)))); const restored=f.health-before; if(restored>0)healingEvents.push({side:f===fighters.player?'player':'bot',amount:restored,kind}); };
-  const mitigated=(f:Fighter,amount:number)=>Math.round(amount*(f.statuses.veil?1-statusConfig.veil.damageReduction!:1));
+  const restore = (f: Fighter, amount: number, kind:ManaEvent['kind']='effect') => { const before=f.mana;if(amount>0)gear?.overflow(f,Math.max(0,f.mana+amount-f.maxMana),'overflow');f.mana = Math.min(f.maxMana,Math.max(0,f.mana+amount));if(f.mana!==before)manaEvents.push({side:f===fighters.player?'player':'bot',amount:f.mana-before,kind}); };
+  // Advance together after all effects and damage, so neither side receives
+  // a shorter Penance window just because it was iterated first.
+  const advanceDeck=(f:Fighter)=>{pendingAdvance.add(f);};
+  const breakOath=(f:Fighter,reason:string)=>{if(f.oath){notify(f,'oath','Oath of '+f.oath.id+' broken · '+reason);delete f.oath;}};
+  const rewardOath=(f:Fighter)=>{
+    const oath=f.oath;if(!oath)return;delete f.oath;if(f.health<=0)return;
+    notify(f,'oath','Oath of '+oath.id+' fulfilled');
+    for(const e of oath.rewards){const target=e.target==='enemy'?fighters[other(sideOf(f))]:f;
+      if(e.kind==='heal')heal(target,e.amount??0,'heal',f);
+      if(e.kind==='status')applyStatus(target,e.status!,e.amount??0,f);
+    }
+  };
+  const flushDecks=()=>{
+    const ended=[...pendingAdvance].filter(f=>++f.cursor===f.spells.length);pendingAdvance.clear();
+    // Resolve all end-of-cycle rewards before allocating either reshuffle.
+    for(const f of ended)if(f.oath&&f.oath.remaining===undefined)rewardOath(f);
+    for(const f of ended){f.cursor=0;f.penanceActive=f.penanceQueued??0;f.penanceQueued=0;
+      f.reshuffleRemaining=gear.reshuffle(f,RULES.reshuffleTicks)+f.penanceActive;
+      messages.push(f.name+' reshuffles for '+f.reshuffleRemaining+' ticks'+(f.penanceActive?' (+'+f.penanceActive+' Penance)':'')+'.');
+      if(!f.reshuffleRemaining)gear.cycle(f);
+    }
+  };
+  const heal = (f:Fighter,amount:number,kind:HealingEvent['kind']='heal',source:Fighter=f,spellHeal=true) => {
+    const before=f.health;
+    let value=amount*(gear?.healPower(source)??1)*(gear?.healReceived(f)??1)*(f.statuses.sanctuary?statusConfig.sanctuary.healingReceivedMultiplier!:1)*(1+(f.statuses['greater-cloud-heart']?statusConfig['greater-cloud-heart'].power!:f.statuses['cloud-heart']?statusConfig['cloud-heart'].power!:0)/100);
+    if(spellHeal)value=gear?.healBonus(source,value)??value;value=Math.max(0,Math.round(value));
+    f.health=Math.min(f.maxHealth,f.health+value);const restored=f.health-before;
+    if(restored>0)healingEvents.push({side:sideOf(f),amount:restored,kind});
+    gear?.overflow(f,value-restored,'overheal');if(spellHeal&&f===source)gear?.onHeal(source,restored);
+  };
+  const mitigated=(f:Fighter,amount:number)=>Math.round(amount*(f.statuses.veil?1-statusConfig.veil.damageReduction!:1)*['templars-oath','sanctuary','citadel'].reduce((n,id)=>n*(f.statuses[id]?statusConfig[id].incomingDamageMultiplier!:1),1));
   const takeDamage = (f: Fighter, amount: number) => {
     if (f.statuses.guard > 0) { if(amount>0)notify(f,'guard',`Guard blocked ${amount} damage`); return; }
-    f.health=Math.max(0,f.health-Math.max(0,mitigated(f,amount)));
+    f.health=Math.max(0,f.health-Math.max(0,amount));
     if(f.health===0 && f.statuses.phoenix>0) {
       f.health=Math.max(1,Math.floor(f.maxHealth/2)); restore(f,Math.floor(f.maxMana/2)-f.mana,'rebirth');
+      gear.trigger(f,'phoenix');
       messages.push(f.name+' is reborn through Phoenix.'); notify(f,'phoenix','Phoenix! Reborn at half health and mana');
     }
   };
+  type Hit=DamageEvent & {source?:Fighter;combust?:boolean;reactive?:boolean};
+  const applyHits=(hits:Hit[])=>{
+    const totals={player:0,bot:0};const landed:Hit[]=[];
+    for(const hit of hits){const f=fighters[hit.side];if(f.statuses.guard){notify(f,'guard','Guard blocked '+hit.amount+' damage');continue;}
+      let amount=gear.incoming(f,mitigated(f,hit.amount),{self:hit.source===f,periodic:hit.kind==='dot',combust:hit.combust});
+      const bypass=hit.kind==='hit'&&hit.source&&hit.source!==f?gear.penetration(hit.source):0;
+      const absorbed=Math.min(f.shield,Math.round(amount*(1-bypass)));f.shield-=absorbed;amount-=absorbed;
+      if(absorbed)notify(f,'ward','Ward absorbed '+absorbed);
+      if(amount>0){totals[hit.side]+=amount;damageEvents.push({side:hit.side,amount,critical:hit.critical,kind:hit.kind,...(hit.domain?{domain:hit.domain}:{})});landed.push(hit);}
+    }
+    for(const side of ['player','bot'] as const)takeDamage(fighters[side],totals[side]);
+    const retaliation:Hit[]=[];
+    for(const hit of landed)if(!hit.reactive){const f=fighters[hit.side];gear.trigger(f,'hit',{self:hit.source===f,periodic:hit.kind==='dot'});
+      if(hit.kind==='hit'&&hit.source&&hit.source!==f){
+        if(hit.source.oath?.requirement==='noDamage')breakOath(hit.source,'direct damage');
+        if(f.health>0&&f.statuses.citadel)applyStatus(hit.source,'consecration',statusConfig.citadel.onDirectSpellDamageTaken!.stacks,f);
+        const used=retaliationCount.get(f)??0;
+        if(f.health>0&&f.statuses.retribution&&used<statusConfig.retribution.maxTriggersPerTick!){
+          retaliationCount.set(f,used+1);retaliation.push({side:sideOf(hit.source),amount:Math.round(statusConfig.retribution.retaliationDamage!*(f.statuses.fury?1+(statusConfig.fury.power??0)/100:1)*gear.damage(f,'holy',false)*(f.statuses['templars-oath']?statusConfig['templars-oath'].directDamageMultiplier!:1)),critical:false,kind:'hit',domain:'holy',source:f,reactive:true});
+        }
+      }
+    }
+    if(retaliation.length)applyHits(retaliation);
+    for(const f of Object.values(fighters))if(f.health>0)gear.trigger(f,'health');
+  };
+  gear=equipmentRuntime(fighters,{mana:(f,n)=>restore(f,n),heal:(f,n)=>heal(f,n,'heal',f,false),status:(f,id,n,source)=>applyStatus(f,id,n,source),damage:(f,n,source)=>applyHits([{side:sideOf(f),amount:n,critical:false,kind:'hit',source,reactive:true}]),cleanse:f=>{const ids=Object.keys(f.statuses).filter(id=>['dot','debuff'].includes(statusConfig[id]?.kind));if(ids.length)delete f.statuses[ids[Math.floor(random()*ids.length)]];},notice:notify});
+  gear.start();messages=['Both spell orders are locked.'];snapshot(0);
   const alive = () => fighters.player.health > 0 && fighters.bot.health > 0;
-  const damageMultiplier = (f: Fighter, domain: string, periodic = false) => (f.statuses.fury ? 1+(statusConfig.fury.power??0)/100 : 1) * (f.statuses.rain && domain === 'water' ? 1+(statusConfig.rain.power??0)/100 : 1) * (periodic && f.statuses['star-empowerment'] ? 1+(statusConfig['star-empowerment'].power??0)/100 : 1);
-  type Ready = { side: Side; event: CastEvent; tidecaller: boolean; damageMultiplier?:number };
+  const damageMultiplier = (f: Fighter, domain: string, periodic = false) => (f.statuses.fury ? 1+(statusConfig.fury.power??0)/100 : 1) * (f.statuses.rain && domain === 'water' ? 1+(statusConfig.rain.power??0)/100 : 1) * (periodic && f.statuses['star-empowerment'] ? 1+(statusConfig['star-empowerment'].power??0)/100 : 1) * gear.damage(f,domain,periodic) * (!periodic&&f.statuses['templars-oath']?statusConfig['templars-oath'].directDamageMultiplier!:1);
+  type Ready = { side: Side; event: CastEvent; tidecaller: boolean; damageMultiplier?:number;instant?:boolean };
   const sides = ['player','bot'] as const;
   const resolveCasts = (ready: Ready[]) => {
       const damage={player:0,bot:0}, manaChange={player:0,bot:0};
-      const hits:DamageEvent[]=[];
-      const addHit=(side:Side,amount:number,critical=false,domain?:Domain)=>{damage[side]+=amount;if(amount>0)hits.push({side,amount,critical,kind:'hit',domain});};
+      const hits:Hit[]=[];let source:Fighter;
+      const addHit=(side:Side,amount:number,critical=false,domain?:Domain,combust=false)=>{if(amount>0)hits.push({side,amount,critical,kind:'hit',domain,source,combust});};
       const combustActive={player:!!fighters.player.statuses.combust,bot:!!fighters.bot.statuses.combust};
       const dotSnapshots={player:Object.entries(fighters.player.statuses).filter(([id])=>statusConfig[id]?.kind==='dot'),bot:Object.entries(fighters.bot.statuses).filter(([id])=>statusConfig[id]?.kind==='dot')};
       const manaBefore={player:fighters.player.mana,bot:fighters.bot.mana};
+      const castingBefore={player:!!fighters.player.casting,bot:!!fighters.bot.casting};
+      const oathsBefore={player:fighters.player.oath,bot:fighters.bot.oath};
       // Snapshot critical conditions before either simultaneous spell cleanses or
       // changes effects; neither side gets priority from iteration order.
       for(const {side,event} of ready) {
@@ -104,38 +176,43 @@ export function simulate(playerInput: Fighter, botInput: Fighter, seed = RULES.s
         if(forced){const ids=effects.flatMap(e=>e.critWhen??[]);event.details.push(`Guaranteed critical: ${ids.join(' + ')} on target.`);for(const id of ids)notify(fighters[other(side)],id,`${SPELLS[event.spell].name}: guaranteed critical`);}
         const canCrit=effects.some(e=>e.kind==='damage'||e.kind==='bothDamage');
         const stacks=fighters[side].statuses.hotstreak??0;
-        const chance=Math.min(1,RULES.baseCritChance+stacks*statusConfig.hotstreak.critChancePerStack!);
+        const chance=Math.min(1,RULES.baseCritChance+gear.critChance(fighters[side])+stacks*statusConfig.hotstreak.critChancePerStack!);
         event.critical=forced || (canCrit && random()<chance);
         if(canCrit&&!forced)event.details.push('Crit chance at resolution: '+Math.round(chance*100)+'% ('+stacks+' Hotstreak stacks). '+(event.critical?'Critical hit.':'Normal hit.'));
       }
       // Resolve non-damage effects before applying simultaneous damage.
-      for(const {side,event,tidecaller,damageMultiplier:castMultiplier=1} of ready) {
+      for(const {side,event,tidecaller,damageMultiplier:castMultiplier=1,instant=false} of ready) {
         const f=fighters[side], enemy=fighters[other(side)], spell=spellAt(f,event.index);
+        source=f;const power=gear.spellPower(f,spell);
         const effects=spell.combat!.effects!;
-        const repeat=(tidecaller || spell.keywords.includes('tidecaller')) && f.statuses.tide && random()<(statusConfig.tide.power??0)/100 ? 2 : 1;
+        const eligible=!!f.statuses.tide&&(tidecaller||spell.keywords.includes('tidecaller'));const tide=gear.tide(f,spell,eligible);
+        const repeat=eligible&&(tide.guaranteed||random()<(statusConfig.tide.power??0)/100+tide.bonus)?2:1;
         event.repeats=repeat;
-        event.critMultiplier=event.critical?(f.statuses.overheat?statusConfig.overheat.critMultiplier:RULES.critMultiplier):undefined;
+        event.critMultiplier=event.critical?((f.statuses.overheat?statusConfig.overheat.critMultiplier!:RULES.critMultiplier)+gear.critPower(f)):undefined;
         if(event.critical)event.details!.push(`Critical multiplier: ${Math.round((event.critMultiplier??1.5)*100)}%${f.statuses.overheat?' (Overheat)':''}.`);
         if(event.critical&&f.statuses.overheat)notify(f,'overheat','Overheat critical · 200% damage');
         const consumedTide=repeat===2?Math.min(f.statuses.tide,statusConfig.tide.consumeOnTrigger!):0;
         if(repeat===2)notify(f,'tide','Tidecaller! Spell triggers twice');
         if(castMultiplier!==1)event.details!.push('Celestial Alignment: ×'+castMultiplier+' damage for this cast.');
         if(combustActive[side])event.details!.push('Combust: cast capped at 1T; 5 self-damage.');
-        if(combustActive[side]) addHit(side,statusConfig.combust.selfDamage!,false,'fire');
+        if(combustActive[side]) addHit(side,statusConfig.combust.selfDamage!,false,'fire',true);
         for(let r=0;r<repeat;r++) {
-          if(enemy.statuses.veil && effects.some(e=>['damage','bothDamage','stealMana','interrupt','consumeDots'].includes(e.kind)||e.target==='enemy')) manaChange[other(side)]+=statusConfig.veil.manaPerSpell!;
-          for(const effect of effects) {
+          const repeatPower=r?gear.repeatPower(f):1;let removedEffects=0;
+          if(enemy.statuses.veil && effects.some(e=>['damage','bothDamage','stealMana','interrupt','consumeDots'].includes(e.kind)||e.target==='enemy')) manaChange[other(side)]+=statusConfig.veil.manaPerSpell!+gear.veilMana(enemy);
+          const effectQueue=[...effects];
+          for(let i=0;i<effectQueue.length;i++) {
+          const effect=effectQueue[i];
           const target=effect.target==='enemy'?enemy:f;
           const value=(effect.amount??0)*(effect.perChannel?channelPower(f.spells,event.index):1);
           if(effect.kind==='damage') {
             const amount=value*(effect.perManaSpent?event.mana:1)*(effect.perStatus ? (f.statuses[effect.perStatus]??0) : 1);
-            const scaled=Math.round(amount*damageMultiplier(f,spell.domain)*castMultiplier);
+            const scaled=Math.round(amount*damageMultiplier(f,spell.domain)*castMultiplier*power.damage*repeatPower);
             event.details!.push(`Damage: ${amount} base × ${damageMultiplier(f,spell.domain).toFixed(2)} buffs${f.statuses.fury?' (Fury)':''}${f.statuses.rain&&spell.domain==='water'?' (Rain)':''}${event.critical?` × ${event.critMultiplier} critical`: ''} = ${event.critical?criticalDamage(scaled,event.critMultiplier):scaled} before Guard.`);
-            addHit(other(side),event.critical?criticalDamage(scaled,f.statuses.overheat ? statusConfig.overheat.critMultiplier : RULES.critMultiplier):scaled,event.critical,spell.domain);
+            addHit(other(side),event.critical?criticalDamage(scaled,event.critMultiplier):scaled,event.critical,spell.domain);
           } else if(effect.kind==='selfDamage') addHit(side,value,false,spell.domain);
-          else if(effect.kind==='loseCurrentHealth') { const amount=Math.floor(f.health*value); f.health-=amount;event.details!.push(`Health cost: ${amount} (half current health).`);if(amount>0)damageEvents.push({side,amount,critical:false,kind:'cost',domain:spell.domain}); }
-          else if(effect.kind==='bothDamage') { const scaled=Math.round(value*damageMultiplier(f,spell.domain)*castMultiplier); const amount=event.critical?criticalDamage(scaled,f.statuses.overheat?statusConfig.overheat.critMultiplier:RULES.critMultiplier):scaled; event.details!.push(`Both fighters: ${value} base × ${damageMultiplier(f,spell.domain).toFixed(2)} buffs${event.critical?` × ${event.critMultiplier} critical`:''} = ${amount} damage each before Guard.`); addHit('player',amount,event.critical,spell.domain); addHit('bot',amount,event.critical,spell.domain); }
-          else if(effect.kind==='heal') {const before=target.health;heal(target,value);event.details!.push(`Heal ${target===f?'self':'opponent'}: ${target.health-before} restored (${value} before health cap).`);}
+          else if(effect.kind==='loseCurrentHealth') { const amount=Math.floor(f.health*value); f.health-=amount;if(amount>0){gear.trigger(f,'healthCost');gear.trigger(f,'health');}event.details!.push(`Health cost: ${amount} (half current health).`);if(amount>0)damageEvents.push({side,amount,critical:false,kind:'cost',domain:spell.domain}); }
+          else if(effect.kind==='bothDamage') { const scaled=Math.round(value*damageMultiplier(f,spell.domain)*castMultiplier*power.damage*repeatPower); const amount=event.critical?criticalDamage(scaled,event.critMultiplier):scaled; event.details!.push(`Both fighters: ${value} base × ${damageMultiplier(f,spell.domain).toFixed(2)} buffs${event.critical?` × ${event.critMultiplier} critical`:''} = ${amount} damage each before Guard.`); addHit('player',amount,event.critical,spell.domain); addHit('bot',amount,event.critical,spell.domain); }
+          else if(effect.kind==='heal') {const before=target.health;heal(target,value*power.healing*repeatPower,'heal',f);event.details!.push(`Heal ${target===f?'self':'opponent'}: ${target.health-before} restored (${value} before health cap).`);}
           else if(effect.kind==='mana') {manaChange[effect.target==='enemy'?other(side):side]+=value;event.details!.push(`${target.name}: restore ${value} mana, capped at maximum.`);}
           else if(effect.kind==='consumeDots') {
             const targetSide=effect.target==='enemy'?other(side):side;
@@ -144,8 +221,10 @@ export function simulate(playerInput: Fighter, botInput: Fighter, seed = RULES.s
               const def=statusConfig[id];total+=Array.from({length:stacks},(_,i)=>Math.round((def.power??0)*(def.perStack?stacks-i:1)*damageMultiplier(f,def.domain??spell.domain,true))).reduce((a,b)=>a+b,0);
               target.statuses[id]=Math.max(0,(target.statuses[id]??0)-stacks);if(!target.statuses[id])delete target.statuses[id];
             }
+            const consumed=dotSnapshots[targetSide].reduce((n,[,stacks])=>n+stacks,0);if(target===enemy&&consumed)gear.trigger(f,'dotsConsumed',{amount:consumed});
+            if(dotSnapshots[targetSide].some(([id])=>id==='burn'))gear.trigger(f,'burnConsumed');
             dotSnapshots[targetSide]=[];
-            const amount=Math.round(total*value*castMultiplier);addHit(targetSide,amount,false,spell.domain);
+            const amount=Math.round(total*value*castMultiplier*power.damage*repeatPower);addHit(targetSide,amount,false,spell.domain);
             event.details!.push('Consumed remaining DoTs for '+amount+' damage before Guard.');
           }
           else if(effect.kind==='manaPerDotStack') {
@@ -158,16 +237,33 @@ export function simulate(playerInput: Fighter, botInput: Fighter, seed = RULES.s
             event.details!.push(target.name+': multiply remaining HoT stacks by '+value+'.');
           }
           else if(effect.kind==='bothMana') { manaChange.player+=value; manaChange.bot+=value; }
-          else if(effect.kind==='status') {applyStatus(target,effect.status!,value);if(statusConfig[effect.status!]?.kind==='dot'){target.statusSources??={};target.statusSources[effect.status!]=side;}event.details!.push(`${target.name}: +${value} ${effect.status} duration.`);}
+          else if(effect.kind==='status') {applyStatus(target,effect.status!,value,f);event.details!.push(`${target.name}: +${value} ${effect.status} duration.`);}
           else if(effect.kind==='stealMana') { const targetSide=other(side); const amount=Math.min(Math.max(0,manaBefore[targetSide]+Math.min(0,manaChange[targetSide])),value); manaChange[targetSide]-=amount; manaChange[side]+=amount; }
           else if(effect.kind==='enhance') {f.enhancements??={};f.enhancements[effect.status!]=value;}
           else if(effect.kind==='consumeBurn') {
             const stacks=(f.statuses.burn??0)+(enemy.statuses.burn??0);delete f.statuses.burn;delete enemy.statuses.burn;
-            if(stacks){applyStatus(f,'hotstreak',stacks*value);applyStatus(f,'fury',stacks*value);}
+            if(stacks){applyStatus(f,'hotstreak',stacks*value);applyStatus(f,'fury',stacks*value);gear.trigger(f,'burnConsumed');}
           }
-          else if(effect.kind==='interrupt' && enemy.casting) {
-            const cast=enemy.casting;events.push({side:other(side),spell:cast.spell,index:cast.index,xp:enemy.spellXp?.[cast.index]??0,status:'skipped',mana:cast.mana,critical:false,details:['Interrupted; mana is not refunded.']});
-            enemy.casting=null;interrupted.add(other(side));advanceDeck(enemy);notify(enemy,'interrupt','Interrupted! Spell skipped');
+          else if(effect.kind==='interrupt') {
+            let success=false;
+            if(enemy.casting){
+              if(gear.ignoreInterrupt(enemy))notify(enemy,'ward','Interrupt resisted');
+              else {const cast=enemy.casting;events.push({side:other(side),spell:cast.spell,index:cast.index,xp:enemy.spellXp?.[cast.index]??0,status:'skipped',mana:cast.mana,critical:false,details:['Interrupted; mana is not refunded.']});
+                enemy.casting=null;interrupted.add(other(side));advanceDeck(enemy);notify(enemy,'interrupt','Interrupted! Spell skipped');gear.trigger(enemy,'interruptReceived');gear.trigger(f,'interrupt');success=true;
+              }
+            }
+            effectQueue.splice(i+1,0,...(success?effect.onSuccess??[]:effect.onFailure??[]));
+            event.details!.push(success?'Interrupt succeeded.':'No spell interrupted.');
+          }
+          else if(effect.kind==='castingStatus'&&castingBefore[other(side)])applyStatus(target,effect.status!,value,f);
+          else if(effect.kind==='healthConditional')effectQueue.splice(i+1,0,...(f.health/f.maxHealth<effect.threshold!?effect.onSuccess??[]:effect.onFailure??[]));
+          else if(effect.kind==='cleanseAll'){
+            const ids=Object.keys(f.statuses).filter(id=>['dot','debuff'].includes(statusConfig[id]?.kind));removedEffects=ids.length;for(const id of ids)delete f.statuses[id];
+            event.details!.push('Cleansed '+removedEffects+' effects.');
+          }
+          else if(effect.kind==='healPerCleanse')heal(f,Math.min(effect.cap!,removedEffects*value)*power.healing*repeatPower,'heal',f);
+          else if(effect.kind==='oath'){
+            f.oath=cloneSnapshot(effect.oath!);notify(f,'oath','Oath of '+f.oath.id+' sworn');
           }
           else if(effect.kind==='cleanse') {
             const ids=Object.keys(f.statuses).filter(id=>statusConfig[id]?.kind==='dot'||statusConfig[id]?.kind==='debuff');
@@ -175,33 +271,37 @@ export function simulate(playerInput: Fighter, botInput: Fighter, seed = RULES.s
           }
         }
         }
-        if(consumedTide){f.statuses.tide=Math.max(0,(f.statuses.tide??0)-consumedTide);if(!f.statuses.tide)delete f.statuses.tide;}
+        const protectedTide=repeat===2&&gear.tideTriggered(f,spell);
+        if(event.critical)for(let hit=0;hit<repeat;hit++)gear.trigger(f,'crit',{spell});
+        gear.complete(f,spell,instant);advanceDeck(f);
+        if(consumedTide&&!protectedTide){f.statuses.tide=Math.max(0,(f.statuses.tide??0)-consumedTide);if(!f.statuses.tide)delete f.statuses.tide;}
         messages.push(`${f.name} casts ${spell.name}${event.critical?' (critical)':''}${repeat===2?' twice':''}.`);
       }
-      damageEvents.push(...hits.filter(hit=>!fighters[hit.side].statuses.guard).map(hit=>({...hit,amount:mitigated(fighters[hit.side],hit.amount)})));
-      for(const side of ['player','bot'] as const) { restore(fighters[side],manaChange[side]); takeDamage(fighters[side],damage[side]); }
-
+      for(const side of ['player','bot'] as const)restore(fighters[side],manaChange[side]);
+      applyHits(hits);
+      for(const {side} of ready){const f=fighters[side];if(f.oath&&f.oath===oathsBefore[side]&&f.oath.remaining!==undefined){if(--f.oath.remaining===0)rewardOath(f);}}
+      flushDecks();
   };
   const durationFor = (f:Fighter) => {
     let duration=f.statuses['next-instant']?0:spellAt(f,f.cursor).castTicks!;
     if(f.statuses.slowness) duration+=statusConfig.slowness.power??1;
-    return duration;
+    const spell=spellAt(f,f.cursor);return gear.startCast(f,spell,spell.mana==='half'?Math.floor(f.mana/2):spell.mana!,duration).duration;
   };
   const age = (matches:(kind:string)=>boolean) => {
     for(const side of sides) for(const id of Object.keys(fighters[side].statuses)) {
       const f=fighters[side];
-      if(id==='tide'&&f.enhancements?.maelstrom)continue;
+      if(statusConfig[id]?.persistent || id==='tide'&&f.enhancements?.maelstrom)continue;
       if(matches(statusConfig[id]?.kind??'buff') && --f.statuses[id]<=0) delete f.statuses[id];
     }
   };
   for (let tick=1; tick<=RULES.maxTicks && alive(); tick++) {
     tickStart=undefined; events=[]; messages=[]; notices=[]; damageEvents=[]; healingEvents=[]; manaEvents=[];
-    interrupted.clear();
-    const periodicCrit={player:Math.min(1,RULES.baseCritChance+(fighters.player.statuses.hotstreak??0)*statusConfig.hotstreak.critChancePerStack!),bot:Math.min(1,RULES.baseCritChance+(fighters.bot.statuses.hotstreak??0)*statusConfig.hotstreak.critChancePerStack!)};
+    interrupted.clear();retaliationCount.clear();gear.tick(tick);
+    const periodicCrit={player:Math.min(1,RULES.baseCritChance+gear.critChance(fighters.player)+(fighters.player.statuses.hotstreak??0)*statusConfig.hotstreak.critChancePerStack!),bot:Math.min(1,RULES.baseCritChance+gear.critChance(fighters.bot)+(fighters.bot.statuses.hotstreak??0)*statusConfig.hotstreak.critChancePerStack!)};
     const spent = {player:false,bot:false};
     for(const side of sides) {
       const f=fighters[side];delete f.instantThisTick;
-      if((f.reshuffleRemaining??0)>0) {spent[side]=true;f.reshuffleRemaining!--;}
+      if((f.reshuffleRemaining??0)>0) {spent[side]=true;f.reshuffleRemaining!--;if(!f.reshuffleRemaining){f.penanceActive=0;gear.cycle(f);}}
     }
     const prepare = (instant:boolean) => {
       const prepared:Side[]=[];
@@ -212,25 +312,29 @@ export function simulate(playerInput: Fighter, botInput: Fighter, seed = RULES.s
         spent[side]=true;
         if(!f.casting) {
           const spell=spellAt(f,f.cursor),index=f.cursor;
-          const cost=spell.mana==='half'?Math.floor(f.mana/2):spell.mana!;
+          const printedCost=spell.mana==='half'?Math.floor(f.mana/2):spell.mana!;const printedDuration=(f.statuses['next-instant']?0:spell.castTicks!)+(f.statuses.slowness?statusConfig.slowness.power??1:0);
+          const preview=gear.startCast(f,spell,printedCost,printedDuration);const cost=preview.cost;
           if(cost>f.mana) {
             events.push({side,xp:f.spellXp?.[index]??0,spell:spell.id,index,status:'skipped',mana:0,critical:false});
-            messages.push(f.name+' skips '+spell.name+': insufficient mana.');advanceDeck(f);continue;
+            if(f.oath?.requirement==='noSkip')breakOath(f,'insufficient mana');
+            messages.push(f.name+' skips '+spell.name+': insufficient mana.');gear.trigger(f,'skip',{spell});advanceDeck(f);continue;
           }
           restore(f,-cost,'cost');
-          const duration=durationFor(f),tidecaller=!!f.statuses['tidal-echo'];
+          const duration=gear.startCast(f,spell,printedCost,printedDuration,true).duration,tidecaller=!!f.statuses['tidal-echo'];
           delete f.statuses['next-instant'];delete f.statuses.slowness;delete f.statuses['tidal-echo'];
           const alignment=f.statuses['greater-alignment']?'greater-alignment':f.statuses['celestial-alignment']?'celestial-alignment':null;
           const castMultiplier=alignment?statusConfig[alignment].power:1;
           if(alignment){delete f.statuses['greater-alignment'];delete f.statuses['celestial-alignment'];}
           f.casting={spell:spell.id,index,remaining:duration,totalTicks:duration,mana:cost,tidecaller,damageMultiplier:castMultiplier};
+          if(duration===0&&f.oath?.requirement==='nonInstant')breakOath(f,'Instant cast');
+          const opponent=fighters[other(side)];if(opponent.statuses['holy-ground'])applyStatus(f,'consecration',statusConfig['holy-ground'].onOpponentSpellStart!.stacks,opponent);
           if(f.statuses.trap>0)trapDamage[side]=statusConfig.trap.power??0;
         }
         prepared.push(side);
       }
       for(const side of sides)if(trapDamage[side]>0){
-        if(!fighters[side].statuses.guard)damageEvents.push({side,amount:mitigated(fighters[side],trapDamage[side]),critical:false,kind:'hit'});
-        notify(fighters[side],'trap','Trap · '+trapDamage[side]+' damage on cast start');takeDamage(fighters[side],trapDamage[side]);
+        
+        notify(fighters[side],'trap','Trap · '+trapDamage[side]+' damage on cast start');applyHits([{side,amount:trapDamage[side],critical:false,kind:'hit',source:fighters[other(side)],reactive:true}]);
       }
       return alive()?prepared:[];
     };
@@ -242,31 +346,30 @@ export function simulate(playerInput: Fighter, botInput: Fighter, seed = RULES.s
         if(cast.remaining>0)cast.remaining--;
         if(cast.remaining>0)continue;
         const event:CastEvent={side,xp:f.spellXp?.[cast.index]??0,spell:cast.spell,index:cast.index,status:'cast',mana:cast.mana,critical:false};
-        ready.push({side,event,tidecaller:cast.tidecaller,damageMultiplier:cast.damageMultiplier});events.push(event);
+        ready.push({side,event,instant,tidecaller:cast.tidecaller,damageMultiplier:cast.damageMultiplier});events.push(event);
         if(instant)f.instantThisTick=cast.spell;
-        f.casting=null;advanceDeck(f);
+        f.casting=null;
       }
       return ready;
     };
     resolveCasts(collect(prepare(true),true));
     // Early spells can use the last stack and apply effects before periodic resolution.
     if(alive()) {
-      const damage={player:0,bot:0};
+      const periodicHits:Hit[]=[];
       for(const side of sides) for(const id of Object.keys(fighters[side].statuses)) {
         const def=statusConfig[id];if(def?.kind!=='dot')continue;
         const source=fighters[side].statusSources?.[id]??other(side), caster=fighters[source];
         const critical=!!caster.statuses.eruption && random()<periodicCrit[source];
-        const base=Math.round((def.power??0)*(def.perStack?fighters[side].statuses[id]:1)*damageMultiplier(caster,def.domain??'nature',true));
-        const amount=critical?criticalDamage(base,caster.statuses.overheat?statusConfig.overheat.critMultiplier:RULES.critMultiplier):base;
-        damage[side]+=amount;
-        if(amount>0&&!fighters[side].statuses.guard)damageEvents.push({side,amount:mitigated(fighters[side],amount),critical,kind:'dot',domain:def.domain});
+        const base=gear.periodic(caster,Math.round((def.power??0)*(def.perStack?fighters[side].statuses[id]:1)*damageMultiplier(caster,def.domain??'nature',true)));
+        const amount=critical?criticalDamage(base,(caster.statuses.overheat?statusConfig.overheat.critMultiplier!:RULES.critMultiplier)+gear.critPower(caster)):base;
+        if(amount>0)periodicHits.push({side,amount,critical,kind:'dot',domain:def.domain,source:caster});
       }
-      for(const side of sides)takeDamage(fighters[side],damage[side]);
+      applyHits(periodicHits);for(const hit of periodicHits)if(hit.critical&&hit.source)gear.trigger(hit.source,'crit');
       // Lethal DoTs end combat before HoTs can rescue a defeated fighter.
       if(alive()) {
         age(kind=>kind==='dot');
         for(const side of sides) for(const id of Object.keys(fighters[side].statuses)) {
-          const def=statusConfig[id];if(def?.kind==='hot')heal(fighters[side],(id==='growth'&&fighters[side].statuses.overgrowth?statusConfig.overgrowth.power??30:def.power??0)*(def.perStack?fighters[side].statuses[id]:1),'hot');
+          const def=statusConfig[id];if(def?.kind==='hot')heal(fighters[side],(id==='growth'&&fighters[side].statuses.overgrowth?statusConfig.overgrowth.power??30:def.power??0)*(def.perStack?fighters[side].statuses[id]:1),'hot',fighters[fighters[side].statusSources?.[id]??side]);if(id==='growth')gear.growth(fighters[side]);
         }
         for(const side of sides){const f=fighters[side];if(f.statuses.rain&&f.enhancements?.rainborn)heal(f,f.enhancements.rainborn,'hot');}
         age(kind=>kind==='hot');

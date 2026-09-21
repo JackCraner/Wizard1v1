@@ -29,6 +29,9 @@ export function scoreBotDeck(deck:SpellId[],strategy:number,xp:number[]=[]):numb
    if(e.kind==='selfDamage')power-=value*.7;
    if(e.kind==='loseCurrentHealth')power-=RULES.health*(e.amount??0)*.15;
    if(e.kind==='heal')power+=value*w.healing;
+   if(e.kind==='oath')power+=(e.oath?.rewards.reduce((n,r)=>n+(r.kind==='heal'?(r.amount??0)*w.healing:(r.amount??0)*2),0)??0)*0.5;
+   if(e.kind==='interrupt')power+=w.synergy;
+   if(e.kind==='cleanseAll'||e.kind==='cleanse')power+=w.synergy*0.5;
    if(e.kind==='mana'||e.kind==='bothMana'||e.kind==='stealMana'){mana+=value;power+=value*w.mana;}
    if(e.kind==='status'){
     const status=(statuses as Record<string,{kind:string;power?:number}>)[e.status!];
@@ -66,8 +69,8 @@ export function prepareBot(state:BotState,previous:SpellId[],round:number,index:
  let deck=[...previous],xp=deckXp(previous,state.spellXp);
  const remap=(next:SpellId[])=>{const pools=new Map<string,number[]>();deck.forEach((id,i)=>pools.set(id,[...(pools.get(id)??[]),xp[i]]));return next.map(id=>pools.get(id)?.shift()??0);};
  if(round>=config.economy.equipmentStartRound){
-  let budget=Math.min(state.gold,level.equipmentBudget);
-  for(const item of Object.values(EQUIPMENT))if(!state.equipment[item.slot]&&item.price<=budget){state.equipment[item.slot]=item.id;state.gold-=item.price;budget-=item.price;}
+  let budget=Math.min(Math.max(0,state.gold-config.economy.roundIncome/2),level.equipmentBudget);
+  for(const item of offersFor(round,state.strategy+round).equipmentShop.map(id=>EQUIPMENT[id!]).filter(Boolean).sort((a,b)=>b.stars-a.stars))if((!state.equipment[item.slot]||EQUIPMENT[state.equipment[item.slot]!]!.stars<item.stars)&&item.price<=budget){state.equipment[item.slot]=item.id;state.gold-=item.price;budget-=item.price;}
  }
  const target=Math.min(RULES.slots,config.deck.openingSize+(round-1)*config.deck.cardsPerRound);
  for(let roll=0;roll<level.shoppingRolls;roll++){
@@ -94,7 +97,7 @@ export function prepareBot(state:BotState,previous:SpellId[],round:number,index:
      if(!isDamage(id)&&next.filter(x=>!isDamage(x)).length/next.length>config.deck.maxSupportFraction)continue;
      const nextXp=[...xp];if(at<0)nextXp.push(0);else nextXp[at]=0;
      const gain=scoreBotDeck(next,state.strategy,nextXp)-base;
-     if(at>=0&&gain<config.deck.replacementThreshold)continue;
+     if(at>=0&&gain<config.deck.replacementThreshold+(xp[at]??0)*config.deck.mergePriority)continue;
      candidates.push({deck:next,xp:nextXp,score:gain,id,offerIndex});
     }
     return candidates;

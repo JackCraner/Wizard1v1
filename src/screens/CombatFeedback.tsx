@@ -1,3 +1,4 @@
+import holy from '../config/holy.json';
 import { STATUS_ART } from '../components/cards/spellArt';
 import { useEffect, useRef, useState } from 'react';
 import { Animated, Image, Modal, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
@@ -5,23 +6,28 @@ import { KEYWORDS } from '../config/catalogue';
 import statuses from '../config/statuses.json';
 import type { CombatFrame, Fighter } from '../game/model';
 
-const icons:Record<string,string>={veil:'◈',burn:'♨',eruption:'✹','cloud-heart':'☁','greater-cloud-heart':'☁',interrupt:'×',trap:'⌘',overgrowth:'❧',lifebloom:'✿','celestial-alignment':'☯','greater-alignment':'☯',moonfire:'☾',sunfire:'☀',growth:'✚',starfall:'✦',rain:'☂',tide:'≈',slowness:'❄','next-instant':'ϟ','tidal-echo':'◎',fury:'⚔','star-empowerment':'✧',guard:'⬡',phoenix:'♨',overheat:'♨',hotstreak:'♨',combust:'ϟ'};
+const icons:Record<string,string>={consecration:'✦',penance:'⟳',oath:'✧',retribution:'⚔','templars-oath':'⬡',sanctuary:'✧','holy-ground':'✚',citadel:'♜',ward:'⬡',veil:'◈',burn:'♨',eruption:'✹','cloud-heart':'☁','greater-cloud-heart':'☁',interrupt:'×',trap:'⌘',overgrowth:'❧',lifebloom:'✿','celestial-alignment':'☯','greater-alignment':'☯',moonfire:'☾',sunfire:'☀',growth:'✚',starfall:'✦',rain:'☂',tide:'≈',slowness:'❄','next-instant':'ϟ','tidal-echo':'◎',fury:'⚔','star-empowerment':'✧',guard:'⬡',phoenix:'♨',overheat:'♨',hotstreak:'♨',combust:'ϟ'};
 export function EffectBar({fighter,compact,group,highlight=[],onInspect}:{fighter:Fighter;compact:boolean;group:'buff'|'debuff';highlight?:string[];onInspect?:()=>void}) {
  const [selected,setSelected]=useState<string|null>(null);
  const bad=group==='debuff';const color=bad?'#ff9388':'#a6e4a1';
  const items=Object.entries(fighter.statuses).filter(([id,n])=>{const kind=(statuses as Record<string,{kind:string}>)[id]?.kind;return n>0&&(kind==='dot'||kind==='debuff')===bad;});
- const info=selected&&fighter.statuses[selected]?KEYWORDS[selected]:null;
+ const oath=fighter.oath;
+ const oathLabel=oath?'Oath of '+oath.id[0].toUpperCase()+oath.id.slice(1):'';
+ const oathProgress=oath?.remaining===undefined?'Until reshuffle':oath.remaining+' spells left';
+ const info=selected==='oath'&&oath?{name:oathLabel,description:KEYWORDS.oath.description+' '+(oath.requirement==='nonInstant'?'Avoid Instant casts.':oath.requirement==='noDamage'?'Deal no direct enemy Health damage. DoTs and retaliation are allowed.':'Do not skip a spell for insufficient mana.')}:selected&&fighter.statuses[selected]?KEYWORDS[selected]:null;
  return <View style={{flex:bad?1:undefined,flexShrink:1,maxHeight:'100%',borderWidth:1,borderColor:bad?'#8a4540':'#436e4e',borderRadius:4,backgroundColor:bad?'#301514dc':'#12271de8',padding:2}}>
+   {group==='buff'&&fighter.shield>0&&<Text accessibilityLabel={`${fighter.shield} Ward`} style={{color:'#b9dcff',fontSize:10,textAlign:'center'}}>⬡ {fighter.shield} Ward</Text>}
+   {!bad&&oath&&<Pressable accessibilityRole="button" accessibilityLabel={oathLabel+'. '+oathProgress+'. Inspect Oath.'} onPress={()=>{onInspect?.();setSelected('oath');}} style={{padding:3,borderWidth:1,borderColor:'#d6b766',backgroundColor:'#362e17',borderRadius:3}}><Text numberOfLines={1} adjustsFontSizeToFit style={{color:'#ffe3a1',fontSize:8,textAlign:'center'}}>{oathLabel}</Text><Text style={{color:'#f0ddb6',fontSize:7,textAlign:'center'}}>{oathProgress}</Text></Pressable>}
    <Text style={{color,fontSize:7,fontWeight:'800',textAlign:'center'}}>{bad?'− DEBUFFS':'+ BUFFS'}</Text>
    <ScrollView style={{flexGrow:0,flexShrink:1}} nestedScrollEnabled showsVerticalScrollIndicator={false} contentContainerStyle={{flexDirection:bad?'row':'column',flexWrap:bad?'wrap':'nowrap',gap:2,alignItems:bad?'center':'stretch',justifyContent:bad?'center':'flex-start'}}>
      {!items.length&&<Text style={{color:'#aaa08c',fontSize:8,textAlign:'center'}}>None</Text>}
-     {items.map(([id,count])=><Pressable key={id} accessibilityRole="button" accessibilityLabel={`${bad?'Debuff':'Buff'}: ${KEYWORDS[id]?.name??id}, ${count} ticks. Tap for details.`} onPress={()=>{onInspect?.();setSelected(id);}} style={{flexDirection:'row',alignItems:'center',gap:2,borderWidth:1,borderColor:highlight.includes(id)?'#fff0a2':bad?'#9d5750':'#619069',borderRadius:3,backgroundColor:highlight.includes(id)?'#625025':'#10150fee',minHeight:bad?18:24,paddingHorizontal:2}}>
+     {items.map(([id,count])=><Pressable key={id} accessibilityRole="button" accessibilityLabel={`${bad?'Debuff':'Buff'}: ${KEYWORDS[id]?.name??id}, ${id==='consecration'?count+' of '+holy.consecrationPerPenance+' stacks':count+' ticks'}. Tap for details.`} onPress={()=>{onInspect?.();setSelected(id);}} style={{flexDirection:'row',alignItems:'center',gap:2,borderWidth:1,borderColor:highlight.includes(id)?'#fff0a2':bad?'#9d5750':'#619069',borderRadius:3,backgroundColor:highlight.includes(id)?'#625025':'#10150fee',minHeight:bad?18:24,paddingHorizontal:2}}>
        {STATUS_ART[id]?<Image accessible={false} source={STATUS_ART[id]} resizeMode="cover" style={{width:bad?16:20,height:bad?16:20,borderRadius:2}}/>:<Text style={{color,fontSize:13}}>{icons[id]??'✧'}</Text>}
        {!bad&&<Text numberOfLines={1} adjustsFontSizeToFit style={{flex:1,color:'#ddedda',fontSize:8}}>{KEYWORDS[id]?.name??id}</Text>}
-       <Text style={{color:'#fff',fontSize:10,fontWeight:'900'}}>{count}</Text>
+       <Text style={{color:'#fff',fontSize:10,fontWeight:'900'}}>{id==='consecration'?`${count}/${holy.consecrationPerPenance}`:count}</Text>
      </Pressable>)}
    </ScrollView>
-   <Modal visible={!!info} transparent animationType="fade" onRequestClose={()=>setSelected(null)}><View style={{flex:1,alignItems:'center',justifyContent:'center',backgroundColor:'#0009',padding:24}}><View accessibilityViewIsModal style={{width:'100%',maxWidth:330,padding:16,gap:10,backgroundColor:'#191710',borderColor:color,borderWidth:1,borderRadius:6}}><Text style={{color,fontWeight:'800'}}>{bad?'− Debuff':'+ Buff'} · {info?.name} · {selected?fighter.statuses[selected]:0}T</Text><Text style={{color:'#eee0ca'}}>{info?.description}</Text><Pressable accessibilityRole="button" onPress={()=>setSelected(null)} style={{padding:10,borderWidth:1,borderColor:color}}><Text style={{color,textAlign:'center'}}>Close</Text></Pressable></View></View></Modal>
+   <Modal visible={!!info} transparent animationType="fade" onRequestClose={()=>setSelected(null)}><View style={{flex:1,alignItems:'center',justifyContent:'center',backgroundColor:'#0009',padding:24}}><View accessibilityViewIsModal style={{width:'100%',maxWidth:330,padding:16,gap:10,backgroundColor:'#191710',borderColor:color,borderWidth:1,borderRadius:6}}><Text style={{color,fontWeight:'800'}}>{bad?'− Debuff':'+ Buff'} · {info?.name} · {selected==='oath'?oathProgress:selected==='consecration'?`${fighter.statuses.consecration}/${holy.consecrationPerPenance} stacks`:`${selected?fighter.statuses[selected]:0}T`}</Text><Text style={{color:'#eee0ca'}}>{info?.description}</Text><Pressable accessibilityRole="button" onPress={()=>setSelected(null)} style={{padding:10,borderWidth:1,borderColor:color}}><Text style={{color,textAlign:'center'}}>Close</Text></Pressable></View></View></Modal>
  </View>;
 }
 type Hit={side:'player'|'bot';amount:number;critical:boolean;healing:boolean;mana?:boolean;key:string;delay:number};

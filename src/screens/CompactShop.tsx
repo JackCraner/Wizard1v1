@@ -8,7 +8,7 @@ import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { RULES, SPELLS, deriveStats, deckDomains, spellAddReason, canAddSpell } from '../game/engine';
-import { EQUIPMENT, EQUIPMENT_SLOTS, equipmentModifiers } from '../game/shop';
+import { EQUIPMENT, EQUIPMENT_SLOTS, equipmentModifiers, rerollCost } from '../game/shop';
 import type { Command, EquipmentId, Session, SpellId } from '../game/model';
 import { DraggableHand } from './DraggableHand';
 
@@ -45,6 +45,7 @@ export function CompactShop({ session, busy, act, onMenu, onLibrary, onLeaderboa
   const previewHeight=Math.min(225,size.height*.59);
   const previewWidth=previewHeight*2/3+(offerDrag&&explainedKeywords(SPELLS[offerDrag.id].keywords).length?180:0);
   const compact = size.height < 500;
+  const rollCost=rerollCost(session.equipment,session.rerolls);
   const stats = deriveStats(equipmentModifiers(session.equipment));
   const handHeight = Math.max(62, Math.min(145, size.height * .23));
   return <View ref={rootRef} collapsable={false} onLayout={measure} style={s.root}>
@@ -57,7 +58,7 @@ export function CompactShop({ session, busy, act, onMenu, onLibrary, onLeaderboa
           <Pressable accessibilityRole="button" onPress={onLibrary} style={s.menu}><Text style={s.text}>Spell library</Text></Pressable>
           <Text accessibilityRole="header" style={[s.title, { fontSize: compact ? 14 : 26 }]}>SHOP · ROUND {session.round} · {botConfig.difficulties[session.difficulty].label}</Text>
           <View style={s.headerRight}><Text accessibilityLabel={`${session.gold} gold`} style={s.gold}>◉ {session.gold}</Text>
-            <Pressable accessibilityRole="button" accessibilityLabel="Reroll for 1 gold" disabled={busy || session.gold < 1} onPress={() => act({ type: 'reroll' })} style={[s.menu, (busy || session.gold < 1) && s.disabled]}><Text style={s.text}>⟳ Reroll (1)</Text></Pressable>
+            <Pressable accessibilityRole="button" accessibilityLabel={`Reroll for ${rollCost} gold`} disabled={busy || session.gold < rollCost} onPress={() => act({ type: 'reroll' })} style={[s.menu, (busy || session.gold < rollCost) && s.disabled]}><Text style={s.text}>⟳ Reroll ({rollCost})</Text></Pressable>
           </View>
         </View>
         <View style={[s.middle, { gap: compact ? 4 : 14 }]}>
@@ -90,10 +91,11 @@ export function CompactShop({ session, busy, act, onMenu, onLibrary, onLeaderboa
               <Text style={s.cost}>◉ {SPELLS[id].price}</Text>
             </ShopOffer>)}</View>
             <Text style={s.label}>EQUIPMENT SHOP</Text>
-            <View style={[s.equipment, { height: compact ? 43 : 76 }]}>{session.equipmentShop.map(id => {
+            <View style={[s.equipment, { height: compact ? 43 : 76 }]}>{session.equipmentShop.map((id,shopSlot) => {
+              if(id===null)return <View key={shopSlot} style={s.item}><Text style={s.itemInfo}>SOLD · Reroll to refill</Text></View>;
               const item = EQUIPMENT[id];
-              return <Pressable key={id} accessibilityRole="button" accessibilityLabel={`Inspect ${item.name}, ${item.price} gold`} onPress={() => inspectItem(id)} style={s.item}>
-                <Text style={s.itemSymbol}>{item.symbol}</Text><View style={{ flex: 1 }}><Text numberOfLines={1} adjustsFontSizeToFit style={s.itemName}>{item.name}</Text><Text numberOfLines={1} adjustsFontSizeToFit style={s.itemInfo}>{item.description}</Text></View><Text style={s.cost}>{session.equipment[item.slot] ? '✓' : `◉ ${item.price}`}</Text>
+              return <Pressable key={shopSlot} accessibilityRole="button" accessibilityLabel={`Inspect ${item.name}, ${item.price} gold`} onPress={() => inspectItem(id)} style={s.item}>
+                <Text style={s.itemSymbol}>{item.symbol}</Text><View style={{ flex: 1 }}><Text numberOfLines={1} adjustsFontSizeToFit style={s.itemName}>{item.name} {'★'.repeat(item.stars)}</Text><Text numberOfLines={1} adjustsFontSizeToFit style={s.itemInfo}>{item.description}</Text></View><Text style={s.cost}>{`◉ ${item.price}`}</Text>
               </Pressable>;
             })}</View>
           </View>

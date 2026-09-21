@@ -1,3 +1,4 @@
+import {equipmentKeywords} from '../game/equipment';
 import { cardAt, canMerge, UPGRADE_XP } from '../game/upgrades';
 import { Leaderboard } from './Leaderboard';
 import { SpellCard, KeywordBoxes, RulesText, CardPreview } from '../components/cards/SpellCard';
@@ -56,9 +57,9 @@ export function ShopScreen({ session, busy, act, onMenu, onLibrary, error }: {
                 <View style={{ flex: 1 }}><Action label="Later →" disabled={busy || selection.index === session.spells.length - 1} onPress={() => { act({ type: 'move', from: selection.index, to: selection.index + 1 }); setSelection(null); }} /></View>
               </View></>}
           </>}
-          {selectedItem && <><Text style={s.largeItem}>{selectedItem.symbol}</Text><Text style={s.modalTitle}>{selectedItem.name}</Text><Text style={s.modalBody}>{selectedItem.description}</Text><Text style={s.caption}>Equips to your {selectedItem.slot} slot. Applies to every duel.</Text>
-            <Action green label={session.equipment[selectedItem.slot] ? 'Already equipped' : `Buy ${selectedItem.name} · ${selectedItem.price} gold`}
-              disabled={busy || !!session.equipment[selectedItem.slot] || session.gold < selectedItem.price}
+          {selectedItem && <><Text style={[s.largeItem,{fontSize:32}]}>{selectedItem.symbol}</Text><Text style={s.modalTitle}>{selectedItem.name} {'★'.repeat(selectedItem.stars)}</Text><RulesText rules={selectedItem.description} keywords={equipmentKeywords(selectedItem)} color="#e0d0ad" fontSize={13} /><KeywordBoxes keywords={equipmentKeywords(selectedItem)} /><Text style={s.caption}>Equips to your {selectedItem.slot} slot. Replaces existing gear without a refund. Applies to every duel.</Text>
+            <Action green label={!session.equipmentShop.includes(selectedItem.id)?'Equipped':`${session.equipment[selectedItem.slot]?'Replace with':'Buy'} ${selectedItem.name} · ${selectedItem.price} gold`}
+              disabled={busy || !session.equipmentShop.includes(selectedItem.id) || session.gold < selectedItem.price}
               onPress={() => { act({ type: 'buyEquipment', item: selectedItem.id }); setSelection(null); }} />
             {session.gold < selectedItem.price && !session.equipment[selectedItem.slot] && <Text style={s.caption}>Not enough gold.</Text>}
           </>}

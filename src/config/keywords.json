@@ -242,5 +242,88 @@
     "related": [
       "hot"
     ]
+  },
+  "ward": {
+    "name": "Ward",
+    "aliases": [],
+    "description": "A damage shield. Each point absorbs 1 damage before Health is lost, then is consumed. Ward adds together and does not count down; it resets each combat. Guard prevents damage without spending Ward.",
+    "related": []
+  },
+  "cycle": {
+    "name": "Cycle",
+    "aliases": [
+      "Cycles"
+    ],
+    "description": "One pass through your ordered spell deck, ending after its Reshuffle. Once-per-Cycle equipment refreshes for the next pass. Skipped and interrupted cards still advance the deck.",
+    "related": []
+  },
+  "restoration": {
+    "name": "Restoration",
+    "aliases": [],
+    "description": "Increases healing you do by the stated percentage, including healing over time. Does not increase Mana restoration. Healing received bonuses are separate.",
+    "related": [
+      "hot"
+    ]
+  },
+  "spell-power": {
+    "name": "Spell Power",
+    "aliases": [],
+    "description": "Increases direct spell damage by the stated percentage. Damage over time needs a DoT damage bonus unless an item explicitly says otherwise.",
+    "related": []
+  },
+  "consecration": {
+    "name": "Consecration",
+    "aliases": [],
+    "description": "Persistent enemy stacks. Every 5 are consumed to add +1 Penance tick to their next reshuffle, without a cap. Cleanse removes only unconverted stacks.",
+    "related": [
+      "penance"
+    ]
+  },
+  "penance": {
+    "name": "Penance",
+    "aliases": [],
+    "description": "Extra reshuffle ticks. Damage, healing and timed effects continue normally. Penance gained during a reshuffle waits for the next one.",
+    "related": []
+  },
+  "oath": {
+    "name": "Oath",
+    "aliases": [],
+    "description": "One active Oath. Meet its condition for a reward; a new Oath replaces it. Its own cast is excluded. Repeated triggers count as one completed card.",
+    "related": []
+  },
+  "retribution": {
+    "name": "Retribution",
+    "aliases": [],
+    "description": "After an opposing direct spell damages your Health, retaliate for 15 damage, at most once per tick. DoTs, absorbed hits and retaliation do not trigger it.",
+    "related": []
+  },
+  "templars-oath": {
+    "name": "Templar's Oath",
+    "aliases": [],
+    "description": "A timed stance: take 20% less damage and deal 10% less direct spell damage. Does not replace a condition-based Oath.",
+    "related": []
+  },
+  "sanctuary": {
+    "name": "Sanctuary",
+    "aliases": [],
+    "description": "Take 40% less damage and receive 25% more healing while active.",
+    "related": []
+  },
+  "holy-ground": {
+    "name": "Holy Ground",
+    "aliases": [],
+    "description": "Heal 15 each tick. Apply 1 Consecration whenever the opponent starts a new spell while active.",
+    "related": [
+      "hot",
+      "consecration"
+    ]
+  },
+  "citadel": {
+    "name": "Citadel",
+    "aliases": [],
+    "description": "Take 30% less damage. Each opposing direct spell hit that damages your Health applies 1 Consecration to its caster.",
+    "related": [
+      "consecration"
+    ]
   }
 }

@@ -16,14 +16,14 @@ describe('catalogue shop authority',()=>{
   await expect(g.execute(first.id,first.revision,{type:'reroll'})).rejects.toThrow('out of date');
  });
  it('applies equipment to the new base stats and locks purchases during combat',async()=>{
-  const g=new LocalGameGateway();let s=await g.start();(g as unknown as {session:{gold:number}}).session.gold=30;
-  s=await g.execute(s.id,s.revision,{type:'buyEquipment',item:'wand'});s=await g.execute(s.id,s.revision,{type:'buyEquipment',item:'robe'});
-  await expect(g.execute(s.id,s.revision,{type:'buyEquipment',item:'robe'})).rejects.toThrow('occupied');
+  const g=new LocalGameGateway();let s=await g.start();(g as any).session.gold=30;(g as any).session.equipmentShop=['weapon_reed_sceptre','armor_padded_robes'];
+  s=await g.execute(s.id,s.revision,{type:'buyEquipment',item:'weapon_reed_sceptre'});s=await g.execute(s.id,s.revision,{type:'buyEquipment',item:'armor_padded_robes'});
+  await expect(g.execute(s.id,s.revision,{type:'buyEquipment',item:'armor_padded_robes'})).rejects.toThrow('unavailable');
   s=await g.execute(s.id,s.revision,{type:'buy',spell:s.shop.find(id=>id!==null&&SPELLS[id].price<=s.gold)!});
   const goldBeforeFight=s.gold;
-  s=await g.execute(s.id,s.revision,{type:'fight'});expect(s.battle!.frames[0].player.maxHealth).toBe(515);expect(s.battle!.frames[0].player.maxMana).toBe(105);
+  s=await g.execute(s.id,s.revision,{type:'fight'});expect(s.battle!.frames[0].player.maxHealth).toBe(545);expect(s.battle!.frames[0].player.maxMana).toBe(110);
   await expect(g.execute(s.id,s.revision,{type:'buy',spell:'seed-shot'})).rejects.toThrow('locked');
-  s=await g.execute(s.id,s.revision,{type:'next'});expect(s.gold).toBe(goldBeforeFight+10);expect(s.equipment.armor).toBe('robe');
+  s=await g.execute(s.id,s.revision,{type:'next'});expect(s.gold).toBe(goldBeforeFight+10);expect(s.equipment.armor).toBe('armor_padded_robes');
  });
  it('limits loadouts, validates reorder and isolates returned state',async()=>{
   const g=new LocalGameGateway();let s=await g.start();const internal=(g as unknown as {session:{shop:string[];spells:string[];spellXp:number[]}}).session;internal.shop=['seed-shot'];internal.spells=Array(10).fill('seed-shot');internal.spellXp=Array(10).fill(0);
@@ -39,7 +39,7 @@ it('mixes domains deterministically and starts with no spells',async()=>{
  await expect(g.execute(s.id,s.revision,{type:'fight'})).rejects.toThrow('Equip a spell');
  for(let roll=0;roll<20;roll++) {
   const offers=offersFor(1,roll).shop;
-  expect(new Set(offers.map(id=>SPELLS[id].domain)).size).toBe(3);
+  expect(new Set(offers.map(id=>SPELLS[id].domain)).size).toBe(4);
   expect(offers).toHaveLength(RULES.shopSlots);
   expect(new Set(offers).size).toBe(RULES.shopSlots);
   expect(offersFor(1,roll).shop).toEqual(offers);

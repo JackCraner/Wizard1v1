@@ -12,17 +12,17 @@ A game contains **you and seven bots**. Race to **8 duel wins**. Every duel star
 4. Earn a trophy for a win, check the leaderboard, and return to the shop with 10 more gold.
 5. Continue until someone reaches 8 wins.
 
-Nature focuses on damage over time and healing. Water focuses on mana, healing, and repeated spell effects. Fire focuses on burst damage, critical hits, and self-damage. Holy and Affliction have visual assets, but no playable spells in the current catalogue.
+Nature focuses on damage over time and healing. Water focuses on mana, healing, and repeated spell effects. Fire focuses on burst damage, critical hits, and self-damage. Holy focuses on protection, Oaths, interrupts, and extending enemy reshuffles through Consecration. Affliction currently has visual assets only.
 
 ## Shopping and deck building
 
 ### Gold, offers, and equipment
 
-- The shop has **five spell offers** and two equipment offers. A spell's gold price equals its star rank: a 3-star spell costs 3 gold. Mana is a separate combat resource.
+- The shop has **five spell offers** and two equipment offers. Equipment also costs its 1–5 star rank and uses the same round-based rarity probabilities as spells. A spell's gold price equals its star rank: a 3-star spell costs 3 gold. Mana is a separate combat resource.
 - Drag a shop spell into your hand to buy it. Each offer can be purchased once; its slot stays empty until a reroll or the next round.
 - Rerolling costs **1 gold** and refreshes both shop rows. Unspent gold carries over; each new round adds **10 gold**.
 - Round 1 offers only rank 1 spells. Higher ranks gradually become more likely. The probabilities for each round are in `src/config/shopOdds.json`; rounds beyond the last entry use that entry's probabilities.
-- Weapon, armor, ring, and boots slots provide equipment bonuses. Current equipment increases maximum health or mana. Equipment persists between rounds and cannot currently be replaced or sold.
+- Weapon, armor, ring, and boots slots provide equipment bonuses. Current equipment increases maximum health or mana. Equipment persists between rounds. Buying gear for an occupied slot replaces the old item without a refund. Each shop offer is consumed on purchase.
 
 ### Hand order and domains
 
@@ -48,7 +48,7 @@ Both wizards act automatically. A **1T** spell completes at the end of its first
 
 An **Instant** spell resolves at the start of the tick, but your next card cannot start until the next tick. Instant chains therefore still use one card per tick. There is no passive mana regeneration: spells and their effects must supply mana. Mana and healing cannot exceed their maximums.
 
-After the last card, the wizard spends **two full ticks reshuffling**, then restarts the same order. Reshuffling does not randomize the deck or grant immunity: damage, healing, buffs, and debuffs continue normally.
+After the last card, the wizard normally spends **two full ticks reshuffling**, then restarts the same order. Reshuffling does not randomize the deck or grant immunity: damage, healing, buffs, and debuffs continue normally.
 
 ### What happens during a tick?
 
@@ -76,7 +76,7 @@ Some effects also scale with their remaining stacks:
 - **Hotstreak:** each remaining stack adds 10 percentage points of crit chance.
 - **Channel:** X counts adjacent copies of that spell, rather than status stacks.
 
-Stacks continue to count down during casting and reshuffling. Maelstrom explicitly prevents Tide countdown. Next-spell effects, such as Slowness and Alignment, are consumed when used and can also expire before use.
+Timed stacks continue to count down during casting and reshuffling. Consecration persists until consumed or cleansed, and Oaths persist until completed, broken, or replaced. Maelstrom explicitly prevents Tide countdown. Next-spell effects, such as Slowness and Alignment, are consumed when used and can also expire before use.
 
 ### Critical hits and damage modifiers
 
@@ -108,6 +108,10 @@ The following entries describe the current rules. Values are before other modifi
 
 | Keyword | Explanation |
 | --- | --- |
+| **Ward** | A damage shield: 1 Ward absorbs 1 damage before health, then is consumed. Ward stacks, does not count down, and resets each combat. Guard blocks damage without spending Ward. |
+| **Cycle** | One pass through the ordered deck, ending after Reshuffle. Once-per-Cycle effects refresh for the next pass; skips and interrupts still advance the deck. |
+| **Restoration** | Percentage increase to healing done, including HoTs. Separate from healing received bonuses; does not affect mana restoration. |
+| **Spell Power** | Percentage increase to direct spell damage. DoTs require their own bonus unless explicitly included. |
 | **DoT** | Damage over time. Deals damage before normal spells and loses one stack afterward. Reapplication adds stacks. Most DoTs deal fixed damage; Burn scales with remaining stacks. |
 | **HoT** | Heals during the HoT phase, then loses 1 stack. Reapplying adds stacks. Most HoTs heal a fixed amount; Lifebloom heals per remaining stack. |
 | **Instant** | Resolves at tick start, before damage over time and duration countdowns. Your next spell waits until the next tick. |
@@ -164,17 +168,47 @@ The following entries describe the current rules. Values are before other modifi
 
 Rainborn, Monsoon, and Maelstrom are combat-long modifiers; recasting them does not stack their power. Each Channel card casts separately and uses the entire contiguous group size, including copies before and after it. For example, three consecutive Undertows each use X = 3. Groups do not wrap across the ends of the deck; upgraded and base copies of the same spell belong to the same group.
 
+## Holy: protection, Oaths and Penance
+
+Holy has 27 spells across ranks 1–5. It uses the same shop odds, star prices, two-domain limit, merging and XP rules as the other domains. The 5-star spells are Unique. Missing spell artwork intentionally leaves the Holy frame's illustration area empty.
+
+| Keyword | Behavior |
+| --- | --- |
+| **Consecration** | Persistent stacks applied to the enemy. Every **5 stacks** are immediately consumed for **+1 Penance tick**, with **no cap**. Unconverted stacks remain between ticks. Cleanse removes those stacks, but cannot remove Penance already queued. |
+| **Penance** | Extra ticks on the next reshuffle, added after equipment adjusts its base duration. Damage, healing and timed effects continue. Penance received during an active reshuffle waits for the following reshuffle. The deck shows queued and active extra ticks. |
+| **Oath** | One active condition-based Oath per wizard; a new one replaces it. The buff panel shows its remaining requirement. Swearing the Oath does not count toward its own condition. Skipped or interrupted cards do not count as completed; Tidecaller repeats count once. |
+| **Retribution** | For 5 ticks, retaliate for 15 damage after an opposing direct spell damages your Health, at most once per tick. DoTs, costs, retaliation, and fully absorbed hits do not trigger it. Retaliation cannot trigger retaliation. |
+| **Templar's Oath** | A 6-tick stance: incoming damage ×0.8 and your direct spell damage ×0.9. Despite its name, this timed stance does not replace a condition-based Oath. |
+| **Sanctuary** | For 6 ticks, incoming damage ×0.6 and healing received ×1.25. Distinct damage reduction effects multiply. |
+| **Holy Ground** | For 6 ticks, heal 15 in the HoT phase and apply 1 Consecration whenever the opponent starts a new cast. Progressing a cast, skipping, and repeated spell triggers do not count as new starts. |
+| **Citadel** | Grants 5 Guard and an 8-tick stance with incoming damage ×0.7. Each opposing direct hit that damages your Health applies 1 Consecration to its caster. Guard and Ward can prevent this trigger by absorbing the damage. |
+
+| Oath | Requirement | Reward |
+| --- | --- | --- |
+| **Patience** | Complete the next 3 cards without starting an Instant cast. Actual cast time, including modifiers, determines whether it is Instant. | 2 Guard. |
+| **Mercy** | Complete the next 3 cards without dealing direct damage to opposing Health. | Heal 80 and apply 3 Consecration. |
+| **Resolve** | Until your next reshuffle starts, never skip a card because of insufficient mana. Interruptions do not break this Oath. | 3 Guard and apply 5 Consecration. |
+| **Salvation** | Until your next reshuffle starts, deal no direct damage to opposing Health. | Heal 150, gain 4 Guard, and apply 10 Consecration. |
+
+Mercy and Salvation allow DoTs, retaliation, self-damage, and hits fully absorbed by Guard/Ward. Rewards resolve after simultaneous spell damage; an Oath cannot rescue a wizard killed by that damage. Resolve and Salvation pay at reshuffle **start**, not completion. If both decks finish together, both sets of rewards and Consecration are processed before assigning either reshuffle duration.
+
+Judgment's bonus requires an opposing cast still in progress. Intercession gives Guard when interruption fails; Inquisition applies Consecration only on successful interruption. Divine Decree applies its debuffs regardless. Divine Intervention grants 5 Guard instead of 3 only below **30% of maximum Health**. Exorcism removes all distinct DoTs/debuffs and heals 25 per removed effect, capped at 100 before healing modifiers; it counts effects, not stacks.
+
+All these timed statuses follow the existing tick order. In particular, a 1-stack Guard from an Instant protects the early phases of that tick and expires before normal spells. An Oath reward at a normal cast's completion begins after that tick's countdown.
+
 ## Current scope and balancing
 
 Runs are local and use bots that develop their decks between rounds. Difficulty changes their shopping and deck-building behavior. The shop leaderboard shows all eight participants, their wins, and their decks from the previous combat. Returning to the menu keeps the current run; reloading or restarting the app resets it.
 
-The catalogue contains 71 spells across Nature, Water, and Fire. Cards with unresolved mechanics remain visible in the library but cannot appear in playable decks or shop offers. **Tidal's mana cost and Starfall's application amount remain undefined.** Spell assets are still being added; missing artwork is allowed.
+The catalogue contains 98 spells across Nature, Water, Fire, and Holy. All 27 Holy spells are playable; their first upgraded versions cost 20% less mana with the same effects and cast times. Cards with unresolved mechanics remain visible in the library but cannot appear in playable decks or shop offers. **Tidal's mana cost and Starfall's application amount remain undefined.** Spell assets are still being added; missing artwork is allowed.
 
 The JSON files are the source of truth for balancing:
 
 | File | Controls |
 | --- | --- |
+| `src/config/equipment.json` | All 155 equipment entries: slot, 1–5 stars, affinity, stats and triggered abilities. |
 | `src/config/spells.json` | Every spell's base and upgraded values, rules text, keywords, and effects. |
+| `src/config/holy.json` | Consecration-to-Penance threshold and Holy rule notes. |
 | `src/config/statuses.json` | Shared status values, such as Burn damage per stack and crit bonuses. |
 | `src/config/keywords.json` | Keyword names and in-game explanations. |
 | `src/config/rules.json` | Base resources, hand/shop limits, max ticks, and crit defaults. |
@@ -240,7 +274,7 @@ Official references: [Expo CLI](https://docs.expo.dev/more/expo-cli/) and [Andro
 
 `GameGateway` is asynchronous and injected at the app root. Replace the local implementation with an HTTP/WebSocket adapter; keep the same screens and shared rules. The server must own sessions, matchmaking, loadout locking, command validation, concurrency/idempotency, and combat results. Add authentication, persistence, runtime request validation, reconnection, and ruleset versioning before real multiplayer. The current local adapter is not a server or a security boundary.
 
-Equipment can feed health/mana modifiers into `deriveStats` and `fighter`. Four basic equipment items now occupy weapon, armor, ring, and boots slots and apply health/mana modifiers. Equipment replacement, selling, and richer combat buffs remain future work. Game data uses JSON-compatible snapshots and does not depend on DOM, browser crypto, or structuredClone, making it portable to Hermes and a future Node backend.
+Equipment can feed health/mana modifiers into `deriveStats` and `fighter`. The equipment catalogue fills weapon, armor, ring, and boots slots with stat bonuses and triggered abilities. Equipment replacement and triggered combat abilities are implemented; selling remains future work. Game data uses JSON-compatible snapshots and does not depend on DOM, browser crypto, or structuredClone, making it portable to Hermes and a future Node backend.
 
 ## Validation
 

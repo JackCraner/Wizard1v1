@@ -2,10 +2,10 @@ import { describe, expect, it } from 'vitest';
 import { CARDS, CARD_BY_ID, goldCost, KEYWORDS, keywordSpans, explainedKeywords, manaLabel, castLabel } from './catalogue';
 
 describe('spell catalogue', () => {
-  it('contains all 71 unique spells in the supplied three domains', () => {
-    expect(CARDS).toHaveLength(71);
-    expect(new Set(CARDS.map(c => c.id)).size).toBe(71);
-    expect(['nature','water','fire'].map(d => CARDS.filter(c => c.domain === d).length)).toEqual([25,25,21]);
+  it('contains all 98 unique spells in the supplied four domains', () => {
+    expect(CARDS).toHaveLength(98);
+    expect(new Set(CARDS.map(c => c.id)).size).toBe(98);
+    expect(['nature','water','fire','holy'].map(d => CARDS.filter(c => c.domain === d).length)).toEqual([25,25,21,27]);
     for (const card of CARDS) {
       expect(card.stars).toBeGreaterThanOrEqual(1); expect(card.stars).toBeLessThanOrEqual(5);
       expect(goldCost(card)).toBe(card.stars);

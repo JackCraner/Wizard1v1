@@ -109,5 +109,52 @@
   "greater-cloud-heart": {
     "kind": "buff",
     "power": 60
+  },
+  "consecration": {
+    "kind": "debuff",
+    "domain": "holy",
+    "persistent": true
+  },
+  "retribution": {
+    "kind": "buff",
+    "domain": "holy",
+    "trigger": "direct_spell_damage_taken",
+    "retaliationDamage": 15,
+    "maxTriggersPerTick": 1
+  },
+  "templars-oath": {
+    "kind": "buff",
+    "domain": "holy",
+    "incomingDamageMultiplier": 0.8,
+    "directDamageMultiplier": 0.9
+  },
+  "sanctuary": {
+    "kind": "buff",
+    "domain": "holy",
+    "incomingDamageMultiplier": 0.6,
+    "healingReceivedMultiplier": 1.25
+  },
+  "holy-ground": {
+    "kind": "hot",
+    "domain": "holy",
+    "healPerTick": 15,
+    "onOpponentSpellStart": {
+      "type": "apply_status",
+      "target": "opponent",
+      "status": "consecration",
+      "stacks": 1
+    },
+    "power": 15
+  },
+  "citadel": {
+    "kind": "buff",
+    "domain": "holy",
+    "incomingDamageMultiplier": 0.7,
+    "onDirectSpellDamageTaken": {
+      "type": "apply_status",
+      "target": "opponent",
+      "status": "consecration",
+      "stacks": 1
+    }
   }
 }

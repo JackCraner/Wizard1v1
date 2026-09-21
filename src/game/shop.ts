@@ -1,21 +1,16 @@
+import { EQUIPMENT } from './equipment';
+export {EQUIPMENT,EQUIPMENT_SLOTS,equipmentModifiers,rerollCost} from './equipment';
 import { shopRankOdds } from '../config/shopOdds';
 import { canOfferSpell, RULES, PLAYABLE_SPELLS, SPELLS } from './engine';
 import type { Equipment, EquipmentId, EquipmentSlot, SpellId } from './model';
 
-export const EQUIPMENT: Record<EquipmentId, Equipment> = {
-  wand: { id: 'wand', slot: 'weapon', name: 'Apprentice wand', price: 4, description: '+5 maximum mana', modifiers: { mana: 5 }, symbol: '╱' },
-  robe: { id: 'robe', slot: 'armor', name: 'Woven robes', price: 4, description: '+15 maximum health', modifiers: { health: 15 }, symbol: '♜' },
-  band: { id: 'band', slot: 'ring', name: 'Sapphire band', price: 4, description: '+10 maximum mana', modifiers: { mana: 10 }, symbol: '◉' },
-  treads: { id: 'treads', slot: 'boots', name: 'Wayfarer boots', price: 3, description: '+10 maximum health', modifiers: { health: 10 }, symbol: '⌁' },
-};
-export const EQUIPMENT_SLOTS: EquipmentSlot[] = ['weapon', 'armor', 'ring', 'boots'];
 const spells = PLAYABLE_SPELLS;
-const items: EquipmentId[] = ['wand', 'robe', 'band', 'treads'];
+const items=Object.keys(EQUIPMENT);
 
 // Deterministic local offers; a future server can replace this with seeded generation.
 export function offersFor(round: number, rerolls: number, deck: SpellId[] = []) {
   const eligible = spells.filter(id => canOfferSpell(deck, id));
-  const offset = round - 1 + rerolls;
+
   let seed=(round*73856093 ^ rerolls*19349663)>>>0;
   const random=()=>{seed=(Math.imul(seed,1664525)+1013904223)>>>0;return seed/4294967296;};
   const odds=shopRankOdds(round);
@@ -39,9 +34,9 @@ export function offersFor(round: number, rerolls: number, deck: SpellId[] = []) 
   }
   return {
     shop,
-    equipmentShop: Array.from({ length: 2 }, (_, i) => items[(offset + i) % items.length]),
+    equipmentShop: Array.from({length:2},()=>{
+      let roll=random()*odds.reduce((a,b)=>a+b,0);let stars=odds.findIndex(weight=>(roll-=weight)<0)+1;if(!stars)stars=5;
+      const pool=items.filter(id=>EQUIPMENT[id].stars===stars);return pool[Math.floor(random()*pool.length)];
+    }),
   };
-}
-export function equipmentModifiers(equipment: Partial<Record<EquipmentSlot, EquipmentId>>) {
-  return Object.values(equipment).map(id => EQUIPMENT[id].modifiers);
 }

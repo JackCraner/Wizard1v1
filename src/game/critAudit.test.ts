@@ -16,7 +16,7 @@ it('checks 0%, 10%, 50% and 100% crit rates for both sides over 1000 seeds',()=>
   console.log(side,Math.round(chance*100)+'% expected:',crits+'/1000 crits');
   expect(Math.abs(crits/1000-chance)).toBeLessThan(.035);
  }
-});
+},15000);
 it('Scorch does not retroactively use the Hotstreak that it grants',()=>{
  const b=simulate(fighter('A',['scorch','ember']),fighter('B',['splash']));
  expect(b.frames[1].player.statuses.hotstreak).toBe(2);

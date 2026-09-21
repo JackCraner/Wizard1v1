@@ -1,7 +1,7 @@
 import { cardAt, UPGRADE_XP } from '../../game/upgrades';
 import Svg, { ClipPath, Defs, Image as SvgImage, Path } from 'react-native-svg';
 import { useId, useState } from 'react';
-import { Image, Platform, StyleSheet, Text, View, type ImageSourcePropType } from 'react-native';
+import { Image, Platform, ScrollView, StyleSheet, Text, View, type ImageSourcePropType } from 'react-native';
 import { castLabel, manaLabel, goldCost, keywordSpans, explainedKeywords, type CardDefinition, type Domain } from '../../config/catalogue';
 import { SPELL_ART } from './spellArt';
 
@@ -14,6 +14,7 @@ const shopFrames: Record<Domain, ImageSourcePropType> = {
  fire: require('../../../assets/Fire_Border_shop.png'), holy: require('../../../assets/Holy_Border_shop.png'), affliction: require('../../../assets/Affliction_Border_shop.png'),
 };
 const upgradedFrames:Partial<Record<Domain,ImageSourcePropType>>={
+ holy:require('../../../assets/Holy_Border_Upgraded.png'),
  nature:require('../../../assets/Nature_Border_upgraded.png'),water:require('../../../assets/Water_Border_Upgraded.png'),fire:require('../../../assets/Fire_Border_Upgraded.png'),
 };
 const serif = Platform.select({ ios: 'Georgia', android: 'serif', default: 'Georgia, serif' });
@@ -40,8 +41,8 @@ export function SpellCard({ compact = false, shop = false, art, ...input }: Spel
       <SvgImage href={artwork} x={65} y={55 * frameRatio} width={870} height={456 * frameRatio} preserveAspectRatio="xMidYMid slice" clipPath={`url(#${artClipId})`} />
     </Svg>}
     {!shop && !card.upgraded && <View pointerEvents="none" style={{position:'absolute',left:'33.7%',top:'6.5%',width:'32.5%',height:'4.1%',flexDirection:'row',gap:2*scale}}>{[0,1,2].map(i=><View key={i} style={{flex:1,borderRadius:2*scale,backgroundColor:i<(card.xp??0)?'#ffd45f':'transparent',shadowColor:'#ffdc6e',shadowOpacity:i<(card.xp??0)?1:0,shadowRadius:5*scale,shadowOffset:{width:0,height:0}}}>{i<(card.xp??0)&&<Image source={require('../../../assets/XP point.png')} resizeMode="stretch" style={{position:'absolute',left:'-12%',top:'-28%',width:'124%',height:'156%'}} />}</View>)}</View>}
-    <View style={s.mana}><Text numberOfLines={1} adjustsFontSizeToFit minimumFontScale={.65} style={[s.value, { fontSize: 17 * scale, color: '#edfbff', textShadowColor: '#032034' }]}>{manaLabel(card.mana)}</Text></View>
-    <View style={s.cast}><Text numberOfLines={1} adjustsFontSizeToFit minimumFontScale={.65} style={[s.value, { fontSize: (card.castTicks === null ? 11 : 16) * scale }]}>{card.castTicks === 0 ? 'ϟ' : card.castTicks === null ? '?' : card.castTicks}<Text style={{ fontSize: 7 * scale }}>{card.castTicks ? 'T' : ''}</Text></Text></View>
+    <View style={s.mana}><Text numberOfLines={1} adjustsFontSizeToFit minimumFontScale={.65} style={[s.value, { fontSize: (typeof card.mana==='number'&&card.mana>=100?11:typeof card.mana==='number'&&card.mana>=10?14:17) * scale, color: card.domain==='holy'?'#17394c':'#edfbff', textShadowColor: card.domain==='holy'?'#fff5d4':'#032034' }]}>{manaLabel(card.mana)}</Text></View>
+    <View style={s.cast}><Text numberOfLines={1} adjustsFontSizeToFit minimumFontScale={.65} style={[s.value, { fontSize: (card.castTicks === null ? 11 : 16) * scale, ...(card.domain==='holy'?{color:'#3c2712',textShadowColor:'#fff0cc'}:{}) }]}>{card.castTicks === 0 ? 'ϟ' : card.castTicks === null ? '?' : card.castTicks}<Text style={{ fontSize: 7 * scale }}>{card.castTicks ? 'T' : ''}</Text></Text></View>
     <View style={s.name}><Text numberOfLines={1} adjustsFontSizeToFit minimumFontScale={.5} style={{ color: '#f4e1b7', fontFamily: serif, fontWeight: '600', fontSize: 14 * scale, textAlign: 'center' }}>{card.name}</Text></View>
     <View style={s.stars}><Text style={{ color: '#e1be63', fontSize: 10 * scale, letterSpacing: scale }}>{'★'.repeat(card.stars)}</Text></View>
     <View style={s.rules}>{compact && size.height < 115 ? <Text style={{ fontSize: 9 * scale, color: '#382617', textAlign: 'center' }}>{card.domain.toUpperCase()}</Text> : <RulesText rules={card.rules} keywords={card.keywords} fontSize={rulesSize} />}</View>
@@ -58,7 +59,7 @@ export function CardPreview({ card, height = 260, width, shop = false }: { card:
   const hasKeywords = explainedKeywords(card.keywords).length > 0;
   return <View style={{ flexDirection: 'row', gap: hasKeywords ? 8 : 0, width: hasKeywords ? (width ?? cardWidth + 200) : cardWidth, height }}>
     <View style={{ width: cardWidth, height }}><SpellCard {...card} shop={shop} /></View>
-    {hasKeywords && <View style={{ flex: 1, minWidth: 0 }}><KeywordBoxes keywords={card.keywords} small /></View>}
+    {hasKeywords && <ScrollView style={{ flex: 1, minWidth: 0 }} nestedScrollEnabled contentContainerStyle={{paddingBottom:4}}><KeywordBoxes keywords={card.keywords} small /></ScrollView>}
   </View>;
 }
 const s = StyleSheet.create({

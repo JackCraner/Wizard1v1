@@ -1,7 +1,7 @@
 import { deckXp, mergeCards, UPGRADE_XP } from '../game/upgrades';
 import { BOT_CONFIG, createBotStates, type BotStates } from '../game/botAI';
 import { createLobby, resolveLobbyRound } from '../game/tournament';
-import { EQUIPMENT, offersFor, equipmentModifiers } from '../game/shop';
+import { EQUIPMENT, offersFor, equipmentModifiers, rerollCost } from '../game/shop';
 import { cloneSnapshot } from '../game/clone';
 import { spellAddReason, RULES, SPELLS } from '../game/engine';
 import type { Command, Difficulty, GameGateway, Session, SpellId } from '../game/model';
@@ -28,14 +28,15 @@ export class LocalGameGateway implements GameGateway {
     } else {
       if (s.phase !== 'shop') throw new Error('Your spell order is locked during combat.');
       if (command.type === 'reroll') {
-        if (s.gold < 1) throw new Error('Not enough gold to reroll.');
-        s.gold--; s.rerolls++; Object.assign(s, offersFor(s.round, s.rerolls, s.spells));
+        const cost=rerollCost(s.equipment,s.rerolls);
+        if (s.gold < cost) throw new Error('Not enough gold to reroll.');
+        s.gold-=cost; s.rerolls++; Object.assign(s, offersFor(s.round, s.rerolls, s.spells));
       } else if (command.type === 'buyEquipment') {
         const item = EQUIPMENT[command.item];
-        if (!item || !s.equipmentShop.includes(command.item)) throw new Error('Equipment unavailable.');
-        if (s.equipment[item.slot]) throw new Error('That equipment slot is already occupied.');
+        const slot=command.shopSlot??s.equipmentShop.indexOf(command.item);
+        if (!item || !Number.isInteger(slot)||slot<0||s.equipmentShop[slot]!==command.item) throw new Error('Equipment unavailable.');
         if (s.gold < item.price) throw new Error('Not enough gold.');
-        s.gold -= item.price; s.equipment[item.slot] = item.id;
+        s.gold -= item.price; s.equipment[item.slot] = item.id;s.equipmentShop[slot]=null;
       } else if (command.type === 'buy') {
         const spell = SPELLS[command.spell];
         const shopSlot=command.shopSlot??s.shop.indexOf(command.spell);

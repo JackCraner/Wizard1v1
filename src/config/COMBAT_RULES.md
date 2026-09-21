@@ -4,7 +4,7 @@
 
 - Only ids in `src/config/spells.json` exist in the game. Starting hand: empty. Buy at least one spell before combat. Shop offers are shuffled deterministically across eligible domains. Bots and shop offers use catalogue cards with implemented, sufficiently defined effects. Undefined cards remain browsable, with a `combat.blockedReason`, and cannot enter a loadout.
 - `src/config/rules.json`: 500 base health, 100 base mana, 50 maximum ticks, 1.5 critical multiplier. Equipment modifies maximum stats. Gold cost is derived from stars.
-- `src/config/statuses.json`: per-tick effect values. Every existing buff and debuff loses one remaining stack each world tick, including while its owner is casting, except Tide after Maelstrom.
+- `src/config/statuses.json`: per-tick effect values. Every existing buff and debuff loses one remaining stack each world tick, including while its owner is casting, except Tide after Maelstrom and persistent Consecration. Condition-based Oaths are separate from timed stacks.
 - Apply 5 Moonfire on tick 1: it remains at 5 in that snapshot; tick 2 deals 10 damage and leaves 4; ticks 3–6 finish the remaining ticks. It deals five ticks of damage total. Moonfire damage per tick does not multiply by remaining duration; Burn does.
 - Casting 1T completes at the end of the first casting tick. Casting 2T completes on the second. Spells repeat in loadout order.
 - Mana is charged once when casting starts. An unaffordable spell is skipped and consumes one tick, preserving the prototype's skip behavior. Healing and mana restoration cap at maximum values.
@@ -73,3 +73,44 @@ Each remaining Hotstreak stack adds 10 percentage points of crit chance, capped 
 - Burn deals 10 × its remaining stack count as damage each tick, then loses one stack. Eruption permits periodic crits using the applying caster's crit chance sampled at tick start, before Instant effects. Periodic status ownership tracks the most recent applier when stacks are combined; self-Burn from Immolate belongs to its caster.
 - Interrupt cancels an ongoing cast, advances its card, and does not refund mana. The interrupted fighter cannot start another spell until the next tick. Already completed simultaneous casts remain resolved.
 - Flashfire consumes remaining Burn on both fighters and grants matching Hotstreak and Fury. Its normal cast occurs after periodic damage and countdowns.
+
+## Equipment
+
+The 155-item catalogue is in equipment.json. Price equals star rank, and equipment uses shopOdds.json probabilities. Two offers refresh on reroll; purchased offers are consumed. Buying into an occupied slot replaces the item without a refund. Equipment affinity is a synergy label and does not consume a spell Domain slot.
+
+Ward absorbs damage after reductions and before Health. It adds, persists until spent, and resets at combat start. Wardpiercer lets 25% of direct spell damage bypass Ward. Guard prevents damage without spending Ward. Explicit health costs bypass Ward and reductions.
+
+A Cycle ends after reshuffling, even if cards were skipped or interrupted. Equipment limits reset for the new Cycle. The first combat pass counts as Cycle 1; effects specifically requiring a Reshuffle do not fire at combat start. Printed cast time means the card's current base/upgraded cast time. Equipment does not permit more than one card per tick.
+
+Spell Power increases direct spell damage; Restoration increases healing done, including periodic healing. Flat equipment percentages of the same stat add. Damage/healing received modifiers are separate. Passive descriptions that repeat a stat field do not apply that stat twice. Crit-power points add to 150% or Overheat's 200%.
+
+Eye of the Storm restores 5 Mana on a Water Tidecaller trigger (repeats already cost no extra Mana). Restoration does not affect Mana. Excess healing and Mana can become Ward through the applicable equipment, with caps per Cycle. Equipment-generated healing does not recursively trigger spell-heal abilities, and retaliation does not trigger retaliation chains.
+
+## Holy domain
+
+Holy has 27 spells across ranks 1–5. It uses the same shop odds, star prices, two-domain limit, merging and XP rules as the other domains. The 5-star spells are Unique. Missing spell artwork intentionally leaves the Holy frame's illustration area empty.
+
+| Keyword | Behavior |
+| --- | --- |
+| **Consecration** | Persistent stacks applied to the enemy. Every **5 stacks** are immediately consumed for **+1 Penance tick**, with **no cap**. Unconverted stacks remain between ticks. Cleanse removes those stacks, but cannot remove Penance already queued. |
+| **Penance** | Extra ticks on the next reshuffle, added after equipment adjusts its base duration. Damage, healing and timed effects continue. Penance received during an active reshuffle waits for the following reshuffle. The deck shows queued and active extra ticks. |
+| **Oath** | One active condition-based Oath per wizard; a new one replaces it. The buff panel shows its remaining requirement. Swearing the Oath does not count toward its own condition. Skipped or interrupted cards do not count as completed; Tidecaller repeats count once. |
+| **Retribution** | For 5 ticks, retaliate for 15 damage after an opposing direct spell damages your Health, at most once per tick. DoTs, costs, retaliation, and fully absorbed hits do not trigger it. Retaliation cannot trigger retaliation. |
+| **Templar's Oath** | A 6-tick stance: incoming damage ×0.8 and your direct spell damage ×0.9. Despite its name, this timed stance does not replace a condition-based Oath. |
+| **Sanctuary** | For 6 ticks, incoming damage ×0.6 and healing received ×1.25. Distinct damage reduction effects multiply. |
+| **Holy Ground** | For 6 ticks, heal 15 in the HoT phase and apply 1 Consecration whenever the opponent starts a new cast. Progressing a cast, skipping, and repeated spell triggers do not count as new starts. |
+| **Citadel** | Grants 5 Guard and an 8-tick stance with incoming damage ×0.7. Each opposing direct hit that damages your Health applies 1 Consecration to its caster. Guard and Ward can prevent this trigger by absorbing the damage. |
+
+| Oath | Requirement | Reward |
+| --- | --- | --- |
+| **Patience** | Complete the next 3 cards without starting an Instant cast. Actual cast time, including modifiers, determines whether it is Instant. | 2 Guard. |
+| **Mercy** | Complete the next 3 cards without dealing direct damage to opposing Health. | Heal 80 and apply 3 Consecration. |
+| **Resolve** | Until your next reshuffle starts, never skip a card because of insufficient mana. Interruptions do not break this Oath. | 3 Guard and apply 5 Consecration. |
+| **Salvation** | Until your next reshuffle starts, deal no direct damage to opposing Health. | Heal 150, gain 4 Guard, and apply 10 Consecration. |
+
+Mercy and Salvation allow DoTs, retaliation, self-damage, and hits fully absorbed by Guard/Ward. Rewards resolve after simultaneous spell damage; an Oath cannot rescue a wizard killed by that damage. Resolve and Salvation pay at reshuffle **start**, not completion. If both decks finish together, both sets of rewards and Consecration are processed before assigning either reshuffle duration.
+
+Judgment's bonus requires an opposing cast still in progress. Intercession gives Guard when interruption fails; Inquisition applies Consecration only on successful interruption. Divine Decree applies its debuffs regardless. Divine Intervention grants 5 Guard instead of 3 only below **30% of maximum Health**. Exorcism removes all distinct DoTs/debuffs and heals 25 per removed effect, capped at 100 before healing modifiers; it counts effects, not stacks.
+
+All these timed statuses follow the existing tick order. In particular, a 1-stack Guard from an Instant protects the early phases of that tick and expires before normal spells. An Oath reward at a normal cast's completion begins after that tick's countdown.
+

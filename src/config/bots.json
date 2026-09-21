@@ -148,6 +148,37 @@
         "aqua-steal",
         "splash"
       ]
+    },
+    {
+      "id": "paladin",
+      "domains": [
+        "holy",
+        "nature"
+      ],
+      "preferredSpells": [
+        "holy_brand",
+        "holy_consecrate",
+        "holy_condemn",
+        "holy_sanctuary",
+        "holy_citadel",
+        "photosynthesis",
+        "moonfire"
+      ]
+    },
+    {
+      "id": "sanctuary",
+      "domains": [
+        "holy",
+        "water"
+      ],
+      "preferredSpells": [
+        "holy_smite",
+        "holy_penance",
+        "holy_holy_ground",
+        "holy_oath_of_resolve",
+        "splash",
+        "water-heart"
+      ]
     }
   ]
 }
