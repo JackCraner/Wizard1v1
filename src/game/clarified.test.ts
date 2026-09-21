@@ -22,7 +22,7 @@ describe('two domain decks',()=>{
     expect(internal.gold).toBe(10);expect(internal.revision).toBe(0);
   });
   it('keeps every bot within two domains',async()=>{
-    const g=new LocalGameGateway();let s=await g.start();s=await g.execute(s.id,s.revision,{type:'buy',spell:s.shop[0]});
+    const g=new LocalGameGateway();let s=await g.start();s=await g.execute(s.id,s.revision,{type:'buy',spell:s.shop[0]!});
     for(let round=0;round<3;round++) {s=await g.execute(s.id,s.revision,{type:'fight'});s=await g.execute(s.id,s.revision,{type:'next'});}
     expect(s.round).toBe(4);
   });
@@ -34,8 +34,8 @@ describe('Channel groups',()=>{
     expect(deck.map((_,i)=>channelPower(deck,i))).toEqual([3,3,3,1,1]);
     const result=simulate(fighter('A',deck),fighter('B',['splash']));
     expect(result.frames.slice(1,4).map(f=>f.player.statuses.tide)).toEqual([3,5,7]);
-    expect(result.frames.slice(1,4).map(f=>f.bot.health)).toEqual([497,494,491]);
-    expect(result.frames[3].player.mana).toBe(70);
+    expect(result.frames.slice(1,4).map(f=>f.bot.health)).toEqual([476,452,428]);
+    expect(result.frames[3].player.mana).toBe(82);
   });
   it('recalculates groups after reordering and scales Spore Drain damage and Growth',()=>{
     expect(channelPower(['undertow','splash','undertow'],0)).toBe(1);

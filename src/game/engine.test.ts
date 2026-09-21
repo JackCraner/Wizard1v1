@@ -9,7 +9,7 @@ describe('catalogue combat rules',()=>{
     expect(Object.keys(SPELLS)).toEqual(CARDS.map(c=>c.id));
     expect(PLAYABLE_SPELLS.every(id=>CARDS.some(c=>c.id===id))).toBe(true);
     expect(()=>fighter('A',['fireball'])).toThrow('unavailable');
-    expect(()=>fighter('A',['immolate'])).toThrow('unavailable');
+    expect(()=>fighter('A',['immolate'])).not.toThrow();
   });
   it('takes the configured ticks to cast and pays mana exactly once at the start',()=>{
     const result=simulate(fighter('A',['seed-shot','wrath']),fighter('B',['splash']));

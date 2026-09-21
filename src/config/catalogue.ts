@@ -5,6 +5,8 @@ import rawKeywords from './keywords.json';
 export type Domain = 'nature' | 'water' | 'fire' | 'holy' | 'affliction';
 export type ManaCost = number | 'half' | null;
 export interface CardDefinition {
+  xp?: number; upgraded?: boolean;
+  upgrade?: { castTicks:number|null; mana:ManaCost; rules:string; keywords:string[]; combat?:{effects?:Effect[];blockedReason?:string}; notes:string[] };
   id: string; name: string; domain: Domain; stars: number; castTicks: number | null;
   combat?: { effects?: Effect[]; blockedReason?: string };
   mana: ManaCost; rules: string; keywords: string[]; notes: string[];

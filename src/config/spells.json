@@ -16,6 +16,21 @@
           "amount": 70
         }
       ]
+    },
+    "upgrade": {
+      "castTicks": 2,
+      "mana": 5,
+      "rules": "Deal 95 damage.",
+      "keywords": [],
+      "combat": {
+        "effects": [
+          {
+            "kind": "damage",
+            "amount": 95
+          }
+        ]
+      },
+      "notes": []
     }
   },
   {
@@ -39,6 +54,25 @@
           "target": "enemy"
         }
       ]
+    },
+    "upgrade": {
+      "castTicks": 1,
+      "mana": 5,
+      "rules": "Apply 8 Moonfire.",
+      "keywords": [
+        "moonfire"
+      ],
+      "combat": {
+        "effects": [
+          {
+            "kind": "status",
+            "status": "moonfire",
+            "amount": 8,
+            "target": "enemy"
+          }
+        ]
+      },
+      "notes": []
     }
   },
   {
@@ -46,7 +80,7 @@
     "name": "Photosynthesis",
     "domain": "nature",
     "stars": 1,
-    "castTicks": 3,
+    "castTicks": 2,
     "mana": 0,
     "rules": "Restore 15 mana.",
     "keywords": [],
@@ -58,6 +92,21 @@
           "amount": 15
         }
       ]
+    },
+    "upgrade": {
+      "castTicks": 2,
+      "mana": 0,
+      "rules": "Restore 22 mana.",
+      "keywords": [],
+      "combat": {
+        "effects": [
+          {
+            "kind": "mana",
+            "amount": 22
+          }
+        ]
+      },
+      "notes": []
     }
   },
   {
@@ -77,6 +126,21 @@
           "amount": 20
         }
       ]
+    },
+    "upgrade": {
+      "castTicks": 1,
+      "mana": 0,
+      "rules": "Deal 30 damage.",
+      "keywords": [],
+      "combat": {
+        "effects": [
+          {
+            "kind": "damage",
+            "amount": 30
+          }
+        ]
+      },
+      "notes": []
     }
   },
   {
@@ -96,6 +160,21 @@
           "amount": 30
         }
       ]
+    },
+    "upgrade": {
+      "castTicks": 1,
+      "mana": 5,
+      "rules": "Heal 45 health.",
+      "keywords": [],
+      "combat": {
+        "effects": [
+          {
+            "kind": "heal",
+            "amount": 45
+          }
+        ]
+      },
+      "notes": []
     }
   },
   {
@@ -119,6 +198,25 @@
           "amount": 5
         }
       ]
+    },
+    "upgrade": {
+      "castTicks": 2,
+      "mana": 2,
+      "rules": "Deal 30 damage. Restore 8 mana.",
+      "keywords": [],
+      "combat": {
+        "effects": [
+          {
+            "kind": "damage",
+            "amount": 30
+          },
+          {
+            "kind": "mana",
+            "amount": 8
+          }
+        ]
+      },
+      "notes": []
     }
   },
   {
@@ -146,6 +244,29 @@
           ]
         }
       ]
+    },
+    "upgrade": {
+      "castTicks": 2,
+      "mana": 5,
+      "rules": "Deal 75 damage. Crit if Moonfire are active on the target.",
+      "keywords": [
+        "crit",
+        "moonfire"
+      ],
+      "combat": {
+        "effects": [
+          {
+            "kind": "damage",
+            "amount": 75,
+            "critWhen": [
+              "moonfire"
+            ]
+          }
+        ]
+      },
+      "notes": [
+        "Critical condition checks effects on the opponent."
+      ]
     }
   },
   {
@@ -169,6 +290,25 @@
           "target": "enemy"
         }
       ]
+    },
+    "upgrade": {
+      "castTicks": 1,
+      "mana": 8,
+      "rules": "Apply 7 Sunfire.",
+      "keywords": [
+        "sunfire"
+      ],
+      "combat": {
+        "effects": [
+          {
+            "kind": "status",
+            "status": "sunfire",
+            "amount": 7,
+            "target": "enemy"
+          }
+        ]
+      },
+      "notes": []
     }
   },
   {
@@ -178,15 +318,39 @@
     "stars": 2,
     "castTicks": 2,
     "mana": 10,
-    "rules": "Gain 4 Lifebloom.",
+    "rules": "Gain 4 Lifebloom. Heals 10 per remaining stack each tick.",
     "keywords": [
       "lifebloom"
     ],
-    "notes": [
-      "Define X in Lifebloom's 10 × X healing per tick."
-    ],
+    "notes": [],
     "combat": {
-      "blockedReason": "Define X in 10 × X healing."
+      "effects": [
+        {
+          "kind": "status",
+          "status": "lifebloom",
+          "amount": 4,
+          "target": "self"
+        }
+      ]
+    },
+    "upgrade": {
+      "castTicks": 2,
+      "mana": 7,
+      "rules": "Gain 4 Lifebloom. Heals 10 per remaining stack each tick.",
+      "keywords": [
+        "lifebloom"
+      ],
+      "combat": {
+        "effects": [
+          {
+            "kind": "status",
+            "status": "lifebloom",
+            "amount": 4,
+            "target": "self"
+          }
+        ]
+      },
+      "notes": []
     }
   },
   {
@@ -196,15 +360,37 @@
     "stars": 2,
     "castTicks": 1,
     "mana": 5,
-    "rules": "Restore mana equal to the number of DoTs applied.",
+    "rules": "Restore 1 mana per remaining DoT stack on the opponent.",
     "keywords": [
       "dot"
     ],
-    "notes": [
-      "Does this count active effects, effect types, stacks, or all applications this combat?"
-    ],
+    "notes": [],
     "combat": {
-      "blockedReason": "Specify whether DoTs means active types, remaining stacks, or all applications."
+      "effects": [
+        {
+          "kind": "manaPerDotStack",
+          "amount": 1,
+          "target": "enemy"
+        }
+      ]
+    },
+    "upgrade": {
+      "castTicks": 1,
+      "mana": 2,
+      "rules": "Restore 1 mana per remaining DoT stack on the opponent.",
+      "keywords": [
+        "dot"
+      ],
+      "combat": {
+        "effects": [
+          {
+            "kind": "manaPerDotStack",
+            "amount": 1,
+            "target": "enemy"
+          }
+        ]
+      },
+      "notes": []
     }
   },
   {
@@ -228,6 +414,25 @@
           "target": "self"
         }
       ]
+    },
+    "upgrade": {
+      "castTicks": 1,
+      "mana": 3,
+      "rules": "Gain 8 Growth.",
+      "keywords": [
+        "growth"
+      ],
+      "combat": {
+        "effects": [
+          {
+            "kind": "status",
+            "status": "growth",
+            "amount": 8,
+            "target": "self"
+          }
+        ]
+      },
+      "notes": []
     }
   },
   {
@@ -237,7 +442,7 @@
     "stars": 2,
     "castTicks": 1,
     "mana": 3,
-    "rules": "Deal 30 damage. Apply 1 Slowness.",
+    "rules": "Deal 30 damage. Apply 2 Slowness.",
     "keywords": [
       "slowness"
     ],
@@ -251,10 +456,33 @@
         {
           "kind": "status",
           "status": "slowness",
-          "amount": 1,
+          "amount": 2,
           "target": "enemy"
         }
       ]
+    },
+    "upgrade": {
+      "castTicks": 1,
+      "mana": 3,
+      "rules": "Deal 45 damage. Apply 3 Slowness.",
+      "keywords": [
+        "slowness"
+      ],
+      "combat": {
+        "effects": [
+          {
+            "kind": "damage",
+            "amount": 45
+          },
+          {
+            "kind": "status",
+            "status": "slowness",
+            "amount": 3,
+            "target": "enemy"
+          }
+        ]
+      },
+      "notes": []
     }
   },
   {
@@ -263,8 +491,8 @@
     "domain": "nature",
     "stars": 3,
     "castTicks": 0,
-    "mana": 3,
-    "rules": "Instant. Deal 80 damage. Crit if Moonfire and Sunfire are active.",
+    "mana": 8,
+    "rules": "Instant. Deal 65 damage. Crit if Moonfire and Sunfire are active on the target.",
     "keywords": [
       "instant",
       "crit",
@@ -278,12 +506,38 @@
       "effects": [
         {
           "kind": "damage",
-          "amount": 80,
+          "amount": 65,
           "critWhen": [
             "moonfire",
             "sunfire"
           ]
         }
+      ]
+    },
+    "upgrade": {
+      "castTicks": 0,
+      "mana": 8,
+      "rules": "Instant. Deal 90 damage. Crit if Moonfire and Sunfire are active on the target.",
+      "keywords": [
+        "instant",
+        "crit",
+        "moonfire",
+        "sunfire"
+      ],
+      "combat": {
+        "effects": [
+          {
+            "kind": "damage",
+            "amount": 90,
+            "critWhen": [
+              "moonfire",
+              "sunfire"
+            ]
+          }
+        ]
+      },
+      "notes": [
+        "Critical condition checks effects on the opponent."
       ]
     }
   },
@@ -312,6 +566,29 @@
           "target": "enemy"
         }
       ]
+    },
+    "upgrade": {
+      "castTicks": 1,
+      "mana": 5,
+      "rules": "Deal 65 damage. Apply 5 Moonfire.",
+      "keywords": [
+        "moonfire"
+      ],
+      "combat": {
+        "effects": [
+          {
+            "kind": "damage",
+            "amount": 65
+          },
+          {
+            "kind": "status",
+            "status": "moonfire",
+            "amount": 5,
+            "target": "enemy"
+          }
+        ]
+      },
+      "notes": []
     }
   },
   {
@@ -321,16 +598,39 @@
     "stars": 3,
     "castTicks": 2,
     "mana": 5,
-    "rules": "Unique. Double all HoT durations.",
+    "rules": "Unique. Double your remaining HoT stacks.",
     "keywords": [
       "unique",
       "hot"
     ],
-    "notes": [
-      "Confirm whether this affects only your HoTs or both players' HoTs."
-    ],
+    "notes": [],
     "combat": {
-      "blockedReason": "Define Unique and whose HoTs are extended."
+      "effects": [
+        {
+          "kind": "multiplyHotStacks",
+          "amount": 2,
+          "target": "self"
+        }
+      ]
+    },
+    "upgrade": {
+      "castTicks": 2,
+      "mana": 2,
+      "rules": "Unique. Double your remaining HoT stacks.",
+      "keywords": [
+        "unique",
+        "hot"
+      ],
+      "combat": {
+        "effects": [
+          {
+            "kind": "multiplyHotStacks",
+            "amount": 2,
+            "target": "self"
+          }
+        ]
+      },
+      "notes": []
     }
   },
   {
@@ -360,6 +660,31 @@
           "perChannel": true
         }
       ]
+    },
+    "upgrade": {
+      "castTicks": 1,
+      "mana": 3,
+      "rules": "Channel. Deal 15 × X damage. Gain 2 × X Growth.",
+      "keywords": [
+        "channel",
+        "growth"
+      ],
+      "combat": {
+        "effects": [
+          {
+            "kind": "damage",
+            "amount": 15,
+            "perChannel": true
+          },
+          {
+            "kind": "status",
+            "status": "growth",
+            "amount": 2,
+            "perChannel": true
+          }
+        ]
+      },
+      "notes": []
     }
   },
   {
@@ -381,6 +706,23 @@
           "amount": 50
         }
       ]
+    },
+    "upgrade": {
+      "castTicks": 0,
+      "mana": 7,
+      "rules": "Instant. Heal 75 health.",
+      "keywords": [
+        "instant"
+      ],
+      "combat": {
+        "effects": [
+          {
+            "kind": "heal",
+            "amount": 75
+          }
+        ]
+      },
+      "notes": []
     }
   },
   {
@@ -394,11 +736,55 @@
     "keywords": [
       "growth"
     ],
-    "notes": [
-      "The source specifies both gain and apply Growth. Confirm the recipient of the second application."
-    ],
+    "notes": [],
     "combat": {
-      "blockedReason": "Specify who receives the second Growth application."
+      "effects": [
+        {
+          "kind": "heal",
+          "amount": 50
+        },
+        {
+          "kind": "status",
+          "status": "growth",
+          "amount": 5,
+          "target": "self"
+        },
+        {
+          "kind": "status",
+          "status": "growth",
+          "amount": 5,
+          "target": "enemy"
+        }
+      ]
+    },
+    "upgrade": {
+      "castTicks": 1,
+      "mana": 5,
+      "rules": "Heal 50 health. Gain 5 Growth and apply 5 Growth.",
+      "keywords": [
+        "growth"
+      ],
+      "combat": {
+        "effects": [
+          {
+            "kind": "heal",
+            "amount": 50
+          },
+          {
+            "kind": "status",
+            "status": "growth",
+            "amount": 5,
+            "target": "self"
+          },
+          {
+            "kind": "status",
+            "status": "growth",
+            "amount": 5,
+            "target": "enemy"
+          }
+        ]
+      },
+      "notes": []
     }
   },
   {
@@ -418,6 +804,21 @@
     ],
     "combat": {
       "blockedReason": "Define X."
+    },
+    "upgrade": {
+      "castTicks": 1,
+      "mana": 2,
+      "rules": "Apply X Starfall. Gain 1 Star Empowerment.",
+      "keywords": [
+        "starfall",
+        "star-empowerment"
+      ],
+      "combat": {
+        "blockedReason": "Define X."
+      },
+      "notes": [
+        "Define X. Confirm Star Empowerment's recipient and stack duration."
+      ]
     }
   },
   {
@@ -425,17 +826,43 @@
     "name": "Celestial Alignment",
     "domain": "nature",
     "stars": 4,
-    "castTicks": null,
-    "mana": null,
+    "castTicks": 1,
+    "mana": 0,
     "rules": "Unique. Your next spell deals double damage.",
     "keywords": [
-      "unique"
+      "unique",
+      "celestial-alignment"
     ],
-    "notes": [
-      "Cast time and mana cost were not provided."
-    ],
+    "notes": [],
     "combat": {
-      "blockedReason": "Provide mana cost, cast time, and Unique restriction."
+      "effects": [
+        {
+          "kind": "status",
+          "status": "celestial-alignment",
+          "amount": 2,
+          "target": "self"
+        }
+      ]
+    },
+    "upgrade": {
+      "castTicks": 1,
+      "mana": 0,
+      "rules": "Unique. Your next spell deals triple damage.",
+      "keywords": [
+        "unique",
+        "greater-alignment"
+      ],
+      "combat": {
+        "effects": [
+          {
+            "kind": "status",
+            "status": "greater-alignment",
+            "amount": 2,
+            "target": "self"
+          }
+        ]
+      },
+      "notes": []
     }
   },
   {
@@ -451,7 +878,33 @@
     ],
     "notes": [],
     "combat": {
-      "blockedReason": "Define Trap trigger timing and whose spells count."
+      "effects": [
+        {
+          "kind": "status",
+          "status": "trap",
+          "amount": 5,
+          "target": "enemy"
+        }
+      ]
+    },
+    "upgrade": {
+      "castTicks": 1,
+      "mana": 7,
+      "rules": "Apply 5 Trap.",
+      "keywords": [
+        "trap"
+      ],
+      "combat": {
+        "effects": [
+          {
+            "kind": "status",
+            "status": "trap",
+            "amount": 5,
+            "target": "enemy"
+          }
+        ]
+      },
+      "notes": []
     }
   },
   {
@@ -479,6 +932,29 @@
           "target": "enemy"
         }
       ]
+    },
+    "upgrade": {
+      "castTicks": 2,
+      "mana": 8,
+      "rules": "Deal 130 damage. Apply 7 Sunfire.",
+      "keywords": [
+        "sunfire"
+      ],
+      "combat": {
+        "effects": [
+          {
+            "kind": "damage",
+            "amount": 130
+          },
+          {
+            "kind": "status",
+            "status": "sunfire",
+            "amount": 7,
+            "target": "enemy"
+          }
+        ]
+      },
+      "notes": []
     }
   },
   {
@@ -487,8 +963,8 @@
     "domain": "nature",
     "stars": 4,
     "castTicks": 1,
-    "mana": 0,
-    "rules": "Restore 10 mana. Deal 100 damage.",
+    "mana": 6,
+    "rules": "Restore 10 mana. Deal 65 damage.",
     "keywords": [],
     "notes": [],
     "combat": {
@@ -499,9 +975,28 @@
         },
         {
           "kind": "damage",
-          "amount": 100
+          "amount": 65
         }
       ]
+    },
+    "upgrade": {
+      "castTicks": 1,
+      "mana": 6,
+      "rules": "Restore 15 mana. Deal 85 damage.",
+      "keywords": [],
+      "combat": {
+        "effects": [
+          {
+            "kind": "mana",
+            "amount": 15
+          },
+          {
+            "kind": "damage",
+            "amount": 85
+          }
+        ]
+      },
+      "notes": []
     }
   },
   {
@@ -511,15 +1006,37 @@
     "stars": 5,
     "castTicks": 1,
     "mana": 10,
-    "rules": "Immediately deal all remaining DoT damage.",
+    "rules": "Consume all DoTs on the opponent. Deal their remaining damage immediately.",
     "keywords": [
       "dot"
     ],
-    "notes": [
-      "Confirm whose DoTs are counted and whether this consumes them."
-    ],
+    "notes": [],
     "combat": {
-      "blockedReason": "Specify whether remaining DoTs are consumed."
+      "effects": [
+        {
+          "kind": "consumeDots",
+          "amount": 1,
+          "target": "enemy"
+        }
+      ]
+    },
+    "upgrade": {
+      "castTicks": 1,
+      "mana": 7,
+      "rules": "Consume all DoTs on the opponent. Deal their remaining damage immediately.",
+      "keywords": [
+        "dot"
+      ],
+      "combat": {
+        "effects": [
+          {
+            "kind": "consumeDots",
+            "amount": 1,
+            "target": "enemy"
+          }
+        ]
+      },
+      "notes": []
     }
   },
   {
@@ -529,16 +1046,53 @@
     "stars": 5,
     "castTicks": 2,
     "mana": 0,
-    "rules": "Gain 5 Growth and 25 Overgrowth. Growth now heals 3 health per tick.",
+    "rules": "Gain 5 Growth and 25 Overgrowth. Your Growth heals 30 health per tick.",
     "keywords": [
       "growth",
       "overgrowth"
     ],
-    "notes": [
-      "Source changes Growth from 10 to 3 healing. Confirm this value and how Overgrowth changes it."
-    ],
+    "notes": [],
     "combat": {
-      "blockedReason": "Define Overgrowth and confirm the change to 3 healing."
+      "effects": [
+        {
+          "kind": "status",
+          "status": "growth",
+          "amount": 5,
+          "target": "self"
+        },
+        {
+          "kind": "status",
+          "status": "overgrowth",
+          "amount": 25,
+          "target": "self"
+        }
+      ]
+    },
+    "upgrade": {
+      "castTicks": 1,
+      "mana": 0,
+      "rules": "Gain 5 Growth and 25 Overgrowth. Your Growth heals 30 health per tick.",
+      "keywords": [
+        "growth",
+        "overgrowth"
+      ],
+      "combat": {
+        "effects": [
+          {
+            "kind": "status",
+            "status": "growth",
+            "amount": 5,
+            "target": "self"
+          },
+          {
+            "kind": "status",
+            "status": "overgrowth",
+            "amount": 25,
+            "target": "self"
+          }
+        ]
+      },
+      "notes": []
     }
   },
   {
@@ -558,6 +1112,21 @@
           "amount": 5
         }
       ]
+    },
+    "upgrade": {
+      "castTicks": 1,
+      "mana": 0,
+      "rules": "Restore 8 mana.",
+      "keywords": [],
+      "combat": {
+        "effects": [
+          {
+            "kind": "mana",
+            "amount": 8
+          }
+        ]
+      },
+      "notes": []
     }
   },
   {
@@ -577,6 +1146,21 @@
           "amount": 50
         }
       ]
+    },
+    "upgrade": {
+      "castTicks": 2,
+      "mana": 2,
+      "rules": "Deal 75 damage.",
+      "keywords": [],
+      "combat": {
+        "effects": [
+          {
+            "kind": "damage",
+            "amount": 75
+          }
+        ]
+      },
+      "notes": []
     }
   },
   {
@@ -598,6 +1182,23 @@
           "amount": 20
         }
       ]
+    },
+    "upgrade": {
+      "castTicks": 0,
+      "mana": 3,
+      "rules": "Instant. Deal 30 damage.",
+      "keywords": [
+        "instant"
+      ],
+      "combat": {
+        "effects": [
+          {
+            "kind": "damage",
+            "amount": 30
+          }
+        ]
+      },
+      "notes": []
     }
   },
   {
@@ -616,6 +1217,21 @@
     ],
     "combat": {
       "blockedReason": "Provide mana cost."
+    },
+    "upgrade": {
+      "castTicks": 0,
+      "mana": null,
+      "rules": "Gain 3 Tide.",
+      "keywords": [
+        "tide",
+        "instant"
+      ],
+      "combat": {
+        "blockedReason": "Provide mana cost."
+      },
+      "notes": [
+        "Mana cost was not provided."
+      ]
     }
   },
   {
@@ -625,16 +1241,31 @@
     "stars": 1,
     "castTicks": 1,
     "mana": 3,
-    "rules": "Heal 15 health.",
+    "rules": "Heal 25 health.",
     "keywords": [],
     "notes": [],
     "combat": {
       "effects": [
         {
           "kind": "heal",
-          "amount": 15
+          "amount": 25
         }
       ]
+    },
+    "upgrade": {
+      "castTicks": 1,
+      "mana": 3,
+      "rules": "Heal 40 health.",
+      "keywords": [],
+      "combat": {
+        "effects": [
+          {
+            "kind": "heal",
+            "amount": 40
+          }
+        ]
+      },
+      "notes": []
     }
   },
   {
@@ -643,8 +1274,8 @@
     "domain": "water",
     "stars": 2,
     "castTicks": 1,
-    "mana": 10,
-    "rules": "Channel. Deal X damage. Gain X Tide.",
+    "mana": 6,
+    "rules": "Channel. Deal 8 × X damage. Gain X Tide.",
     "keywords": [
       "channel",
       "tide"
@@ -654,7 +1285,7 @@
       "effects": [
         {
           "kind": "damage",
-          "amount": 1,
+          "amount": 8,
           "perChannel": true
         },
         {
@@ -664,6 +1295,31 @@
           "perChannel": true
         }
       ]
+    },
+    "upgrade": {
+      "castTicks": 1,
+      "mana": 6,
+      "rules": "Channel. Deal 12 × X damage. Gain 2 × X Tide.",
+      "keywords": [
+        "channel",
+        "tide"
+      ],
+      "combat": {
+        "effects": [
+          {
+            "kind": "damage",
+            "amount": 12,
+            "perChannel": true
+          },
+          {
+            "kind": "status",
+            "status": "tide",
+            "amount": 2,
+            "perChannel": true
+          }
+        ]
+      },
+      "notes": []
     }
   },
   {
@@ -685,6 +1341,23 @@
           "amount": 10
         }
       ]
+    },
+    "upgrade": {
+      "castTicks": 2,
+      "mana": 5,
+      "rules": "Steal 15 mana.",
+      "keywords": [
+        "steal"
+      ],
+      "combat": {
+        "effects": [
+          {
+            "kind": "stealMana",
+            "amount": 15
+          }
+        ]
+      },
+      "notes": []
     }
   },
   {
@@ -706,6 +1379,23 @@
           "amount": 80
         }
       ]
+    },
+    "upgrade": {
+      "castTicks": 2,
+      "mana": 5,
+      "rules": "Tidecaller. Deal 110 damage.",
+      "keywords": [
+        "tidecaller"
+      ],
+      "combat": {
+        "effects": [
+          {
+            "kind": "damage",
+            "amount": 110
+          }
+        ]
+      },
+      "notes": []
     }
   },
   {
@@ -729,6 +1419,25 @@
           "target": "enemy"
         }
       ]
+    },
+    "upgrade": {
+      "castTicks": 1,
+      "mana": 2,
+      "rules": "Apply 3 Slowness.",
+      "keywords": [
+        "slowness"
+      ],
+      "combat": {
+        "effects": [
+          {
+            "kind": "status",
+            "status": "slowness",
+            "amount": 3,
+            "target": "enemy"
+          }
+        ]
+      },
+      "notes": []
     }
   },
   {
@@ -752,6 +1461,25 @@
           "target": "self"
         }
       ]
+    },
+    "upgrade": {
+      "castTicks": 1,
+      "mana": 5,
+      "rules": "Gain 7 Rain.",
+      "keywords": [
+        "rain"
+      ],
+      "combat": {
+        "effects": [
+          {
+            "kind": "status",
+            "status": "rain",
+            "amount": 7,
+            "target": "self"
+          }
+        ]
+      },
+      "notes": []
     }
   },
   {
@@ -765,11 +1493,36 @@
     "keywords": [
       "veil"
     ],
-    "notes": [
-      "Confirm who receives the damage penalty and mana gain."
-    ],
+    "notes": [],
     "combat": {
-      "blockedReason": "Specify whose spells take the penalty and who gains mana."
+      "effects": [
+        {
+          "kind": "status",
+          "status": "veil",
+          "amount": 3,
+          "target": "self"
+        }
+      ]
+    },
+    "upgrade": {
+      "castTicks": 0,
+      "mana": 0,
+      "rules": "Gain 3 Veil.",
+      "keywords": [
+        "veil",
+        "instant"
+      ],
+      "combat": {
+        "effects": [
+          {
+            "kind": "status",
+            "status": "veil",
+            "amount": 3,
+            "target": "self"
+          }
+        ]
+      },
+      "notes": []
     }
   },
   {
@@ -778,8 +1531,8 @@
     "domain": "water",
     "stars": 3,
     "castTicks": 1,
-    "mana": 5,
-    "rules": "Tidecaller. Heal 100 health.",
+    "mana": 8,
+    "rules": "Tidecaller. Heal 65 health.",
     "keywords": [
       "tidecaller"
     ],
@@ -788,9 +1541,26 @@
       "effects": [
         {
           "kind": "heal",
-          "amount": 100
+          "amount": 65
         }
       ]
+    },
+    "upgrade": {
+      "castTicks": 1,
+      "mana": 8,
+      "rules": "Tidecaller. Heal 90 health.",
+      "keywords": [
+        "tidecaller"
+      ],
+      "combat": {
+        "effects": [
+          {
+            "kind": "heal",
+            "amount": 90
+          }
+        ]
+      },
+      "notes": []
     }
   },
   {
@@ -799,8 +1569,8 @@
     "domain": "water",
     "stars": 3,
     "castTicks": 1,
-    "mana": 10,
-    "rules": "Your next spell gains Tidecaller.",
+    "mana": 6,
+    "rules": "Tidecaller. Gain 2 undefined.",
     "keywords": [
       "tidecaller"
     ],
@@ -810,10 +1580,29 @@
         {
           "kind": "status",
           "status": "tidal-echo",
-          "amount": 1,
+          "amount": 2,
           "target": "self"
         }
       ]
+    },
+    "upgrade": {
+      "castTicks": 1,
+      "mana": 3,
+      "rules": "Tidecaller. Gain 3 undefined.",
+      "keywords": [
+        "tidecaller"
+      ],
+      "combat": {
+        "effects": [
+          {
+            "kind": "status",
+            "status": "tidal-echo",
+            "amount": 3,
+            "target": "self"
+          }
+        ]
+      },
+      "notes": []
     }
   },
   {
@@ -821,9 +1610,9 @@
     "name": "Deepwater",
     "domain": "water",
     "stars": 3,
-    "castTicks": 3,
+    "castTicks": 2,
     "mana": 5,
-    "rules": "Both players restore 15 mana. Gain 5 Tide.",
+    "rules": "Both players restore 20 mana. Gain 6 Tide.",
     "keywords": [
       "tide"
     ],
@@ -832,15 +1621,38 @@
       "effects": [
         {
           "kind": "bothMana",
-          "amount": 15
+          "amount": 20
         },
         {
           "kind": "status",
           "status": "tide",
-          "amount": 5,
+          "amount": 6,
           "target": "self"
         }
       ]
+    },
+    "upgrade": {
+      "castTicks": 2,
+      "mana": 5,
+      "rules": "Both players restore 25 mana. Gain 9 Tide.",
+      "keywords": [
+        "tide"
+      ],
+      "combat": {
+        "effects": [
+          {
+            "kind": "bothMana",
+            "amount": 25
+          },
+          {
+            "kind": "status",
+            "status": "tide",
+            "amount": 9,
+            "target": "self"
+          }
+        ]
+      },
+      "notes": []
     }
   },
   {
@@ -861,6 +1673,23 @@
           "kind": "cleanse"
         }
       ]
+    },
+    "upgrade": {
+      "castTicks": 0,
+      "mana": 3,
+      "rules": "Instant. Cleanse 1 random debuff.",
+      "keywords": [
+        "cleanse",
+        "instant"
+      ],
+      "combat": {
+        "effects": [
+          {
+            "kind": "cleanse"
+          }
+        ]
+      },
+      "notes": []
     }
   },
   {
@@ -886,6 +1715,27 @@
           "perStatus": "tide"
         }
       ]
+    },
+    "upgrade": {
+      "castTicks": 1,
+      "mana": 10,
+      "rules": "Tidecaller. Deal 15 damage per Tide.",
+      "keywords": [
+        "tidecaller",
+        "tide"
+      ],
+      "combat": {
+        "effects": [
+          {
+            "kind": "damage",
+            "amount": 15,
+            "perStatus": "tide"
+          }
+        ]
+      },
+      "notes": [
+        "Damage uses your current remaining Tide stacks."
+      ]
     }
   },
   {
@@ -907,6 +1757,23 @@
           "amount": 100
         }
       ]
+    },
+    "upgrade": {
+      "castTicks": 0,
+      "mana": 16,
+      "rules": "Instant. Deal 130 damage.",
+      "keywords": [
+        "instant"
+      ],
+      "combat": {
+        "effects": [
+          {
+            "kind": "damage",
+            "amount": 130
+          }
+        ]
+      },
+      "notes": []
     }
   },
   {
@@ -915,7 +1782,7 @@
     "domain": "water",
     "stars": 4,
     "castTicks": 2,
-    "mana": 15,
+    "mana": 10,
     "rules": "Gain 15 Rain.",
     "keywords": [
       "rain"
@@ -930,6 +1797,25 @@
           "target": "self"
         }
       ]
+    },
+    "upgrade": {
+      "castTicks": 1,
+      "mana": 10,
+      "rules": "Gain 15 Rain.",
+      "keywords": [
+        "rain"
+      ],
+      "combat": {
+        "effects": [
+          {
+            "kind": "status",
+            "status": "rain",
+            "amount": 15,
+            "target": "self"
+          }
+        ]
+      },
+      "notes": []
     }
   },
   {
@@ -953,6 +1839,25 @@
           "amount": 2
         }
       ]
+    },
+    "upgrade": {
+      "castTicks": 1,
+      "mana": 5,
+      "rules": "Tidecaller. Gain 3 Guard.",
+      "keywords": [
+        "tidecaller",
+        "guard"
+      ],
+      "combat": {
+        "effects": [
+          {
+            "kind": "status",
+            "status": "guard",
+            "amount": 3
+          }
+        ]
+      },
+      "notes": []
     }
   },
   {
@@ -962,13 +1867,33 @@
     "stars": 4,
     "castTicks": 2,
     "mana": "half",
-    "rules": "Spend half your mana. Deal that much damage.",
+    "rules": "Spend half your current mana, rounded down. Deal that much damage.",
     "keywords": [],
-    "notes": [
-      "Confirm rounding and whether half refers to current or maximum mana."
-    ],
+    "notes": [],
     "combat": {
-      "blockedReason": "Specify current/max mana and rounding."
+      "effects": [
+        {
+          "kind": "damage",
+          "amount": 1,
+          "perManaSpent": true
+        }
+      ]
+    },
+    "upgrade": {
+      "castTicks": 1,
+      "mana": "half",
+      "rules": "Spend half your current mana, rounded down. Deal that much damage.",
+      "keywords": [],
+      "combat": {
+        "effects": [
+          {
+            "kind": "damage",
+            "amount": 1,
+            "perManaSpent": true
+          }
+        ]
+      },
+      "notes": []
     }
   },
   {
@@ -977,17 +1902,40 @@
     "domain": "water",
     "stars": 4,
     "castTicks": 2,
-    "mana": null,
-    "rules": "Rain also heals 2 health per tick.",
+    "mana": 15,
+    "rules": "For this combat, Rain also heals you for 20 each tick.",
     "keywords": [
       "rain",
       "hot"
     ],
-    "notes": [
-      "Mana cost was not provided. Confirm whether healing scales with Rain stacks."
-    ],
+    "notes": [],
     "combat": {
-      "blockedReason": "Provide mana cost."
+      "effects": [
+        {
+          "kind": "enhance",
+          "status": "rainborn",
+          "amount": 20
+        }
+      ]
+    },
+    "upgrade": {
+      "castTicks": 1,
+      "mana": 15,
+      "rules": "For this combat, Rain also heals you for 20 each tick.",
+      "keywords": [
+        "rain",
+        "hot"
+      ],
+      "combat": {
+        "effects": [
+          {
+            "kind": "enhance",
+            "status": "rainborn",
+            "amount": 20
+          }
+        ]
+      },
+      "notes": []
     }
   },
   {
@@ -1019,6 +1967,33 @@
           "amount": 10
         }
       ]
+    },
+    "upgrade": {
+      "castTicks": 1,
+      "mana": 0,
+      "rules": "Gain 7 Tide. Restore 8 mana. Heal 20 health.",
+      "keywords": [
+        "tide"
+      ],
+      "combat": {
+        "effects": [
+          {
+            "kind": "status",
+            "status": "tide",
+            "amount": 7,
+            "target": "self"
+          },
+          {
+            "kind": "mana",
+            "amount": 8
+          },
+          {
+            "kind": "heal",
+            "amount": 20
+          }
+        ]
+      },
+      "notes": []
     }
   },
   {
@@ -1028,13 +2003,37 @@
     "stars": 5,
     "castTicks": 3,
     "mana": 10,
-    "rules": "Your Tide no longer expires.",
+    "rules": "For this combat, Tide no longer counts down. Tidecaller still consumes Tide.",
     "keywords": [
       "tide"
     ],
     "notes": [],
     "combat": {
-      "blockedReason": "Tide not expiring conflicts with the new universal countdown rule."
+      "effects": [
+        {
+          "kind": "enhance",
+          "status": "maelstrom",
+          "amount": 1
+        }
+      ]
+    },
+    "upgrade": {
+      "castTicks": 3,
+      "mana": 7,
+      "rules": "For this combat, Tide no longer counts down. Tidecaller still consumes Tide.",
+      "keywords": [
+        "tide"
+      ],
+      "combat": {
+        "effects": [
+          {
+            "kind": "enhance",
+            "status": "maelstrom",
+            "amount": 1
+          }
+        ]
+      },
+      "notes": []
     }
   },
   {
@@ -1044,15 +2043,38 @@
     "stars": 5,
     "castTicks": 1,
     "mana": 0,
-    "rules": "Rain grants 5 mana.",
+    "rules": "For this combat, Rain also restores 5 mana each tick.",
     "keywords": [
       "rain"
     ],
-    "notes": [
-      "Confirm when Rain grants mana: each tick, on application, or when a spell is cast."
-    ],
+    "notes": [],
     "combat": {
-      "blockedReason": "Specify when Rain grants mana."
+      "effects": [
+        {
+          "kind": "enhance",
+          "status": "monsoon",
+          "amount": 5
+        }
+      ]
+    },
+    "upgrade": {
+      "castTicks": 0,
+      "mana": 0,
+      "rules": "For this combat, Rain also restores 5 mana each tick.",
+      "keywords": [
+        "rain",
+        "instant"
+      ],
+      "combat": {
+        "effects": [
+          {
+            "kind": "enhance",
+            "status": "monsoon",
+            "amount": 5
+          }
+        ]
+      },
+      "notes": []
     }
   },
   {
@@ -1061,14 +2083,41 @@
     "domain": "water",
     "stars": 5,
     "castTicks": 1,
-    "mana": null,
-    "rules": "Increase healing by 40%.",
-    "keywords": [],
-    "notes": [
-      "Mana cost was not provided. Interpreted 40$ as 40%; confirm duration and recipient."
+    "mana": 10,
+    "rules": "Gain 25 Cloud Heart. Receive 40% more healing.",
+    "keywords": [
+      "cloud-heart"
     ],
+    "notes": [],
     "combat": {
-      "blockedReason": "Provide mana cost, duration, and healing recipient."
+      "effects": [
+        {
+          "kind": "status",
+          "status": "cloud-heart",
+          "amount": 25,
+          "target": "self"
+        }
+      ]
+    },
+    "upgrade": {
+      "castTicks": 0,
+      "mana": 10,
+      "rules": "Gain 25 Greater Cloud Heart. Receive 60% more healing.",
+      "keywords": [
+        "instant",
+        "cloud-heart"
+      ],
+      "combat": {
+        "effects": [
+          {
+            "kind": "status",
+            "status": "greater-cloud-heart",
+            "amount": 25,
+            "target": "self"
+          }
+        ]
+      },
+      "notes": []
     }
   },
   {
@@ -1088,6 +2137,21 @@
           "amount": 60
         }
       ]
+    },
+    "upgrade": {
+      "castTicks": 1,
+      "mana": 5,
+      "rules": "Deal 80 damage.",
+      "keywords": [],
+      "combat": {
+        "effects": [
+          {
+            "kind": "damage",
+            "amount": 80
+          }
+        ]
+      },
+      "notes": []
     }
   },
   {
@@ -1097,7 +2161,7 @@
     "stars": 1,
     "castTicks": 1,
     "mana": 5,
-    "rules": "Deal 30 damage. Gain 1 Hotstreak.",
+    "rules": "Deal 30 damage. Gain 2 Hotstreak.",
     "keywords": [
       "hotstreak"
     ],
@@ -1111,9 +2175,31 @@
         {
           "kind": "status",
           "status": "hotstreak",
-          "amount": 1
+          "amount": 2
         }
       ]
+    },
+    "upgrade": {
+      "castTicks": 1,
+      "mana": 5,
+      "rules": "Deal 40 damage. Gain 3 Hotstreak.",
+      "keywords": [
+        "hotstreak"
+      ],
+      "combat": {
+        "effects": [
+          {
+            "kind": "damage",
+            "amount": 40
+          },
+          {
+            "kind": "status",
+            "status": "hotstreak",
+            "amount": 3
+          }
+        ]
+      },
+      "notes": []
     }
   },
   {
@@ -1139,6 +2225,27 @@
           "amount": 5
         }
       ]
+    },
+    "upgrade": {
+      "castTicks": 0,
+      "mana": 0,
+      "rules": "Instant. Take 15 damage. Restore 8 mana.",
+      "keywords": [
+        "instant"
+      ],
+      "combat": {
+        "effects": [
+          {
+            "kind": "selfDamage",
+            "amount": 15
+          },
+          {
+            "kind": "mana",
+            "amount": 8
+          }
+        ]
+      },
+      "notes": []
     }
   },
   {
@@ -1148,7 +2255,7 @@
     "stars": 1,
     "castTicks": 2,
     "mana": 0,
-    "rules": "Gain 2 Hotstreak.",
+    "rules": "Gain 4 Hotstreak.",
     "keywords": [
       "hotstreak"
     ],
@@ -1158,9 +2265,27 @@
         {
           "kind": "status",
           "status": "hotstreak",
-          "amount": 2
+          "amount": 4
         }
       ]
+    },
+    "upgrade": {
+      "castTicks": 1,
+      "mana": 0,
+      "rules": "Gain 5 Hotstreak.",
+      "keywords": [
+        "hotstreak"
+      ],
+      "combat": {
+        "effects": [
+          {
+            "kind": "status",
+            "status": "hotstreak",
+            "amount": 5
+          }
+        ]
+      },
+      "notes": []
     }
   },
   {
@@ -1174,11 +2299,35 @@
     "keywords": [
       "burn"
     ],
-    "notes": [
-      "Burn damage per tick is undefined."
-    ],
+    "notes": [],
     "combat": {
-      "blockedReason": "Define Burn damage."
+      "effects": [
+        {
+          "kind": "status",
+          "status": "burn",
+          "amount": 3,
+          "target": "enemy"
+        }
+      ]
+    },
+    "upgrade": {
+      "castTicks": 3,
+      "mana": 5,
+      "rules": "Apply 3 Burn.",
+      "keywords": [
+        "burn"
+      ],
+      "combat": {
+        "effects": [
+          {
+            "kind": "status",
+            "status": "burn",
+            "amount": 3,
+            "target": "enemy"
+          }
+        ]
+      },
+      "notes": []
     }
   },
   {
@@ -1187,7 +2336,7 @@
     "domain": "fire",
     "stars": 2,
     "castTicks": 1,
-    "mana": 8,
+    "mana": 10,
     "rules": "Deal 80 damage.",
     "keywords": [],
     "notes": [],
@@ -1198,6 +2347,21 @@
           "amount": 80
         }
       ]
+    },
+    "upgrade": {
+      "castTicks": 1,
+      "mana": 10,
+      "rules": "Deal 110 damage.",
+      "keywords": [],
+      "combat": {
+        "effects": [
+          {
+            "kind": "damage",
+            "amount": 110
+          }
+        ]
+      },
+      "notes": []
     }
   },
   {
@@ -1224,6 +2388,28 @@
           "amount": 50
         }
       ]
+    },
+    "upgrade": {
+      "castTicks": 1,
+      "mana": 8,
+      "rules": "Gain 3 Hotstreak. Deal 65 damage to both players.",
+      "keywords": [
+        "hotstreak"
+      ],
+      "combat": {
+        "effects": [
+          {
+            "kind": "status",
+            "status": "hotstreak",
+            "amount": 3
+          },
+          {
+            "kind": "bothDamage",
+            "amount": 65
+          }
+        ]
+      },
+      "notes": []
     }
   },
   {
@@ -1239,7 +2425,33 @@
     ],
     "notes": [],
     "combat": {
-      "blockedReason": "Define critical chance for DoTs."
+      "effects": [
+        {
+          "kind": "status",
+          "status": "eruption",
+          "amount": 8,
+          "target": "self"
+        }
+      ]
+    },
+    "upgrade": {
+      "castTicks": 2,
+      "mana": 7,
+      "rules": "Gain 8 Eruption.",
+      "keywords": [
+        "eruption"
+      ],
+      "combat": {
+        "effects": [
+          {
+            "kind": "status",
+            "status": "eruption",
+            "amount": 8,
+            "target": "self"
+          }
+        ]
+      },
+      "notes": []
     }
   },
   {
@@ -1255,7 +2467,33 @@
     ],
     "notes": [],
     "combat": {
-      "blockedReason": "Define Trap trigger timing."
+      "effects": [
+        {
+          "kind": "status",
+          "status": "trap",
+          "amount": 3,
+          "target": "enemy"
+        }
+      ]
+    },
+    "upgrade": {
+      "castTicks": 2,
+      "mana": 2,
+      "rules": "Apply 3 Trap.",
+      "keywords": [
+        "trap"
+      ],
+      "combat": {
+        "effects": [
+          {
+            "kind": "status",
+            "status": "trap",
+            "amount": 3,
+            "target": "enemy"
+          }
+        ]
+      },
+      "notes": []
     }
   },
   {
@@ -1290,6 +2528,36 @@
           "amount": 5
         }
       ]
+    },
+    "upgrade": {
+      "castTicks": 1,
+      "mana": 6,
+      "rules": "Lose half your current health. Gain 20 Overheat. Gain 6 Hotstreak.",
+      "keywords": [
+        "overheat",
+        "hotstreak"
+      ],
+      "combat": {
+        "effects": [
+          {
+            "kind": "loseCurrentHealth",
+            "amount": 0.5
+          },
+          {
+            "kind": "status",
+            "status": "overheat",
+            "amount": 20
+          },
+          {
+            "kind": "status",
+            "status": "hotstreak",
+            "amount": 6
+          }
+        ]
+      },
+      "notes": [
+        "Half-current-health loss rounds down; an odd total leaves the extra health point."
+      ]
     }
   },
   {
@@ -1309,6 +2577,21 @@
           "amount": 120
         }
       ]
+    },
+    "upgrade": {
+      "castTicks": 3,
+      "mana": 0,
+      "rules": "Deal 150 damage.",
+      "keywords": [],
+      "combat": {
+        "effects": [
+          {
+            "kind": "damage",
+            "amount": 150
+          }
+        ]
+      },
+      "notes": []
     }
   },
   {
@@ -1328,6 +2611,21 @@
           "amount": 15
         }
       ]
+    },
+    "upgrade": {
+      "castTicks": 2,
+      "mana": 0,
+      "rules": "Restore 24 mana.",
+      "keywords": [],
+      "combat": {
+        "effects": [
+          {
+            "kind": "mana",
+            "amount": 24
+          }
+        ]
+      },
+      "notes": []
     }
   },
   {
@@ -1341,11 +2639,35 @@
     "keywords": [
       "burn"
     ],
-    "notes": [
-      "Burn damage per tick is undefined."
-    ],
+    "notes": [],
     "combat": {
-      "blockedReason": "Define Burn damage."
+      "effects": [
+        {
+          "kind": "status",
+          "status": "burn",
+          "amount": 5,
+          "target": "enemy"
+        }
+      ]
+    },
+    "upgrade": {
+      "castTicks": 3,
+      "mana": 5,
+      "rules": "Apply 5 Burn.",
+      "keywords": [
+        "burn"
+      ],
+      "combat": {
+        "effects": [
+          {
+            "kind": "status",
+            "status": "burn",
+            "amount": 5,
+            "target": "enemy"
+          }
+        ]
+      },
+      "notes": []
     }
   },
   {
@@ -1355,14 +2677,35 @@
     "stars": 3,
     "castTicks": 2,
     "mana": 5,
-    "rules": "Interrupt the opponent's current cast or channel.",
+    "rules": "Interrupt the opponent’s current cast. Skip that spell without refunding mana.",
     "keywords": [
       "interrupt",
       "channel"
     ],
     "notes": [],
     "combat": {
-      "blockedReason": "Specify interrupted-spell queue advancement and mana refunds."
+      "effects": [
+        {
+          "kind": "interrupt"
+        }
+      ]
+    },
+    "upgrade": {
+      "castTicks": 2,
+      "mana": 2,
+      "rules": "Interrupt the opponent’s current cast. Skip that spell without refunding mana.",
+      "keywords": [
+        "interrupt",
+        "channel"
+      ],
+      "combat": {
+        "effects": [
+          {
+            "kind": "interrupt"
+          }
+        ]
+      },
+      "notes": []
     }
   },
   {
@@ -1382,6 +2725,21 @@
           "amount": 200
         }
       ]
+    },
+    "upgrade": {
+      "castTicks": 4,
+      "mana": 10,
+      "rules": "Deal 250 damage.",
+      "keywords": [],
+      "combat": {
+        "effects": [
+          {
+            "kind": "damage",
+            "amount": 250
+          }
+        ]
+      },
+      "notes": []
     }
   },
   {
@@ -1391,7 +2749,7 @@
     "stars": 4,
     "castTicks": 1,
     "mana": 8,
-    "rules": "Gain 2 Hotstreak and 5 Fury.",
+    "rules": "Gain 3 Hotstreak. Gain 6 Fury.",
     "keywords": [
       "hotstreak",
       "fury"
@@ -1402,14 +2760,38 @@
         {
           "kind": "status",
           "status": "hotstreak",
-          "amount": 2
+          "amount": 3
         },
         {
           "kind": "status",
           "status": "fury",
-          "amount": 5
+          "amount": 6
         }
       ]
+    },
+    "upgrade": {
+      "castTicks": 1,
+      "mana": 8,
+      "rules": "Gain 4 Hotstreak. Gain 9 Fury.",
+      "keywords": [
+        "hotstreak",
+        "fury"
+      ],
+      "combat": {
+        "effects": [
+          {
+            "kind": "status",
+            "status": "hotstreak",
+            "amount": 4
+          },
+          {
+            "kind": "status",
+            "status": "fury",
+            "amount": 9
+          }
+        ]
+      },
+      "notes": []
     }
   },
   {
@@ -1424,11 +2806,8 @@
       "channel",
       "burn"
     ],
-    "notes": [
-      "X is the number of consecutive Immolate cards. Burn targets the caster; its damage per tick remains undefined."
-    ],
+    "notes": [],
     "combat": {
-      "blockedReason": "Define Burn damage per tick.",
       "effects": [
         {
           "kind": "status",
@@ -1442,6 +2821,31 @@
           "perChannel": true
         }
       ]
+    },
+    "upgrade": {
+      "castTicks": 3,
+      "mana": 15,
+      "rules": "Channel. Apply 2 Burn to yourself. Deal 30 × X damage.",
+      "keywords": [
+        "channel",
+        "burn"
+      ],
+      "combat": {
+        "effects": [
+          {
+            "kind": "status",
+            "status": "burn",
+            "target": "self",
+            "amount": 2
+          },
+          {
+            "kind": "damage",
+            "amount": 45,
+            "perChannel": true
+          }
+        ]
+      },
+      "notes": []
     }
   },
   {
@@ -1451,7 +2855,7 @@
     "stars": 4,
     "castTicks": 2,
     "mana": 15,
-    "rules": "Gain 1 Guard.",
+    "rules": "Gain 2 Guard.",
     "keywords": [
       "guard"
     ],
@@ -1461,9 +2865,27 @@
         {
           "kind": "status",
           "status": "guard",
-          "amount": 1
+          "amount": 2
         }
       ]
+    },
+    "upgrade": {
+      "castTicks": 1,
+      "mana": 15,
+      "rules": "Gain 3 Guard.",
+      "keywords": [
+        "guard"
+      ],
+      "combat": {
+        "effects": [
+          {
+            "kind": "status",
+            "status": "guard",
+            "amount": 3
+          }
+        ]
+      },
+      "notes": []
     }
   },
   {
@@ -1491,6 +2913,29 @@
           "target": "self"
         }
       ]
+    },
+    "upgrade": {
+      "castTicks": 1,
+      "mana": 10,
+      "rules": "Deal 45 damage. Gain 1 undefined.",
+      "keywords": [
+        "instant"
+      ],
+      "combat": {
+        "effects": [
+          {
+            "kind": "damage",
+            "amount": 45
+          },
+          {
+            "kind": "status",
+            "status": "next-instant",
+            "amount": 1,
+            "target": "self"
+          }
+        ]
+      },
+      "notes": []
     }
   },
   {
@@ -1500,17 +2945,39 @@
     "stars": 5,
     "castTicks": 1,
     "mana": 20,
-    "rules": "Consume all Burn. Gain 1 Hotstreak and 1 Fury per Burn consumed.",
+    "rules": "Consume all Burn on both players. Gain 1 Hotstreak and 1 Fury per stack consumed.",
     "keywords": [
       "burn",
       "hotstreak",
       "fury"
     ],
-    "notes": [
-      "Confirm whose Burn is consumed and whether consumption counts stacks or duration."
-    ],
+    "notes": [],
     "combat": {
-      "blockedReason": "Define whose Burn is consumed."
+      "effects": [
+        {
+          "kind": "consumeBurn",
+          "amount": 1
+        }
+      ]
+    },
+    "upgrade": {
+      "castTicks": 1,
+      "mana": 17,
+      "rules": "Consume all Burn on both players. Gain 1 Hotstreak and 1 Fury per stack consumed.",
+      "keywords": [
+        "burn",
+        "hotstreak",
+        "fury"
+      ],
+      "combat": {
+        "effects": [
+          {
+            "kind": "consumeBurn",
+            "amount": 1
+          }
+        ]
+      },
+      "notes": []
     }
   },
   {
@@ -1533,6 +3000,24 @@
           "amount": 5
         }
       ]
+    },
+    "upgrade": {
+      "castTicks": 2,
+      "mana": 15,
+      "rules": "Gain 8 Phoenix.",
+      "keywords": [
+        "phoenix"
+      ],
+      "combat": {
+        "effects": [
+          {
+            "kind": "status",
+            "status": "phoenix",
+            "amount": 8
+          }
+        ]
+      },
+      "notes": []
     }
   }
 ]

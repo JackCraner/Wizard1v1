@@ -18,9 +18,10 @@ describe('spell catalogue', () => {
     expect(goldCost({ stars: 4 })).toBe(4);
     expect(manaLabel(null)).toBe('TBD'); expect(manaLabel(0)).toBe('0'); expect(manaLabel('half')).toBe('½');
     expect(castLabel(0)).toBe('Instant'); expect(castLabel(null)).toBe('TBD');
-    expect(CARD_BY_ID['celestial-alignment'].castTicks).toBeNull();
-    expect(CARD_BY_ID['cloud-heart'].mana).toBeNull();
-    expect(CARD_BY_ID['wild-growth'].rules).toContain('3 health');
+    expect(CARD_BY_ID['celestial-alignment'].castTicks).toBe(1);
+    expect(CARD_BY_ID['celestial-alignment'].mana).toBe(0);
+    expect(CARD_BY_ID['cloud-heart'].mana).toBe(10);
+    expect(CARD_BY_ID['wild-growth'].rules).toContain('30 health');
     expect(CARD_BY_ID['renew'].rules).toContain('Gain 5 Growth and apply 5 Growth');
   });
   it('bolds whole keywords without corrupting the original rules', () => {

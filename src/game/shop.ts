@@ -1,5 +1,5 @@
 import { shopRankOdds } from '../config/shopOdds';
-import { canAddSpell, PLAYABLE_SPELLS, SPELLS } from './engine';
+import { canOfferSpell, RULES, PLAYABLE_SPELLS, SPELLS } from './engine';
 import type { Equipment, EquipmentId, EquipmentSlot, SpellId } from './model';
 
 export const EQUIPMENT: Record<EquipmentId, Equipment> = {
@@ -14,7 +14,7 @@ const items: EquipmentId[] = ['wand', 'robe', 'band', 'treads'];
 
 // Deterministic local offers; a future server can replace this with seeded generation.
 export function offersFor(round: number, rerolls: number, deck: SpellId[] = []) {
-  const eligible = spells.filter(id => canAddSpell(deck, id));
+  const eligible = spells.filter(id => canOfferSpell(deck, id));
   const offset = round - 1 + rerolls;
   let seed=(round*73856093 ^ rerolls*19349663)>>>0;
   const random=()=>{seed=(Math.imul(seed,1664525)+1013904223)>>>0;return seed/4294967296;};
@@ -24,7 +24,7 @@ export function offersFor(round: number, rerolls: number, deck: SpellId[] = []) 
   if(!total) throw new Error('No playable spells match the configured shop ranks and deck domains.');
   const shop:SpellId[]=[];
   const usedDomains=new Set<string>();
-  for(let slot=0;slot<4;slot++) {
+  for(let slot=0;slot<RULES.shopSlots;slot++) {
     // Roll rank first: domain variety and catalogue size must not change rank odds.
     let roll=random()*total;
     const rank=ranks.find(entry=>{roll-=entry.weight;return roll<0;}) ?? ranks[ranks.length-1];

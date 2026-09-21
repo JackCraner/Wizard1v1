@@ -12,7 +12,7 @@
     "aliases": [
       "HoTs"
     ],
-    "description": "Heals each tick, before normal spells (including effects just applied by an Instant). Loses 1 stack each tick. Reapplying adds duration, not per-tick power.",
+    "description": "Heals during the HoT phase, then loses 1 stack. Reapplying adds stacks. Most HoTs heal a fixed amount; Lifebloom heals per remaining stack.",
     "related": []
   },
   "instant": {
@@ -40,7 +40,7 @@
   "unique": {
     "name": "Unique",
     "aliases": [],
-    "description": "Special restriction. Copy, cast, and stacking limits: TBD.",
+    "description": "Only one copy of this spell may be in your deck, across base and upgraded versions. Shop copies can still be consumed directly for upgrade XP.",
     "related": []
   },
   "moonfire": {
@@ -62,7 +62,7 @@
   "lifebloom": {
     "name": "Lifebloom",
     "aliases": [],
-    "description": "Heals 10 × X health per tick. X: TBD.",
+    "description": "Heals 10 health per remaining stack each tick, then loses 1 stack. At 5 stacks, heals 50; next tick at 4 stacks, heals 40. Reapplying adds stacks.",
     "related": [
       "hot"
     ]
@@ -100,13 +100,13 @@
   "trap": {
     "name": "Trap",
     "aliases": [],
-    "description": "Deals 10 × the number of spells cast while trapped. Trigger timing: TBD.",
+    "description": "Take 10 damage each time you begin casting a spell while active, including Instant spells. Skips and continued casting do not trigger it. Loses 1 stack each tick.",
     "related": []
   },
   "overgrowth": {
     "name": "Overgrowth",
     "aliases": [],
-    "description": "Wild Growth changes Growth healing to 3 per tick. Other effects: TBD.",
+    "description": "Your Growth heals 30 health per tick instead of 10 while active. Does not change Lifebloom or the opponent’s Growth. Loses 1 stack each tick.",
     "related": [
       "growth"
     ]
@@ -114,7 +114,7 @@
   "tide": {
     "name": "Tide",
     "aliases": [],
-    "description": "Grants a 20% chance to trigger Tidecaller.",
+    "description": "Grants a 20% chance to trigger Tidecaller. A double cast consumes up to 5 Tide stacks. Maelstrom prevents countdown, but not consumption.",
     "related": [
       "tidecaller"
     ]
@@ -140,7 +140,7 @@
   "veil": {
     "name": "Veil",
     "aliases": [],
-    "description": "Spells deal 50% less damage and grant 5 mana per spell.",
+    "description": "Take 50% less damage. Restore 5 mana each time an opposing spell hits you; periodic damage does not grant mana.",
     "related": []
   },
   "cleanse": {
@@ -173,7 +173,7 @@
   "burn": {
     "name": "Burn",
     "aliases": [],
-    "description": "A DoT that deals X damage per tick. X: TBD.",
+    "description": "Deal damage each tick equal to the remaining Burn stacks, then remove 1 stack.",
     "related": [
       "dot"
     ]
@@ -181,7 +181,7 @@
   "eruption": {
     "name": "Eruption",
     "aliases": [],
-    "description": "Allows DoTs to critically hit.",
+    "description": "Your DoTs can critically hit using your crit chance at the start of each tick.",
     "related": [
       "dot",
       "crit"
@@ -198,7 +198,7 @@
   "interrupt": {
     "name": "Interrupt",
     "aliases": [],
-    "description": "Stops the opponent’s current cast or channel.",
+    "description": "Stop the current cast or channel and skip that card. Mana already spent is not refunded. Completed casts are unaffected.",
     "related": []
   },
   "fury": {
@@ -212,5 +212,35 @@
     "aliases": [],
     "description": "On death while active, revive with half maximum health and mana. Each stack adds 1 tick of duration. Rebirth does not consume the remaining duration.",
     "related": []
+  },
+  "celestial-alignment": {
+    "name": "Celestial Alignment",
+    "aliases": [],
+    "description": "Your next started spell deals double direct damage. Consumed when casting starts; the bonus lasts through that cast. Does not boost later DoT ticks. Unused stacks count down each tick.",
+    "related": []
+  },
+  "greater-alignment": {
+    "name": "Greater Alignment",
+    "aliases": [],
+    "description": "Your next started spell deals triple direct damage. Consumed when casting starts; the bonus lasts through that cast. Does not boost later DoT ticks. Unused stacks count down each tick.",
+    "related": []
+  },
+  "cloud-heart": {
+    "name": "Cloud Heart",
+    "aliases": [
+      "Greater Cloud Heart"
+    ],
+    "description": "Receive 40% more healing while active (60% for Greater Cloud Heart). Lasts 25 ticks; includes healing over time.",
+    "related": [
+      "hot"
+    ]
+  },
+  "greater-cloud-heart": {
+    "name": "Greater Cloud Heart",
+    "aliases": [],
+    "description": "Receive 60% more healing while active, including healing over time. Lasts 25 ticks.",
+    "related": [
+      "hot"
+    ]
   }
 }

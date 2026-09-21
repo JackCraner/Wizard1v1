@@ -24,7 +24,8 @@
   },
   "tide": {
     "kind": "buff",
-    "power": 20
+    "power": 20,
+    "consumeOnTrigger": 5
   },
   "slowness": {
     "kind": "debuff",
@@ -65,5 +66,48 @@
     "maxCastTicks": 1,
     "selfDamage": 5,
     "domain": "fire"
+  },
+  "lifebloom": {
+    "kind": "hot",
+    "power": 10,
+    "perStack": true
+  },
+  "trap": {
+    "kind": "debuff",
+    "power": 10
+  },
+  "overgrowth": {
+    "kind": "buff",
+    "power": 30
+  },
+  "celestial-alignment": {
+    "kind": "buff",
+    "power": 2
+  },
+  "greater-alignment": {
+    "kind": "buff",
+    "power": 3
+  },
+  "veil": {
+    "kind": "buff",
+    "damageReduction": 0.5,
+    "manaPerSpell": 5
+  },
+  "burn": {
+    "kind": "dot",
+    "domain": "fire",
+    "power": 1,
+    "perStack": true
+  },
+  "eruption": {
+    "kind": "buff"
+  },
+  "cloud-heart": {
+    "kind": "buff",
+    "power": 40
+  },
+  "greater-cloud-heart": {
+    "kind": "buff",
+    "power": 60
   }
 }

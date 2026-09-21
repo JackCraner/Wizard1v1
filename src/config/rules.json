@@ -8,5 +8,6 @@
   "baseCritChance": 0,
   "seed": 42,
   "maxDomains": 2,
-  "reshuffleTicks": 2
+  "reshuffleTicks": 2,
+  "shopSlots": 5
 }

@@ -20,7 +20,7 @@ it('pairs everyone exactly once per round and meets all seven opponents',()=>{
 });
 it('resolves every duel and snapshots decks independently from later shopping',async()=>{
  const g=new LocalGameGateway();let s=await g.start();
- s=await g.execute(s.id,s.revision,{type:'buy',spell:s.shop[0]});
+ s=await g.execute(s.id,s.revision,{type:'buy',spell:s.shop[0]!});
  s=await g.execute(s.id,s.revision,{type:'fight'});
  for(const p of s.lobby.players){expect(p.wins+p.losses+p.draws).toBe(1);expect(p.lastCombatRound).toBe(1);expect(p.lastCombatDeck.length).toBeGreaterThan(0);}
  const snapshot=[...s.lobby.players[0].lastCombatDeck];

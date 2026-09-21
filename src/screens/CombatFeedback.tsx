@@ -5,7 +5,7 @@ import { KEYWORDS } from '../config/catalogue';
 import statuses from '../config/statuses.json';
 import type { CombatFrame, Fighter } from '../game/model';
 
-const icons:Record<string,string>={moonfire:'☾',sunfire:'☀',growth:'✚',starfall:'✦',rain:'☂',tide:'≈',slowness:'❄','next-instant':'ϟ','tidal-echo':'◎',fury:'⚔','star-empowerment':'✧',guard:'⬡',phoenix:'♨',overheat:'♨',hotstreak:'♨',combust:'ϟ'};
+const icons:Record<string,string>={veil:'◈',burn:'♨',eruption:'✹','cloud-heart':'☁','greater-cloud-heart':'☁',interrupt:'×',trap:'⌘',overgrowth:'❧',lifebloom:'✿','celestial-alignment':'☯','greater-alignment':'☯',moonfire:'☾',sunfire:'☀',growth:'✚',starfall:'✦',rain:'☂',tide:'≈',slowness:'❄','next-instant':'ϟ','tidal-echo':'◎',fury:'⚔','star-empowerment':'✧',guard:'⬡',phoenix:'♨',overheat:'♨',hotstreak:'♨',combust:'ϟ'};
 export function EffectBar({fighter,compact,group,highlight=[],onInspect}:{fighter:Fighter;compact:boolean;group:'buff'|'debuff';highlight?:string[];onInspect?:()=>void}) {
  const [selected,setSelected]=useState<string|null>(null);
  const bad=group==='debuff';const color=bad?'#ff9388':'#a6e4a1';

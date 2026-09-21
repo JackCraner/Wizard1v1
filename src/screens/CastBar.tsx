@@ -1,3 +1,4 @@
+import { cardAt } from '../game/upgrades';
 import { useEffect, useRef } from 'react';
 import { Animated, Easing, Text, View } from 'react-native';
 import { SPELLS } from '../game/engine';
@@ -8,7 +9,7 @@ export function CastBar({fighter,tick,speed,playing,finished,compact}:{fighter:F
   const fill=useRef(new Animated.Value(0)).current;
   const segment=useRef({tick:-1,value:0});
   const cast=fighter.casting;
-  const spell=SPELLS[fighter.instantThisTick??cast?.spell??fighter.spells[fighter.cursor]];
+  const spell=cardAt(fighter.instantThisTick??cast?.spell??fighter.spells[fighter.cursor],fighter.spellXp?.[cast?.index??fighter.cursor]);
   let duration=cast?.totalTicks??spell?.castTicks??0;
   if(!cast){
     if(fighter.statuses['next-instant'])duration=0;

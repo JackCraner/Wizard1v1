@@ -25,7 +25,7 @@ it('gives 10% crit per remaining stack and caps chance at 100%',()=>{
 it('triggers on upward threshold crossings without consuming Hotstreak or retriggering above five',()=>{
  const a=fighter('A',['scorch']);a.statuses.hotstreak=5;
  const result=simulate(a,fighter('B',['splash']));
- expect(result.frames[1].player.statuses.hotstreak).toBe(5);
+ expect(result.frames[1].player.statuses.hotstreak).toBe(6);
  expect(result.frames[1].player.statuses.combust).toBe(3);
  a.statuses.hotstreak=6;
  expect(simulate(a,fighter('B',['splash'])).frames[1].player.statuses.combust).toBeUndefined();

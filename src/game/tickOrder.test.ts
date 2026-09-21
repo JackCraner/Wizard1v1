@@ -17,7 +17,7 @@ it('uses final DoT and buff stacks for Instant criticals before they expire',()=
  const a=fighter('A',['starsurge']);a.statuses.overheat=1;
  const b=fighter('B',['splash']);b.statuses={moonfire:1,sunfire:1};
  const f=simulate(a,b).frames[1];
- expect(f.events[0].critMultiplier).toBe(2);expect(f.bot.health).toBe(310);
+ expect(f.events[0].critMultiplier).toBe(2);expect(f.bot.health).toBe(340);
  expect(f.player.statuses).toEqual({});expect(f.bot.statuses).toEqual({});
  const normal=fighter('A',['lunar-strike']);normal.casting={spell:'lunar-strike',index:0,remaining:1,mana:5,tidecaller:false};
  expect(simulate(normal,b).frames[1].events.find(e=>e.side==='player')?.critical).toBe(false);

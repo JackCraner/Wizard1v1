@@ -1,19 +1,22 @@
+import {DomainSlots} from '../components/cards/DomainSlots';
+import {cardUnderPointer,type CardBounds} from '../game/shopDrop';
+import {MergeBurst} from './MergeBurst';
 import botConfig from '../config/bots.json';
 import { ShopOffer, type ShopPointer } from './ShopOffer';
 import { explainedKeywords } from '../config/catalogue';
-import { useRef, useState, type ReactNode } from 'react';
+import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { RULES, SPELLS, deriveStats, deckDomains, canAddSpell } from '../game/engine';
+import { RULES, SPELLS, deriveStats, deckDomains, spellAddReason, canAddSpell } from '../game/engine';
 import { EQUIPMENT, EQUIPMENT_SLOTS, equipmentModifiers } from '../game/shop';
 import type { Command, EquipmentId, Session, SpellId } from '../game/model';
 import { DraggableHand } from './DraggableHand';
 
 export function CompactShop({ session, busy, act, onMenu, onLibrary, onLeaderboard, error, inspectSpell, inspectItem, inspectHand, renderCard, renderPreview }: {
   session: Session; busy: boolean; act: (command: Command) => void; onMenu: () => void; onLibrary: () => void; onLeaderboard:()=>void; error?: string;
-  inspectSpell: (id: SpellId) => void; inspectItem: (id: EquipmentId) => void; inspectHand: (index: number) => void;
-  renderPreview: (id: SpellId, height: number, width: number) => ReactNode;
-  renderCard: (id: SpellId, expanded?: boolean) => ReactNode;
+  inspectSpell: (id: SpellId,shopSlot:number) => void; inspectItem: (id: EquipmentId) => void; inspectHand: (index: number) => void;
+  renderPreview: (id: SpellId, height: number, width: number, index?:number) => ReactNode;
+  renderCard: (id: SpellId, expanded?: boolean, index?:number) => ReactNode;
 }) {
   const [size, setSize] = useState({ width: 800, height: 360 });
   const [dragging, setDragging] = useState(false);
@@ -23,15 +26,22 @@ export function CompactShop({ session, busy, act, onMenu, onLibrary, onLeaderboa
   const hitsTrash=(x:number,y:number)=>{const b=trashBounds.current;return x>=b.x&&x<=b.x+b.width&&y>=b.y&&y<=b.y+b.height;};
   const rootRef=useRef<View>(null), handRef=useRef<View>(null);
   const bounds=useRef({rootX:0,rootY:0,x:0,y:0,width:0,height:0});
-  const [offerDrag,setOfferDrag]=useState<{id:SpellId;x:number;y:number;over:boolean}|null>(null);
-  const purchaseReason=(id:SpellId)=>busy?'Please wait':session.spells.length>=RULES.slots?'Your hand is full':!canAddSpell(session.spells,id)?'Only 2 domains per deck':session.gold<SPELLS[id].price?'Not enough gold':null;
+  const cardBounds=useRef<CardBounds[]>([]);
+  const pendingMerge=useRef<{revision:number;target:number;xp:number;id:string;x:number;y:number}|null>(null);
+  const [burst,setBurst]=useState<{key:number;x:number;y:number;upgraded:boolean}|null>(null);
+  useEffect(()=>{const p=pendingMerge.current;if(!p||session.revision<=p.revision)return;pendingMerge.current=null;if(session.spells[p.target]===p.id&&session.spellXp?.[p.target]===p.xp+1)setBurst({key:session.revision,x:p.x,y:p.y,upgraded:p.xp+1===3});},[session.revision]);
+  const [offerDrag,setOfferDrag]=useState<{id:SpellId;x:number;y:number;over:boolean;target?:number}|null>(null);
+  const purchaseReason=(id:SpellId)=>busy?'Please wait':session.spells.length>=RULES.slots?'Your hand is full':!canAddSpell(session.spells,id)?spellAddReason(session.spells,id):session.gold<SPELLS[id].price?'Not enough gold':null;
+  const targetAt=(id:SpellId,p:ShopPointer)=>{const i=cardUnderPointer(cardBounds.current,p.x,p.y);return i!==undefined&&session.spells[i]===id?i:undefined;};
+  const dropReason=(id:SpellId,target?:number)=>target===undefined?purchaseReason(id):busy?'Please wait':session.gold<SPELLS[id].price?'Not enough gold':(session.spellXp?.[target]??0)>=3?'Already upgraded · drop in empty hand space to buy another':null;
+  const canMergeOffer=(id:SpellId)=>!busy&&session.gold>=SPELLS[id].price&&session.spells.some((s,i)=>s===id&&(session.spellXp?.[i]??0)<3);
   const measure=()=>{
     trashRef.current?.measureInWindow((x,y,width,height)=>{trashBounds.current={x,y,width,height};});
     rootRef.current?.measureInWindow((x,y)=>{bounds.current.rootX=x;bounds.current.rootY=y;});
     handRef.current?.measureInWindow((x,y,width,height)=>{Object.assign(bounds.current,{x,y,width,height});});
   };
   const overHand=(p:ShopPointer)=>{const b=bounds.current;return p.x>=b.x&&p.x<=b.x+b.width&&p.y>=b.y&&p.y<=b.y+b.height;};
-  const moveOffer=(id:SpellId,p:ShopPointer)=>setOfferDrag({id,x:p.x-bounds.current.rootX,y:p.y-bounds.current.rootY,over:overHand(p)});
+  const moveOffer=(id:SpellId,p:ShopPointer)=>setOfferDrag({id,x:p.x-bounds.current.rootX,y:p.y-bounds.current.rootY,over:overHand(p),target:targetAt(id,p)});
   const previewHeight=Math.min(225,size.height*.59);
   const previewWidth=previewHeight*2/3+(offerDrag&&explainedKeywords(SPELLS[offerDrag.id].keywords).length?180:0);
   const compact = size.height < 500;
@@ -51,13 +61,13 @@ export function CompactShop({ session, busy, act, onMenu, onLibrary, onLeaderboa
           </View>
         </View>
         <View style={[s.middle, { gap: compact ? 4 : 14 }]}>
-          <View style={[s.player, { width: compact ? 150 : 220, padding: compact ? 8 : 16, gap: compact ? 7 : 14 }]}>
+          <View style={[s.player, { width: compact ? 150 : 220, padding: compact ? 8 : 16, gap: compact ? 5 : 14 }]}>
             <View style={s.playerTop}><Text style={[s.avatar, { fontSize: compact ? 30 : 48 }]}>♙</Text><View style={{ flex: 1, gap: 5 }}>
               <Text accessibilityLabel={`${session.wins} of ${session.lobby.winsToWin} trophies`} style={[s.text,{color:'#f0d180'}]}>🏆 {session.wins}/{session.lobby.winsToWin} wins</Text>
               <Text accessibilityLabel={`Health ${stats.health} of ${stats.health}`} style={[s.bar, { backgroundColor: '#882e2c' }]}>♥ {stats.health}/{stats.health}</Text>
               <Text accessibilityLabel={`Mana ${stats.mana} of ${stats.mana}`} style={[s.bar, { backgroundColor: '#275d7e' }]}>◈ {stats.mana}/{stats.mana}</Text>
             </View></View>
-            <Text style={s.label}>DOMAINS {deckDomains(session.spells).length}/{RULES.maxDomains} · {(deckDomains(session.spells).join(' / ') || 'Choose up to 2').toUpperCase()}</Text>
+            <DomainSlots domains={deckDomains(session.spells)} slots={RULES.maxDomains} compact={compact} />
             <Pressable accessibilityRole="button" onPress={onLeaderboard} style={[s.menu,{minHeight:28,alignItems:'center'}]}><Text style={s.text}>Leaderboard</Text></Pressable>
             <Text style={s.label}>YOUR EQUIPMENT</Text>
             <View style={s.slots}>{EQUIPMENT_SLOTS.map(slot => {
@@ -68,10 +78,15 @@ export function CompactShop({ session, busy, act, onMenu, onLibrary, onLeaderboa
           </View>
           <View style={[s.board, { padding: compact ? 6 : 12, gap: compact ? 3 : 8 }]}>
             <Text style={s.label}>SPELL SHOP · DRAG TO HAND TO BUY · HOLD FOR DETAILS</Text>
-            <View style={s.offers}>{session.shop.map(id => <ShopOffer key={id} label={`Inspect ${SPELLS[id].name}, ${SPELLS[id].price} gold`} disabled={busy}
-              onInspect={()=>inspectSpell(id)} onLift={p=>{measure();moveOffer(id,p);}} onMove={p=>moveOffer(id,p)} onCancel={()=>setOfferDrag(null)}
-              onDrop={p=>{setOfferDrag(null);if(overHand(p)&&!purchaseReason(id))act({type:'buy',spell:id});}}>
-              <View style={[s.cardSpace,{opacity:offerDrag?.id===id? .35 : purchaseReason(id)? .5:1}]}><View style={s.card}>{renderCard(id)}</View></View>
+            <View style={s.offers}>{session.shop.map((id,shopSlot) => id===null?<View key={shopSlot} accessibilityLabel={'Shop slot '+(shopSlot+1)+': sold. Reroll to refill.'} style={{flex:1,minWidth:0,alignItems:'center',justifyContent:'center',borderWidth:1,borderStyle:'dashed',borderColor:'#66543a',borderRadius:5,backgroundColor:'#17130d88',gap:5}}><Text style={{color:'#958568',fontSize:18}}>✧</Text><Text style={{color:'#bba98a',fontSize:10}}>SOLD</Text><Text style={{color:'#958568',fontSize:8}}>Reroll to refill</Text></View>:<ShopOffer key={shopSlot} label={`Inspect ${SPELLS[id].name}, ${SPELLS[id].price} gold`} disabled={busy}
+              onInspect={()=>inspectSpell(id,shopSlot)} onLift={p=>{measure();moveOffer(id,p);}} onMove={p=>moveOffer(id,p)} onCancel={()=>setOfferDrag(null)}
+              onDrop={p=>{
+                setOfferDrag(null);const target=targetAt(id,p);
+                if(!overHand(p)||dropReason(id,target))return;
+                if(target!==undefined){const b=cardBounds.current.find(b=>b.index===target)!;pendingMerge.current={revision:session.revision,target,id,xp:session.spellXp?.[target]??0,x:b.x+b.width/2-bounds.current.rootX,y:b.y+b.height/2-bounds.current.rootY};}
+                act({type:'buy',spell:id,shopSlot,...(target===undefined?{}:{target})});
+              }}>
+              <View style={[s.cardSpace,{opacity:offerDrag?.id===id? .35 : purchaseReason(id)&&!canMergeOffer(id)? .5:1}]}><View style={s.card}>{renderCard(id)}</View></View>
               <Text style={s.cost}>◉ {SPELLS[id].price}</Text>
             </ShopOffer>)}</View>
             <Text style={s.label}>EQUIPMENT SHOP</Text>
@@ -84,9 +99,9 @@ export function CompactShop({ session, busy, act, onMenu, onLibrary, onLeaderboa
           </View>
         </View>
         <View style={s.dock}>
-          <View ref={handRef} collapsable={false} onLayout={measure} style={{ flex: 1, minWidth: 0, backgroundColor:offerDrag?(purchaseReason(offerDrag.id)?'#652b2755':offerDrag.over?'#40945c88':'#32644644'):'transparent', borderRadius:5 }}>
-            <Text accessibilityLiveRegion="polite" style={s.handLabel}>{offerDrag ? (purchaseReason(offerDrag.id) ?? (offerDrag.over?`Release to buy · ${SPELLS[offerDrag.id].price} gold`:'Drop here to buy · Release elsewhere to cancel')) : `YOUR HAND (${session.spells.length}/${RULES.slots}) · Hold to enlarge · Drag to reorder`}</Text>
-            <DraggableHand height={handHeight} spells={session.spells} disabled={busy || !!offerDrag} renderCard={renderCard} renderPreview={renderPreview} onInspect={inspectHand} onMove={(from,to) => act({ type: 'move', from, to })} onDragging={setDragging} onDragPoint={(x,y)=>setOverTrash(hitsTrash(x,y))} onDrop={(index,x,y)=>{setOverTrash(false);if(!hitsTrash(x,y))return false;act({type:'trash',index});return true;}} />
+          <View ref={handRef} collapsable={false} onLayout={measure} style={{ flex: 1, minWidth: 0, backgroundColor:offerDrag?(dropReason(offerDrag.id,offerDrag.target)?'#652b2755':offerDrag.over?'#40945c88':'#32644644'):'transparent', borderRadius:5 }}>
+            <Text accessibilityLiveRegion="polite" style={s.handLabel}>{offerDrag ? (dropReason(offerDrag.id,offerDrag.target) ?? (offerDrag.target!==undefined?'Release to '+((session.spellXp?.[offerDrag.target]??0)===2?'UPGRADE':'merge · +1 XP')+' · '+SPELLS[offerDrag.id].price+' gold':offerDrag.over?`Release to buy · ${SPELLS[offerDrag.id].price} gold`:'Drop here to buy · Release elsewhere to cancel')) : `YOUR HAND (${session.spells.length}/${RULES.slots}) · Drag shop copies onto matching cards for XP`}</Text>
+            <DraggableHand xp={session.spellXp} onCardBounds={b=>{cardBounds.current=b;}} mergeSpell={offerDrag&&canMergeOffer(offerDrag.id)?offerDrag.id:undefined} mergeTarget={offerDrag?.target!==undefined&&!dropReason(offerDrag.id,offerDrag.target)?offerDrag.target:undefined} height={handHeight} spells={session.spells} disabled={busy || !!offerDrag} renderCard={renderCard} renderPreview={renderPreview} onInspect={inspectHand} onMove={(from,to) => act({ type: 'move', from, to })} onDragging={setDragging} onDragPoint={(x,y)=>setOverTrash(hitsTrash(x,y))} onDrop={(index,x,y)=>{setOverTrash(false);if(!hitsTrash(x,y))return false;act({type:'trash',index});return true;}} />
           </View>
           <View ref={trashRef} collapsable={false} onLayout={measure} accessibilityLabel="Trash drop target. Drag a hand card here to remove it. No gold refund." style={{width:compact?58:85,minHeight:54,alignItems:'center',justifyContent:'center',borderWidth:2,borderRadius:5,borderColor:dragging&&overTrash?'#ffbf9c':'#9b5e50',backgroundColor:dragging&&overTrash?'#8a342d':'#321e19',gap:3}}><Text style={{color:'#ffcfb8',fontSize:19}}>×</Text><Text style={{color:'#ffcfb8',fontSize:9,fontWeight:'800'}}>{dragging&&overTrash?'RELEASE':'TRASH'}</Text><Text style={{color:'#d8a58e',fontSize:7}}>No refund</Text></View>
           <Pressable accessibilityRole="button" accessibilityLabel="Next round" disabled={busy || !session.spells.length} onPress={() => act({ type: 'fight' })} style={[s.next, { width: compact ? 135 : 210 }, (busy || !session.spells.length) && s.disabled]}><Text style={[s.title, { fontSize: compact ? 17 : 23 }]}>{session.spells.length ? 'Next round →' : 'Buy a spell first'}</Text></Pressable>
@@ -94,6 +109,7 @@ export function CompactShop({ session, busy, act, onMenu, onLibrary, onLeaderboa
         {!!error && <Text accessibilityRole="alert" style={s.error}>{error}</Text>}
       </View>
     </SafeAreaView>
+    {burst&&<MergeBurst key={burst.key} x={burst.x} y={burst.y} upgraded={burst.upgraded} onDone={()=>setBurst(null)} />}
     {offerDrag && <View pointerEvents="none" style={{position:'absolute',zIndex:1000,elevation:30,left:Math.max(6,Math.min(size.width-previewWidth-6,offerDrag.x-previewHeight/3)),top:Math.max(48,Math.min(size.height-previewHeight-30,offerDrag.y-previewHeight-18)),width:previewWidth,height:previewHeight}}>{renderPreview(offerDrag.id,previewHeight,previewWidth)}</View>}
   </View>;
 }

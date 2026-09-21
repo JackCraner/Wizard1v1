@@ -1,11 +1,12 @@
+import { cardAt, deckXp, UPGRADE_XP } from './upgrades';
 import config from '../config/bots.json';
 import statuses from '../config/statuses.json';
-import { canAddSpell, fighter, RULES, simulate, SPELLS } from './engine';
+import { canAddSpell, canOfferSpell, fighter, RULES, simulate, SPELLS } from './engine';
 import { EQUIPMENT, equipmentModifiers, offersFor } from './shop';
 import type { Difficulty, Fighter, Session, SpellId } from './model';
 
 export const BOT_CONFIG=config;
-export type BotState={gold:number;strategy:number;equipment:Session['equipment'];lastPreparedRound:number};
+export type BotState={spellXp?:number[];gold:number;strategy:number;equipment:Session['equipment'];lastPreparedRound:number};
 export type BotStates=Record<string,BotState>;
 export function createBotStates(ids:string[]):BotStates {
  return Object.fromEntries(ids.map((id,i)=>[id,{gold:0,strategy:i%config.strategies.length,equipment:{},lastPreparedRound:0}]));
@@ -13,16 +14,18 @@ export function createBotStates(ids:string[]):BotStates {
 const effects=(id:string)=>SPELLS[id].combat?.effects??[];
 const isDamage=(id:string)=>effects(id).some(e=>e.kind==='damage'||e.kind==='bothDamage'||e.kind==='status'&&e.target==='enemy'&&(statuses as Record<string,{kind:string}>)[e.status!]?.kind==='dot');
 
-export function scoreBotDeck(deck:SpellId[],strategy:number):number {
+export function scoreBotDeck(deck:SpellId[],strategy:number,xp:number[]=[]):number {
  const w=config.weights,profile=config.strategies[strategy];
  const available=new Set(deck.flatMap(id=>effects(id).filter(e=>e.kind==='status').map(e=>e.status)));
  let score=0,cost=0,mana=0;
- for(const id of deck){
-  const card=SPELLS[id],time=Math.max(1,card.castTicks??1);let power=0;
-  for(const e of effects(id)){
+ for(const [index,id] of deck.entries()){
+  const card=cardAt(id,xp[index]),time=Math.max(1,card.castTicks??1);let power=0;
+  for(const e of card.combat?.effects??[]){
    const channel=e.perChannel?deck.filter(other=>other===id).length:1;
    const value=(e.amount??0)*channel;
    if(e.kind==='damage'||e.kind==='bothDamage')power+=value*w.damage*(e.critWhen?.length&&e.critWhen.every(s=>available.has(s))?RULES.critMultiplier:1);
+   if(e.kind==='manaPerDotStack')power+=deck.some(x=>effects(x).some(effect=>effect.kind==='status'&&effect.target==='enemy'))?w.synergy:0;
+   if(e.kind==='multiplyHotStacks')power+=deck.some(x=>effects(x).some(effect=>effect.kind==='status'&&(statuses as Record<string,{kind:string}>)[effect.status!]?.kind==='hot'))?w.synergy:0;
    if(e.kind==='selfDamage')power-=value*.7;
    if(e.kind==='loseCurrentHealth')power-=RULES.health*(e.amount??0)*.15;
    if(e.kind==='heal')power+=value*w.healing;
@@ -60,7 +63,12 @@ export function prepareBot(state:BotState,previous:SpellId[],round:number,index:
  state.gold+=round===1?config.economy.startingGold:config.economy.roundIncome;
  const boosted=round>=level.advantageStartsRound;
  if(boosted)state.gold+=level.bonusGoldPerRound;
- let deck=[...previous];
+ let deck=[...previous],xp=deckXp(previous,state.spellXp);
+ const remap=(next:SpellId[])=>{const pools=new Map<string,number[]>();deck.forEach((id,i)=>pools.set(id,[...(pools.get(id)??[]),xp[i]]));return next.map(id=>pools.get(id)?.shift()??0);};
+ if(round>=config.economy.equipmentStartRound){
+  let budget=Math.min(state.gold,level.equipmentBudget);
+  for(const item of Object.values(EQUIPMENT))if(!state.equipment[item.slot]&&item.price<=budget){state.equipment[item.slot]=item.id;state.gold-=item.price;budget-=item.price;}
+ }
  const target=Math.min(RULES.slots,config.deck.openingSize+(round-1)*config.deck.cardsPerRound);
  for(let roll=0;roll<level.shoppingRolls;roll++){
   const fee=roll===0||boosted&&roll<=level.freeRerolls?0:config.economy.rerollCost;
@@ -69,41 +77,46 @@ export function prepareBot(state:BotState,previous:SpellId[],round:number,index:
   // Buy each offer at most once. Rank, cost, slot and domain rules still apply.
   for(let purchase=0;purchase<offers.length;purchase++){
    const options=offers.flatMap((id,offerIndex)=>{
-    if(!profile.domains.includes(SPELLS[id].domain)||!canAddSpell(deck,id)||SPELLS[id].price>state.gold)return [];
-    const base=scoreBotDeck(deck,state.strategy),candidates:{deck:SpellId[];score:number;id:string;offerIndex:number}[]=[];
+    if(!profile.domains.includes(SPELLS[id].domain)||!canOfferSpell(deck,id)||SPELLS[id].price>state.gold)return [];
+    const base=scoreBotDeck(deck,state.strategy,xp),candidates:{deck:SpellId[];xp:number[];score:number;id:string;offerIndex:number}[]=[];
+    // Once established, invest in matching copies without filling extra slots.
+    if(deck.length>=config.deck.openingSize)deck.forEach((owned,at)=>{
+     if(owned!==id||xp[at]>=UPGRADE_XP)return;
+     const nextXp=[...xp];nextXp[at]++;
+     const gain=scoreBotDeck(deck,state.strategy,nextXp)-base;
+     candidates.push({deck:[...deck],xp:nextXp,score:gain+config.deck.mergePriority,id,offerIndex});
+    });
     const targets=deck.length<target?[-1]:deck.map((_,i)=>i);
     for(const at of targets){
      if(at>=0&&deck[at]===id)continue;
+     if(!canAddSpell(at<0?deck:deck.filter((_,i)=>i!==at),id))continue;
      const next=[...deck];if(at<0)next.push(id);else next[at]=id;
      if(!isDamage(id)&&next.filter(x=>!isDamage(x)).length/next.length>config.deck.maxSupportFraction)continue;
-     const gain=scoreBotDeck(next,state.strategy)-base;
+     const nextXp=[...xp];if(at<0)nextXp.push(0);else nextXp[at]=0;
+     const gain=scoreBotDeck(next,state.strategy,nextXp)-base;
      if(at>=0&&gain<config.deck.replacementThreshold)continue;
-     candidates.push({deck:next,score:gain,id,offerIndex});
+     candidates.push({deck:next,xp:nextXp,score:gain,id,offerIndex});
     }
     return candidates;
    }).sort((a,b)=>b.score-a.score);
    if(!options.length)break;
    const choice=options[random()<level.mistakeChance?Math.floor(random()*options.length):0];
-   deck=choice.deck;state.gold-=SPELLS[choice.id].price;offers.splice(choice.offerIndex,1);purchase--;
+   deck=choice.deck;xp=choice.xp;state.gold-=SPELLS[choice.id].price;offers.splice(choice.offerIndex,1);purchase--;
   }
  }
  // A bot must always be able to enter its first duel, even with unlucky offers.
- if(!deck.length){const id=profile.domains.includes('nature')?'wrath':'ember';deck=[id];state.gold-=SPELLS[id].price;}
- if(round>=config.economy.equipmentStartRound){
-  let budget=Math.min(state.gold,level.equipmentBudget);
-  for(const item of Object.values(EQUIPMENT))if(!state.equipment[item.slot]&&item.price<=budget){state.equipment[item.slot]=item.id;state.gold-=item.price;budget-=item.price;}
- }
+ if(!deck.length){const id=profile.domains.includes('nature')?'wrath':'ember';deck=[id];xp=[0];state.gold-=SPELLS[id].price;}
  if(level.orderTrials>0){
-  deck=orderedDeck(deck);
+  const ordered=orderedDeck(deck);xp=remap(ordered);deck=ordered;
   // Train against fixed archetypes, never inspect the human's current hand.
   const training=[['wrath','moonfire','regrowth'],['ember','splash','brine']];
-  const evaluate=(candidate:SpellId[])=>training.reduce((sum,enemy)=>{const battle=simulate(fighter('Bot',candidate,equipmentModifiers(state.equipment)),fighter('Sparring',enemy),RULES.seed+round);const last=battle.frames.at(-1)!;return sum+last.player.health-last.bot.health+(battle.outcome==='victory'?200:battle.outcome==='defeat'?-200:0);},0);
-  let best=evaluate(deck);
-  for(let trial=0;trial<level.orderTrials;trial++){const candidate=[...deck],a=Math.floor(random()*deck.length),b=Math.floor(random()*deck.length);[candidate[a],candidate[b]]=[candidate[b],candidate[a]];const score=evaluate(candidate);if(score>best){deck=candidate;best=score;}}
+  const evaluate=(candidate:SpellId[],candidateXp:number[])=>training.reduce((sum,enemy)=>{const battle=simulate(fighter('Bot',candidate,equipmentModifiers(state.equipment),candidateXp),fighter('Sparring',enemy),RULES.seed+round);const last=battle.frames.at(-1)!;return sum+last.player.health-last.bot.health+(battle.outcome==='victory'?200:battle.outcome==='defeat'?-200:0);},0);
+  let best=evaluate(deck,xp);
+  for(let trial=0;trial<level.orderTrials;trial++){const candidate=[...deck],candidateXp=[...xp],a=Math.floor(random()*deck.length),b=Math.floor(random()*deck.length);[candidate[a],candidate[b]]=[candidate[b],candidate[a]];[candidateXp[a],candidateXp[b]]=[candidateXp[b],candidateXp[a]];const score=evaluate(candidate,candidateXp);if(score>best){deck=candidate;xp=candidateXp;best=score;}}
  }
- state.lastPreparedRound=round;
+ state.spellXp=xp;state.lastPreparedRound=round;
  return deck;
 }
 export function botFighter(name:string,deck:SpellId[],state:BotState):Fighter {
- return {...fighter(name,deck,equipmentModifiers(state.equipment)),equipment:{...state.equipment}};
+ return {...fighter(name,deck,equipmentModifiers(state.equipment),state.spellXp),equipment:{...state.equipment}};
 }

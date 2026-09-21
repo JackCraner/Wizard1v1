@@ -15,7 +15,7 @@ it('trashes exactly the selected copy without refund, preserving the other cards
  await expect(g.execute(s.id,s.revision,{type:'fight'})).rejects.toThrow('Equip a spell');
 });
 it('rejects stale, invalid and combat-phase trash requests',async()=>{
- const g=new LocalGameGateway();let s=await g.start();s=await g.execute(s.id,s.revision,{type:'buy',spell:s.shop[0]});
+ const g=new LocalGameGateway();let s=await g.start();s=await g.execute(s.id,s.revision,{type:'buy',spell:s.shop[0]!});
  for(const index of [-1,1,.5])await expect(g.execute(s.id,s.revision,{type:'trash',index})).rejects.toThrow('Invalid');
  await expect(g.execute(s.id,s.revision-1,{type:'trash',index:0})).rejects.toThrow('out of date');
  s=await g.execute(s.id,s.revision,{type:'fight'});

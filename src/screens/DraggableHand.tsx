@@ -1,3 +1,4 @@
+import type {CardBounds} from '../game/shopDrop';
 import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { Animated, PanResponder, Platform, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
 import type { SpellId } from '../game/model';
@@ -5,27 +6,32 @@ import { SPELLS } from '../game/engine';
 import { explainedKeywords } from '../config/catalogue';
 import { dropIndex } from '../game/handLayout';
 
-export function DraggableHand({ spells, disabled, renderCard, renderPreview, onInspect, onMove, onDrop, onDragPoint, onDragging, height = 172 }: {
-  renderPreview?: (id: SpellId, height: number, width: number) => ReactNode;
-  height?: number; spells: SpellId[]; disabled: boolean; renderCard: (id: SpellId, expanded?: boolean) => ReactNode;
+export function DraggableHand({ xp=[], mergeSpell, mergeTarget, onCardBounds, spells, disabled, renderCard, renderPreview, onInspect, onMove, onDrop, onDragPoint, onDragging, height = 172 }: {
+  renderPreview?: (id: SpellId, height: number, width: number, index?:number) => ReactNode;
+  xp?:number[]; mergeSpell?:string; mergeTarget?:number; onCardBounds?:(bounds:CardBounds[])=>void;
+  height?: number; spells: SpellId[]; disabled: boolean; renderCard: (id: SpellId, expanded?: boolean, index?:number) => ReactNode;
   onDrop?: (index:number,x:number,y:number)=>boolean; onDragPoint?: (x:number,y:number)=>void;
   onInspect: (index: number) => void; onMove: (from: number, to: number) => void; onDragging: (dragging: boolean) => void;
 }) {
   const { height: screenHeight } = useWindowDimensions();
   const [width, setWidth] = useState(0);
   const [drag, setDrag] = useState<{ from: number; to: number } | null>(null);
+  const handRef=useRef<View>(null);
   const count = Math.max(5, spells.length);
   const cardHeight = Math.max(42, height - 24);
   const cardWidth = Math.min(94, cardHeight * 2 / 3);
   const spacing = Math.min(77, Math.max(1, (width - cardWidth - 38) / (count - 1)));
   const start = (width - (cardWidth + spacing * (count - 1))) / 2;
+  const measureCards=()=>handRef.current?.measureInWindow((x,y)=>onCardBounds?.(spells.map((_,index)=>({index,x:x+start+spacing*index,y:y+6+Math.abs(index-(count-1)/2),width:cardWidth,height:cardHeight}))));
+  useEffect(()=>{measureCards();},[width,height,spells.length,disabled]);
   useEffect(() => () => onDragging(false), [onDragging]);
-  return <View onLayout={event => setWidth(event.nativeEvent.layout.width)} style={[styles.hand, {height}]}>
+  return <View ref={handRef} collapsable={false} onLayout={event => {setWidth(event.nativeEvent.layout.width);measureCards();}} style={[styles.hand, {height}]}>
     {width > 0 && Array.from({ length: count }, (_, index) => {
       const id = spells[index];
       const offset = index - (count - 1) / 2;
       const left = start + spacing * index;
       return id ? <DragCard key={`${index}-${id}`} id={id} index={index} left={left} top={6 + Math.abs(offset)} height={cardHeight}
+        xp={xp[index]??0} mergeEligible={mergeSpell===id&&(xp[index]??0)<3} mergeTarget={mergeTarget===index}
         handWidth={width} previewHeight={Math.min(240, screenHeight * .56)} width={cardWidth} angle={offset * 2.5} spacing={spacing} count={spells.length} disabled={disabled}
         selected={drag?.from === index} target={drag?.to === index && drag.from !== index}
         renderCard={renderCard} renderPreview={renderPreview} onInspect={onInspect} onMove={onMove} onDrop={onDrop} onDragPoint={onDragPoint}
@@ -37,10 +43,11 @@ export function DraggableHand({ spells, disabled, renderCard, renderPreview, onI
 }
 
 function DragCard(props: {
+  xp:number; mergeEligible:boolean; mergeTarget:boolean;
   id: SpellId; index: number; left: number; top: number; width: number; height: number; angle: number; spacing: number; count: number;
-  renderPreview?: (id: SpellId, height: number, width: number) => ReactNode;
+  renderPreview?: (id: SpellId, height: number, width: number, index?:number) => ReactNode;
   handWidth: number; previewHeight: number;
-  disabled: boolean; selected: boolean; target: boolean; renderCard: (id: SpellId, expanded?: boolean) => ReactNode;
+  disabled: boolean; selected: boolean; target: boolean; renderCard: (id: SpellId, expanded?: boolean, index?:number) => ReactNode;
   onDrop?: (index:number,x:number,y:number)=>boolean; onDragPoint?: (x:number,y:number)=>void;
   onInspect: (i: number) => void; onMove: (from: number, to: number) => void; onDrag: (target: number | null) => void;
 }) {
@@ -112,14 +119,15 @@ function DragCard(props: {
       ...(Platform.OS === 'web' ? { touchAction: 'none' as const, userSelect: 'none' as const } : {}),
     }}>
     <View pointerEvents="none" style={{ flex: 1, opacity: props.selected ? .3 : 1,
-      transform: [{ rotate: props.angle + "deg" }], borderWidth: props.target ? 2 : 0, borderColor: '#ffe0a0', borderRadius: 5 }}>
-      {props.renderCard(props.id)}
+      transform: [{ rotate: props.angle + "deg" }], borderWidth: props.target||props.mergeEligible ? 2 : 0, borderColor: props.mergeTarget?'#fff4ad':'#e9b651', backgroundColor:props.mergeTarget?'#ffc84b44':'transparent', shadowColor:'#ffce54',shadowOpacity:props.mergeTarget?1:props.mergeEligible?.6:0,shadowRadius:props.mergeTarget?12:6,shadowOffset:{width:0,height:0}, borderRadius: 5 }}>
+      {props.renderCard(props.id,false,props.index)}
+      <View style={{position:'absolute',bottom:-5,left:-4,right:-4,alignItems:'center'}}><Text style={{fontSize:9,fontWeight:'900',color:props.mergeTarget?'#251605':'#ffdf88',backgroundColor:props.mergeTarget?'#ffe48d':'#231a0ff2',borderWidth:1,borderColor:props.xp>0?'#ffcd55':'#766242',borderRadius:3,paddingHorizontal:3,paddingVertical:1}}>{props.mergeTarget? (props.xp===2?'UPGRADE!':'+1 XP'):props.xp>=3?'MAX ✦':props.xp+'/3 XP'}</Text></View>
       <View style={styles.badge}><Text style={styles.number}>{props.index + 1}</Text></View>
     </View>
     {props.selected && <Animated.View pointerEvents="none" style={{ position: 'absolute', left: previewLeft,
       bottom: 16, width: previewWidth, height: props.previewHeight, transform: [{ translateX: previewX }],
       shadowColor: '#000', shadowOpacity: .8, shadowRadius: 18, shadowOffset: { width: 0, height: 8 }, elevation: 20 }}>
-      {props.renderPreview ? props.renderPreview(props.id, props.previewHeight, previewWidth) : props.renderCard(props.id, true)}
+      {props.renderPreview ? props.renderPreview(props.id, props.previewHeight, previewWidth,props.index) : props.renderCard(props.id, true,props.index)}
     </Animated.View>}
   </View>;
 }

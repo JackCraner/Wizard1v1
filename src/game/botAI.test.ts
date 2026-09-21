@@ -32,7 +32,7 @@ it('supports every difficulty and leaves combat base stats unchanged without equ
  for(const difficulty of Object.keys(BOT_CONFIG.difficulties) as Difficulty[]){
   const g=new LocalGameGateway();let s=await g.start(difficulty);
   expect(s.difficulty).toBe(difficulty);
-  s=await g.execute(s.id,s.revision,{type:'buy',spell:s.shop[0]});s=await g.execute(s.id,s.revision,{type:'fight'});
+  s=await g.execute(s.id,s.revision,{type:'buy',spell:s.shop[0]!});s=await g.execute(s.id,s.revision,{type:'fight'});
   expect(s.battle!.frames[0].bot.maxHealth).toBe(500);expect(s.battle!.frames[0].bot.maxMana).toBe(100);
   expect(JSON.stringify(s)).not.toContain('bonusGoldPerRound');expect(JSON.stringify(s)).not.toContain('lastPreparedRound');
  }
@@ -40,5 +40,5 @@ it('supports every difficulty and leaves combat base stats unchanged without equ
 it('rejects unknown difficulties without replacing the current run',async()=>{
  const g=new LocalGameGateway();const s=await g.start('hard');
  await expect(g.start('unknown' as Difficulty)).rejects.toThrow('Unknown difficulty');
- const next=await g.execute(s.id,s.revision,{type:'buy',spell:s.shop[0]});expect(next.difficulty).toBe('hard');
+ const next=await g.execute(s.id,s.revision,{type:'buy',spell:s.shop[0]!});expect(next.difficulty).toBe('hard');
 });
