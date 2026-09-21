@@ -51,7 +51,7 @@ describe('timed Guard and Phoenix',()=>{
   it('blocks direct and periodic damage until Guard expires without consuming on hits',()=>{
     const a=fighter('A',['splash']);a.statuses={guard:2,moonfire:4};
     const result=simulate(a,fighter('B',['wrath','wrath','wrath']));
-    expect(result.frames.slice(1,4).map(f=>f.player.health)).toEqual([500,500,470]);
+    expect(result.frames.slice(1,4).map(f=>f.player.health)).toEqual([500,480,450]);
     expect(result.frames.slice(1,4).map(f=>f.player.statuses.guard??0)).toEqual([1,0,0]);
   });
   it('applies Guard before simultaneous damage, adds duration, and blocks self damage',()=>{
@@ -77,9 +77,9 @@ describe('timed Guard and Phoenix',()=>{
   it('allows repeated rebirths during the window and resolves both sides symmetrically',()=>{
     const a=fighter('A',['wrath','wrath','wrath','wrath'],[{health:-480}]);a.statuses.phoenix=3;
     const result=simulate(a,a);
-    expect(result.frames.slice(1,5).map(f=>f.player.health)).toEqual([10,10,10,0]);
+    expect(result.frames.slice(1,5).map(f=>f.player.health)).toEqual([10,10,0]);
     expect(result.outcome).toBe('draw');
-    expect(result.frames[3].messages.filter(m=>m.includes('reborn'))).toHaveLength(2);
+    expect(result.frames[2].messages.filter(m=>m.includes('reborn'))).toHaveLength(2);
   });
   it('casts Phoenix at its listed cost and duration',()=>{
     const result=simulate(fighter('A',['phoenix','pyroblast']),fighter('B',['splash']));

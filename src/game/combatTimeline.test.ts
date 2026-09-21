@@ -8,7 +8,8 @@ it('reads actual completion events and never invents casts during charging',()=>
  expect(castAt(battle,2,'player',1)).toBeNull();
  expect(castAt(battle,0,'player',3)).toBeNull();
 });
-it('retains every Instant completion in the same tick',()=>{
+it('records Instant completions on separate ticks',()=>{
  const battle=simulate(fighter('A',['mist','rejuvenation']),fighter('B',['splash']));
- expect(castsAt(battle,1,'player',1).map(e=>e.spell)).toEqual(['mist','rejuvenation']);
+ expect(castsAt(battle,1,'player',1).map(e=>e.spell)).toEqual(['mist']);
+ expect(castsAt(battle,2,'player',2).map(e=>e.spell)).toEqual(['rejuvenation']);
 });

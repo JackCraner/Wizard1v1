@@ -4,7 +4,7 @@
     "aliases": [
       "DoTs"
     ],
-    "description": "Deals damage each tick, starting the tick after application. Loses 1 stack each tick. Reapplying adds duration, not per-tick power.",
+    "description": "Deals damage each tick, before normal spells (including effects just applied by an Instant). Loses 1 stack each tick. Reapplying adds duration, not per-tick power.",
     "related": []
   },
   "hot": {
@@ -12,13 +12,13 @@
     "aliases": [
       "HoTs"
     ],
-    "description": "Heals each tick, starting the tick after application. Loses 1 stack each tick. Reapplying adds duration, not per-tick power.",
+    "description": "Heals each tick, before normal spells (including effects just applied by an Instant). Loses 1 stack each tick. Reapplying adds duration, not per-tick power.",
     "related": []
   },
   "instant": {
     "name": "Instant",
     "aliases": [],
-    "description": "Resolves without a casting delay.",
+    "description": "Resolves at tick start, before damage over time and duration countdowns. Your next spell waits until the next tick.",
     "related": []
   },
   "crit": {

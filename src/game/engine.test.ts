@@ -63,12 +63,12 @@ describe('catalogue combat rules',()=>{
     const p=fighter('A',['wrath']);p.health=10;p.statuses.moonfire=1;
     const dots=simulate(p,p);expect(dots.outcome).toBe('draw');expect(dots.frames[1].events).toHaveLength(0);
   });
-  it('bounds zero-time chains while recording every Instant cast',()=>{
+  it('allows only one Instant per fighter per tick',()=>{
     const result=simulate(fighter('A',['mist','rejuvenation']),fighter('B',['splash']));
-    expect(result.frames[1].events.filter(e=>e.side==='player').map(e=>e.spell)).toEqual(['mist','rejuvenation']);
+    expect(result.frames[1].events.filter(e=>e.side==='player').map(e=>e.spell)).toEqual(['mist']);
     expect(result.frames.length).toBeLessThanOrEqual(RULES.maxTicks+1);
     const next=simulate(fighter('A',['conflagrate','seed-shot','wrath']),fighter('B',['splash']));
-    expect(next.frames[2].events.filter(e=>e.side==='player').map(e=>e.spell)).toEqual(['seed-shot','wrath']);
+    expect(next.frames[2].events.filter(e=>e.side==='player').map(e=>e.spell)).toEqual(['seed-shot']);
   });
   it('skips unaffordable casts, caps resources, and remains deterministic without mutation',()=>{
     const p=fighter('A',['pyroblast','wrath']);p.mana=5;

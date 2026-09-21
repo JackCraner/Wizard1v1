@@ -16,7 +16,6 @@ it('records crits and individual instant hits, without reporting blocked damage'
  const result=simulate(a,b);
  expect(result.frames[1].damageEvents).toEqual([
   {side:'bot',amount:30,critical:true,kind:'hit',domain:'water'},
-  {side:'bot',amount:30,critical:true,kind:'hit',domain:'water'},
  ]);
  b.statuses.guard=1;
  expect(simulate(a,b).frames[1].damageEvents).toEqual([]);

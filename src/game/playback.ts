@@ -17,7 +17,7 @@ export function presentedCombatFrame(battle:Battle,frame:number,beat:CombatBeat)
  const completed=battle.frames[frame];
  if(beat==='cast'&&battle.frames[frame+1]?.tickStart)return battle.frames[frame+1].tickStart!;
  const start=completed.tickStart;
- return {...completed,presentationPhase:'resolve',
+ return {...completed,presentationPhase:'resolve',events:completed.events.slice(start?.events.length??0),
   damageEvents:completed.damageEvents?.slice(start?.damageEvents?.length??0),
   healingEvents:completed.healingEvents?.slice(start?.healingEvents?.length??0),
   manaEvents:completed.manaEvents?.slice(start?.manaEvents?.length??0),
@@ -30,7 +30,7 @@ export function continuousCombatFrame(battle:Battle,frame:number):CombatFrame {
  const resolved=presentedCombatFrame(battle,frame,'hold');
  const start=battle.frames[frame+1]?.tickStart;
  if(!start)return resolved;
- return {...start,tick:frame,presentationPhase:'resolve',events:resolved.events,
+ return {...start,tick:frame,presentationPhase:'resolve',events:[...resolved.events,...start.events],
   messages:[...resolved.messages,...start.messages],
   damageEvents:[...(resolved.damageEvents??[]),...(start.damageEvents??[])],
   healingEvents:[...(resolved.healingEvents??[]),...(start.healingEvents??[])],

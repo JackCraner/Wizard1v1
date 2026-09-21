@@ -6,7 +6,7 @@ export interface Effect { kind: 'damage'|'loseCurrentHealth'|'selfDamage'|'bothD
 export interface Spell extends CardDefinition { price: number; description: string }
 export interface Stats { health: number; mana: number }
 export interface EquipmentModifier { health?: number; mana?: number }
-export interface Fighter { equipment?:Partial<Record<EquipmentSlot,EquipmentId>>; name: string; health: number; mana: number; shield: number; maxHealth: number; maxMana: number; spells: SpellId[]; statuses: Record<string,number>; cursor: number; reshuffleRemaining?: number; casting: { spell: SpellId; index: number; remaining: number; totalTicks?: number; mana: number; tidecaller: boolean } | null }
+export interface Fighter { instantThisTick?: SpellId; equipment?:Partial<Record<EquipmentSlot,EquipmentId>>; name: string; health: number; mana: number; shield: number; maxHealth: number; maxMana: number; spells: SpellId[]; statuses: Record<string,number>; cursor: number; reshuffleRemaining?: number; casting: { spell: SpellId; index: number; remaining: number; totalTicks?: number; mana: number; tidecaller: boolean } | null }
 export interface CastEvent { side: 'player'|'bot'; spell: SpellId; index: number; status: 'cast'|'skipped'; mana: number; critical: boolean; repeats?: number; critMultiplier?: number; details?: string[] }
 export interface DamageEvent { domain?: Domain; side: 'player'|'bot'; amount: number; critical: boolean; kind: 'hit'|'dot'|'cost' }
 export interface HealingEvent { side: 'player'|'bot'; amount:number; kind: 'heal'|'hot' }

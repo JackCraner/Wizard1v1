@@ -56,3 +56,34 @@ it('retains completed casts and upcoming periodic feedback with no hold',()=>{
  expect(frame.damageEvents).toEqual([expect.objectContaining({kind:'hit',amount:20}),expect.objectContaining({kind:'dot',amount:10})]);
  expect(frame.bot.health).toBe(460);
 });
+
+it('shows mana deducted before a one-tick cast resolves for both fighters',()=>{
+ const battle=simulate(fighter('A',['ember']),fighter('B',['ember']));
+ const start=continuousCombatFrame(battle,0);
+ for(const f of [start.player,start.bot]) {
+  expect(f.mana).toBe(95);expect(f.health).toBe(500);
+  expect(f.casting?.remaining).toBe(1);
+ }
+ expect(start.events).toEqual([]);
+ const resolved=presentedCombatFrame(battle,1,'hold');
+ expect(resolved.player.mana).toBe(95);expect(resolved.bot.mana).toBe(95);
+ expect(resolved.manaEvents).toEqual([]);
+});
+it('charges multi-tick casts once at start and applies mana restoration only on completion',()=>{
+ const a=fighter('A',['sap']);a.mana=50;
+ const battle=simulate(a,fighter('B',['splash']));
+ const first=continuousCombatFrame(battle,0),second=continuousCombatFrame(battle,1);
+ expect(first.player.mana).toBe(48);expect(first.player.casting?.remaining).toBe(2);
+ expect(second.player.mana).toBe(48);expect(second.player.casting?.remaining).toBe(1);
+ expect(second.manaEvents?.filter(e=>e.side==='player')).toEqual([]);
+ expect(presentedCombatFrame(battle,2,'hold').player.mana).toBe(53);
+});
+it('does not precharge the next card after an Instant or after lethal periodic damage',()=>{
+ const battle=simulate(fighter('A',['mist','seed-shot']),fighter('B',['splash']));
+ expect(continuousCombatFrame(battle,0).player.mana).toBe(95);
+ expect(continuousCombatFrame(battle,0).player.casting).toBeNull();
+ expect(continuousCombatFrame(battle,1).player.mana).toBe(90);
+ const a=fighter('A',['ember']);a.health=5;a.statuses.moonfire=1;
+ const dead=continuousCombatFrame(simulate(a,fighter('B',['splash'])),0);
+ expect(dead.player.mana).toBe(100);expect(dead.player.casting).toBeNull();
+});

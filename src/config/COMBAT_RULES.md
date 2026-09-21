@@ -8,7 +8,7 @@
 - Apply 5 Moonfire on tick 1: it remains at 5 in that snapshot; tick 2 deals 10 damage and leaves 4; ticks 3–6 finish the remaining ticks. It deals five ticks of damage total. Damage per tick does not multiply by remaining duration.
 - Casting 1T completes at the end of the first casting tick. Casting 2T completes on the second. Spells repeat in loadout order.
 - Mana is charged once when casting starts. An unaffordable spell is skipped and consumes one tick, preserving the prototype's skip behavior. Healing and mana restoration cap at maximum values.
-- Existing periodic effects resolve first, simultaneously. Ready spells resolve their effects, then simultaneous damage. New timed effects begin on the following tick. Cast events record actual completions, skips, crits and Tidecaller repeats.
+- Tick order: Instant spells → DoT damage → death check → DoT countdown → HoT healing → HoT countdown → other buffs/debuffs and their countdown → normal spells. Each phase resolves both fighters together. Instant-applied effects can participate immediately; normal-applied effects start next tick. A lethal early phase ends combat before later healing or casts.
 - A knockout ends combat. At tick 50, the player with less remaining health loses; equal health, including simultaneous knockouts, is a draw. This compares actual health, not percentage.
 - Deterministic seeded randomness keeps the replay portable to a future backend. Base random critical chance is provisionally 0%; explicitly guaranteed critical conditions work at 150% damage. Moonfire/Sunfire critical checks refer to effects on the opponent.
 
@@ -22,7 +22,7 @@
 
 ## Provisional conventions to confirm
 
-- Instant spells have zero casting delay and can precede a timed spell in the same tick. An all-Instant loadout completes at most one full hand traversal per tick. This is a finite-loop guard and needs a final game rule.
+- Instant spells resolve at tick start but consume that fighter’s turn: the next card cannot queue until the next tick. This also applies to spells made Instant by Conflagrate. Instant can use a final duration stack before it expires; normal casts resolve after countdowns.
 - Slowness adds one tick to the next started spell, then is consumed. Next-spell effects are also consumed on start; if unused, their duration expires normally. Confirm consumption versus purely duration-based behavior.
 - Tide gives one flat 20% Tidecaller chance while active; Whirlpool scales by remaining Tide. Rain adds 20% Water damage while active, not per remaining duration stack.
 - Fractional damage is rounded to the nearest whole point. Stealing mana takes only what the opponent has; the recipient is capped at maximum mana.

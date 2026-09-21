@@ -13,10 +13,10 @@ it('does not charge mana or pause statuses while reshuffling',()=>{
  expect(b.frames.slice(1,5).map(f=>f.player.health)).toEqual([310,320,330,340]);
  expect(b.frames.slice(1,4).map(f=>f.bot.statuses.moonfire)).toEqual([5,4,3]);
 });
-it('reshuffles once an Instant chain or skipped last card empties the deck',()=>{
+it('reshuffles after the final Instant or skipped card',()=>{
  const a=fighter('A',['mist','mist']);
  const b=simulate(a,fighter('B',['splash']));
- expect(b.frames.slice(1,5).map(f=>f.events.filter(e=>e.side==='player').length)).toEqual([2,0,0,2]);
+ expect(b.frames.slice(1,5).map(f=>f.events.filter(e=>e.side==='player').length)).toEqual([1,1,0,0]);
  a.mana=0;
  const skipped=simulate(a,fighter('B',['splash']));
  expect(skipped.frames[2].player.reshuffleRemaining).toBe(2);

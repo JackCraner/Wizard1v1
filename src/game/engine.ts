@@ -36,7 +36,7 @@ type Side = 'player' | 'bot';
 const other = (side: Side): Side => side === 'player' ? 'bot' : 'player';
 const statusConfig = statuses as Record<string, { kind: string; domain?: Domain; power?: number; critMultiplier?: number; critChancePerStack?: number; threshold?: number; combustDuration?: number; maxCastTicks?: number; selfDamage?: number }>;
 
-// Pure, seeded simulation. Timed effects start on the following tick. Replays
+// Pure, seeded simulation with explicit Instant, periodic, and normal phases. Replays
 // carry real cast events so multi-tick and Instant spells never invent casts.
 export function simulate(playerInput: Fighter, botInput: Fighter, seed = RULES.seed): Battle {
   const fighters = { player: cloneSnapshot(playerInput), bot: cloneSnapshot(botInput) };
@@ -74,59 +74,9 @@ export function simulate(playerInput: Fighter, botInput: Fighter, seed = RULES.s
   };
   const alive = () => fighters.player.health > 0 && fighters.bot.health > 0;
   const damageMultiplier = (f: Fighter, domain: string, periodic = false) => (f.statuses.fury ? 1+(statusConfig.fury.power??0)/100 : 1) * (f.statuses.rain && domain === 'water' ? 1+(statusConfig.rain.power??0)/100 : 1) * (periodic && f.statuses['star-empowerment'] ? 1+(statusConfig['star-empowerment'].power??0)/100 : 1);
-  for (let tick=1; tick<=RULES.maxTicks && alive(); tick++) {
-    tickStart=undefined; events=[]; messages=[]; notices=[]; damageEvents=[]; healingEvents=[]; manaEvents=[];
-    const existing = { player: Object.keys(fighters.player.statuses), bot: Object.keys(fighters.bot.statuses) };
-    // Both periodic effects resolve before either side starts a new cast.
-    const periodicDamage = { player: 0, bot: 0 }, periodicHeal = { player: 0, bot: 0 };
-    for (const side of ['player','bot'] as const) {
-      const f=fighters[side];
-      for (const id of existing[side]) {
-        const def=statusConfig[id];
-        if (def?.kind === 'dot') { const amount=Math.round((def.power??0)*damageMultiplier(fighters[other(side)],def.domain??'nature',true)); periodicDamage[side]+=amount; if(amount>0&&!f.statuses.guard)damageEvents.push({side,amount,critical:false,kind:'dot',domain:def.domain}); }
-        if (def?.kind === 'hot') periodicHeal[side] += def.power??0;
-      }
-    }
-    for (const side of ['player','bot'] as const) {
-      const f=fighters[side]; heal(f,periodicHeal[side],'hot'); takeDamage(f,periodicDamage[side]);
-      if (periodicDamage[side] && !f.statuses.guard) messages.push(`${f.name} takes ${periodicDamage[side]} damage over time.`);
-      if (periodicHeal[side]) messages.push(`${f.name} heals ${periodicHeal[side]} over time.`);
-    }
-    tickStart={tick,player:cloneSnapshot(fighters.player),bot:cloneSnapshot(fighters.bot),events:[],messages:[...messages],damageEvents:cloneSnapshot(damageEvents),healingEvents:cloneSnapshot(healingEvents),manaEvents:cloneSnapshot(manaEvents),notices:cloneSnapshot(notices),presentationPhase:'start'};
-    const spent = { player: false, bot: false };
-    for(const side of ['player','bot'] as const){const f=fighters[side];if((f.reshuffleRemaining??0)>0){spent[side]=true;f.reshuffleRemaining!--;messages.push(`${f.name} reshuffling · ${f.reshuffleRemaining}T remaining.`);}}
-    // One traversal per tick bounds all-Instant loadouts without hanging.
-    for (let step=0; step<RULES.slots && alive(); step++) {
-      const ready: { side: Side; event: CastEvent; tidecaller: boolean }[] = [];
-      for (const side of ['player','bot'] as const) {
-        if (spent[side]) continue;
-        const f=fighters[side];
-        if (!f.casting) {
-          const spell=SPELLS[f.spells[f.cursor]], index=f.cursor;
-          const cost=spell.mana === 'half' ? Math.floor(f.mana/2) : spell.mana!;
-          if (cost>f.mana) {
-            events.push({side,spell:spell.id,index,status:'skipped',mana:0,critical:false});
-            messages.push(`${f.name} skips ${spell.name}: insufficient mana.`);
-            advanceDeck(f); spent[side]=true; continue;
-          }
-          restore(f,-cost,'cost');
-          let duration=spell.castTicks!;
-          if(f.statuses['next-instant']) { duration=0; delete f.statuses['next-instant']; }
-          if(f.statuses.slowness) { duration+=statusConfig.slowness.power??1; delete f.statuses.slowness; }
-          const tidecaller=!!f.statuses['tidal-echo']; delete f.statuses['tidal-echo'];
-          f.casting={spell:spell.id,index,remaining:duration,totalTicks:duration,mana:cost,tidecaller};
-        }
-        const cast=f.casting;
-        if(f.statuses.combust) cast.remaining=Math.min(cast.remaining,statusConfig.combust.maxCastTicks!);
-        if(cast.remaining>0) { cast.remaining--; spent[side]=true; }
-        if(cast.remaining>0) continue;
-        const event: CastEvent={side,spell:cast.spell,index:cast.index,status:'cast',mana:cast.mana,critical:false};
-        ready.push({side,event,tidecaller:cast.tidecaller}); events.push(event);
-        f.casting=null; advanceDeck(f);
-        if(f.reshuffleRemaining)spent[side]=true;
-        // Repeating an all-Instant hand starts on the next world tick.
-        if(!spent[side] && step+1>=f.spells.length) spent[side]=true;
-      }
+  type Ready = { side: Side; event: CastEvent; tidecaller: boolean };
+  const sides = ['player','bot'] as const;
+  const resolveCasts = (ready: Ready[]) => {
       const damage={player:0,bot:0}, manaChange={player:0,bot:0};
       const hits:DamageEvent[]=[];
       const addHit=(side:Side,amount:number,critical=false,domain?:Domain)=>{damage[side]+=amount;if(amount>0)hits.push({side,amount,critical,kind:'hit',domain});};
@@ -178,13 +128,88 @@ export function simulate(playerInput: Fighter, botInput: Fighter, seed = RULES.s
       }
       damageEvents.push(...hits.filter(hit=>!fighters[hit.side].statuses.guard));
       for(const side of ['player','bot'] as const) { restore(fighters[side],manaChange[side]); takeDamage(fighters[side],damage[side]); }
-      if(spent.player && spent.bot) break;
+
+  };
+  const durationFor = (f:Fighter) => {
+    let duration=f.statuses['next-instant']?0:SPELLS[f.spells[f.cursor]].castTicks!;
+    if(f.statuses.slowness) duration+=statusConfig.slowness.power??1;
+    return duration;
+  };
+  const age = (matches:(kind:string)=>boolean) => {
+    for(const side of sides) for(const id of Object.keys(fighters[side].statuses)) {
+      const f=fighters[side];
+      if(matches(statusConfig[id]?.kind??'buff') && --f.statuses[id]<=0) delete f.statuses[id];
     }
-    // Every pre-existing timed buff/debuff loses exactly one stack this tick.
-    // Fresh applications retain their full duration until the following tick.
-    for(const side of ['player','bot'] as const) for(const id of existing[side]) {
-      const f=fighters[side]; if(f.statuses[id] !== undefined && --f.statuses[id]<=0) delete f.statuses[id];
+  };
+  for (let tick=1; tick<=RULES.maxTicks && alive(); tick++) {
+    tickStart=undefined; events=[]; messages=[]; notices=[]; damageEvents=[]; healingEvents=[]; manaEvents=[];
+    const spent = {player:false,bot:false};
+    for(const side of sides) {
+      const f=fighters[side];delete f.instantThisTick;
+      if((f.reshuffleRemaining??0)>0) {spent[side]=true;f.reshuffleRemaining!--;}
     }
+    const prepare = (instant:boolean) => {
+      const prepared:Side[]=[];
+      for(const side of sides) {
+        const f=fighters[side];
+        if(spent[side] || (instant && (f.casting ? f.casting.remaining>0 : durationFor(f)>0))) continue;
+        spent[side]=true;
+        if(!f.casting) {
+          const spell=SPELLS[f.spells[f.cursor]],index=f.cursor;
+          const cost=spell.mana==='half'?Math.floor(f.mana/2):spell.mana!;
+          if(cost>f.mana) {
+            events.push({side,spell:spell.id,index,status:'skipped',mana:0,critical:false});
+            messages.push(f.name+' skips '+spell.name+': insufficient mana.');advanceDeck(f);continue;
+          }
+          restore(f,-cost,'cost');
+          const duration=durationFor(f),tidecaller=!!f.statuses['tidal-echo'];
+          delete f.statuses['next-instant'];delete f.statuses.slowness;delete f.statuses['tidal-echo'];
+          f.casting={spell:spell.id,index,remaining:duration,totalTicks:duration,mana:cost,tidecaller};
+        }
+        prepared.push(side);
+      }
+      return prepared;
+    };
+    const collect = (prepared:Side[],instant:boolean) => {
+      const ready:Ready[]=[];
+      for(const side of prepared) {
+        const f=fighters[side],cast=f.casting!;
+        if(f.statuses.combust)cast.remaining=Math.min(cast.remaining,statusConfig.combust.maxCastTicks!);
+        if(cast.remaining>0)cast.remaining--;
+        if(cast.remaining>0)continue;
+        const event:CastEvent={side,spell:cast.spell,index:cast.index,status:'cast',mana:cast.mana,critical:false};
+        ready.push({side,event,tidecaller:cast.tidecaller});events.push(event);
+        if(instant)f.instantThisTick=cast.spell;
+        f.casting=null;advanceDeck(f);
+      }
+      return ready;
+    };
+    resolveCasts(collect(prepare(true),true));
+    // Early spells can use the last stack and apply effects before periodic resolution.
+    if(alive()) {
+      const damage={player:0,bot:0};
+      for(const side of sides) for(const id of Object.keys(fighters[side].statuses)) {
+        const def=statusConfig[id];if(def?.kind!=='dot')continue;
+        const amount=Math.round((def.power??0)*damageMultiplier(fighters[other(side)],def.domain??'nature',true));
+        damage[side]+=amount;
+        if(amount>0&&!fighters[side].statuses.guard)damageEvents.push({side,amount,critical:false,kind:'dot',domain:def.domain});
+      }
+      for(const side of sides)takeDamage(fighters[side],damage[side]);
+      // Lethal DoTs end combat before HoTs can rescue a defeated fighter.
+      if(alive()) {
+        age(kind=>kind==='dot');
+        for(const side of sides) for(const id of Object.keys(fighters[side].statuses)) {
+          const def=statusConfig[id];if(def?.kind==='hot')heal(fighters[side],def.power??0,'hot');
+        }
+        age(kind=>kind==='hot');
+        // Reactive buffs/debuffs operate while present, then expire before normal casts.
+        age(kind=>kind!=='dot'&&kind!=='hot');
+      }
+    }
+    // Pay and queue normal casts before the replay starts animating this tick.
+    const normal=alive()?prepare(false):[];
+    tickStart={tick,player:cloneSnapshot(fighters.player),bot:cloneSnapshot(fighters.bot),events:cloneSnapshot(events),messages:[...messages],damageEvents:cloneSnapshot(damageEvents),healingEvents:cloneSnapshot(healingEvents),manaEvents:cloneSnapshot(manaEvents),notices:cloneSnapshot(notices),presentationPhase:'start'};
+    if(alive())resolveCasts(collect(normal,false));
     snapshot(tick);
   }
   const {player,bot}=fighters;
