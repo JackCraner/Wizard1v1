@@ -3,7 +3,7 @@ import { cloneSnapshot } from './clone';
 import { CARDS } from '../config/catalogue';
 import settings from '../config/rules.json';
 import statuses from '../config/statuses.json';
-import type { Battle, CastEvent, DamageEvent, Effect, EquipmentModifier, Fighter, Spell, SpellId, Stats } from './model';
+import type { Battle, CastEvent, DamageEvent, HealingEvent, Effect, EquipmentModifier, Fighter, Spell, SpellId, Stats } from './model';
 
 export const RULES = settings;
 export const SPELLS: Record<SpellId, Spell> = Object.fromEntries(CARDS.map(card => [card.id, { ...card, price: card.stars, description: card.rules }]));
@@ -46,7 +46,8 @@ export function simulate(playerInput: Fighter, botInput: Fighter, seed = RULES.s
   const frames: Battle['frames'] = [];
   let events: CastEvent[] = [], messages: string[] = [];
   let damageEvents:DamageEvent[]=[];
-  const snapshot = (tick: number) => frames.push({ tick, player: cloneSnapshot(fighters.player), bot: cloneSnapshot(fighters.bot), messages: [...messages], events: cloneSnapshot(events), damageEvents:cloneSnapshot(damageEvents) });
+  let healingEvents:HealingEvent[]=[];
+  const snapshot = (tick: number) => frames.push({ tick, player: cloneSnapshot(fighters.player), bot: cloneSnapshot(fighters.bot), messages: [...messages], events: cloneSnapshot(events), damageEvents:cloneSnapshot(damageEvents), healingEvents:cloneSnapshot(healingEvents) });
   messages = ['Both spell orders are locked.']; snapshot(0);
   const applyStatus = (f: Fighter, id: string, amount: number) => {
     const previous=f.statuses[id]??0;f.statuses[id]=previous+amount;
@@ -57,7 +58,7 @@ export function simulate(playerInput: Fighter, botInput: Fighter, seed = RULES.s
     }
   };
   const restore = (f: Fighter, amount: number) => { f.mana = Math.min(f.maxMana,Math.max(0,f.mana+amount)); };
-  const heal = (f: Fighter, amount: number) => { f.health = Math.min(f.maxHealth,f.health+Math.max(0,amount)); };
+  const heal = (f: Fighter, amount: number, kind:HealingEvent['kind']='heal') => { const before=f.health; f.health = Math.min(f.maxHealth,f.health+Math.max(0,amount)); const restored=f.health-before; if(restored>0)healingEvents.push({side:f===fighters.player?'player':'bot',amount:restored,kind}); };
   const takeDamage = (f: Fighter, amount: number) => {
     if (f.statuses.guard > 0) return;
     f.health=Math.max(0,f.health-Math.max(0,amount));
@@ -69,7 +70,7 @@ export function simulate(playerInput: Fighter, botInput: Fighter, seed = RULES.s
   const alive = () => fighters.player.health > 0 && fighters.bot.health > 0;
   const damageMultiplier = (f: Fighter, domain: string, periodic = false) => (f.statuses.fury ? 1+(statusConfig.fury.power??0)/100 : 1) * (f.statuses.rain && domain === 'water' ? 1+(statusConfig.rain.power??0)/100 : 1) * (periodic && f.statuses['star-empowerment'] ? 1+(statusConfig['star-empowerment'].power??0)/100 : 1);
   for (let tick=1; tick<=RULES.maxTicks && alive(); tick++) {
-    events=[]; messages=[]; damageEvents=[];
+    events=[]; messages=[]; damageEvents=[]; healingEvents=[];
     const existing = { player: Object.keys(fighters.player.statuses), bot: Object.keys(fighters.bot.statuses) };
     // Both periodic effects resolve before either side starts a new cast.
     const periodicDamage = { player: 0, bot: 0 }, periodicHeal = { player: 0, bot: 0 };
@@ -82,7 +83,7 @@ export function simulate(playerInput: Fighter, botInput: Fighter, seed = RULES.s
       }
     }
     for (const side of ['player','bot'] as const) {
-      const f=fighters[side]; heal(f,periodicHeal[side]); takeDamage(f,periodicDamage[side]);
+      const f=fighters[side]; heal(f,periodicHeal[side],'hot'); takeDamage(f,periodicDamage[side]);
       if (periodicDamage[side] && !f.statuses.guard) messages.push(`${f.name} takes ${periodicDamage[side]} damage over time.`);
       if (periodicHeal[side]) messages.push(`${f.name} heals ${periodicHeal[side]} over time.`);
     }

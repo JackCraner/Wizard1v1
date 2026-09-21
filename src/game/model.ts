@@ -8,7 +8,8 @@ export interface EquipmentModifier { health?: number; mana?: number }
 export interface Fighter { name: string; health: number; mana: number; shield: number; maxHealth: number; maxMana: number; spells: SpellId[]; statuses: Record<string,number>; cursor: number; casting: { spell: SpellId; index: number; remaining: number; totalTicks?: number; mana: number; tidecaller: boolean } | null }
 export interface CastEvent { side: 'player'|'bot'; spell: SpellId; index: number; status: 'cast'|'skipped'; mana: number; critical: boolean; repeats?: number }
 export interface DamageEvent { domain?: Domain; side: 'player'|'bot'; amount: number; critical: boolean; kind: 'hit'|'dot'|'cost' }
-export interface CombatFrame { damageEvents?: DamageEvent[]; tick: number; player: Fighter; bot: Fighter; messages: string[]; events: CastEvent[] }
+export interface HealingEvent { side: 'player'|'bot'; amount:number; kind: 'heal'|'hot' }
+export interface CombatFrame { healingEvents?: HealingEvent[]; damageEvents?: DamageEvent[]; tick: number; player: Fighter; bot: Fighter; messages: string[]; events: CastEvent[] }
 export interface Battle { frames: CombatFrame[]; outcome: 'victory'|'defeat'|'draw'; endReason: 'timeout'|'knockout' }
 export interface Session { id: string; revision: number; round: number; gold: number; spells: SpellId[]; shop: SpellId[]; rerolls: number; equipmentShop: EquipmentId[]; equipment: Partial<Record<EquipmentSlot,EquipmentId>>; phase: 'shop'|'result'; wins: number; losses: number; battle: Battle|null }
 export type Command = { type: 'reroll' } | { type:'buyEquipment';item:EquipmentId } | { type:'buy';spell:SpellId } | { type:'trash';index:number } | { type:'move';from:number;to:number } | { type:'fight' } | { type:'next' };

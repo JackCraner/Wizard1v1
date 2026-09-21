@@ -1,7 +1,7 @@
 import { STATUS_ART } from '../components/cards/spellArt';
 import { useEffect, useRef, useState } from 'react';
 import { Animated, Image, Modal, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
-import { KEYWORDS, type Domain } from '../config/catalogue';
+import { KEYWORDS } from '../config/catalogue';
 import statuses from '../config/statuses.json';
 import type { CombatFrame, Fighter } from '../game/model';
 
@@ -24,19 +24,18 @@ export function EffectBar({fighter,compact,group}:{fighter:Fighter;compact:boole
    <Modal visible={!!info} transparent animationType="fade" onRequestClose={()=>setSelected(null)}><View style={{flex:1,alignItems:'center',justifyContent:'center',backgroundColor:'#0009',padding:24}}><View accessibilityViewIsModal style={{width:'100%',maxWidth:330,padding:16,gap:10,backgroundColor:'#191710',borderColor:color,borderWidth:1,borderRadius:6}}><Text style={{color,fontWeight:'800'}}>{bad?'− Debuff':'+ Buff'} · {info?.name} · {selected?fighter.statuses[selected]:0}T</Text><Text style={{color:'#eee0ca'}}>{info?.description}</Text><Pressable accessibilityRole="button" onPress={()=>setSelected(null)} style={{padding:10,borderWidth:1,borderColor:color}}><Text style={{color,textAlign:'center'}}>Close</Text></Pressable></View></View></Modal>
  </View>;
 }
-const domainColors:Record<Domain,string>={nature:'#a6e877',water:'#79d9ff',fire:'#ff955c',holy:'#ffe58b',affliction:'#dba0ff'};
-type Hit=NonNullable<CombatFrame['damageEvents']>[number]&{key:string};
+type Hit={side:'player'|'bot';amount:number;critical:boolean;healing:boolean;key:string};
 function FloatingHit({hit,index,onDone}:{hit:Hit;index:number;onDone:(key:string)=>void}) {
  const progress=useRef(new Animated.Value(0)).current;
  useEffect(()=>{const anim=Animated.timing(progress,{toValue:1,duration:1450,useNativeDriver:true});anim.start(({finished})=>{if(finished)onDone(hit.key);});return()=>anim.stop();},[]);
- return <Animated.Text style={[s.damage,{left:`${(hit.side==='player'?17:78)+(index%3-1)*5}%`,top:hit.side==='player'?'64%':'42%',color:hit.domain?domainColors[hit.domain]:'#fff3cf',fontSize:hit.critical?30:23,opacity:progress.interpolate({inputRange:[0,.65,1],outputRange:[1,1,0]}),transform:[{translateY:progress.interpolate({inputRange:[0,1],outputRange:[0,-65]})}]}]}>{hit.amount}{hit.critical?'!':''}</Animated.Text>;
+ return <Animated.Text style={[s.damage,{left:`${(hit.side==='player'?17:78)+(index%3-1)*5}%`,top:hit.side==='player'?'64%':'42%',color:hit.healing?'#87f5a0':'#ff7770',textShadowColor:hit.critical?'#ff3727':'#120700',textShadowRadius:hit.critical?12:3,textShadowOffset:hit.critical?{width:0,height:0}:{width:1,height:2},fontSize:hit.critical?30:23,opacity:progress.interpolate({inputRange:[0,.65,1],outputRange:[1,1,0]}),transform:[{translateY:progress.interpolate({inputRange:[0,1],outputRange:[0,-65]})}]}]}>{hit.healing?'+':'−'}{hit.amount}{hit.critical?'!':''}</Animated.Text>;
 }
 export function DamageNumbers({frame}:{frame:CombatFrame}) {
  const [hits,setHits]=useState<Hit[]>([]);const previous=useRef(frame.tick);
  useEffect(()=>{
    const sequential=frame.tick===previous.current+1;previous.current=frame.tick;
    if(!sequential){setHits([]);return;}
-   setHits(old=>[...old,...(frame.damageEvents??[]).map((hit,i)=>({...hit,key:`${frame.tick}-${i}`}))].slice(-24));
+   setHits(old=>[...old,...(frame.damageEvents??[]).map((hit,i)=>({...hit,healing:false,key:`${frame.tick}-damage-${i}`})),...(frame.healingEvents??[]).map((hit,i)=>({...hit,healing:true,critical:false,key:`${frame.tick}-heal-${i}`}))].slice(-24));
  },[frame]);
  return <View pointerEvents="none" style={[StyleSheet.absoluteFill,{zIndex:50}]}>{hits.map((hit,i)=><FloatingHit key={hit.key} hit={hit} index={i} onDone={key=>setHits(old=>old.filter(h=>h.key!==key))}/>)}</View>;
 }
