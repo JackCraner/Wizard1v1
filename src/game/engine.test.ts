@@ -38,7 +38,7 @@ describe('catalogue combat rules',()=>{
     expect(result.frames[3].player.casting?.remaining).toBe(2);
   });
   it('adds reapplied duration while still aging the previous effect once',()=>{
-    const result=simulate(fighter('A',['moonfire']),fighter('B',['splash']));
+    const result=simulate(fighter('A',['moonfire','moonfire']),fighter('B',['splash']));
     expect(result.frames[2].bot.statuses.moonfire).toBe(9);
     expect(result.frames[2].bot.health).toBe(490);
   });
@@ -57,8 +57,9 @@ describe('catalogue combat rules',()=>{
     expect(simulate(p,p).outcome).toBe('draw');
   });
   it('resolves simultaneous knockouts as draws, including lethal periodic effects',()=>{
-    const result=simulate(fighter('A',['wrath']),fighter('B',['wrath']));
-    expect(result.frames.at(-1)?.tick).toBe(25);expect(result.outcome).toBe('draw');
+    const a=fighter('A',['wrath']),b=fighter('B',['wrath']);a.health=40;b.health=40;
+    const result=simulate(a,b);
+    expect(result.frames.at(-1)?.tick).toBe(4);expect(result.outcome).toBe('draw');
     const p=fighter('A',['wrath']);p.health=10;p.statuses.moonfire=1;
     const dots=simulate(p,p);expect(dots.outcome).toBe('draw');expect(dots.frames[1].events).toHaveLength(0);
   });
@@ -94,7 +95,7 @@ it('snapshots conditional crits before a simultaneous cleanse',()=>{
 });
 
 it('uses 200% total crit damage during Overheat, then returns to 150%',()=>{
- const a=fighter('A',['lunar-strike']);a.statuses.overheat=3;
+ const a=fighter('A',['lunar-strike','lunar-strike']);a.statuses.overheat=3;
  const b=fighter('B',['splash']);b.statuses.moonfire=10;
  const result=simulate(a,b);
  expect(result.frames[2].bot.health).toBe(380); // 20 periodic + 100 critical

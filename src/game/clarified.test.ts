@@ -50,12 +50,12 @@ describe('Channel groups',()=>{
 describe('timed Guard and Phoenix',()=>{
   it('blocks direct and periodic damage until Guard expires without consuming on hits',()=>{
     const a=fighter('A',['splash']);a.statuses={guard:2,moonfire:4};
-    const result=simulate(a,fighter('B',['wrath']));
+    const result=simulate(a,fighter('B',['wrath','wrath','wrath']));
     expect(result.frames.slice(1,4).map(f=>f.player.health)).toEqual([500,500,470]);
     expect(result.frames.slice(1,4).map(f=>f.player.statuses.guard??0)).toEqual([1,0,0]);
   });
   it('applies Guard before simultaneous damage, adds duration, and blocks self damage',()=>{
-    const result=simulate(fighter('A',['tidal-guard']),fighter('B',['wrath']));
+    const result=simulate(fighter('A',['tidal-guard','tidal-guard']),fighter('B',['wrath']));
     expect(result.frames[1].player.health).toBe(500);
     expect(result.frames[2].player.statuses.guard).toBe(3);
     const a=fighter('A',['from-ash']);a.statuses.guard=1;
@@ -75,7 +75,7 @@ describe('timed Guard and Phoenix',()=>{
     expect(simulate(expired,fighter('B',['seed-shot'])).frames.at(-1)?.player.health).toBe(0);
   });
   it('allows repeated rebirths during the window and resolves both sides symmetrically',()=>{
-    const a=fighter('A',['wrath'],[{health:-480}]);a.statuses.phoenix=3;
+    const a=fighter('A',['wrath','wrath','wrath','wrath'],[{health:-480}]);a.statuses.phoenix=3;
     const result=simulate(a,a);
     expect(result.frames.slice(1,5).map(f=>f.player.health)).toEqual([10,10,10,0]);
     expect(result.outcome).toBe('draw');

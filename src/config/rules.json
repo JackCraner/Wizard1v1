@@ -7,5 +7,6 @@
   "critMultiplier": 1.5,
   "baseCritChance": 0,
   "seed": 42,
-  "maxDomains": 2
+  "maxDomains": 2,
+  "reshuffleTicks": 2
 }

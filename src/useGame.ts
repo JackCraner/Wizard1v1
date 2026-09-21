@@ -9,9 +9,11 @@ export function useGame(gateway: GameGateway) {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
   const [frame, setFrame] = useState(0);
+  const [paused, setPaused] = useState(false);
   const [speed, setSpeed] = useState(1);
   const [active, setActive] = useState(AppState.currentState === 'active');
   const locked = useRef(false);
+  const playback = useRef({key:'',remaining:1});
   const battle = session?.battle;
   const finished = !!battle && frame === battle.frames.length - 1;
 
@@ -30,10 +32,13 @@ export function useGame(gateway: GameGateway) {
   }, [screen]);
 
   useEffect(() => {
-    if (!active || screen !== 'game' || !battle || finished) return;
-    const timer = setTimeout(() => setFrame(value => Math.min(value + 1, battle.frames.length - 1)), COMBAT_TICK_MS / speed);
-    return () => clearTimeout(timer);
-  }, [active, screen, battle, finished, frame, speed]);
+    const key=`${session?.id}-${session?.round}-${frame}`;
+    if(playback.current.key!==key)playback.current={key,remaining:1};
+    if (paused || !active || screen !== 'game' || !battle || finished) return;
+    const started=Date.now(),duration=COMBAT_TICK_MS/speed;
+    const timer = setTimeout(() => setFrame(value => Math.min(value + 1, battle.frames.length - 1)), playback.current.remaining*duration);
+    return () => {clearTimeout(timer);playback.current.remaining=Math.max(0,playback.current.remaining-(Date.now()-started)/duration);};
+  }, [paused, active, screen, battle, finished, frame, speed]);
 
   async function request(operation: () => Promise<void>) {
     if (locked.current) return;
@@ -48,7 +53,7 @@ export function useGame(gateway: GameGateway) {
   function start() {
     return request(async () => {
       setSession(await gateway.start());
-      setFrame(0);
+      setFrame(0); setPaused(false);
       setScreen('game');
     });
   }
@@ -62,5 +67,6 @@ export function useGame(gateway: GameGateway) {
     });
   }
 
-  return { active, session, screen, setScreen, busy, error, frame, setFrame, speed, setSpeed, battle, finished, start, act };
+  function step(delta:number) {setPaused(true);setFrame(value=>Math.max(0,Math.min((battle?.frames.length??1)-1,value+delta)));}
+  return { paused, setPaused, step, active, session, screen, setScreen, busy, error, frame, setFrame, speed, setSpeed, battle, finished, start, act };
 }

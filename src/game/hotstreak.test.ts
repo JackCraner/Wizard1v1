@@ -31,7 +31,7 @@ it('triggers on upward threshold crossings without consuming Hotstreak or retrig
  expect(simulate(a,fighter('B',['splash'])).frames[1].player.statuses.combust).toBeUndefined();
 });
 it('caps casts at one tick, expires normally, and leaves Instant casts unchanged',()=>{
- const a=fighter('A',['pyroblast']);a.statuses={combust:3,slowness:2};
+ const a=fighter('A',['pyroblast','pyroblast','pyroblast','pyroblast']);a.statuses={combust:3,slowness:2};
  const result=simulate(a,fighter('B',['splash'],[{health:2000}]));
  expect(result.frames.slice(1,4).map(f=>f.player.health)).toEqual([495,490,485]);
  expect(result.frames[3].player.statuses.combust).toBeUndefined();
