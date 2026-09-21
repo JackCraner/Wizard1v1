@@ -74,17 +74,29 @@ Each remaining Hotstreak stack adds 10 percentage points of crit chance, capped 
 - Interrupt cancels an ongoing cast, advances its card, and does not refund mana. The interrupted fighter cannot start another spell until the next tick. Already completed simultaneous casts remain resolved.
 - Flashfire consumes remaining Burn on both fighters and grants matching Hotstreak and Fury. Its normal cast occurs after periodic damage and countdowns.
 
-## Equipment
+## Stackable items
 
-The 155-item catalogue is in equipment.json. Price equals star rank, and equipment uses shopOdds.json probabilities. Two offers refresh on reroll; purchased offers are consumed. Buying into an occupied slot replaces the item without a refund. Equipment affinity is a synergy label and does not consume a spell Domain slot.
+The 80-item catalogue is in `src/config/equipment.json`. Items have **no equipment slots, inventory limit, or duplicate limit**. Buying a copy adds one stack of that item and consumes only that shop offer. Items persist for the run and apply to every duel. Affinity describes synergy, not a requirement: any deck may own any item.
 
-Ward absorbs damage after reductions and before Health. It adds, persists until spent, and resets at combat start. Wardpiercer lets 25% of direct spell damage bypass Ward. Guard prevents damage without spending Ward. Explicit health costs bypass Ward and reductions.
+The shop has **three item offers** alongside five spells. Price equals 1–5★ rarity. Item rarity uses the same round-based probabilities as spells. After rolling rarity, offers favor your domains: 35% neutral, 60% shared between matching domains, and 5% shared between other domains when all groups are available. With no chosen domain, domain items share that 65%. These weights and offer count are editable in `src/config/itemShop.json`.
 
-A Cycle ends after reshuffling, even if cards were skipped or interrupted. Equipment limits reset for the new Cycle. The first combat pass counts as Cycle 1; effects specifically requiring a Reshuffle do not fire at combat start. Printed cast time means the card's current base/upgraded cast time. Equipment does not permit more than one card per tick.
+Owned items appear as icons with **×N** badges. Tap one to inspect its per-copy effect and current total. Shop inspection also previews the bonus after buying another copy. Large collections use an expandable grid, keeping the shop and combat screens free of horizontal scrolling. Placeholder initials are supplied; add future assets to `ITEM_ART` in `src/components/ItemInventory.tsx`.
 
-Spell Power increases direct spell damage; Restoration increases healing done, including periodic healing. Flat equipment percentages of the same stat add. Damage/healing received modifiers are separate. Passive descriptions that repeat a stat field do not apply that stat twice. Crit-power points add to 150% or Overheat's 200%.
+### Stacking and combat timing
 
-Eye of the Storm restores 5 Mana on a Water Tidecaller trigger (repeats already cost no extra Mana). Restoration does not affect Mana. Excess healing and Mana can become Ward through the applicable equipment, with caps per Cycle. Equipment-generated healing does not recursively trigger spell-heal abilities, and retaliation does not trigger retaliation chains.
+- Item effects scale linearly. Polished Lens ×3 gives +6 percentage points of crit chance; Vitality Charm ×4 gives +80 maximum Health. Health has a minimum of 1, Mana a minimum of 0, and crit chance caps at 100%.
+- All applicable **item damage percentages add into one bucket**, including conditional, domain, critical and first-spell bonuses. Rain, Fury and other spell/status multipliers then multiply that bucket. Generic spell damage affects direct damage and DoTs; direct-only bonuses do not affect DoTs or retaliation. Flat Moonfire/Sunfire bonuses apply before percentages. Item-triggered damage is the listed flat value per copy.
+- Healing-done percentages add together, including applicable HoT/domain bonuses. Healing-received modifiers form a separate bucket that multiplies healing done, with a minimum of zero. Prayer Beads uses the healing spell/status source's Holy domain. Lifebloom Petal adds to the per-stack base before multiplying by remaining Lifebloom stacks.
+- A Cycle ends after the entire reshuffle, including Penance. First-cast mana discounts commit when a cast starts, survive an unaffordable skip, and are still consumed if that cast is interrupted. First-spell damage and first-domain completion triggers count completed cards once; Tidecaller repeats do not re-trigger them. First-spell damage bonuses affect damage at cast resolution, not future DoT ticks.
+- **Clockwork Spring** restores its listed amount once at reshuffle start. **Scholar's Quill**, **Brine Flask**, and **Restoration Stone** trigger when reshuffling finishes. **Chapel Bell** damages only on the extra Penance ticks appended after the normal two ticks, during the periodic damage phase.
+- **Conch Shell** adds mana to positive Water spell mana gains (including Water status effects). It does not trigger from costs, rebirth, item mana or itself. Mana remains capped at maximum.
+- **Small Censer** and **Sacred Reliquary** trigger after the first completed Holy card each Cycle. **Golden Chain** triggers per application of Slowness. **Templar Seal** rewards a fulfilled Oath; **Battle Rosary** heals once per Guard grant, not per Guard stack.
+- **Incense Burner** heals at most once per item type per world tick when Guard blocks positive damage. Mirrors retaliate after direct enemy spell damage reaches Health, at most once per item type per tick; they ignore DoTs, self-damage and other retaliation. Multiple copies increase the trigger's amount, not its frequency.
+- **Scorched Band** reduces actual self-inflicted damage, including Combust, but does not reduce Overheat's explicit half-current-Health cost. **Ancient Bark** applies only while a HoT remains active. **Stone Charm** reduces the first unguarded opposing direct hit each Cycle, before Ward absorption.
+
+The catalogue's recommended caps are enforced: Lucky Coin 10 mana reduction; Conch Shell +10 mana per trigger; Ancient Bark 30% reduction; Small Censer +4 Consecration per trigger; Golden Chain +3 per application. Sacred Reliquary has no such cap. Buying beyond a cap is allowed; the inspection panel shows the capped total. Different items' bonuses add rather than sharing a duplicate cap.
+
+Bots accumulate item stacks with the same effects and shop rules. Their editable spending budget and spell-gold reserve keep resources available for deck development. This overhaul replaces the old 155 slotted items; old rule-changing equipment and proposed Relics are not part of this catalogue. Start a new run when switching from the old equipment version.
 
 ## Holy domain
 
@@ -93,7 +105,7 @@ Holy has 27 spells across ranks 1–5. It uses the same shop odds, star prices, 
 | Keyword | Behavior |
 | --- | --- |
 | **Consecration** | Persistent stacks applied to the enemy. Every **5 stacks** are immediately consumed for **+1 Penance tick**, with **no cap**. Unconverted stacks remain between ticks. Cleanse removes those stacks, but cannot remove Penance already queued. |
-| **Penance** | Extra ticks on the next reshuffle, added after equipment adjusts its base duration. Damage, healing and timed effects continue. Penance received during an active reshuffle waits for the following reshuffle. The deck shows queued and active extra ticks. |
+| **Penance** | Extra ticks on the next reshuffle, added after the normal base duration. Damage, healing and timed effects continue. Penance received during an active reshuffle waits for the following reshuffle. The deck shows queued and active extra ticks. |
 | **Oath** | One active condition-based Oath per wizard; a new one replaces it. The buff panel shows its remaining requirement. Swearing the Oath does not count toward its own condition. Skipped or interrupted cards do not count as completed; Tidecaller repeats count once. |
 | **Retribution** | For 5 ticks, retaliate for 15 damage after an opposing direct spell damages your Health, at most once per tick. DoTs, costs, retaliation, and fully absorbed hits do not trigger it. Retaliation cannot trigger retaliation. |
 | **Templar's Oath** | A 6-tick stance: incoming damage ×0.8 and your direct spell damage ×0.9. Despite its name, this timed stance does not replace a condition-based Oath. |

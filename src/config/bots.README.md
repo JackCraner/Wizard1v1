@@ -12,6 +12,8 @@ Edit bots.json. Difficulty is chosen for a new run and stays fixed for that run.
 - equipmentBudget: maximum gold spent on equipment per round, limited by available gold.
 - bonusGoldPerRound, freeRerolls, shopRoundBonus: private difficulty advantages beginning at advantageStartsRound. shopRoundBonus advances the round used for configured shop rank odds. These values and private bot wallets are not returned in session snapshots or displayed in gameplay.
 
-No hidden health, mana, damage, crit, or result overrides are applied. Equipped items use the same modifiers as player equipment. Gold, spells, equipment and order evolve before every round; leaderboard decks remain snapshots of the last combat.
+No hidden health, mana, damage, crit, or result overrides are applied. Stacked items use the same modifiers as player equipment. Gold, spells, equipment and order evolve before every round; leaderboard decks remain snapshots of the last combat.
 
 This is still a local prototype: bundled configuration can be inspected on the client. For true secrecy, move bot planning and these settings to the server behind GameGateway.
+
+- spellGoldReserve: gold protected from item purchases each round. Item purchases add copies and never replace an inventory slot. Affinity prioritization uses the bot strategy; effects are identical to human-owned items.

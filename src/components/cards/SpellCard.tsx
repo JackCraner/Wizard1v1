@@ -18,6 +18,54 @@ const upgradedFrames:Partial<Record<Domain,ImageSourcePropType>>={
  nature:require('../../../assets/Nature_Border_upgraded.png'),water:require('../../../assets/Water_Border_Upgraded.png'),fire:require('../../../assets/Fire_Border_Upgraded.png'),
 };
 const serif = Platform.select({ ios: 'Georgia', android: 'serif', default: 'Georgia, serif' });
+const castArt: Partial<Record<number, ImageSourcePropType>> = {
+  0: require('../../../assets/Cast_instant.png'),
+  1: require('../../../assets/Cast_1.png'),
+  2: require('../../../assets/Cast_2.png'),
+  3: require('../../../assets/Cast_3.png'),
+  4: require('../../../assets/Cast_4.png'),
+  5: require('../../../assets/Cast_5.png'),
+  6: require('../../../assets/Cast_6.png'),
+};
+// Full-circle badges use domain artwork when available; other domains keep glyphs.
+const domainCastArt: Partial<Record<Domain, Partial<Record<number, ImageSourcePropType>>>> = {
+  water: {
+    0: require('../../../assets/water/Cast_Instant.png'),
+    1: require('../../../assets/water/Cast_1.png'),
+    2: require('../../../assets/water/Cast_2.png'),
+    3: require('../../../assets/water/Cast_3.png'),
+    4: require('../../../assets/water/Cast_4.png'),
+    5: require('../../../assets/water/Cast_5.png'),
+    6: require('../../../assets/water/Cast_6.png'),
+  },
+  fire: {
+    0: require('../../../assets/fire/Cast_Instant.png'),
+    1: require('../../../assets/fire/Cast_1.png'),
+    2: require('../../../assets/fire/Cast_2.png'),
+    3: require('../../../assets/fire/Cast_3.png'),
+    4: require('../../../assets/fire/Cast_4.png'),
+    5: require('../../../assets/fire/Cast_5.png'),
+    6: require('../../../assets/fire/Cast_6.png'),
+  },
+  nature: {
+    0: require('../../../assets/nature/Cast_Instant.png'),
+    1: require('../../../assets/nature/Cast_1.png'),
+    2: require('../../../assets/nature/Cast_2.png'),
+    3: require('../../../assets/nature/Cast_3.png'),
+    4: require('../../../assets/nature/Cast_4.png'),
+    5: require('../../../assets/nature/Cast_5.png'),
+    6: require('../../../assets/nature/Cast_6.png'),
+  },
+  holy: {
+    0: require('../../../assets/Holy/Cast_Instant.png'),
+    1: require('../../../assets/Holy/Cast_1.png'),
+    2: require('../../../assets/Holy/Cast_2.png'),
+    3: require('../../../assets/Holy/Cast_3.png'),
+    4: require('../../../assets/Holy/Cast_4.png'),
+    5: require('../../../assets/Holy/Cast_5.png'),
+    6: require('../../../assets/Holy/Cast_6.png'),
+  },
+};
 export type SpellCardProps = CardDefinition & { art?: ImageSourcePropType; compact?: boolean; shop?: boolean };
 export function RulesText({ rules, keywords, fontSize = 12, color = '#302117' }: { rules: string; keywords: string[]; fontSize?: number; color?: string }) {
   return <Text style={{ fontSize, color, lineHeight: fontSize * 1.2, textAlign: 'center' }}>{keywordSpans(rules, keywords).map((part, i) => <Text key={i} style={part.bold ? { fontWeight: '800' } : undefined}>{part.text}</Text>)}</Text>;
@@ -29,6 +77,10 @@ export function SpellCard({ compact = false, shop = false, art, ...input }: Spel
   const frameRatio = size.height / Math.max(1, size.width);
   const artClipId = 'card-art-'+useId().replace(/[^a-zA-Z0-9_-]/g,'');
   const artwork = art ?? SPELL_ART[card.id];
+  const domainBadge = card.castTicks === null ? undefined : domainCastArt[card.domain]?.[card.castTicks];
+  const castBadge = domainBadge ?? (card.castTicks === null ? undefined : castArt[card.castTicks]);
+  const fittedBadge = !!domainBadge && (card.domain === 'fire' || card.domain === 'water');
+  const castBadgeSize = fittedBadge ? '100%' : domainBadge ? (card.domain === 'nature' ? '145%' : '135%') : '82%';
   const rulesSize = Math.min(13, Math.max(4, scale * (card.rules.length > 105 ? 9.5 : 11)));
   return <View onLayout={e => setSize(e.nativeEvent.layout)} accessible accessibilityLabel={`${card.name}, ${card.upgraded?'Upgraded':`${card.xp??0} of ${UPGRADE_XP} XP`}, ${card.domain}, ${card.stars} stars, ${goldCost(card)} gold, ${manaLabel(card.mana)} mana, ${castLabel(card.castTicks)}. ${card.rules}`} style={s.card}>
     <Image accessible={false} source={shop?shopFrames[card.domain]:card.upgraded?(upgradedFrames[card.domain]??frames[card.domain]):frames[card.domain]} resizeMode="stretch" style={[StyleSheet.absoluteFill, { width: '100%', height: '100%' }]} />
@@ -42,11 +94,13 @@ export function SpellCard({ compact = false, shop = false, art, ...input }: Spel
     </Svg>}
     {!shop && !card.upgraded && <View pointerEvents="none" style={{position:'absolute',left:'33.7%',top:'6.5%',width:'32.5%',height:'4.1%',flexDirection:'row',gap:2*scale}}>{[0,1,2].map(i=><View key={i} style={{flex:1,borderRadius:2*scale,backgroundColor:i<(card.xp??0)?'#ffd45f':'transparent',shadowColor:'#ffdc6e',shadowOpacity:i<(card.xp??0)?1:0,shadowRadius:5*scale,shadowOffset:{width:0,height:0}}}>{i<(card.xp??0)&&<Image source={require('../../../assets/XP point.png')} resizeMode="stretch" style={{position:'absolute',left:'-12%',top:'-28%',width:'124%',height:'156%'}} />}</View>)}</View>}
     <View style={s.mana}><Text numberOfLines={1} adjustsFontSizeToFit minimumFontScale={.65} style={[s.value, { fontSize: (typeof card.mana==='number'&&card.mana>=100?11:typeof card.mana==='number'&&card.mana>=10?14:17) * scale, color: card.domain==='holy'?'#17394c':'#edfbff', textShadowColor: card.domain==='holy'?'#fff5d4':'#032034' }]}>{manaLabel(card.mana)}</Text></View>
-    <View style={s.cast}><Text numberOfLines={1} adjustsFontSizeToFit minimumFontScale={.65} style={[s.value, { fontSize: (card.castTicks === null ? 11 : 16) * scale, ...(card.domain==='holy'?{color:'#3c2712',textShadowColor:'#fff0cc'}:{}) }]}>{card.castTicks === 0 ? 'ϟ' : card.castTicks === null ? '?' : card.castTicks}<Text style={{ fontSize: 7 * scale }}>{card.castTicks ? 'T' : ''}</Text></Text></View>
+    <View pointerEvents="none" style={[s.cast, fittedBadge && (card.domain === 'fire' ? {right:'3.5%',top:!shop&&card.upgraded?'2.6%':'3%',width:'22%',height:'14.7%'} : {right:'3.4%',top:!shop&&card.upgraded?'3.5%':'2.9%',width:'20.5%',height:'13.7%'})]}>{castBadge
+      ? <Image accessible={false} source={castBadge} resizeMode="contain" style={{width:castBadgeSize,height:castBadgeSize}} />
+      : <Text style={[s.value,{fontSize:14*scale}]}>{card.castTicks === null ? '?' : `${card.castTicks}T`}</Text>
+    }</View>
     <View style={s.name}><Text numberOfLines={1} adjustsFontSizeToFit minimumFontScale={.5} style={{ color: '#f4e1b7', fontFamily: serif, fontWeight: '600', fontSize: 14 * scale, textAlign: 'center' }}>{card.name}</Text></View>
     <View style={s.stars}><Text style={{ color: '#e1be63', fontSize: 10 * scale, letterSpacing: scale }}>{'★'.repeat(card.stars)}</Text></View>
     <View style={s.rules}>{compact && size.height < 115 ? <Text style={{ fontSize: 9 * scale, color: '#382617', textAlign: 'center' }}>{card.domain.toUpperCase()}</Text> : <RulesText rules={card.rules} keywords={card.keywords} fontSize={rulesSize} />}</View>
-    <Text style={[s.domain, { fontSize: 7.5 * scale }]}>{card.upgraded?'UPGRADED · ':''}{card.domain.toUpperCase()} · {goldCost(card)} GOLD</Text>
   </View>;
 }
 export function KeywordBoxes({ keywords, small = false }: { keywords: string[]; small?: boolean }) {
@@ -64,7 +118,7 @@ export function CardPreview({ card, height = 260, width, shop = false }: { card:
 }
 const s = StyleSheet.create({
   card: { flex: 1, overflow: 'hidden' }, art: { position: 'absolute', left: '10%', right: '10%', top: '15%', height: '35%', overflow: 'hidden', borderRadius: 4 },
-  value: { fontFamily: serif, fontWeight: '900', color: '#fff0c5', textAlign: 'center', textShadowColor: '#160b03', textShadowOffset: { width: 0, height: 1 }, textShadowRadius: 3, includeFontPadding: false }, mana: { position: 'absolute', top: '6.1%', left: '7.5%', width: '13%', height: '10%', alignItems: 'center', justifyContent: 'center' }, cast: { position: 'absolute', top: '5.3%', right: '5.5%', width: '13%', height: '10%', alignItems: 'center', justifyContent: 'center' },
+  value: { fontFamily: serif, fontWeight: '900', color: '#fff0c5', textAlign: 'center', textShadowColor: '#160b03', textShadowOffset: { width: 0, height: 1 }, textShadowRadius: 3, includeFontPadding: false }, mana: { position: 'absolute', top: '6.1%', left: '7.5%', width: '13%', height: '10%', alignItems: 'center', justifyContent: 'center' }, cast: { position: 'absolute', top: '5.1%', right: '6.5%', width: '13%', height: '9.2%', alignItems: 'center', justifyContent: 'center' },
   name: { position: 'absolute', top: '51%', height: '8%', left: '9%', right: '9%', justifyContent: 'center' }, stars: { position: 'absolute', top: '59%', height: '6%', left: '9%', right: '9%', alignItems: 'center', justifyContent: 'center' },
-  rules: { position: 'absolute', top: '66%', bottom: '13%', left: '11%', right: '11%', justifyContent: 'center' }, domain: { position: 'absolute', bottom: '8%', left: '10%', right: '10%', textAlign: 'center', color: '#302318' }, keyword: { backgroundColor: '#21180ff5', borderWidth: 1, borderColor: '#93753f', borderRadius: 4 },
+  rules: { position: 'absolute', top: '66%', bottom: '13%', left: '11%', right: '11%', justifyContent: 'center' }, keyword: { backgroundColor: '#21180ff5', borderWidth: 1, borderColor: '#93753f', borderRadius: 4 },
 });

@@ -1,4081 +1,1050 @@
 {
-  "schemaVersion": 1,
-  "designNotes": {
-    "rarityScale": "stars is an integer from 1 to 5; 5-star items are intended to be build-defining.",
-    "affinityValues": [
-      "neutral",
-      "water",
-      "fire",
-      "natural"
-    ],
-    "naturalMeaning": "'natural' is the equipment affinity for the game's Nature domain.",
-    "cycleDefinition": "A Cycle is one full pass through the ordered spell deck, ending after the Reshuffle.",
-    "slotPhilosophy": {
-      "weapon": "Most Weapons have offensive or sequencing abilities and are intended to be build-defining.",
-      "ring": "Most Rings have synergy, mana-engine, domain, or sequencing abilities and are intended to be build-defining.",
-      "armor": "Every Armor item grants both maximum Health and maximum Mana. Most of its power budget is in those stats; only selected items carry a small defensive or sustain ability.",
-      "boots": "Every Boots item grants both maximum Health and maximum Mana. Most of its power budget is in those stats; selected items carry a small tempo, recovery, or sequencing ability."
-    },
-    "statFields": {
-      "maxHealth": "Flat modifier to maximum Health.",
-      "maxMana": "Flat modifier to maximum Mana.",
-      "spellPowerPct": "Percentage modifier to spell direct damage unless the item text says otherwise.",
-      "restorationPct": "Percentage modifier to healing done unless the item text says otherwise.",
-      "critChancePct": "Percentage-point modifier to base Critical Hit chance.",
-      "critPowerBonusPct": "Percentage points added to the normal critical damage multiplier.",
-      "startingWard": "Flat Ward granted at combat start."
-    },
-    "implementationNote": "ability.text is player-facing rules text. The remaining ability fields are machine-readable suggestions and can be adapted to the combat-effect schema used by the app."
+  "equipmentSystem": {
+    "stackable": true,
+    "inventoryLimit": null,
+    "duplicateLimit": null,
+    "description": "Equipment is permanently owned during a run and can be purchased repeatedly. Duplicate items stack their effect.",
+    "designRules": [
+      "Equipment should primarily provide incremental scaling rather than major rule changes.",
+      "Most effects stack linearly.",
+      "Rule-changing effects should generally be reserved for Relics or spells.",
+      "Avoid excessive random proc effects so combat remains understandable.",
+      "Domain equipment may synergize with a domain but does not require that domain to be equipped."
+    ]
   },
-  "equipment": [
+  "items": [
     {
-      "id": "weapon_apprentices_wand",
-      "name": "Apprentice's Wand",
-      "slot": "weapon",
-      "stars": 1,
+      "id": "vitality_charm",
+      "name": "Vitality Charm",
+      "rarity": 1,
       "affinity": "neutral",
-      "stats": {
-        "maxHealth": 0,
-        "maxMana": 0,
-        "spellPowerPct": 5,
-        "restorationPct": 0,
-        "critChancePct": 0,
-        "critPowerBonusPct": 0,
-        "startingWard": 0
+      "effect": {
+        "type": "max_health",
+        "amountPerStack": 20
       },
-      "ability": {
-        "trigger": "passive",
-        "text": "Your spells deal 5% more direct damage.",
-        "effect": "direct_damage_multiplier",
-        "valuePct": 5
-      },
-      "tags": [
-        "direct_damage",
-        "starter"
-      ]
+      "description": "+20 Maximum Health per stack."
     },
     {
-      "id": "weapon_ember_twig",
-      "name": "Ember Twig",
-      "slot": "weapon",
-      "stars": 1,
-      "affinity": "fire",
-      "stats": {
-        "maxHealth": 0,
-        "maxMana": 0,
-        "spellPowerPct": 3,
-        "restorationPct": 0,
-        "critChancePct": 0,
-        "critPowerBonusPct": 0,
-        "startingWard": 0
+      "id": "mana_flask",
+      "name": "Mana Flask",
+      "rarity": 1,
+      "affinity": "neutral",
+      "effect": {
+        "type": "max_mana",
+        "amountPerStack": 4
       },
-      "ability": {
-        "trigger": "first_fire_spell_each_cycle",
-        "text": "Your first Fire spell each Cycle applies 1 Burn to the opponent.",
-        "effect": "apply_status",
-        "status": "Burn",
-        "stacks": 1,
-        "target": "opponent"
-      },
-      "tags": [
-        "fire",
-        "burn",
-        "cycle"
-      ]
+      "description": "+4 Maximum Mana per stack."
     },
     {
-      "id": "weapon_reed_sceptre",
-      "name": "Reed Sceptre",
-      "slot": "weapon",
-      "stars": 1,
-      "affinity": "water",
-      "stats": {
-        "maxHealth": 0,
-        "maxMana": 5,
-        "spellPowerPct": 0,
-        "restorationPct": 0,
-        "critChancePct": 0,
-        "critPowerBonusPct": 0,
-        "startingWard": 0
-      },
-      "ability": {
-        "trigger": "first_water_spell_each_cycle",
-        "text": "Your first Water spell each Cycle restores 3 Mana.",
-        "effect": "restore_mana",
-        "value": 3
-      },
-      "tags": [
-        "water",
-        "mana",
-        "cycle"
-      ]
+      "id": "iron_nail",
+      "name": "Iron Nail",
+      "rarity": 1,
+      "affinity": "neutral",
+      "effects": [
+        {
+          "type": "max_health",
+          "amountPerStack": 15
+        },
+        {
+          "type": "damage_percent",
+          "amountPerStack": 1
+        }
+      ],
+      "description": "+15 Maximum Health and +1% spell damage per stack."
     },
     {
-      "id": "weapon_thorn_branch",
-      "name": "Thorn Branch",
-      "slot": "weapon",
-      "stars": 1,
+      "id": "silver_thread",
+      "name": "Silver Thread",
+      "rarity": 1,
+      "affinity": "neutral",
+      "effect": {
+        "type": "healing_percent",
+        "amountPerStack": 3
+      },
+      "description": "+3% healing per stack."
+    },
+    {
+      "id": "polished_lens",
+      "name": "Polished Lens",
+      "rarity": 1,
+      "affinity": "neutral",
+      "effect": {
+        "type": "crit_chance",
+        "amountPerStack": 2
+      },
+      "description": "+2% Critical Hit Chance per stack."
+    },
+    {
+      "id": "arcane_splinter",
+      "name": "Arcane Splinter",
+      "rarity": 1,
+      "affinity": "neutral",
+      "effect": {
+        "type": "direct_damage_percent",
+        "amountPerStack": 2
+      },
+      "description": "+2% direct spell damage per stack."
+    },
+    {
+      "id": "iron_buckle",
+      "name": "Iron Buckle",
+      "rarity": 1,
+      "affinity": "neutral",
+      "effects": [
+        {
+          "type": "max_health",
+          "amountPerStack": 10
+        },
+        {
+          "type": "max_mana",
+          "amountPerStack": 2
+        }
+      ],
+      "description": "+10 Maximum Health and +2 Maximum Mana per stack."
+    },
+    {
+      "id": "restoration_thread",
+      "name": "Restoration Thread",
+      "rarity": 1,
+      "affinity": "neutral",
+      "effect": {
+        "type": "healing_percent",
+        "amountPerStack": 2
+      },
+      "description": "+2% healing per stack."
+    },
+    {
+      "id": "lucky_coin",
+      "name": "Lucky Coin",
+      "rarity": 1,
+      "affinity": "neutral",
+      "effect": {
+        "type": "first_spell_cycle_mana_reduction",
+        "amountPerStack": 1,
+        "maxReduction": 10
+      },
+      "description": "Your first spell each cycle costs 1 less Mana per stack."
+    },
+    {
+      "id": "glass_bead",
+      "name": "Glass Bead",
+      "rarity": 1,
+      "affinity": "neutral",
+      "effects": [
+        {
+          "type": "damage_percent",
+          "amountPerStack": 3
+        },
+        {
+          "type": "max_health",
+          "amountPerStack": -8
+        }
+      ],
+      "description": "+3% spell damage and -8 Maximum Health per stack."
+    },
+    {
+      "id": "stone_charm",
+      "name": "Stone Charm",
+      "rarity": 2,
+      "affinity": "neutral",
+      "effect": {
+        "type": "reduce_first_direct_hit_each_cycle",
+        "amountPerStack": 6
+      },
+      "description": "Reduce the first direct hit you take each cycle by 6 damage per stack."
+    },
+    {
+      "id": "scholars_quill",
+      "name": "Scholar's Quill",
+      "rarity": 2,
+      "affinity": "neutral",
+      "effect": {
+        "type": "mana_after_reshuffle",
+        "amountPerStack": 2
+      },
+      "description": "Restore 2 Mana after each reshuffle per stack."
+    },
+    {
+      "id": "mirror_shard",
+      "name": "Mirror Shard",
+      "rarity": 2,
+      "affinity": "neutral",
+      "effect": {
+        "type": "retaliation_damage",
+        "amountPerStack": 2,
+        "trigger": "direct_damage_taken",
+        "maxTriggersPerTick": 1
+      },
+      "description": "When directly hit, deal 2 damage back per stack. Maximum once per tick."
+    },
+    {
+      "id": "blood_vial",
+      "name": "Blood Vial",
+      "rarity": 2,
+      "affinity": "neutral",
+      "effect": {
+        "type": "damage_percent_below_health",
+        "healthThresholdPercent": 50,
+        "amountPerStack": 3
+      },
+      "description": "While below 50% Health, deal +3% damage per stack."
+    },
+    {
+      "id": "small_hourglass",
+      "name": "Small Hourglass",
+      "rarity": 2,
+      "affinity": "neutral",
+      "effect": {
+        "type": "first_slow_spell_mana_reduction",
+        "minimumPrintedCastTime": 2,
+        "amountPerStack": 2
+      },
+      "description": "Your first spell of 2T or longer each cycle costs 2 less Mana per stack."
+    },
+    {
+      "id": "hematite_charm",
+      "name": "Hematite Charm",
+      "rarity": 2,
+      "affinity": "neutral",
+      "effect": {
+        "type": "damage_per_missing_health",
+        "missingHealthInterval": 50,
+        "damagePercentPerIntervalPerStack": 1
+      },
+      "description": "For every 50 Health you are missing, deal +1% damage per stack."
+    },
+    {
+      "id": "rusted_mirror",
+      "name": "Rusted Mirror",
+      "rarity": 2,
+      "affinity": "neutral",
+      "effect": {
+        "type": "retaliation_damage",
+        "amountPerStack": 2,
+        "trigger": "direct_damage_taken",
+        "maxTriggersPerTick": 1
+      },
+      "description": "When directly hit, deal 2 damage back per stack. Maximum once per tick."
+    },
+    {
+      "id": "broken_wand",
+      "name": "Broken Wand",
+      "rarity": 2,
+      "affinity": "neutral",
+      "effects": [
+        {
+          "type": "direct_damage_percent",
+          "amountPerStack": 4
+        },
+        {
+          "type": "max_mana",
+          "amountPerStack": -3
+        }
+      ],
+      "description": "+4% direct spell damage and -3 Maximum Mana per stack."
+    },
+    {
+      "id": "arcane_battery",
+      "name": "Arcane Battery",
+      "rarity": 3,
+      "affinity": "neutral",
+      "effect": {
+        "type": "restore_mana_on_insufficient_mana_skip",
+        "amountPerStack": 3,
+        "maxTriggersPerCycle": 1
+      },
+      "description": "The first time each cycle you skip a spell because you lack Mana, restore 3 Mana per stack."
+    },
+    {
+      "id": "glass_pendant",
+      "name": "Glass Pendant",
+      "rarity": 3,
+      "affinity": "neutral",
+      "effects": [
+        {
+          "type": "damage_percent",
+          "amountPerStack": 7
+        },
+        {
+          "type": "max_health",
+          "amountPerStack": -20
+        }
+      ],
+      "description": "+7% spell damage and -20 Maximum Health per stack."
+    },
+    {
+      "id": "clockwork_spring",
+      "name": "Clockwork Spring",
+      "rarity": 3,
+      "affinity": "neutral",
+      "effect": {
+        "type": "mana_during_reshuffle",
+        "amountPerStack": 3
+      },
+      "description": "Restore 3 Mana during every reshuffle per stack."
+    },
+    {
+      "id": "war_banner",
+      "name": "War Banner",
+      "rarity": 3,
+      "affinity": "neutral",
+      "effect": {
+        "type": "first_spell_cycle_damage_percent",
+        "amountPerStack": 4
+      },
+      "description": "Your first spell each cycle deals +4% damage per stack."
+    },
+    {
+      "id": "restoration_stone",
+      "name": "Restoration Stone",
+      "rarity": 3,
+      "affinity": "neutral",
+      "effect": {
+        "type": "heal_after_reshuffle",
+        "amountPerStack": 5
+      },
+      "description": "Heal 5 Health after each reshuffle per stack."
+    },
+    {
+      "id": "battle_charm",
+      "name": "Battle Charm",
+      "rarity": 3,
+      "affinity": "neutral",
+      "effects": [
+        {
+          "type": "direct_damage_percent",
+          "amountPerStack": 3
+        },
+        {
+          "type": "healing_percent",
+          "amountPerStack": 3
+        }
+      ],
+      "description": "+3% direct damage and +3% healing per stack."
+    },
+    {
+      "id": "battle_rosary",
+      "name": "Battle Rosary",
+      "rarity": 3,
+      "affinity": "neutral",
+      "effect": {
+        "type": "heal_on_guard_gain",
+        "amountPerStack": 2
+      },
+      "description": "Whenever you gain Guard, heal 2 Health per stack."
+    },
+    {
+      "id": "cracked_hourglass",
+      "name": "Cracked Hourglass",
+      "rarity": 4,
+      "affinity": "neutral",
+      "effect": {
+        "type": "first_slow_spell_mana_reduction",
+        "minimumPrintedCastTime": 2,
+        "amountPerStack": 3
+      },
+      "description": "Your first spell of 2T or longer each cycle costs 3 less Mana per stack."
+    },
+    {
+      "id": "prismatic_gem",
+      "name": "Prismatic Gem",
+      "rarity": 4,
+      "affinity": "neutral",
+      "effects": [
+        {
+          "type": "damage_percent",
+          "amountPerStack": 4
+        },
+        {
+          "type": "healing_percent",
+          "amountPerStack": 4
+        }
+      ],
+      "description": "+4% damage and +4% healing per stack."
+    },
+    {
+      "id": "veterans_medal",
+      "name": "Veteran's Medal",
+      "rarity": 4,
+      "affinity": "neutral",
+      "effects": [
+        {
+          "type": "max_health",
+          "amountPerStack": 30
+        },
+        {
+          "type": "max_mana",
+          "amountPerStack": 5
+        }
+      ],
+      "description": "+30 Maximum Health and +5 Maximum Mana per stack."
+    },
+    {
+      "id": "bloodstone",
+      "name": "Bloodstone",
+      "rarity": 4,
+      "affinity": "neutral",
+      "effect": {
+        "type": "damage_percent_below_health",
+        "healthThresholdPercent": 30,
+        "amountPerStack": 6
+      },
+      "description": "While below 30% Health, deal +6% damage per stack."
+    },
+    {
+      "id": "archmage_crystal",
+      "name": "Archmage Crystal",
+      "rarity": 5,
+      "affinity": "neutral",
+      "effects": [
+        {
+          "type": "max_mana",
+          "amountPerStack": 10
+        },
+        {
+          "type": "damage_percent",
+          "amountPerStack": 5
+        }
+      ],
+      "description": "+10 Maximum Mana and +5% spell damage per stack."
+    },
+    {
+      "id": "giants_heart",
+      "name": "Giant's Heart",
+      "rarity": 5,
+      "affinity": "neutral",
+      "effect": {
+        "type": "max_health",
+        "amountPerStack": 60
+      },
+      "description": "+60 Maximum Health per stack."
+    },
+    {
+      "id": "thorn_seed",
+      "name": "Thorn Seed",
+      "rarity": 1,
       "affinity": "natural",
-      "stats": {
-        "maxHealth": 0,
-        "maxMana": 0,
-        "spellPowerPct": 2,
-        "restorationPct": 0,
-        "critChancePct": 0,
-        "critPowerBonusPct": 0,
-        "startingWard": 0
+      "effect": {
+        "type": "dot_damage_percent",
+        "amountPerStack": 3
       },
-      "ability": {
-        "trigger": "first_dot_application_each_cycle",
-        "text": "The first DoT you apply each Cycle gains 1 additional stack.",
-        "effect": "bonus_status_stacks",
-        "statusGroup": "DoT",
-        "stacks": 1
-      },
-      "tags": [
-        "natural",
-        "dot",
-        "cycle"
-      ]
+      "description": "+3% DoT damage per stack."
     },
     {
-      "id": "weapon_duelists_wand",
-      "name": "Duelist's Wand",
-      "slot": "weapon",
-      "stars": 2,
-      "affinity": "neutral",
-      "stats": {
-        "maxHealth": 0,
-        "maxMana": 0,
-        "spellPowerPct": 0,
-        "restorationPct": 0,
-        "critChancePct": 3,
-        "critPowerBonusPct": 0,
-        "startingWard": 0
-      },
-      "ability": {
-        "trigger": "first_direct_damage_spell_each_cycle",
-        "text": "Your first direct-damage spell each Cycle deals 10% more damage.",
-        "effect": "damage_multiplier",
-        "valuePct": 10
-      },
-      "tags": [
-        "direct_damage",
-        "cycle"
-      ]
-    },
-    {
-      "id": "weapon_ashen_rod",
-      "name": "Ashen Rod",
-      "slot": "weapon",
-      "stars": 2,
-      "affinity": "fire",
-      "stats": {
-        "maxHealth": 0,
-        "maxMana": 0,
-        "spellPowerPct": 0,
-        "restorationPct": 0,
-        "critChancePct": 3,
-        "critPowerBonusPct": 0,
-        "startingWard": 0
-      },
-      "ability": {
-        "trigger": "first_crit_each_cycle",
-        "text": "Your first Critical Hit each Cycle applies 1 Burn.",
-        "effect": "apply_status",
-        "status": "Burn",
-        "stacks": 1,
-        "target": "opponent"
-      },
-      "tags": [
-        "fire",
-        "crit",
-        "burn"
-      ]
-    },
-    {
-      "id": "weapon_tidecaller_baton",
-      "name": "Tidecaller Baton",
-      "slot": "weapon",
-      "stars": 2,
-      "affinity": "water",
-      "stats": {
-        "maxHealth": 0,
-        "maxMana": 8,
-        "spellPowerPct": 0,
-        "restorationPct": 0,
-        "critChancePct": 0,
-        "critPowerBonusPct": 0,
-        "startingWard": 0
-      },
-      "ability": {
-        "trigger": "passive",
-        "text": "While Tide is active, Tidecaller chance is increased by 5 percentage points.",
-        "effect": "modify_tidecaller_chance",
-        "valuePctPoints": 5
-      },
-      "tags": [
-        "water",
-        "tide",
-        "tidecaller"
-      ]
-    },
-    {
-      "id": "weapon_moonthorn_staff",
-      "name": "Moonthorn Staff",
-      "slot": "weapon",
-      "stars": 2,
+      "id": "sap_drop",
+      "name": "Sap Drop",
+      "rarity": 1,
       "affinity": "natural",
-      "stats": {
-        "maxHealth": 0,
-        "maxMana": 0,
-        "spellPowerPct": 3,
-        "restorationPct": 0,
-        "critChancePct": 0,
-        "critPowerBonusPct": 0,
-        "startingWard": 0
+      "effect": {
+        "type": "healing_percent",
+        "amountPerStack": 3
       },
-      "ability": {
-        "trigger": "passive",
-        "text": "Your DoTs deal 8% more damage.",
-        "effect": "dot_damage_multiplier",
-        "valuePct": 8
-      },
-      "tags": [
-        "natural",
-        "dot"
-      ]
+      "description": "+3% healing per stack."
     },
     {
-      "id": "weapon_glass_wand",
-      "name": "Glass Wand",
-      "slot": "weapon",
-      "stars": 2,
-      "affinity": "neutral",
-      "stats": {
-        "maxHealth": -40,
-        "maxMana": 0,
-        "spellPowerPct": 15,
-        "restorationPct": 0,
-        "critChancePct": 0,
-        "critPowerBonusPct": 0,
-        "startingWard": 0
-      },
-      "ability": {
-        "trigger": "passive",
-        "text": "High power at a cost: +15% Spell Power and -40 maximum Health.",
-        "effect": "stat_tradeoff"
-      },
-      "tags": [
-        "glass_cannon",
-        "direct_damage"
-      ]
-    },
-    {
-      "id": "weapon_cinderbrand",
-      "name": "Cinderbrand",
-      "slot": "weapon",
-      "stars": 2,
-      "affinity": "fire",
-      "stats": {
-        "maxHealth": 0,
-        "maxMana": 0,
-        "spellPowerPct": 4,
-        "restorationPct": 0,
-        "critChancePct": 0,
-        "critPowerBonusPct": 0,
-        "startingWard": 0
-      },
-      "ability": {
-        "trigger": "while_self_has_burn",
-        "text": "While you have Burn, your spells deal 10% more direct damage.",
-        "effect": "damage_multiplier",
-        "valuePct": 10
-      },
-      "tags": [
-        "fire",
-        "burn",
-        "risk_reward"
-      ]
-    },
-    {
-      "id": "weapon_deepcurrent_sceptre",
-      "name": "Deepcurrent Sceptre",
-      "slot": "weapon",
-      "stars": 2,
-      "affinity": "water",
-      "stats": {
-        "maxHealth": 0,
-        "maxMana": 8,
-        "spellPowerPct": 0,
-        "restorationPct": 0,
-        "critChancePct": 0,
-        "critPowerBonusPct": 0,
-        "startingWard": 0
-      },
-      "ability": {
-        "trigger": "first_water_spell_after_reshuffle",
-        "text": "Your first Water spell after each Reshuffle costs 5 less Mana.",
-        "effect": "mana_cost_reduction",
-        "value": 5,
-        "minimumCost": 0
-      },
-      "tags": [
-        "water",
-        "mana",
-        "reshuffle"
-      ]
-    },
-    {
-      "id": "weapon_lifewood_branch",
-      "name": "Lifewood Branch",
-      "slot": "weapon",
-      "stars": 2,
+      "id": "mossy_charm",
+      "name": "Mossy Charm",
+      "rarity": 1,
       "affinity": "natural",
-      "stats": {
-        "maxHealth": 0,
-        "maxMana": 0,
-        "spellPowerPct": 0,
-        "restorationPct": 5,
-        "critChancePct": 0,
-        "critPowerBonusPct": 0,
-        "startingWard": 0
+      "effect": {
+        "type": "hot_healing_percent",
+        "amountPerStack": 2
       },
-      "ability": {
-        "trigger": "first_heal_each_tick",
-        "text": "The first time one of your spells heals you each tick, restore 2 Mana.",
-        "effect": "restore_mana",
-        "value": 2
-      },
-      "tags": [
-        "natural",
-        "healing",
-        "mana"
-      ]
+      "description": "+2% healing from HoTs per stack."
     },
     {
-      "id": "weapon_chronowand",
-      "name": "Chronowand",
-      "slot": "weapon",
-      "stars": 3,
-      "affinity": "neutral",
-      "stats": {
-        "maxHealth": 0,
-        "maxMana": 0,
-        "spellPowerPct": 4,
-        "restorationPct": 0,
-        "critChancePct": 0,
-        "critPowerBonusPct": 0,
-        "startingWard": 0
-      },
-      "ability": {
-        "trigger": "first_slow_spell_each_cycle",
-        "text": "Your first spell with a printed cast time of 2T or more each Cycle takes 1 fewer tick, to a minimum of 1T.",
-        "effect": "cast_time_reduction",
-        "ticks": 1,
-        "minimumTicks": 1
-      },
-      "tags": [
-        "tempo",
-        "cycle",
-        "cast_time"
-      ]
-    },
-    {
-      "id": "weapon_emberbrand",
-      "name": "Emberbrand",
-      "slot": "weapon",
-      "stars": 3,
-      "affinity": "fire",
-      "stats": {
-        "maxHealth": 0,
-        "maxMana": 0,
-        "spellPowerPct": 0,
-        "restorationPct": 0,
-        "critChancePct": 4,
-        "critPowerBonusPct": 0,
-        "startingWard": 0
-      },
-      "ability": {
-        "trigger": "first_crit_each_cycle",
-        "text": "Your first Critical Hit each Cycle applies 2 Burn.",
-        "effect": "apply_status",
-        "status": "Burn",
-        "stacks": 2,
-        "target": "opponent"
-      },
-      "tags": [
-        "fire",
-        "crit",
-        "burn"
-      ]
-    },
-    {
-      "id": "weapon_undertow_fork",
-      "name": "Undertow Fork",
-      "slot": "weapon",
-      "stars": 3,
-      "affinity": "water",
-      "stats": {
-        "maxHealth": 0,
-        "maxMana": 10,
-        "spellPowerPct": 0,
-        "restorationPct": 0,
-        "critChancePct": 0,
-        "critPowerBonusPct": 0,
-        "startingWard": 0
-      },
-      "ability": {
-        "trigger": "on_tidecaller",
-        "text": "When Tidecaller triggers, the repeated cast deals 10% more damage or healing.",
-        "effect": "repeat_power_multiplier",
-        "valuePct": 10
-      },
-      "tags": [
-        "water",
-        "tidecaller",
-        "repeat"
-      ]
-    },
-    {
-      "id": "weapon_hexthorn_staff",
-      "name": "Hexthorn Staff",
-      "slot": "weapon",
-      "stars": 3,
+      "id": "root_fragment",
+      "name": "Root Fragment",
+      "rarity": 1,
       "affinity": "natural",
-      "stats": {
-        "maxHealth": 0,
-        "maxMana": 0,
-        "spellPowerPct": 5,
-        "restorationPct": 0,
-        "critChancePct": 0,
-        "critPowerBonusPct": 0,
-        "startingWard": 0
-      },
-      "ability": {
-        "trigger": "first_dot_application_each_cycle",
-        "text": "The first DoT you apply each Cycle gains 2 additional stacks.",
-        "effect": "bonus_status_stacks",
-        "statusGroup": "DoT",
-        "stacks": 2
-      },
-      "tags": [
-        "natural",
-        "dot",
-        "cycle"
-      ]
+      "effects": [
+        {
+          "type": "max_health",
+          "amountPerStack": 15
+        },
+        {
+          "type": "dot_damage_percent",
+          "amountPerStack": 1
+        }
+      ],
+      "description": "+15 Maximum Health and +1% DoT damage per stack."
     },
     {
-      "id": "weapon_repeater_staff",
-      "name": "Repeater Staff",
-      "slot": "weapon",
-      "stars": 3,
-      "affinity": "neutral",
-      "stats": {
-        "maxHealth": 0,
-        "maxMana": 0,
-        "spellPowerPct": 5,
-        "restorationPct": 0,
-        "critChancePct": 0,
-        "critPowerBonusPct": 0,
-        "startingWard": 0
-      },
-      "ability": {
-        "trigger": "every_n_completed_spells",
-        "text": "Every fifth completed spell deals 35% more direct damage or healing.",
-        "effect": "spell_power_multiplier",
-        "every": 5,
-        "valuePct": 35
-      },
-      "tags": [
-        "sequence",
-        "tempo"
-      ]
-    },
-    {
-      "id": "weapon_overheat_lance",
-      "name": "Overheat Lance",
-      "slot": "weapon",
-      "stars": 3,
-      "affinity": "fire",
-      "stats": {
-        "maxHealth": 0,
-        "maxMana": 0,
-        "spellPowerPct": 0,
-        "restorationPct": 0,
-        "critChancePct": 4,
-        "critPowerBonusPct": 0,
-        "startingWard": 0
-      },
-      "ability": {
-        "trigger": "while_overheat_active",
-        "text": "While Overheat is active, your Critical Hits gain an additional +25 percentage points of critical damage.",
-        "effect": "crit_power_bonus",
-        "valuePctPoints": 25
-      },
-      "tags": [
-        "fire",
-        "crit",
-        "overheat"
-      ]
-    },
-    {
-      "id": "weapon_raincaller_staff",
-      "name": "Raincaller Staff",
-      "slot": "weapon",
-      "stars": 3,
-      "affinity": "water",
-      "stats": {
-        "maxHealth": 0,
-        "maxMana": 10,
-        "spellPowerPct": 0,
-        "restorationPct": 0,
-        "critChancePct": 0,
-        "critPowerBonusPct": 0,
-        "startingWard": 0
-      },
-      "ability": {
-        "trigger": "while_rain_active",
-        "text": "While Rain is active, your Water spells deal 10% additional damage.",
-        "effect": "domain_damage_multiplier",
-        "domain": "water",
-        "valuePct": 10
-      },
-      "tags": [
-        "water",
-        "rain",
-        "damage"
-      ]
-    },
-    {
-      "id": "weapon_starcaller_branch",
-      "name": "Starcaller Branch",
-      "slot": "weapon",
-      "stars": 3,
+      "id": "moonstone_chip",
+      "name": "Moonstone Chip",
+      "rarity": 2,
       "affinity": "natural",
-      "stats": {
-        "maxHealth": 0,
-        "maxMana": 0,
-        "spellPowerPct": 4,
-        "restorationPct": 0,
-        "critChancePct": 0,
-        "critPowerBonusPct": 0,
-        "startingWard": 0
+      "effect": {
+        "type": "moonfire_damage_flat",
+        "amountPerStack": 1
       },
-      "ability": {
-        "trigger": "apply_many_dot_stacks",
-        "text": "Once per Cycle, applying 8 or more DoT stacks with one spell grants 2 Star Empowerment.",
-        "effect": "grant_status",
-        "status": "Star Empowerment",
-        "stacks": 2,
-        "oncePer": "cycle",
-        "threshold": 8
-      },
-      "tags": [
-        "natural",
-        "dot",
-        "star_empowerment"
-      ]
+      "description": "Moonfire deals +1 damage per tick per stack."
     },
     {
-      "id": "weapon_wardpiercer",
-      "name": "Wardpiercer",
-      "slot": "weapon",
-      "stars": 3,
-      "affinity": "neutral",
-      "stats": {
-        "maxHealth": 0,
-        "maxMana": 0,
-        "spellPowerPct": 6,
-        "restorationPct": 0,
-        "critChancePct": 0,
-        "critPowerBonusPct": 0,
-        "startingWard": 0
-      },
-      "ability": {
-        "trigger": "passive",
-        "text": "Your direct spell damage ignores 25% of the opponent's Ward.",
-        "effect": "ward_penetration",
-        "valuePct": 25
-      },
-      "tags": [
-        "ward",
-        "direct_damage"
-      ]
-    },
-    {
-      "id": "weapon_flashfire_poker",
-      "name": "Flashfire Poker",
-      "slot": "weapon",
-      "stars": 4,
-      "affinity": "fire",
-      "stats": {
-        "maxHealth": 0,
-        "maxMana": 0,
-        "spellPowerPct": 0,
-        "restorationPct": 0,
-        "critChancePct": 5,
-        "critPowerBonusPct": 0,
-        "startingWard": 0
-      },
-      "ability": {
-        "trigger": "consume_burn",
-        "text": "Whenever one of your spells consumes Burn, gain 1 additional Fury, once per Cycle.",
-        "effect": "grant_status",
-        "status": "Fury",
-        "stacks": 1,
-        "oncePer": "cycle"
-      },
-      "tags": [
-        "fire",
-        "burn",
-        "fury"
-      ]
-    },
-    {
-      "id": "weapon_maelstrom_trident",
-      "name": "Maelstrom Trident",
-      "slot": "weapon",
-      "stars": 4,
-      "affinity": "water",
-      "stats": {
-        "maxHealth": 0,
-        "maxMana": 12,
-        "spellPowerPct": 0,
-        "restorationPct": 0,
-        "critChancePct": 0,
-        "critPowerBonusPct": 0,
-        "startingWard": 0
-      },
-      "ability": {
-        "trigger": "on_tidecaller",
-        "text": "After Tidecaller triggers, your next Water spell costs 5 less Mana.",
-        "effect": "next_domain_spell_mana_reduction",
-        "domain": "water",
-        "value": 5
-      },
-      "tags": [
-        "water",
-        "tidecaller",
-        "mana"
-      ]
-    },
-    {
-      "id": "weapon_eclipse_crook",
-      "name": "Eclipse Crook",
-      "slot": "weapon",
-      "stars": 4,
+      "id": "sunseed",
+      "name": "Sunseed",
+      "rarity": 2,
       "affinity": "natural",
-      "stats": {
-        "maxHealth": 0,
-        "maxMana": 0,
-        "spellPowerPct": 6,
-        "restorationPct": 0,
-        "critChancePct": 0,
-        "critPowerBonusPct": 0,
-        "startingWard": 0
+      "effect": {
+        "type": "sunfire_damage_flat",
+        "amountPerStack": 2
       },
-      "ability": {
-        "trigger": "consume_enemy_dot_stacks",
-        "text": "When one of your spells consumes enemy DoT stacks, restore 1 Mana per stack consumed, up to 15 Mana per cast.",
-        "effect": "restore_mana_per_consumed_stack",
-        "valuePerStack": 1,
-        "cap": 15
-      },
-      "tags": [
-        "natural",
-        "dot",
-        "mana",
-        "consume"
-      ]
+      "description": "Sunfire deals +2 damage per tick per stack."
     },
     {
-      "id": "weapon_spellblade_of_rhythm",
-      "name": "Spellblade of Rhythm",
-      "slot": "weapon",
-      "stars": 4,
-      "affinity": "neutral",
-      "stats": {
-        "maxHealth": 0,
-        "maxMana": 0,
-        "spellPowerPct": 8,
-        "restorationPct": 0,
-        "critChancePct": 0,
-        "critPowerBonusPct": 0,
-        "startingWard": 0
-      },
-      "ability": {
-        "trigger": "alternate_cast_time_classes",
-        "text": "When a 1T or Instant spell is followed by a 2T+ spell, that slower spell gains 20% direct damage or healing.",
-        "effect": "spell_power_multiplier",
-        "valuePct": 20
-      },
-      "tags": [
-        "sequence",
-        "cast_time"
-      ]
-    },
-    {
-      "id": "weapon_phoenix_fang",
-      "name": "Phoenix Fang",
-      "slot": "weapon",
-      "stars": 4,
-      "affinity": "fire",
-      "stats": {
-        "maxHealth": 0,
-        "maxMana": 0,
-        "spellPowerPct": 0,
-        "restorationPct": 0,
-        "critChancePct": 6,
-        "critPowerBonusPct": 0,
-        "startingWard": 0
-      },
-      "ability": {
-        "trigger": "while_below_health_pct",
-        "text": "While below 50% Health, gain 10% Spell Power.",
-        "effect": "spell_power_bonus",
-        "thresholdPct": 50,
-        "valuePct": 10
-      },
-      "tags": [
-        "fire",
-        "low_health",
-        "risk_reward"
-      ]
-    },
-    {
-      "id": "weapon_stormglass_sceptre",
-      "name": "Stormglass Sceptre",
-      "slot": "weapon",
-      "stars": 4,
-      "affinity": "water",
-      "stats": {
-        "maxHealth": 0,
-        "maxMana": 15,
-        "spellPowerPct": 0,
-        "restorationPct": 0,
-        "critChancePct": 0,
-        "critPowerBonusPct": 0,
-        "startingWard": 0
-      },
-      "ability": {
-        "trigger": "first_eligible_water_spell_each_cycle",
-        "text": "The first Water spell each Cycle that can trigger Tidecaller gains +20 percentage points Tidecaller chance.",
-        "effect": "modify_tidecaller_chance",
-        "valuePctPoints": 20,
-        "oncePer": "cycle"
-      },
-      "tags": [
-        "water",
-        "tidecaller",
-        "cycle"
-      ]
-    },
-    {
-      "id": "weapon_worldroot",
-      "name": "Worldroot",
-      "slot": "weapon",
-      "stars": 4,
+      "id": "lifebloom_petal",
+      "name": "Lifebloom Petal",
+      "rarity": 2,
       "affinity": "natural",
-      "stats": {
-        "maxHealth": 0,
-        "maxMana": 0,
-        "spellPowerPct": 0,
-        "restorationPct": 8,
-        "critChancePct": 0,
-        "critPowerBonusPct": 0,
-        "startingWard": 0
+      "effect": {
+        "type": "lifebloom_healing_per_remaining_stack",
+        "amountPerStack": 1
       },
-      "ability": {
-        "trigger": "first_heal_each_cycle",
-        "text": "The first time you heal each Cycle, extend each of your existing HoTs by 1 stack.",
-        "effect": "extend_status_group",
-        "statusGroup": "HoT",
-        "stacks": 1
-      },
-      "tags": [
-        "natural",
-        "hot",
-        "healing",
-        "cycle"
-      ]
+      "description": "Lifebloom heals +1 Health per remaining Lifebloom stack for each item stack."
     },
     {
-      "id": "weapon_archmage_staff",
-      "name": "Staff of the Archmage",
-      "slot": "weapon",
-      "stars": 5,
-      "affinity": "neutral",
-      "stats": {
-        "maxHealth": 0,
-        "maxMana": 0,
-        "spellPowerPct": 10,
-        "restorationPct": 0,
-        "critChancePct": 0,
-        "critPowerBonusPct": 0,
-        "startingWard": 0
-      },
-      "ability": {
-        "trigger": "first_spell_after_reshuffle",
-        "text": "Your first spell after each Reshuffle becomes Instant, but costs 10 additional Mana.",
-        "effect": "make_instant_and_modify_cost",
-        "manaDelta": 10
-      },
-      "tags": [
-        "legendary",
-        "reshuffle",
-        "tempo",
-        "mana"
-      ]
-    },
-    {
-      "id": "weapon_cinderheart",
-      "name": "Cinderheart",
-      "slot": "weapon",
-      "stars": 5,
-      "affinity": "fire",
-      "stats": {
-        "maxHealth": 0,
-        "maxMana": 0,
-        "spellPowerPct": 0,
-        "restorationPct": 0,
-        "critChancePct": 8,
-        "critPowerBonusPct": 15,
-        "startingWard": 0
-      },
-      "ability": {
-        "trigger": "on_crit",
-        "text": "Each Critical Hit gives you 1 Burn. Your Critical Hits also gain +15 percentage points of critical damage.",
-        "effect": "self_apply_status_on_crit",
-        "status": "Burn",
-        "stacks": 1
-      },
-      "tags": [
-        "legendary",
-        "fire",
-        "crit",
-        "burn",
-        "risk_reward"
-      ]
-    },
-    {
-      "id": "weapon_leviathan_sceptre",
-      "name": "Leviathan Sceptre",
-      "slot": "weapon",
-      "stars": 5,
-      "affinity": "water",
-      "stats": {
-        "maxHealth": 0,
-        "maxMana": 20,
-        "spellPowerPct": 0,
-        "restorationPct": 0,
-        "critChancePct": 0,
-        "critPowerBonusPct": 0,
-        "startingWard": 0
-      },
-      "ability": {
-        "trigger": "first_water_spell_each_cycle",
-        "text": "While Tide is active, your first eligible Water spell each Cycle always triggers Tidecaller.",
-        "effect": "guarantee_tidecaller",
-        "oncePer": "cycle"
-      },
-      "tags": [
-        "legendary",
-        "water",
-        "tide",
-        "tidecaller"
-      ]
-    },
-    {
-      "id": "weapon_ancient_worldroot",
-      "name": "Ancient Worldroot",
-      "slot": "weapon",
-      "stars": 5,
+      "id": "rotting_thorn",
+      "name": "Rotting Thorn",
+      "rarity": 2,
       "affinity": "natural",
-      "stats": {
-        "maxHealth": 0,
-        "maxMana": 0,
-        "spellPowerPct": 8,
-        "restorationPct": 8,
-        "critChancePct": 0,
-        "critPowerBonusPct": 0,
-        "startingWard": 0
-      },
-      "ability": {
-        "trigger": "first_periodic_application_each_cycle",
-        "text": "The first DoT or HoT you apply each Cycle gains 3 additional stacks.",
-        "effect": "bonus_status_stacks",
-        "statusGroup": "DoTOrHoT",
-        "stacks": 3
-      },
-      "tags": [
-        "legendary",
-        "natural",
-        "dot",
-        "hot",
-        "cycle"
-      ]
+      "effects": [
+        {
+          "type": "dot_damage_percent",
+          "amountPerStack": 4
+        },
+        {
+          "type": "healing_received_percent",
+          "amountPerStack": -2
+        }
+      ],
+      "description": "+4% DoT damage but receive 2% less healing per stack."
     },
     {
-      "id": "armor_padded_robes",
-      "name": "Padded Robes",
-      "slot": "armor",
-      "stars": 1,
-      "affinity": "neutral",
-      "stats": {
-        "maxHealth": 45,
-        "maxMana": 5,
-        "spellPowerPct": 0,
-        "restorationPct": 0,
-        "critChancePct": 0,
-        "critPowerBonusPct": 0,
-        "startingWard": 0
-      },
-      "ability": null,
-      "tags": [
-        "health",
-        "mana"
-      ]
-    },
-    {
-      "id": "armor_emberhide_vest",
-      "name": "Emberhide Vest",
-      "slot": "armor",
-      "stars": 1,
-      "affinity": "fire",
-      "stats": {
-        "maxHealth": 40,
-        "maxMana": 6,
-        "spellPowerPct": 0,
-        "restorationPct": 0,
-        "critChancePct": 0,
-        "critPowerBonusPct": 0,
-        "startingWard": 0
-      },
-      "ability": null,
-      "tags": [
-        "fire",
-        "burn",
-        "defense"
-      ]
-    },
-    {
-      "id": "armor_mistweave_robes",
-      "name": "Mistweave Robes",
-      "slot": "armor",
-      "stars": 1,
-      "affinity": "water",
-      "stats": {
-        "maxHealth": 35,
-        "maxMana": 8,
-        "spellPowerPct": 0,
-        "restorationPct": 0,
-        "critChancePct": 0,
-        "critPowerBonusPct": 0,
-        "startingWard": 0
-      },
-      "ability": null,
-      "tags": [
-        "water",
-        "mana"
-      ]
-    },
-    {
-      "id": "armor_barkwoven_tunic",
-      "name": "Barkwoven Tunic",
-      "slot": "armor",
-      "stars": 1,
+      "id": "herbal_sachet",
+      "name": "Herbal Sachet",
+      "rarity": 2,
       "affinity": "natural",
-      "stats": {
-        "maxHealth": 50,
-        "maxMana": 4,
-        "spellPowerPct": 0,
-        "restorationPct": 0,
-        "critChancePct": 0,
-        "critPowerBonusPct": 0,
-        "startingWard": 0
+      "effect": {
+        "type": "hot_healing_percent",
+        "amountPerStack": 2
       },
-      "ability": null,
-      "tags": [
-        "natural",
-        "health"
-      ]
+      "description": "Healing over time is +2% stronger per stack."
     },
     {
-      "id": "armor_ironweave_coat",
-      "name": "Ironweave Coat",
-      "slot": "armor",
-      "stars": 2,
-      "affinity": "neutral",
-      "stats": {
-        "maxHealth": 70,
-        "maxMana": 8,
-        "spellPowerPct": 0,
-        "restorationPct": 0,
-        "critChancePct": 0,
-        "critPowerBonusPct": 0,
-        "startingWard": 0
-      },
-      "ability": null,
-      "tags": [
-        "health",
-        "mana"
-      ]
-    },
-    {
-      "id": "armor_cinderhide",
-      "name": "Cinderhide",
-      "slot": "armor",
-      "stars": 2,
-      "affinity": "fire",
-      "stats": {
-        "maxHealth": 60,
-        "maxMana": 10,
-        "spellPowerPct": 0,
-        "restorationPct": 0,
-        "critChancePct": 0,
-        "critPowerBonusPct": 0,
-        "startingWard": 0
-      },
-      "ability": {
-        "trigger": "passive",
-        "text": "Take 20% less self-inflicted spell damage. Explicit health costs are unaffected.",
-        "effect": "self_spell_damage_reduction",
-        "valuePct": 20
-      },
-      "tags": [
-        "fire",
-        "risk_reward"
-      ]
-    },
-    {
-      "id": "armor_raincloak",
-      "name": "Raincloak",
-      "slot": "armor",
-      "stars": 2,
-      "affinity": "water",
-      "stats": {
-        "maxHealth": 55,
-        "maxMana": 12,
-        "spellPowerPct": 0,
-        "restorationPct": 0,
-        "critChancePct": 0,
-        "critPowerBonusPct": 0,
-        "startingWard": 0
-      },
-      "ability": {
-        "trigger": "while_rain_active",
-        "text": "While Rain is active, take 5% less damage.",
-        "effect": "incoming_damage_reduction",
-        "valuePct": 5
-      },
-      "tags": [
-        "water",
-        "rain",
-        "defense"
-      ]
-    },
-    {
-      "id": "armor_barkskin_coat",
-      "name": "Barkskin Coat",
-      "slot": "armor",
-      "stars": 2,
+      "id": "root_charm",
+      "name": "Root Charm",
+      "rarity": 3,
       "affinity": "natural",
-      "stats": {
-        "maxHealth": 75,
-        "maxMana": 7,
-        "spellPowerPct": 0,
-        "restorationPct": 0,
-        "critChancePct": 0,
-        "critPowerBonusPct": 0,
-        "startingWard": 0
-      },
-      "ability": {
-        "trigger": "passive",
-        "text": "Take 8% less DoT damage.",
-        "effect": "dot_damage_reduction",
-        "valuePct": 8
-      },
-      "tags": [
-        "natural",
-        "dot",
-        "defense"
-      ]
+      "effects": [
+        {
+          "type": "max_health",
+          "amountPerStack": 25
+        },
+        {
+          "type": "hot_healing_percent",
+          "amountPerStack": 2
+        }
+      ],
+      "description": "+25 Maximum Health and +2% HoT healing per stack."
     },
     {
-      "id": "armor_manaweave_robes",
-      "name": "Manaweave Robes",
-      "slot": "armor",
-      "stars": 2,
-      "affinity": "neutral",
-      "stats": {
-        "maxHealth": 45,
-        "maxMana": 18,
-        "spellPowerPct": 0,
-        "restorationPct": 0,
-        "critChancePct": 0,
-        "critPowerBonusPct": 0,
-        "startingWard": 0
-      },
-      "ability": null,
-      "tags": [
-        "mana"
-      ]
-    },
-    {
-      "id": "armor_ashguard",
-      "name": "Ashguard",
-      "slot": "armor",
-      "stars": 2,
-      "affinity": "fire",
-      "stats": {
-        "maxHealth": 65,
-        "maxMana": 9,
-        "spellPowerPct": 0,
-        "restorationPct": 0,
-        "critChancePct": 0,
-        "critPowerBonusPct": 0,
-        "startingWard": 0
-      },
-      "ability": null,
-      "tags": [
-        "fire",
-        "ward"
-      ]
-    },
-    {
-      "id": "armor_tideguard",
-      "name": "Tideguard",
-      "slot": "armor",
-      "stars": 2,
-      "affinity": "water",
-      "stats": {
-        "maxHealth": 60,
-        "maxMana": 14,
-        "spellPowerPct": 0,
-        "restorationPct": 0,
-        "critChancePct": 0,
-        "critPowerBonusPct": 0,
-        "startingWard": 0
-      },
-      "ability": null,
-      "tags": [
-        "water",
-        "ward",
-        "cycle"
-      ]
-    },
-    {
-      "id": "armor_groveguard",
-      "name": "Groveguard",
-      "slot": "armor",
-      "stars": 2,
+      "id": "star_fragment",
+      "name": "Star Fragment",
+      "rarity": 3,
       "affinity": "natural",
-      "stats": {
-        "maxHealth": 80,
-        "maxMana": 7,
-        "spellPowerPct": 0,
-        "restorationPct": 0,
-        "critChancePct": 0,
-        "critPowerBonusPct": 0,
-        "startingWard": 0
+      "effect": {
+        "type": "starfall_damage_percent",
+        "amountPerStack": 4
       },
-      "ability": null,
-      "tags": [
-        "natural",
-        "healing",
-        "ward"
-      ]
+      "description": "Starfall deals +4% damage per stack."
     },
     {
-      "id": "armor_warded_robes",
-      "name": "Warded Robes",
-      "slot": "armor",
-      "stars": 3,
-      "affinity": "neutral",
-      "stats": {
-        "maxHealth": 80,
-        "maxMana": 14,
-        "spellPowerPct": 0,
-        "restorationPct": 0,
-        "critChancePct": 0,
-        "critPowerBonusPct": 0,
-        "startingWard": 0
-      },
-      "ability": {
-        "trigger": "combat_start",
-        "text": "Start combat with 30 Ward.",
-        "effect": "gain_ward",
-        "value": 30
-      },
-      "tags": [
-        "ward"
-      ]
-    },
-    {
-      "id": "armor_furnace_mail",
-      "name": "Furnace Mail",
-      "slot": "armor",
-      "stars": 3,
-      "affinity": "fire",
-      "stats": {
-        "maxHealth": 90,
-        "maxMana": 12,
-        "spellPowerPct": 0,
-        "restorationPct": 0,
-        "critChancePct": 0,
-        "critPowerBonusPct": 0,
-        "startingWard": 0
-      },
-      "ability": null,
-      "tags": [
-        "fire",
-        "burn",
-        "defense"
-      ]
-    },
-    {
-      "id": "armor_deepsea_mantle",
-      "name": "Deepsea Mantle",
-      "slot": "armor",
-      "stars": 3,
-      "affinity": "water",
-      "stats": {
-        "maxHealth": 75,
-        "maxMana": 18,
-        "spellPowerPct": 0,
-        "restorationPct": 0,
-        "critChancePct": 0,
-        "critPowerBonusPct": 0,
-        "startingWard": 0
-      },
-      "ability": {
-        "trigger": "on_veil_mana_restore",
-        "text": "Veil restores 2 additional Mana when triggered.",
-        "effect": "veil_mana_bonus",
-        "value": 2
-      },
-      "tags": [
-        "water",
-        "veil",
-        "mana"
-      ]
-    },
-    {
-      "id": "armor_menders_garb",
-      "name": "Mender's Garb",
-      "slot": "armor",
-      "stars": 3,
+      "id": "ancient_bark",
+      "name": "Ancient Bark",
+      "rarity": 3,
       "affinity": "natural",
-      "stats": {
-        "maxHealth": 95,
-        "maxMana": 10,
-        "spellPowerPct": 0,
-        "restorationPct": 0,
-        "critChancePct": 0,
-        "critPowerBonusPct": 0,
-        "startingWard": 0
+      "effect": {
+        "type": "direct_damage_reduction_while_hot_active",
+        "amountPerStack": 3,
+        "recommendedCapPercent": 30
       },
-      "ability": {
-        "trigger": "passive",
-        "text": "Receive 8% more healing.",
-        "effect": "healing_received_multiplier",
-        "valuePct": 8
-      },
-      "tags": [
-        "natural",
-        "healing"
-      ]
+      "description": "While you have a HoT active, take 3% less direct damage per stack."
     },
     {
-      "id": "armor_mirror_mail",
-      "name": "Mirror Mail",
-      "slot": "armor",
-      "stars": 3,
-      "affinity": "neutral",
-      "stats": {
-        "maxHealth": 85,
-        "maxMana": 15,
-        "spellPowerPct": 0,
-        "restorationPct": 0,
-        "critChancePct": 0,
-        "critPowerBonusPct": 0,
-        "startingWard": 0
-      },
-      "ability": {
-        "trigger": "first_direct_hit_each_cycle",
-        "text": "The first direct spell hit against you each Cycle deals 20% less damage.",
-        "effect": "incoming_damage_reduction",
-        "valuePct": 20
-      },
-      "tags": [
-        "defense",
-        "cycle"
-      ]
-    },
-    {
-      "id": "armor_combustion_harness",
-      "name": "Combustion Harness",
-      "slot": "armor",
-      "stars": 3,
-      "affinity": "fire",
-      "stats": {
-        "maxHealth": 75,
-        "maxMana": 16,
-        "spellPowerPct": 0,
-        "restorationPct": 0,
-        "critChancePct": 0,
-        "critPowerBonusPct": 0,
-        "startingWard": 0
-      },
-      "ability": null,
-      "tags": [
-        "fire",
-        "combust"
-      ]
-    },
-    {
-      "id": "armor_currentplate",
-      "name": "Currentplate",
-      "slot": "armor",
-      "stars": 3,
-      "affinity": "water",
-      "stats": {
-        "maxHealth": 80,
-        "maxMana": 18,
-        "spellPowerPct": 0,
-        "restorationPct": 0,
-        "critChancePct": 0,
-        "critPowerBonusPct": 0,
-        "startingWard": 0
-      },
-      "ability": null,
-      "tags": [
-        "water",
-        "reshuffle",
-        "ward"
-      ]
-    },
-    {
-      "id": "armor_overgrowth_mantle",
-      "name": "Overgrowth Mantle",
-      "slot": "armor",
-      "stars": 3,
+      "id": "overgrown_seed",
+      "name": "Overgrown Seed",
+      "rarity": 4,
       "affinity": "natural",
-      "stats": {
-        "maxHealth": 100,
-        "maxMana": 10,
-        "spellPowerPct": 0,
-        "restorationPct": 0,
-        "critChancePct": 0,
-        "critPowerBonusPct": 0,
-        "startingWard": 0
-      },
-      "ability": null,
-      "tags": [
-        "natural",
-        "overgrowth",
-        "healing"
-      ]
+      "effects": [
+        {
+          "type": "dot_damage_percent",
+          "amountPerStack": 4
+        },
+        {
+          "type": "hot_healing_percent",
+          "amountPerStack": 4
+        }
+      ],
+      "description": "+4% DoT damage and +4% HoT healing per stack."
     },
     {
-      "id": "armor_null_mantle",
-      "name": "Null Mantle",
-      "slot": "armor",
-      "stars": 4,
-      "affinity": "neutral",
-      "stats": {
-        "maxHealth": 110,
-        "maxMana": 18,
-        "spellPowerPct": 0,
-        "restorationPct": 0,
-        "critChancePct": 0,
-        "critPowerBonusPct": 0,
-        "startingWard": 0
-      },
-      "ability": {
-        "trigger": "first_debuff_each_cycle",
-        "text": "The first debuff applied to you each Cycle has 1 fewer stack of duration, to a minimum of 1.",
-        "effect": "debuff_duration_reduction",
-        "stacks": 1,
-        "minimumStacks": 1
-      },
-      "tags": [
-        "debuff",
-        "defense"
-      ]
-    },
-    {
-      "id": "armor_phoenix_plate",
-      "name": "Phoenix Plate",
-      "slot": "armor",
-      "stars": 4,
-      "affinity": "fire",
-      "stats": {
-        "maxHealth": 115,
-        "maxMana": 16,
-        "spellPowerPct": 0,
-        "restorationPct": 0,
-        "critChancePct": 0,
-        "critPowerBonusPct": 0,
-        "startingWard": 0
-      },
-      "ability": {
-        "trigger": "after_phoenix_revive",
-        "text": "After Phoenix revives you, gain 1 Guard.",
-        "effect": "grant_status",
-        "status": "Guard",
-        "stacks": 1
-      },
-      "tags": [
-        "fire",
-        "phoenix",
-        "guard"
-      ]
-    },
-    {
-      "id": "armor_overflow_robes",
-      "name": "Overflow Robes",
-      "slot": "armor",
-      "stars": 4,
-      "affinity": "water",
-      "stats": {
-        "maxHealth": 90,
-        "maxMana": 24,
-        "spellPowerPct": 0,
-        "restorationPct": 0,
-        "critChancePct": 0,
-        "critPowerBonusPct": 0,
-        "startingWard": 0
-      },
-      "ability": {
-        "trigger": "on_mana_overflow",
-        "text": "The first 10 excess Mana you would gain each Cycle becomes Ward instead.",
-        "effect": "mana_overflow_to_ward",
-        "capPerCycle": 10
-      },
-      "tags": [
-        "water",
-        "mana",
-        "ward"
-      ]
-    },
-    {
-      "id": "armor_living_bark",
-      "name": "Living Bark",
-      "slot": "armor",
-      "stars": 4,
+      "id": "heart_of_the_grove",
+      "name": "Heart of the Grove",
+      "rarity": 5,
       "affinity": "natural",
-      "stats": {
-        "maxHealth": 125,
-        "maxMana": 14,
-        "spellPowerPct": 0,
-        "restorationPct": 0,
-        "critChancePct": 0,
-        "critPowerBonusPct": 0,
-        "startingWard": 0
-      },
-      "ability": null,
-      "tags": [
-        "natural",
-        "hot",
-        "ward"
-      ]
+      "effects": [
+        {
+          "type": "max_health",
+          "amountPerStack": 30
+        },
+        {
+          "type": "dot_damage_percent",
+          "amountPerStack": 5
+        },
+        {
+          "type": "healing_percent",
+          "amountPerStack": 5
+        }
+      ],
+      "description": "+30 Maximum Health, +5% DoT damage and +5% healing per stack."
     },
     {
-      "id": "armor_spellbreaker_plate",
-      "name": "Spellbreaker Plate",
-      "slot": "armor",
-      "stars": 4,
-      "affinity": "neutral",
-      "stats": {
-        "maxHealth": 120,
-        "maxMana": 18,
-        "spellPowerPct": 0,
-        "restorationPct": 0,
-        "critChancePct": 0,
-        "critPowerBonusPct": 0,
-        "startingWard": 0
-      },
-      "ability": {
-        "trigger": "first_interrupt_received_combat",
-        "text": "Ignore the first Interrupt against you each combat.",
-        "effect": "ignore_interrupt",
-        "charges": 1
-      },
-      "tags": [
-        "interrupt",
-        "defense"
-      ]
-    },
-    {
-      "id": "armor_volcanic_shell",
-      "name": "Volcanic Shell",
-      "slot": "armor",
-      "stars": 4,
+      "id": "ember_shard",
+      "name": "Ember Shard",
+      "rarity": 1,
       "affinity": "fire",
-      "stats": {
-        "maxHealth": 105,
-        "maxMana": 20,
-        "spellPowerPct": 0,
-        "restorationPct": 0,
-        "critChancePct": 0,
-        "critPowerBonusPct": 0,
-        "startingWard": 0
+      "effect": {
+        "type": "fire_damage_percent",
+        "amountPerStack": 2
       },
-      "ability": null,
-      "tags": [
-        "fire",
-        "crit",
-        "defense"
-      ]
+      "description": "+2% Fire damage per stack."
     },
     {
-      "id": "armor_abyssal_coat",
-      "name": "Abyssal Coat",
-      "slot": "armor",
-      "stars": 4,
+      "id": "cinder_lens",
+      "name": "Cinder Lens",
+      "rarity": 1,
+      "affinity": "fire",
+      "effect": {
+        "type": "crit_chance",
+        "amountPerStack": 2
+      },
+      "description": "+2% Critical Hit Chance per stack."
+    },
+    {
+      "id": "ash_vial",
+      "name": "Ash Vial",
+      "rarity": 1,
+      "affinity": "fire",
+      "effect": {
+        "type": "crit_chance_below_health",
+        "healthThresholdPercent": 50,
+        "amountPerStack": 2
+      },
+      "description": "While below 50% Health, gain +2% Critical Hit Chance per stack."
+    },
+    {
+      "id": "scorched_band",
+      "name": "Scorched Band",
+      "rarity": 2,
+      "affinity": "fire",
+      "effect": {
+        "type": "reduce_self_damage_flat",
+        "amountPerStack": 2
+      },
+      "description": "Reduce self-inflicted spell damage by 2 per stack."
+    },
+    {
+      "id": "charcoal_heart",
+      "name": "Charcoal Heart",
+      "rarity": 2,
+      "affinity": "fire",
+      "effect": {
+        "type": "burn_damage_percent",
+        "amountPerStack": 2
+      },
+      "description": "Burn deals +2% damage per stack."
+    },
+    {
+      "id": "furnace_nail",
+      "name": "Furnace Nail",
+      "rarity": 2,
+      "affinity": "fire",
+      "effect": {
+        "type": "first_fire_spell_cycle_damage_percent",
+        "amountPerStack": 3
+      },
+      "description": "Your first Fire spell each cycle deals +3% damage per stack."
+    },
+    {
+      "id": "furnace_fragment",
+      "name": "Furnace Fragment",
+      "rarity": 2,
+      "affinity": "fire",
+      "effect": {
+        "type": "first_fire_spell_cycle_damage_percent",
+        "amountPerStack": 4
+      },
+      "description": "Your first Fire spell each cycle deals +4% damage per stack."
+    },
+    {
+      "id": "ember_vial",
+      "name": "Ember Vial",
+      "rarity": 3,
+      "affinity": "fire",
+      "effect": {
+        "type": "damage_percent_while_status",
+        "status": "hotstreak",
+        "amountPerStack": 3
+      },
+      "description": "While Hotstreak is active, deal +3% spell damage per stack."
+    },
+    {
+      "id": "smouldering_coal",
+      "name": "Smouldering Coal",
+      "rarity": 3,
+      "affinity": "fire",
+      "effect": {
+        "type": "fire_damage_percent_below_health",
+        "healthThresholdPercent": 50,
+        "amountPerStack": 4
+      },
+      "description": "While below 50% Health, Fire spells deal +4% damage per stack."
+    },
+    {
+      "id": "hot_coal",
+      "name": "Hot Coal",
+      "rarity": 3,
+      "affinity": "fire",
+      "effect": {
+        "type": "damage_percent_while_status",
+        "status": "hotstreak",
+        "amountPerStack": 2
+      },
+      "description": "While Hotstreak is active, deal +2% spell damage per stack."
+    },
+    {
+      "id": "combustion_stone",
+      "name": "Combustion Stone",
+      "rarity": 4,
+      "affinity": "fire",
+      "effect": {
+        "type": "crit_chance_while_status",
+        "status": "combust",
+        "amountPerStack": 2
+      },
+      "description": "While Combust is active, gain +2% Critical Hit Chance per stack."
+    },
+    {
+      "id": "volcanic_glass",
+      "name": "Volcanic Glass",
+      "rarity": 4,
+      "affinity": "fire",
+      "effect": {
+        "type": "critical_fire_damage_percent",
+        "amountPerStack": 5
+      },
+      "description": "Critical Fire spells deal +5% damage per stack."
+    },
+    {
+      "id": "infernal_ruby",
+      "name": "Infernal Ruby",
+      "rarity": 5,
+      "affinity": "fire",
+      "effects": [
+        {
+          "type": "fire_damage_percent",
+          "amountPerStack": 4
+        },
+        {
+          "type": "crit_chance",
+          "amountPerStack": 2
+        }
+      ],
+      "description": "+4% Fire damage and +2% Critical Hit Chance per stack."
+    },
+    {
+      "id": "mana_pearl",
+      "name": "Mana Pearl",
+      "rarity": 1,
       "affinity": "water",
-      "stats": {
-        "maxHealth": 100,
-        "maxMana": 24,
-        "spellPowerPct": 0,
-        "restorationPct": 0,
-        "critChancePct": 0,
-        "critPowerBonusPct": 0,
-        "startingWard": 0
+      "effect": {
+        "type": "max_mana",
+        "amountPerStack": 5
       },
-      "ability": null,
-      "tags": [
-        "water",
-        "mana",
-        "defense"
-      ]
+      "description": "+5 Maximum Mana per stack."
     },
     {
-      "id": "armor_ancient_barkplate",
-      "name": "Ancient Barkplate",
-      "slot": "armor",
-      "stars": 4,
-      "affinity": "natural",
-      "stats": {
-        "maxHealth": 135,
-        "maxMana": 14,
-        "spellPowerPct": 0,
-        "restorationPct": 0,
-        "critChancePct": 0,
-        "critPowerBonusPct": 0,
-        "startingWard": 0
-      },
-      "ability": null,
-      "tags": [
-        "natural",
-        "cleanse",
-        "healing"
-      ]
-    },
-    {
-      "id": "armor_prismatic_aegis",
-      "name": "Prismatic Aegis",
-      "slot": "armor",
-      "stars": 5,
-      "affinity": "neutral",
-      "stats": {
-        "maxHealth": 140,
-        "maxMana": 25,
-        "spellPowerPct": 0,
-        "restorationPct": 0,
-        "critChancePct": 0,
-        "critPowerBonusPct": 0,
-        "startingWard": 0
-      },
-      "ability": {
-        "trigger": "combat_start",
-        "text": "Start combat with Ward equal to 10% of your maximum Health.",
-        "effect": "gain_ward_from_max_health",
-        "valuePct": 10
-      },
-      "tags": [
-        "legendary",
-        "ward"
-      ]
-    },
-    {
-      "id": "armor_inferno_aegis",
-      "name": "Inferno Aegis",
-      "slot": "armor",
-      "stars": 5,
-      "affinity": "fire",
-      "stats": {
-        "maxHealth": 145,
-        "maxMana": 22,
-        "spellPowerPct": 0,
-        "restorationPct": 0,
-        "critChancePct": 0,
-        "critPowerBonusPct": 0,
-        "startingWard": 0
-      },
-      "ability": null,
-      "tags": [
-        "legendary",
-        "fire",
-        "low_health"
-      ]
-    },
-    {
-      "id": "armor_leviathan_mail",
-      "name": "Leviathan Mail",
-      "slot": "armor",
-      "stars": 5,
+      "id": "tideglass",
+      "name": "Tideglass",
+      "rarity": 1,
       "affinity": "water",
-      "stats": {
-        "maxHealth": 130,
-        "maxMana": 30,
-        "spellPowerPct": 0,
-        "restorationPct": 0,
-        "critChancePct": 0,
-        "critPowerBonusPct": 0,
-        "startingWard": 0
+      "effect": {
+        "type": "water_damage_percent",
+        "amountPerStack": 3
       },
-      "ability": {
-        "trigger": "after_reshuffle",
-        "text": "After each Reshuffle, restore 5 Mana and gain 10 Ward.",
-        "effect": "restore_mana_and_gain_ward",
-        "mana": 5,
-        "ward": 10
-      },
-      "tags": [
-        "legendary",
-        "water",
-        "reshuffle"
-      ]
+      "description": "+3% Water damage per stack."
     },
     {
-      "id": "armor_heartwood_plate",
-      "name": "Heartwood Plate",
-      "slot": "armor",
-      "stars": 5,
-      "affinity": "natural",
-      "stats": {
-        "maxHealth": 160,
-        "maxMana": 18,
-        "spellPowerPct": 0,
-        "restorationPct": 0,
-        "critChancePct": 0,
-        "critPowerBonusPct": 0,
-        "startingWard": 0
-      },
-      "ability": {
-        "trigger": "first_time_below_health_pct_combat",
-        "text": "The first time you fall below 40% Health each combat, gain 3 Growth.",
-        "effect": "grant_status",
-        "status": "Growth",
-        "stacks": 3,
-        "thresholdPct": 40
-      },
-      "tags": [
-        "legendary",
-        "natural",
-        "growth"
-      ]
-    },
-    {
-      "id": "boots_magewalkers",
-      "name": "Magewalkers",
-      "slot": "boots",
-      "stars": 1,
-      "affinity": "neutral",
-      "stats": {
-        "maxHealth": 25,
-        "maxMana": 5,
-        "spellPowerPct": 0,
-        "restorationPct": 0,
-        "critChancePct": 0,
-        "critPowerBonusPct": 0,
-        "startingWard": 0
-      },
-      "ability": null,
-      "tags": [
-        "health",
-        "mana"
-      ]
-    },
-    {
-      "id": "boots_emberstep",
-      "name": "Emberstep",
-      "slot": "boots",
-      "stars": 1,
-      "affinity": "fire",
-      "stats": {
-        "maxHealth": 20,
-        "maxMana": 6,
-        "spellPowerPct": 0,
-        "restorationPct": 0,
-        "critChancePct": 0,
-        "critPowerBonusPct": 0,
-        "startingWard": 0
-      },
-      "ability": null,
-      "tags": [
-        "fire",
-        "self_damage",
-        "mana"
-      ]
-    },
-    {
-      "id": "boots_riverstep",
-      "name": "Riverstep",
-      "slot": "boots",
-      "stars": 1,
+      "id": "blue_coral",
+      "name": "Blue Coral",
+      "rarity": 2,
       "affinity": "water",
-      "stats": {
-        "maxHealth": 20,
-        "maxMana": 7,
-        "spellPowerPct": 0,
-        "restorationPct": 0,
-        "critChancePct": 0,
-        "critPowerBonusPct": 0,
-        "startingWard": 0
+      "effect": {
+        "type": "mana_after_first_water_spell_each_cycle",
+        "amountPerStack": 1
       },
-      "ability": null,
-      "tags": [
-        "water",
-        "mana"
-      ]
+      "description": "Your first Water spell each cycle restores 1 Mana per stack."
     },
     {
-      "id": "boots_rootstep",
-      "name": "Rootstep",
-      "slot": "boots",
-      "stars": 1,
-      "affinity": "natural",
-      "stats": {
-        "maxHealth": 30,
-        "maxMana": 4,
-        "spellPowerPct": 0,
-        "restorationPct": 0,
-        "critChancePct": 0,
-        "critPowerBonusPct": 0,
-        "startingWard": 0
-      },
-      "ability": null,
-      "tags": [
-        "natural",
-        "health"
-      ]
-    },
-    {
-      "id": "boots_fleet_boots",
-      "name": "Fleet Boots",
-      "slot": "boots",
-      "stars": 2,
-      "affinity": "neutral",
-      "stats": {
-        "maxHealth": 35,
-        "maxMana": 7,
-        "spellPowerPct": 0,
-        "restorationPct": 0,
-        "critChancePct": 0,
-        "critPowerBonusPct": 0,
-        "startingWard": 0
-      },
-      "ability": {
-        "trigger": "first_spell_combat",
-        "text": "Your first non-Instant spell of combat takes 1 fewer tick, to a minimum of 1T.",
-        "effect": "cast_time_reduction",
-        "ticks": 1,
-        "minimumTicks": 1
-      },
-      "tags": [
-        "tempo",
-        "cast_time"
-      ]
-    },
-    {
-      "id": "boots_cinderstep",
-      "name": "Cinderstep",
-      "slot": "boots",
-      "stars": 2,
-      "affinity": "fire",
-      "stats": {
-        "maxHealth": 35,
-        "maxMana": 8,
-        "spellPowerPct": 0,
-        "restorationPct": 0,
-        "critChancePct": 0,
-        "critPowerBonusPct": 0,
-        "startingWard": 0
-      },
-      "ability": {
-        "trigger": "first_self_damage_each_cycle",
-        "text": "After the first time you damage yourself each Cycle, your next spell costs 3 less Mana.",
-        "effect": "next_spell_mana_reduction",
-        "value": 3
-      },
-      "tags": [
-        "fire",
-        "self_damage",
-        "mana"
-      ]
-    },
-    {
-      "id": "boots_tidewalkers",
-      "name": "Tidewalkers",
-      "slot": "boots",
-      "stars": 2,
+      "id": "rain_pebble",
+      "name": "Rain Pebble",
+      "rarity": 2,
       "affinity": "water",
-      "stats": {
-        "maxHealth": 30,
-        "maxMana": 10,
-        "spellPowerPct": 0,
-        "restorationPct": 0,
-        "critChancePct": 0,
-        "critPowerBonusPct": 0,
-        "startingWard": 0
+      "effect": {
+        "type": "water_damage_percent_while_status",
+        "status": "rain",
+        "amountPerStack": 2
       },
-      "ability": {
-        "trigger": "while_rain_active",
-        "text": "While Rain is active, your first Water spell each Cycle costs 3 less Mana.",
-        "effect": "domain_mana_cost_reduction",
-        "domain": "water",
-        "value": 3,
-        "oncePer": "cycle"
-      },
-      "tags": [
-        "water",
-        "rain",
-        "mana"
-      ]
+      "description": "While Rain is active, Water spells deal +2% damage per stack."
     },
     {
-      "id": "boots_grovewalkers",
-      "name": "Grovewalkers",
-      "slot": "boots",
-      "stars": 2,
-      "affinity": "natural",
-      "stats": {
-        "maxHealth": 40,
-        "maxMana": 7,
-        "spellPowerPct": 0,
-        "restorationPct": 0,
-        "critChancePct": 0,
-        "critPowerBonusPct": 0,
-        "startingWard": 0
-      },
-      "ability": {
-        "trigger": "after_reshuffle",
-        "text": "If you have Growth or Lifebloom after a Reshuffle, gain 5 Ward.",
-        "effect": "conditional_gain_ward",
-        "value": 5
-      },
-      "tags": [
-        "natural",
-        "hot",
-        "ward",
-        "reshuffle"
-      ]
-    },
-    {
-      "id": "boots_anchor_greaves",
-      "name": "Anchor Greaves",
-      "slot": "boots",
-      "stars": 2,
-      "affinity": "neutral",
-      "stats": {
-        "maxHealth": 45,
-        "maxMana": 6,
-        "spellPowerPct": 0,
-        "restorationPct": 0,
-        "critChancePct": 0,
-        "critPowerBonusPct": 0,
-        "startingWard": 0
-      },
-      "ability": {
-        "trigger": "first_slowness_each_cycle",
-        "text": "The first Slowness applied to you each Cycle loses 1 stack immediately.",
-        "effect": "reduce_status_stacks",
-        "status": "Slowness",
-        "stacks": 1
-      },
-      "tags": [
-        "slowness",
-        "defense"
-      ]
-    },
-    {
-      "id": "boots_ashrunners",
-      "name": "Ashrunners",
-      "slot": "boots",
-      "stars": 2,
-      "affinity": "fire",
-      "stats": {
-        "maxHealth": 35,
-        "maxMana": 9,
-        "spellPowerPct": 0,
-        "restorationPct": 0,
-        "critChancePct": 0,
-        "critPowerBonusPct": 0,
-        "startingWard": 0
-      },
-      "ability": null,
-      "tags": [
-        "fire",
-        "health",
-        "mana"
-      ]
-    },
-    {
-      "id": "boots_current_runners",
-      "name": "Current Runners",
-      "slot": "boots",
-      "stars": 2,
-      "affinity": "water",
-      "stats": {
-        "maxHealth": 30,
-        "maxMana": 11,
-        "spellPowerPct": 0,
-        "restorationPct": 0,
-        "critChancePct": 0,
-        "critPowerBonusPct": 0,
-        "startingWard": 0
-      },
-      "ability": null,
-      "tags": [
-        "water",
-        "mana"
-      ]
-    },
-    {
-      "id": "boots_briar_boots",
-      "name": "Briar Boots",
-      "slot": "boots",
-      "stars": 2,
-      "affinity": "natural",
-      "stats": {
-        "maxHealth": 45,
-        "maxMana": 6,
-        "spellPowerPct": 0,
-        "restorationPct": 0,
-        "critChancePct": 0,
-        "critPowerBonusPct": 0,
-        "startingWard": 0
-      },
-      "ability": null,
-      "tags": [
-        "natural",
-        "dot",
-        "defense"
-      ]
-    },
-    {
-      "id": "boots_reshufflers_boots",
-      "name": "Reshuffler's Boots",
-      "slot": "boots",
-      "stars": 3,
-      "affinity": "neutral",
-      "stats": {
-        "maxHealth": 50,
-        "maxMana": 10,
-        "spellPowerPct": 0,
-        "restorationPct": 0,
-        "critChancePct": 0,
-        "critPowerBonusPct": 0,
-        "startingWard": 0
-      },
-      "ability": {
-        "trigger": "passive",
-        "text": "Your Reshuffle takes 1 tick instead of 2.",
-        "effect": "set_reshuffle_ticks",
-        "value": 1
-      },
-      "tags": [
-        "reshuffle",
-        "tempo"
-      ]
-    },
-    {
-      "id": "boots_flashstep",
-      "name": "Flashstep Boots",
-      "slot": "boots",
-      "stars": 3,
-      "affinity": "fire",
-      "stats": {
-        "maxHealth": 45,
-        "maxMana": 11,
-        "spellPowerPct": 0,
-        "restorationPct": 0,
-        "critChancePct": 0,
-        "critPowerBonusPct": 0,
-        "startingWard": 0
-      },
-      "ability": null,
-      "tags": [
-        "fire",
-        "crit",
-        "mana"
-      ]
-    },
-    {
-      "id": "boots_foamstriders",
-      "name": "Foamstriders",
-      "slot": "boots",
-      "stars": 3,
-      "affinity": "water",
-      "stats": {
-        "maxHealth": 40,
-        "maxMana": 14,
-        "spellPowerPct": 0,
-        "restorationPct": 0,
-        "critChancePct": 0,
-        "critPowerBonusPct": 0,
-        "startingWard": 0
-      },
-      "ability": null,
-      "tags": [
-        "water",
-        "tidecaller",
-        "ward"
-      ]
-    },
-    {
-      "id": "boots_mossbound_treads",
-      "name": "Mossbound Treads",
-      "slot": "boots",
-      "stars": 3,
-      "affinity": "natural",
-      "stats": {
-        "maxHealth": 55,
-        "maxMana": 9,
-        "spellPowerPct": 0,
-        "restorationPct": 0,
-        "critChancePct": 0,
-        "critPowerBonusPct": 0,
-        "startingWard": 0
-      },
-      "ability": null,
-      "tags": [
-        "natural",
-        "healing",
-        "mana"
-      ]
-    },
-    {
-      "id": "boots_recovery_boots",
-      "name": "Recovery Boots",
-      "slot": "boots",
-      "stars": 3,
-      "affinity": "neutral",
-      "stats": {
-        "maxHealth": 50,
-        "maxMana": 11,
-        "spellPowerPct": 0,
-        "restorationPct": 0,
-        "critChancePct": 0,
-        "critPowerBonusPct": 0,
-        "startingWard": 0
-      },
-      "ability": {
-        "trigger": "after_interrupt_received",
-        "text": "After you are Interrupted, your next spell takes 1 fewer tick, to a minimum of 1T.",
-        "effect": "next_spell_cast_time_reduction",
-        "ticks": 1,
-        "minimumTicks": 1
-      },
-      "tags": [
-        "interrupt",
-        "tempo"
-      ]
-    },
-    {
-      "id": "boots_burnwalkers",
-      "name": "Burnwalkers",
-      "slot": "boots",
-      "stars": 3,
-      "affinity": "fire",
-      "stats": {
-        "maxHealth": 50,
-        "maxMana": 10,
-        "spellPowerPct": 0,
-        "restorationPct": 0,
-        "critChancePct": 0,
-        "critPowerBonusPct": 0,
-        "startingWard": 0
-      },
-      "ability": null,
-      "tags": [
-        "fire",
-        "burn"
-      ]
-    },
-    {
-      "id": "boots_rainrunners",
-      "name": "Rainrunners",
-      "slot": "boots",
-      "stars": 3,
-      "affinity": "water",
-      "stats": {
-        "maxHealth": 45,
-        "maxMana": 14,
-        "spellPowerPct": 0,
-        "restorationPct": 0,
-        "critChancePct": 0,
-        "critPowerBonusPct": 0,
-        "startingWard": 0
-      },
-      "ability": null,
-      "tags": [
-        "water",
-        "rain",
-        "reshuffle"
-      ]
-    },
-    {
-      "id": "boots_deep_root_greaves",
-      "name": "Deep Root Greaves",
-      "slot": "boots",
-      "stars": 3,
-      "affinity": "natural",
-      "stats": {
-        "maxHealth": 60,
-        "maxMana": 8,
-        "spellPowerPct": 0,
-        "restorationPct": 0,
-        "critChancePct": 0,
-        "critPowerBonusPct": 0,
-        "startingWard": 0
-      },
-      "ability": null,
-      "tags": [
-        "natural",
-        "hot",
-        "defense"
-      ]
-    },
-    {
-      "id": "boots_duelists_boots",
-      "name": "Duelist's Boots",
-      "slot": "boots",
-      "stars": 4,
-      "affinity": "neutral",
-      "stats": {
-        "maxHealth": 65,
-        "maxMana": 13,
-        "spellPowerPct": 0,
-        "restorationPct": 0,
-        "critChancePct": 0,
-        "critPowerBonusPct": 0,
-        "startingWard": 0
-      },
-      "ability": {
-        "trigger": "first_spell_after_reshuffle",
-        "text": "Your first spell after each Reshuffle gains 8% direct damage or healing.",
-        "effect": "spell_power_multiplier",
-        "valuePct": 8
-      },
-      "tags": [
-        "reshuffle",
-        "sequence"
-      ]
-    },
-    {
-      "id": "boots_scorchstep",
-      "name": "Scorchstep",
-      "slot": "boots",
-      "stars": 4,
-      "affinity": "fire",
-      "stats": {
-        "maxHealth": 60,
-        "maxMana": 14,
-        "spellPowerPct": 0,
-        "restorationPct": 0,
-        "critChancePct": 0,
-        "critPowerBonusPct": 0,
-        "startingWard": 0
-      },
-      "ability": null,
-      "tags": [
-        "fire",
-        "hotstreak",
-        "mana"
-      ]
-    },
-    {
-      "id": "boots_stormstride",
-      "name": "Stormstride",
-      "slot": "boots",
-      "stars": 4,
-      "affinity": "water",
-      "stats": {
-        "maxHealth": 55,
-        "maxMana": 17,
-        "spellPowerPct": 0,
-        "restorationPct": 0,
-        "critChancePct": 0,
-        "critPowerBonusPct": 0,
-        "startingWard": 0
-      },
-      "ability": null,
-      "tags": [
-        "water",
-        "repeat",
-        "ward"
-      ]
-    },
-    {
-      "id": "boots_thornstride",
-      "name": "Thornstride",
-      "slot": "boots",
-      "stars": 4,
-      "affinity": "natural",
-      "stats": {
-        "maxHealth": 70,
-        "maxMana": 11,
-        "spellPowerPct": 0,
-        "restorationPct": 0,
-        "critChancePct": 0,
-        "critPowerBonusPct": 0,
-        "startingWard": 0
-      },
-      "ability": null,
-      "tags": [
-        "natural",
-        "cleanse",
-        "mana"
-      ]
-    },
-    {
-      "id": "boots_pursuers_boots",
-      "name": "Pursuer's Boots",
-      "slot": "boots",
-      "stars": 4,
-      "affinity": "neutral",
-      "stats": {
-        "maxHealth": 65,
-        "maxMana": 14,
-        "spellPowerPct": 0,
-        "restorationPct": 0,
-        "critChancePct": 0,
-        "critPowerBonusPct": 0,
-        "startingWard": 0
-      },
-      "ability": {
-        "trigger": "opponent_begins_reshuffle",
-        "text": "Once per Cycle, when the opponent begins Reshuffling, your next spell takes 1 fewer tick, to a minimum of 1T.",
-        "effect": "next_spell_cast_time_reduction",
-        "ticks": 1,
-        "minimumTicks": 1,
-        "oncePer": "cycle"
-      },
-      "tags": [
-        "tempo",
-        "opponent_reshuffle"
-      ]
-    },
-    {
-      "id": "boots_furnace_greaves",
-      "name": "Furnace Greaves",
-      "slot": "boots",
-      "stars": 4,
-      "affinity": "fire",
-      "stats": {
-        "maxHealth": 65,
-        "maxMana": 13,
-        "spellPowerPct": 0,
-        "restorationPct": 0,
-        "critChancePct": 0,
-        "critPowerBonusPct": 0,
-        "startingWard": 0
-      },
-      "ability": null,
-      "tags": [
-        "fire",
-        "overheat",
-        "ward"
-      ]
-    },
-    {
-      "id": "boots_whirlpool_treads",
-      "name": "Whirlpool Treads",
-      "slot": "boots",
-      "stars": 4,
-      "affinity": "water",
-      "stats": {
-        "maxHealth": 60,
-        "maxMana": 18,
-        "spellPowerPct": 0,
-        "restorationPct": 0,
-        "critChancePct": 0,
-        "critPowerBonusPct": 0,
-        "startingWard": 0
-      },
-      "ability": null,
-      "tags": [
-        "water",
-        "mana",
-        "ward"
-      ]
-    },
-    {
-      "id": "boots_verdant_greaves",
-      "name": "Verdant Greaves",
-      "slot": "boots",
-      "stars": 4,
-      "affinity": "natural",
-      "stats": {
-        "maxHealth": 75,
-        "maxMana": 11,
-        "spellPowerPct": 0,
-        "restorationPct": 0,
-        "critChancePct": 0,
-        "critPowerBonusPct": 0,
-        "startingWard": 0
-      },
-      "ability": null,
-      "tags": [
-        "natural",
-        "hot",
-        "mana"
-      ]
-    },
-    {
-      "id": "boots_timeworn_boots",
-      "name": "Timeworn Boots",
-      "slot": "boots",
-      "stars": 5,
-      "affinity": "neutral",
-      "stats": {
-        "maxHealth": 80,
-        "maxMana": 16,
-        "spellPowerPct": 0,
-        "restorationPct": 0,
-        "critChancePct": 0,
-        "critPowerBonusPct": 0,
-        "startingWard": 0
-      },
-      "ability": {
-        "trigger": "first_reshuffle_combat",
-        "text": "Your first Reshuffle each combat takes 0 ticks. Later Reshuffles take their normal duration.",
-        "effect": "set_first_reshuffle_ticks",
-        "value": 0
-      },
-      "tags": [
-        "legendary",
-        "reshuffle",
-        "tempo"
-      ]
-    },
-    {
-      "id": "boots_phoenix_steps",
-      "name": "Phoenix Steps",
-      "slot": "boots",
-      "stars": 5,
-      "affinity": "fire",
-      "stats": {
-        "maxHealth": 75,
-        "maxMana": 18,
-        "spellPowerPct": 0,
-        "restorationPct": 0,
-        "critChancePct": 0,
-        "critPowerBonusPct": 0,
-        "startingWard": 0
-      },
-      "ability": {
-        "trigger": "after_phoenix_revive",
-        "text": "After Phoenix revives you, your next spell takes 1 fewer tick and costs 5 less Mana.",
-        "effect": "next_spell_tempo_and_cost",
-        "ticks": 1,
-        "manaReduction": 5
-      },
-      "tags": [
-        "legendary",
-        "fire",
-        "phoenix"
-      ]
-    },
-    {
-      "id": "boots_leviathan_treads",
-      "name": "Leviathan Treads",
-      "slot": "boots",
-      "stars": 5,
-      "affinity": "water",
-      "stats": {
-        "maxHealth": 70,
-        "maxMana": 22,
-        "spellPowerPct": 0,
-        "restorationPct": 0,
-        "critChancePct": 0,
-        "critPowerBonusPct": 0,
-        "startingWard": 0
-      },
-      "ability": {
-        "trigger": "after_tidecaller",
-        "text": "After your first Tidecaller trigger each Cycle, restore 5 Mana and gain 8 Ward.",
-        "effect": "restore_mana_and_gain_ward",
-        "mana": 5,
-        "ward": 8,
-        "oncePer": "cycle"
-      },
-      "tags": [
-        "legendary",
-        "water",
-        "tidecaller"
-      ]
-    },
-    {
-      "id": "boots_worldroot_greaves",
-      "name": "Worldroot Greaves",
-      "slot": "boots",
-      "stars": 5,
-      "affinity": "natural",
-      "stats": {
-        "maxHealth": 90,
-        "maxMana": 15,
-        "spellPowerPct": 0,
-        "restorationPct": 0,
-        "critChancePct": 0,
-        "critPowerBonusPct": 0,
-        "startingWard": 0
-      },
-      "ability": {
-        "trigger": "after_reshuffle",
-        "text": "After each Reshuffle, if you have any HoT active, heal 10 Health and gain 5 Ward.",
-        "effect": "heal_and_gain_ward",
-        "heal": 10,
-        "ward": 5
-      },
-      "tags": [
-        "legendary",
-        "natural",
-        "hot",
-        "reshuffle"
-      ]
-    },
-    {
-      "id": "ring_silver_loop",
-      "name": "Silver Loop",
-      "slot": "ring",
-      "stars": 1,
-      "affinity": "neutral",
-      "stats": {
-        "maxHealth": 0,
-        "maxMana": 6,
-        "spellPowerPct": 0,
-        "restorationPct": 0,
-        "critChancePct": 0,
-        "critPowerBonusPct": 0,
-        "startingWard": 0
-      },
-      "ability": {
-        "trigger": "after_reshuffle",
-        "text": "After each Reshuffle, restore 3 Mana.",
-        "effect": "restore_mana",
-        "value": 3
-      },
-      "tags": [
-        "mana",
-        "reshuffle"
-      ]
-    },
-    {
-      "id": "ring_ruby_band",
-      "name": "Ruby Band",
-      "slot": "ring",
-      "stars": 1,
-      "affinity": "fire",
-      "stats": {
-        "maxHealth": 0,
-        "maxMana": 0,
-        "spellPowerPct": 0,
-        "restorationPct": 0,
-        "critChancePct": 3,
-        "critPowerBonusPct": 0,
-        "startingWard": 0
-      },
-      "ability": {
-        "trigger": "passive",
-        "text": "Gain +3% Critical Hit chance.",
-        "effect": "stat_bonus"
-      },
-      "tags": [
-        "fire",
-        "crit"
-      ]
-    },
-    {
-      "id": "ring_sapphire_loop",
-      "name": "Sapphire Loop",
-      "slot": "ring",
-      "stars": 1,
-      "affinity": "water",
-      "stats": {
-        "maxHealth": 0,
-        "maxMana": 10,
-        "spellPowerPct": 0,
-        "restorationPct": 0,
-        "critChancePct": 0,
-        "critPowerBonusPct": 0,
-        "startingWard": 0
-      },
-      "ability": {
-        "trigger": "first_water_spell_each_cycle",
-        "text": "Your first Water spell each Cycle costs 2 less Mana.",
-        "effect": "mana_cost_reduction",
-        "value": 2
-      },
-      "tags": [
-        "water",
-        "mana",
-        "cycle"
-      ]
-    },
-    {
-      "id": "ring_emerald_loop",
-      "name": "Emerald Loop",
-      "slot": "ring",
-      "stars": 1,
-      "affinity": "natural",
-      "stats": {
-        "maxHealth": 0,
-        "maxMana": 0,
-        "spellPowerPct": 0,
-        "restorationPct": 6,
-        "critChancePct": 0,
-        "critPowerBonusPct": 0,
-        "startingWard": 0
-      },
-      "ability": {
-        "trigger": "first_heal_each_cycle",
-        "text": "Your first heal each Cycle restores 5 additional Health.",
-        "effect": "flat_heal_bonus",
-        "value": 5
-      },
-      "tags": [
-        "natural",
-        "healing",
-        "cycle"
-      ]
-    },
-    {
-      "id": "ring_ring_of_contrast",
-      "name": "Ring of Contrast",
-      "slot": "ring",
-      "stars": 2,
-      "affinity": "neutral",
-      "stats": {
-        "maxHealth": 0,
-        "maxMana": 5,
-        "spellPowerPct": 0,
-        "restorationPct": 0,
-        "critChancePct": 0,
-        "critPowerBonusPct": 0,
-        "startingWard": 0
-      },
-      "ability": {
-        "trigger": "domain_changes_between_spells",
-        "text": "When you cast a spell from a different Domain than your previous spell, restore 2 Mana.",
-        "effect": "restore_mana",
-        "value": 2
-      },
-      "tags": [
-        "dual_domain",
-        "sequence",
-        "mana"
-      ]
-    },
-    {
-      "id": "ring_ember_loop",
-      "name": "Ember Loop",
-      "slot": "ring",
-      "stars": 2,
-      "affinity": "fire",
-      "stats": {
-        "maxHealth": 0,
-        "maxMana": 0,
-        "spellPowerPct": 0,
-        "restorationPct": 0,
-        "critChancePct": 3,
-        "critPowerBonusPct": 0,
-        "startingWard": 0
-      },
-      "ability": {
-        "trigger": "combat_start",
-        "text": "Begin combat with 1 Hotstreak.",
-        "effect": "grant_status",
-        "status": "Hotstreak",
-        "stacks": 1
-      },
-      "tags": [
-        "fire",
-        "hotstreak",
-        "crit"
-      ]
-    },
-    {
-      "id": "ring_tide_pearl",
-      "name": "Tide Pearl",
-      "slot": "ring",
-      "stars": 2,
-      "affinity": "water",
-      "stats": {
-        "maxHealth": 0,
-        "maxMana": 8,
-        "spellPowerPct": 0,
-        "restorationPct": 0,
-        "critChancePct": 0,
-        "critPowerBonusPct": 0,
-        "startingWard": 0
-      },
-      "ability": {
-        "trigger": "passive",
-        "text": "While Tide is active, Tidecaller chance is increased by 5 percentage points.",
-        "effect": "modify_tidecaller_chance",
-        "valuePctPoints": 5
-      },
-      "tags": [
-        "water",
-        "tide",
-        "tidecaller"
-      ]
-    },
-    {
-      "id": "ring_seed_of_life",
-      "name": "Seed of Life",
-      "slot": "ring",
-      "stars": 2,
-      "affinity": "natural",
-      "stats": {
-        "maxHealth": 0,
-        "maxMana": 0,
-        "spellPowerPct": 0,
-        "restorationPct": 5,
-        "critChancePct": 0,
-        "critPowerBonusPct": 0,
-        "startingWard": 0
-      },
-      "ability": {
-        "trigger": "first_hot_application_each_cycle",
-        "text": "The first HoT you apply each Cycle gains 1 additional stack.",
-        "effect": "bonus_status_stacks",
-        "statusGroup": "HoT",
-        "stacks": 1
-      },
-      "tags": [
-        "natural",
-        "hot",
-        "cycle"
-      ]
-    },
-    {
-      "id": "ring_ring_of_plenty",
-      "name": "Ring of Plenty",
-      "slot": "ring",
-      "stars": 2,
-      "affinity": "neutral",
-      "stats": {
-        "maxHealth": 0,
-        "maxMana": 8,
-        "spellPowerPct": 0,
-        "restorationPct": 0,
-        "critChancePct": 0,
-        "critPowerBonusPct": 0,
-        "startingWard": 0
-      },
-      "ability": {
-        "trigger": "first_expensive_spell_each_cycle",
-        "text": "The first spell costing 30 or more Mana each Cycle costs 5 less Mana.",
-        "effect": "mana_cost_reduction",
-        "value": 5,
-        "thresholdMana": 30
-      },
-      "tags": [
-        "mana",
-        "cycle"
-      ]
-    },
-    {
-      "id": "ring_ashband",
-      "name": "Ashband",
-      "slot": "ring",
-      "stars": 2,
-      "affinity": "fire",
-      "stats": {
-        "maxHealth": 0,
-        "maxMana": 0,
-        "spellPowerPct": 0,
-        "restorationPct": 0,
-        "critChancePct": 2,
-        "critPowerBonusPct": 0,
-        "startingWard": 0
-      },
-      "ability": {
-        "trigger": "when_self_burn_applied",
-        "text": "Once per Cycle, when you gain Burn, gain 1 Hotstreak.",
-        "effect": "grant_status",
-        "status": "Hotstreak",
-        "stacks": 1,
-        "oncePer": "cycle"
-      },
-      "tags": [
-        "fire",
-        "burn",
-        "hotstreak"
-      ]
-    },
-    {
-      "id": "ring_rainstone",
+      "id": "rainstone",
       "name": "Rainstone",
-      "slot": "ring",
-      "stars": 2,
+      "rarity": 2,
       "affinity": "water",
-      "stats": {
-        "maxHealth": 0,
-        "maxMana": 8,
-        "spellPowerPct": 0,
-        "restorationPct": 0,
-        "critChancePct": 0,
-        "critPowerBonusPct": 0,
-        "startingWard": 0
+      "effect": {
+        "type": "healing_received_percent_while_status",
+        "status": "rain",
+        "amountPerStack": 3
       },
-      "ability": {
-        "trigger": "while_rain_active",
-        "text": "While Rain is active, receive 5% more healing.",
-        "effect": "healing_received_multiplier",
-        "valuePct": 5
-      },
-      "tags": [
-        "water",
-        "rain",
-        "healing"
-      ]
+      "description": "While Rain is active, receive +3% healing per stack."
     },
     {
-      "id": "ring_thorn_circle",
-      "name": "Thorn Circle",
-      "slot": "ring",
-      "stars": 2,
-      "affinity": "natural",
-      "stats": {
-        "maxHealth": 0,
-        "maxMana": 0,
-        "spellPowerPct": 2,
-        "restorationPct": 0,
-        "critChancePct": 0,
-        "critPowerBonusPct": 0,
-        "startingWard": 0
-      },
-      "ability": {
-        "trigger": "first_dot_tick_each_cycle",
-        "text": "The first DoT tick you deal each Cycle deals 10 additional damage.",
-        "effect": "flat_periodic_damage_bonus",
-        "value": 10
-      },
-      "tags": [
-        "natural",
-        "dot",
-        "cycle"
-      ]
-    },
-    {
-      "id": "ring_purists_seal",
-      "name": "Purist's Seal",
-      "slot": "ring",
-      "stars": 3,
-      "affinity": "neutral",
-      "stats": {
-        "maxHealth": 0,
-        "maxMana": 0,
-        "spellPowerPct": 5,
-        "restorationPct": 5,
-        "critChancePct": 0,
-        "critPowerBonusPct": 0,
-        "startingWard": 0
-      },
-      "ability": {
-        "trigger": "single_domain_deck",
-        "text": "If your deck contains only one Domain, gain an additional +8% Spell Power and +8% Restoration.",
-        "effect": "single_domain_stat_bonus",
-        "spellPowerPct": 8,
-        "restorationPct": 8
-      },
-      "tags": [
-        "single_domain",
-        "buildaround"
-      ]
-    },
-    {
-      "id": "ring_combustion_band",
-      "name": "Combustion Band",
-      "slot": "ring",
-      "stars": 3,
-      "affinity": "fire",
-      "stats": {
-        "maxHealth": 0,
-        "maxMana": 0,
-        "spellPowerPct": 0,
-        "restorationPct": 0,
-        "critChancePct": 4,
-        "critPowerBonusPct": 0,
-        "startingWard": 0
-      },
-      "ability": {
-        "trigger": "while_combust_active",
-        "text": "While Combust is active, completed spells deal 2 less self-damage.",
-        "effect": "flat_self_damage_reduction",
-        "value": 2
-      },
-      "tags": [
-        "fire",
-        "combust"
-      ]
-    },
-    {
-      "id": "ring_twin_tides",
-      "name": "Twin Tides",
-      "slot": "ring",
-      "stars": 3,
+      "id": "conch_shell",
+      "name": "Conch Shell",
+      "rarity": 2,
       "affinity": "water",
-      "stats": {
-        "maxHealth": 0,
-        "maxMana": 12,
-        "spellPowerPct": 0,
-        "restorationPct": 0,
-        "critChancePct": 0,
-        "critPowerBonusPct": 0,
-        "startingWard": 0
+      "effect": {
+        "type": "bonus_mana_from_water_mana_gain",
+        "amountPerStack": 1,
+        "recommendedBonusCapPerTrigger": 10
       },
-      "ability": {
-        "trigger": "second_consecutive_water_spell",
-        "text": "The second consecutive Water spell restores 4 Mana. This resets when you cast another Domain.",
-        "effect": "restore_mana",
-        "value": 4
-      },
-      "tags": [
-        "water",
-        "sequence",
-        "mana"
-      ]
+      "description": "Whenever a Water spell restores Mana, restore 1 additional Mana per stack."
     },
     {
-      "id": "ring_blooming_signet",
-      "name": "Blooming Signet",
-      "slot": "ring",
-      "stars": 3,
-      "affinity": "natural",
-      "stats": {
-        "maxHealth": 0,
-        "maxMana": 0,
-        "spellPowerPct": 0,
-        "restorationPct": 8,
-        "critChancePct": 0,
-        "critPowerBonusPct": 0,
-        "startingWard": 0
-      },
-      "ability": {
-        "trigger": "first_heal_above_threshold_each_cycle",
-        "text": "The first heal of 30 or more Health each Cycle grants 1 Growth.",
-        "effect": "grant_status",
-        "status": "Growth",
-        "stacks": 1,
-        "threshold": 30
-      },
-      "tags": [
-        "natural",
-        "healing",
-        "growth"
-      ]
-    },
-    {
-      "id": "ring_ring_of_resonance",
-      "name": "Ring of Resonance",
-      "slot": "ring",
-      "stars": 3,
-      "affinity": "neutral",
-      "stats": {
-        "maxHealth": 0,
-        "maxMana": 0,
-        "spellPowerPct": 4,
-        "restorationPct": 0,
-        "critChancePct": 0,
-        "critPowerBonusPct": 0,
-        "startingWard": 0
-      },
-      "ability": {
-        "trigger": "same_domain_as_previous_spell",
-        "text": "A spell cast immediately after another spell of the same Domain gains 10% direct damage or healing.",
-        "effect": "spell_power_multiplier",
-        "valuePct": 10
-      },
-      "tags": [
-        "sequence",
-        "same_domain"
-      ]
-    },
-    {
-      "id": "ring_hot_coal_signet",
-      "name": "Hot Coal Signet",
-      "slot": "ring",
-      "stars": 3,
-      "affinity": "fire",
-      "stats": {
-        "maxHealth": 0,
-        "maxMana": 0,
-        "spellPowerPct": 0,
-        "restorationPct": 0,
-        "critChancePct": 4,
-        "critPowerBonusPct": 0,
-        "startingWard": 0
-      },
-      "ability": {
-        "trigger": "first_crit_each_cycle",
-        "text": "Your first Critical Hit each Cycle grants 1 Fury.",
-        "effect": "grant_status",
-        "status": "Fury",
-        "stacks": 1
-      },
-      "tags": [
-        "fire",
-        "crit",
-        "fury"
-      ]
-    },
-    {
-      "id": "ring_undertow_band",
-      "name": "Undertow Band",
-      "slot": "ring",
-      "stars": 3,
+      "id": "deepwater_bead",
+      "name": "Deepwater Bead",
+      "rarity": 2,
       "affinity": "water",
-      "stats": {
-        "maxHealth": 0,
-        "maxMana": 12,
-        "spellPowerPct": 0,
-        "restorationPct": 0,
-        "critChancePct": 0,
-        "critPowerBonusPct": 0,
-        "startingWard": 0
-      },
-      "ability": {
-        "trigger": "first_tidecaller_each_cycle",
-        "text": "The first Tidecaller trigger each Cycle restores 5 Mana.",
-        "effect": "restore_mana",
-        "value": 5
-      },
-      "tags": [
-        "water",
-        "tidecaller",
-        "mana"
-      ]
+      "effects": [
+        {
+          "type": "max_mana",
+          "amountPerStack": 3
+        },
+        {
+          "type": "healing_percent",
+          "amountPerStack": 1
+        }
+      ],
+      "description": "+3 Maximum Mana and +1% healing per stack."
     },
     {
-      "id": "ring_eclipse_signet",
-      "name": "Eclipse Signet",
-      "slot": "ring",
-      "stars": 3,
-      "affinity": "natural",
-      "stats": {
-        "maxHealth": 0,
-        "maxMana": 0,
-        "spellPowerPct": 4,
-        "restorationPct": 0,
-        "critChancePct": 0,
-        "critPowerBonusPct": 0,
-        "startingWard": 0
-      },
-      "ability": {
-        "trigger": "consume_enemy_dot_stacks",
-        "text": "Consuming enemy DoT stacks restores 1 Mana per stack, up to 10 Mana per cast.",
-        "effect": "restore_mana_per_consumed_stack",
-        "valuePerStack": 1,
-        "cap": 10
-      },
-      "tags": [
-        "natural",
-        "dot",
-        "consume",
-        "mana"
-      ]
-    },
-    {
-      "id": "ring_scavengers_ring",
-      "name": "Scavenger's Ring",
-      "slot": "ring",
-      "stars": 4,
-      "affinity": "neutral",
-      "stats": {
-        "maxHealth": 0,
-        "maxMana": 10,
-        "spellPowerPct": 0,
-        "restorationPct": 0,
-        "critChancePct": 0,
-        "critPowerBonusPct": 0,
-        "startingWard": 0
-      },
-      "ability": {
-        "trigger": "first_unaffordable_skip_each_cycle",
-        "text": "The first spell skipped for insufficient Mana each Cycle restores 10 Mana.",
-        "effect": "restore_mana",
-        "value": 10
-      },
-      "tags": [
-        "mana",
-        "skip",
-        "recovery"
-      ]
-    },
-    {
-      "id": "ring_flashfire_band",
-      "name": "Flashfire Band",
-      "slot": "ring",
-      "stars": 4,
-      "affinity": "fire",
-      "stats": {
-        "maxHealth": 0,
-        "maxMana": 0,
-        "spellPowerPct": 0,
-        "restorationPct": 0,
-        "critChancePct": 5,
-        "critPowerBonusPct": 0,
-        "startingWard": 0
-      },
-      "ability": {
-        "trigger": "consume_burn",
-        "text": "The first time you consume Burn each Cycle, gain 2 Hotstreak.",
-        "effect": "grant_status",
-        "status": "Hotstreak",
-        "stacks": 2
-      },
-      "tags": [
-        "fire",
-        "burn",
-        "hotstreak"
-      ]
-    },
-    {
-      "id": "ring_eye_of_the_storm",
-      "name": "Eye of the Storm",
-      "slot": "ring",
-      "stars": 4,
+      "id": "deepwater_pearl",
+      "name": "Deepwater Pearl",
+      "rarity": 3,
       "affinity": "water",
-      "stats": {
-        "maxHealth": 0,
-        "maxMana": 15,
-        "spellPowerPct": 0,
-        "restorationPct": 0,
-        "critChancePct": 0,
-        "critPowerBonusPct": 0,
-        "startingWard": 0
-      },
-      "ability": {
-        "trigger": "on_tidecaller",
-        "effect": "restore_mana",
-        "value": 5,
-        "domain": "water",
-        "text": "When a Water spell triggers Tidecaller, restore 5 Mana."
-      },
-      "tags": [
-        "water",
-        "tide",
-        "repeat",
-        "mana"
-      ]
+      "effects": [
+        {
+          "type": "max_mana",
+          "amountPerStack": 8
+        },
+        {
+          "type": "water_damage_percent",
+          "amountPerStack": 2
+        }
+      ],
+      "description": "+8 Maximum Mana and +2% Water damage per stack."
     },
     {
-      "id": "ring_ring_of_overgrowth",
-      "name": "Ring of Overgrowth",
-      "slot": "ring",
-      "stars": 4,
-      "affinity": "natural",
-      "stats": {
-        "maxHealth": 0,
-        "maxMana": 0,
-        "spellPowerPct": 0,
-        "restorationPct": 10,
-        "critChancePct": 0,
-        "critPowerBonusPct": 0,
-        "startingWard": 0
-      },
-      "ability": {
-        "trigger": "while_overgrowth_active",
-        "text": "While Overgrowth is active, your Growth also restores 2 Mana per tick.",
-        "effect": "growth_restores_mana",
-        "value": 2
-      },
-      "tags": [
-        "natural",
-        "growth",
-        "overgrowth",
-        "mana"
-      ]
-    },
-    {
-      "id": "ring_overflow_band",
-      "name": "Overflow Band",
-      "slot": "ring",
-      "stars": 4,
-      "affinity": "neutral",
-      "stats": {
-        "maxHealth": 0,
-        "maxMana": 10,
-        "spellPowerPct": 0,
-        "restorationPct": 0,
-        "critChancePct": 0,
-        "critPowerBonusPct": 0,
-        "startingWard": 0
-      },
-      "ability": {
-        "trigger": "on_excess_healing",
-        "text": "Excess healing becomes Ward, up to 40 Ward per Cycle.",
-        "effect": "overheal_to_ward",
-        "capPerCycle": 40
-      },
-      "tags": [
-        "healing",
-        "ward",
-        "buildaround"
-      ]
-    },
-    {
-      "id": "ring_furnace_ring",
-      "name": "Furnace Ring",
-      "slot": "ring",
-      "stars": 4,
-      "affinity": "fire",
-      "stats": {
-        "maxHealth": 0,
-        "maxMana": 0,
-        "spellPowerPct": 0,
-        "restorationPct": 0,
-        "critChancePct": 6,
-        "critPowerBonusPct": 0,
-        "startingWard": 0
-      },
-      "ability": {
-        "trigger": "spend_health_from_explicit_cost",
-        "text": "After paying an explicit Health cost, your next direct-damage spell gains 20% damage.",
-        "effect": "next_direct_damage_multiplier",
-        "valuePct": 20
-      },
-      "tags": [
-        "fire",
-        "health_cost",
-        "risk_reward"
-      ]
-    },
-    {
-      "id": "ring_maelstrom_eye",
-      "name": "Maelstrom Eye",
-      "slot": "ring",
-      "stars": 4,
+      "id": "brine_flask",
+      "name": "Brine Flask",
+      "rarity": 3,
       "affinity": "water",
-      "stats": {
-        "maxHealth": 0,
-        "maxMana": 15,
-        "spellPowerPct": 0,
-        "restorationPct": 0,
-        "critChancePct": 0,
-        "critPowerBonusPct": 0,
-        "startingWard": 0
+      "effect": {
+        "type": "mana_after_reshuffle",
+        "amountPerStack": 3
       },
-      "ability": {
-        "trigger": "after_tidecaller",
-        "text": "After Tidecaller triggers, gain 1 Rain. Once per Cycle.",
-        "effect": "grant_status",
-        "status": "Rain",
-        "stacks": 1,
-        "oncePer": "cycle"
-      },
-      "tags": [
-        "water",
-        "tidecaller",
-        "rain"
-      ]
+      "description": "Restore 3 Mana after each reshuffle per stack."
     },
     {
-      "id": "ring_cycle_of_seasons",
-      "name": "Cycle of Seasons",
-      "slot": "ring",
-      "stars": 4,
-      "affinity": "natural",
-      "stats": {
-        "maxHealth": 0,
-        "maxMana": 0,
-        "spellPowerPct": 6,
-        "restorationPct": 6,
-        "critChancePct": 0,
-        "critPowerBonusPct": 0,
-        "startingWard": 0
-      },
-      "ability": {
-        "trigger": "alternate_damage_and_healing_spells",
-        "text": "When a damaging spell is followed by a healing spell, or vice versa, the second spell gains 15% power.",
-        "effect": "spell_power_multiplier",
-        "valuePct": 15
-      },
-      "tags": [
-        "natural",
-        "sequence",
-        "hybrid"
-      ]
-    },
-    {
-      "id": "ring_ouroboros",
-      "name": "Ouroboros",
-      "slot": "ring",
-      "stars": 5,
-      "affinity": "neutral",
-      "stats": {
-        "maxHealth": 0,
-        "maxMana": 15,
-        "spellPowerPct": 0,
-        "restorationPct": 0,
-        "critChancePct": 0,
-        "critPowerBonusPct": 0,
-        "startingWard": 0
-      },
-      "ability": {
-        "trigger": "after_reshuffle",
-        "text": "After each Reshuffle, restore 10 Mana and gain 15 Ward.",
-        "effect": "restore_mana_and_gain_ward",
-        "mana": 10,
-        "ward": 15
-      },
-      "tags": [
-        "legendary",
-        "reshuffle",
-        "mana",
-        "ward"
-      ]
-    },
-    {
-      "id": "ring_crown_of_embers",
-      "name": "Crown of Embers",
-      "slot": "ring",
-      "stars": 5,
-      "affinity": "fire",
-      "stats": {
-        "maxHealth": 0,
-        "maxMana": 0,
-        "spellPowerPct": 0,
-        "restorationPct": 0,
-        "critChancePct": 7,
-        "critPowerBonusPct": 10,
-        "startingWard": 0
-      },
-      "ability": {
-        "trigger": "reach_hotstreak_threshold",
-        "text": "Once per Cycle, when you reach 5 or more Hotstreak, gain 2 Fury.",
-        "effect": "grant_status",
-        "status": "Fury",
-        "stacks": 2,
-        "threshold": 5
-      },
-      "tags": [
-        "legendary",
-        "fire",
-        "hotstreak",
-        "fury"
-      ]
-    },
-    {
-      "id": "ring_heart_of_the_tide",
-      "name": "Heart of the Tide",
-      "slot": "ring",
-      "stars": 5,
+      "id": "tide_charm",
+      "name": "Tide Charm",
+      "rarity": 3,
       "affinity": "water",
-      "stats": {
-        "maxHealth": 0,
-        "maxMana": 20,
-        "spellPowerPct": 0,
-        "restorationPct": 0,
-        "critChancePct": 0,
-        "critPowerBonusPct": 0,
-        "startingWard": 0
+      "effect": {
+        "type": "tidecaller_spell_damage_percent",
+        "amountPerStack": 3
       },
-      "ability": {
-        "trigger": "first_tidecaller_each_cycle",
-        "text": "The first Tidecaller trigger each Cycle does not consume Tide stacks.",
-        "effect": "prevent_tide_consumption",
-        "oncePer": "cycle"
-      },
-      "tags": [
-        "legendary",
-        "water",
-        "tide",
-        "tidecaller"
-      ]
+      "description": "Spells repeated by Tidecaller deal +3% damage per stack."
     },
     {
-      "id": "ring_seed_of_the_worldtree",
-      "name": "Seed of the Worldtree",
-      "slot": "ring",
-      "stars": 5,
-      "affinity": "natural",
-      "stats": {
-        "maxHealth": 0,
-        "maxMana": 0,
-        "spellPowerPct": 6,
-        "restorationPct": 12,
-        "critChancePct": 0,
-        "critPowerBonusPct": 0,
-        "startingWard": 0
-      },
-      "ability": {
-        "trigger": "first_periodic_application_each_cycle",
-        "text": "The first DoT or HoT you apply each Cycle gains 2 additional stacks and immediately grants 5 Ward.",
-        "effect": "bonus_periodic_stacks_and_ward",
-        "stacks": 2,
-        "ward": 5
-      },
-      "tags": [
-        "legendary",
-        "natural",
-        "dot",
-        "hot",
-        "ward"
-      ]
-    },
-    {
-      "id": "weapon_verdant_staff",
-      "name": "Verdant Staff",
-      "slot": "weapon",
-      "stars": 2,
-      "affinity": "natural",
-      "stats": {
-        "maxHealth": 0,
-        "maxMana": 0,
-        "spellPowerPct": 4,
-        "restorationPct": 0,
-        "critChancePct": 0,
-        "critPowerBonusPct": 0,
-        "startingWard": 0
-      },
-      "ability": {
-        "trigger": "passive",
-        "text": "Your DoTs deal 10% more damage.",
-        "effect": "dot_damage_multiplier",
-        "valuePct": 10
-      },
-      "tags": [
-        "natural",
-        "dot"
-      ]
-    },
-    {
-      "id": "weapon_tidal_sceptre",
-      "name": "Tidal Sceptre",
-      "slot": "weapon",
-      "stars": 2,
+      "id": "stormglass",
+      "name": "Stormglass",
+      "rarity": 4,
       "affinity": "water",
-      "stats": {
-        "maxHealth": 0,
-        "maxMana": 10,
-        "spellPowerPct": 0,
-        "restorationPct": 0,
-        "critChancePct": 0,
-        "critPowerBonusPct": 0,
-        "startingWard": 0
+      "effect": {
+        "type": "water_damage_percent_while_status",
+        "status": "rain",
+        "amountPerStack": 4
       },
-      "ability": {
-        "trigger": "first_water_spell_each_cycle",
-        "text": "Your first Water spell each Cycle restores 5 Mana.",
-        "effect": "restore_mana",
-        "value": 5
-      },
-      "tags": [
-        "water",
-        "mana",
-        "cycle"
-      ]
+      "description": "While Rain is active, Water spells deal +4% damage per stack."
     },
     {
-      "id": "weapon_bloodletter",
-      "name": "Bloodletter",
-      "slot": "weapon",
-      "stars": 3,
-      "affinity": "neutral",
-      "stats": {
-        "maxHealth": 0,
-        "maxMana": 0,
-        "spellPowerPct": 5,
-        "restorationPct": 0,
-        "critChancePct": 0,
-        "critPowerBonusPct": 0,
-        "startingWard": 0
-      },
-      "ability": {
-        "trigger": "while_below_health_pct",
-        "text": "While below 50% Health, your spells deal 15% more direct damage.",
-        "effect": "damage_multiplier",
-        "thresholdPct": 50,
-        "valuePct": 15
-      },
-      "tags": [
-        "low_health",
-        "risk_reward",
-        "direct_damage"
-      ]
-    },
-    {
-      "id": "weapon_executioners_wand",
-      "name": "Executioner's Wand",
-      "slot": "weapon",
-      "stars": 4,
-      "affinity": "neutral",
-      "stats": {
-        "maxHealth": 0,
-        "maxMana": 0,
-        "spellPowerPct": 8,
-        "restorationPct": 0,
-        "critChancePct": 0,
-        "critPowerBonusPct": 0,
-        "startingWard": 0
-      },
-      "ability": {
-        "trigger": "target_below_health_pct",
-        "text": "Deal 20% more direct damage to opponents below 35% Health.",
-        "effect": "damage_multiplier",
-        "thresholdPct": 35,
-        "valuePct": 20
-      },
-      "tags": [
-        "execute",
-        "direct_damage"
-      ]
-    },
-    {
-      "id": "weapon_volcanic_focus",
-      "name": "Volcanic Focus",
-      "slot": "weapon",
-      "stars": 4,
-      "affinity": "fire",
-      "stats": {
-        "maxHealth": 0,
-        "maxMana": 0,
-        "spellPowerPct": 0,
-        "restorationPct": 0,
-        "critChancePct": 5,
-        "critPowerBonusPct": 25,
-        "startingWard": 0
-      },
-      "ability": {
-        "trigger": "on_crit",
-        "text": "Your Critical Hits gain +25 percentage points of critical damage, but each Critical Hit deals 10 damage to you.",
-        "effect": "crit_tradeoff",
-        "selfDamage": 10
-      },
-      "tags": [
-        "fire",
-        "crit",
-        "risk_reward"
-      ]
-    },
-    {
-      "id": "armor_ironweave_vest",
-      "name": "Ironweave Vest",
-      "slot": "armor",
-      "stars": 1,
-      "affinity": "neutral",
-      "stats": {
-        "maxHealth": 55,
-        "maxMana": 5,
-        "spellPowerPct": 0,
-        "restorationPct": 0,
-        "critChancePct": 0,
-        "critPowerBonusPct": 0,
-        "startingWard": 0
-      },
-      "ability": null,
-      "tags": [
-        "health",
-        "mana"
-      ]
-    },
-    {
-      "id": "armor_purifiers_robes",
-      "name": "Purifier's Robes",
-      "slot": "armor",
-      "stars": 3,
-      "affinity": "neutral",
-      "stats": {
-        "maxHealth": 85,
-        "maxMana": 15,
-        "spellPowerPct": 0,
-        "restorationPct": 0,
-        "critChancePct": 0,
-        "critPowerBonusPct": 0,
-        "startingWard": 0
-      },
-      "ability": {
-        "trigger": "after_reshuffle",
-        "text": "After each Reshuffle, Cleanse one random DoT or debuff from yourself.",
-        "effect": "cleanse_random",
-        "count": 1
-      },
-      "tags": [
-        "cleanse",
-        "reshuffle"
-      ]
-    },
-    {
-      "id": "armor_thornplate",
-      "name": "Thornplate",
-      "slot": "armor",
-      "stars": 3,
-      "affinity": "natural",
-      "stats": {
-        "maxHealth": 100,
-        "maxMana": 10,
-        "spellPowerPct": 0,
-        "restorationPct": 0,
-        "critChancePct": 0,
-        "critPowerBonusPct": 0,
-        "startingWard": 0
-      },
-      "ability": {
-        "trigger": "on_direct_spell_damage_received",
-        "text": "When an opposing spell directly damages you, deal 5 damage back. Maximum once per tick.",
-        "effect": "retaliate_damage",
-        "value": 5,
-        "oncePer": "tick"
-      },
-      "tags": [
-        "natural",
-        "retaliation"
-      ]
-    },
-    {
-      "id": "armor_last_bastion",
-      "name": "Last Bastion",
-      "slot": "armor",
-      "stars": 4,
-      "affinity": "neutral",
-      "stats": {
-        "maxHealth": 125,
-        "maxMana": 18,
-        "spellPowerPct": 0,
-        "restorationPct": 0,
-        "critChancePct": 0,
-        "critPowerBonusPct": 0,
-        "startingWard": 0
-      },
-      "ability": {
-        "trigger": "while_below_health_pct",
-        "text": "While below 25% Health, receive 20% more healing.",
-        "effect": "healing_received_multiplier",
-        "thresholdPct": 25,
-        "valuePct": 20
-      },
-      "tags": [
-        "low_health",
-        "healing"
-      ]
-    },
-    {
-      "id": "armor_mantle_of_renewal",
-      "name": "Mantle of Renewal",
-      "slot": "armor",
-      "stars": 5,
-      "affinity": "natural",
-      "stats": {
-        "maxHealth": 150,
-        "maxMana": 20,
-        "spellPowerPct": 0,
-        "restorationPct": 0,
-        "critChancePct": 0,
-        "critPowerBonusPct": 0,
-        "startingWard": 0
-      },
-      "ability": {
-        "trigger": "first_time_below_health_pct_each_cycle",
-        "text": "The first time each Cycle you fall below 30% Health, gain 2 Growth.",
-        "effect": "grant_status",
-        "status": "Growth",
-        "stacks": 2,
-        "thresholdPct": 30
-      },
-      "tags": [
-        "legendary",
-        "natural",
-        "growth",
-        "low_health"
-      ]
-    },
-    {
-      "id": "armor_voidplate",
-      "name": "Voidplate",
-      "slot": "armor",
-      "stars": 5,
-      "affinity": "neutral",
-      "stats": {
-        "maxHealth": 145,
-        "maxMana": 25,
-        "spellPowerPct": 0,
-        "restorationPct": 0,
-        "critChancePct": 0,
-        "critPowerBonusPct": 0,
-        "startingWard": 0
-      },
-      "ability": {
-        "trigger": "fixed_ticks",
-        "text": "At ticks 10, 20, 30 and 40, gain 25 Ward.",
-        "effect": "gain_ward_on_ticks",
-        "ticks": [
-          10,
-          20,
-          30,
-          40
-        ],
-        "value": 25
-      },
-      "tags": [
-        "legendary",
-        "ward",
-        "timing"
-      ]
-    },
-    {
-      "id": "boots_sandglass_greaves",
-      "name": "Sandglass Greaves",
-      "slot": "boots",
-      "stars": 3,
-      "affinity": "neutral",
-      "stats": {
-        "maxHealth": 55,
-        "maxMana": 12,
-        "spellPowerPct": 0,
-        "restorationPct": 0,
-        "critChancePct": 0,
-        "critPowerBonusPct": 0,
-        "startingWard": 0
-      },
-      "ability": {
-        "trigger": "every_n_slow_spells",
-        "text": "Every third completed spell with a printed cast time of 2T or more takes 1 fewer tick, to a minimum of 1T.",
-        "effect": "periodic_cast_time_reduction",
-        "every": 3,
-        "ticks": 1,
-        "minimumTicks": 1
-      },
-      "tags": [
-        "tempo",
-        "cast_time"
-      ]
-    },
-    {
-      "id": "boots_quickstep_boots",
-      "name": "Quickstep Boots",
-      "slot": "boots",
-      "stars": 3,
-      "affinity": "neutral",
-      "stats": {
-        "maxHealth": 45,
-        "maxMana": 14,
-        "spellPowerPct": 0,
-        "restorationPct": 0,
-        "critChancePct": 0,
-        "critPowerBonusPct": 0,
-        "startingWard": 0
-      },
-      "ability": {
-        "trigger": "after_instant_spell",
-        "text": "After casting an Instant spell, your next normal spell costs 5 less Mana.",
-        "effect": "next_spell_mana_reduction",
-        "value": 5
-      },
-      "tags": [
-        "instant",
-        "mana",
-        "sequence"
-      ]
-    },
-    {
-      "id": "boots_mana_striders",
-      "name": "Mana Striders",
-      "slot": "boots",
-      "stars": 3,
+      "id": "leviathan_scale",
+      "name": "Leviathan Scale",
+      "rarity": 5,
       "affinity": "water",
-      "stats": {
-        "maxHealth": 40,
-        "maxMana": 18,
-        "spellPowerPct": 0,
-        "restorationPct": 0,
-        "critChancePct": 0,
-        "critPowerBonusPct": 0,
-        "startingWard": 0
-      },
-      "ability": {
-        "trigger": "on_unaffordable_skip",
-        "text": "When a spell is skipped because you lack Mana, gain 10 Ward. Maximum once per Cycle.",
-        "effect": "gain_ward",
-        "value": 10,
-        "oncePer": "cycle"
-      },
-      "tags": [
-        "water",
-        "mana",
-        "skip",
-        "ward"
-      ]
+      "effects": [
+        {
+          "type": "max_mana",
+          "amountPerStack": 8
+        },
+        {
+          "type": "water_damage_percent",
+          "amountPerStack": 5
+        }
+      ],
+      "description": "+8 Maximum Mana and +5% Water damage per stack."
     },
     {
-      "id": "boots_flamewalkers",
-      "name": "Flamewalkers",
-      "slot": "boots",
-      "stars": 3,
-      "affinity": "fire",
-      "stats": {
-        "maxHealth": 50,
-        "maxMana": 11,
-        "spellPowerPct": 0,
-        "restorationPct": 0,
-        "critChancePct": 0,
-        "critPowerBonusPct": 0,
-        "startingWard": 0
+      "id": "prayer_beads",
+      "name": "Prayer Beads",
+      "rarity": 1,
+      "affinity": "holy",
+      "effect": {
+        "type": "holy_healing_percent",
+        "amountPerStack": 2
       },
-      "ability": {
-        "trigger": "while_self_has_burn",
-        "text": "While you have Burn, gain 10% Spell Power.",
-        "effect": "spell_power_bonus",
-        "valuePct": 10
-      },
-      "tags": [
-        "fire",
-        "burn",
-        "risk_reward"
-      ]
+      "description": "+2% Holy healing per stack."
     },
     {
-      "id": "boots_phasewalkers",
-      "name": "Phasewalkers",
-      "slot": "boots",
-      "stars": 5,
-      "affinity": "neutral",
-      "stats": {
-        "maxHealth": 75,
-        "maxMana": 18,
-        "spellPowerPct": 0,
-        "restorationPct": 0,
-        "critChancePct": 0,
-        "critPowerBonusPct": 0,
-        "startingWard": 0
+      "id": "gilded_nail",
+      "name": "Gilded Nail",
+      "rarity": 1,
+      "affinity": "holy",
+      "effect": {
+        "type": "holy_damage_percent",
+        "amountPerStack": 2
       },
-      "ability": {
-        "trigger": "fixed_ticks",
-        "text": "At ticks 10, 20, 30 and 40, gain 1 Guard.",
-        "effect": "grant_status_on_ticks",
-        "status": "Guard",
-        "stacks": 1,
-        "ticks": [
-          10,
-          20,
-          30,
-          40
-        ]
-      },
-      "tags": [
-        "legendary",
-        "guard",
-        "timing"
-      ]
+      "description": "+2% Holy direct damage per stack."
     },
     {
-      "id": "boots_boots_of_pursuit",
-      "name": "Boots of Pursuit",
-      "slot": "boots",
-      "stars": 5,
-      "affinity": "neutral",
-      "stats": {
-        "maxHealth": 80,
-        "maxMana": 16,
-        "spellPowerPct": 0,
-        "restorationPct": 0,
-        "critChancePct": 0,
-        "critPowerBonusPct": 0,
-        "startingWard": 0
-      },
-      "ability": {
-        "trigger": "opponent_interrupted",
-        "text": "Whenever the opponent is Interrupted, your next spell becomes 1T if it was slower. Once per Cycle.",
-        "effect": "set_next_spell_ticks",
-        "value": 1,
-        "oncePer": "cycle"
-      },
-      "tags": [
-        "legendary",
-        "interrupt",
-        "tempo"
-      ]
+      "id": "blessed_thread",
+      "name": "Blessed Thread",
+      "rarity": 2,
+      "affinity": "holy",
+      "effects": [
+        {
+          "type": "max_health",
+          "amountPerStack": 15
+        },
+        {
+          "type": "healing_percent",
+          "amountPerStack": 1
+        }
+      ],
+      "description": "+15 Maximum Health and +1% healing per stack."
     },
     {
-      "id": "boots_endless_striders",
-      "name": "Endless Striders",
-      "slot": "boots",
-      "stars": 5,
-      "affinity": "natural",
-      "stats": {
-        "maxHealth": 90,
-        "maxMana": 16,
-        "spellPowerPct": 0,
-        "restorationPct": 0,
-        "critChancePct": 0,
-        "critPowerBonusPct": 0,
-        "startingWard": 0
+      "id": "small_censer",
+      "name": "Small Censer",
+      "rarity": 2,
+      "affinity": "holy",
+      "effect": {
+        "type": "bonus_consecration_first_holy_spell_cycle",
+        "amountPerStack": 1,
+        "recommendedCap": 4
       },
-      "ability": {
-        "trigger": "every_n_completed_cycles",
-        "text": "Every third completed Cycle, immediately restore 20 Mana and gain 30 Ward.",
-        "effect": "restore_mana_and_gain_ward",
-        "every": 3,
-        "mana": 20,
-        "ward": 30
-      },
-      "tags": [
-        "legendary",
-        "natural",
-        "cycle",
-        "mana",
-        "ward"
-      ]
+      "description": "Your first Holy spell each cycle applies +1 Consecration per stack."
     },
     {
-      "id": "ring_sapphire_ring",
-      "name": "Sapphire Ring",
-      "slot": "ring",
-      "stars": 1,
-      "affinity": "water",
-      "stats": {
-        "maxHealth": 0,
-        "maxMana": 15,
-        "spellPowerPct": 0,
-        "restorationPct": 0,
-        "critChancePct": 0,
-        "critPowerBonusPct": 0,
-        "startingWard": 0
+      "id": "templar_seal",
+      "name": "Templar Seal",
+      "rarity": 2,
+      "affinity": "holy",
+      "effect": {
+        "type": "heal_on_oath_complete",
+        "amountPerStack": 5
       },
-      "ability": {
-        "trigger": "passive",
-        "text": "Gain +15 maximum Mana.",
-        "effect": "stat_bonus"
-      },
-      "tags": [
-        "water",
-        "mana"
-      ]
+      "description": "Completing an Oath heals 5 Health per stack."
     },
     {
-      "id": "ring_ruby_ring",
-      "name": "Ruby Ring",
-      "slot": "ring",
-      "stars": 1,
-      "affinity": "fire",
-      "stats": {
-        "maxHealth": 0,
-        "maxMana": 0,
-        "spellPowerPct": 0,
-        "restorationPct": 0,
-        "critChancePct": 5,
-        "critPowerBonusPct": 0,
-        "startingWard": 0
+      "id": "chapel_bell",
+      "name": "Chapel Bell",
+      "rarity": 2,
+      "affinity": "holy",
+      "effect": {
+        "type": "damage_during_enemy_consecration_extra_tick",
+        "amountPerStack": 2
       },
-      "ability": {
-        "trigger": "passive",
-        "text": "Gain +5% Critical Hit chance.",
-        "effect": "stat_bonus"
-      },
-      "tags": [
-        "fire",
-        "crit"
-      ]
+      "description": "During an opponent's extra Consecration reshuffle ticks, deal 2 damage per stack each tick."
     },
     {
-      "id": "ring_emerald_ring",
-      "name": "Emerald Ring",
-      "slot": "ring",
-      "stars": 1,
-      "affinity": "natural",
-      "stats": {
-        "maxHealth": 0,
-        "maxMana": 0,
-        "spellPowerPct": 0,
-        "restorationPct": 10,
-        "critChancePct": 0,
-        "critPowerBonusPct": 0,
-        "startingWard": 0
+      "id": "golden_chain",
+      "name": "Golden Chain",
+      "rarity": 3,
+      "affinity": "holy",
+      "effect": {
+        "type": "bonus_consecration_on_slowness",
+        "amountPerStack": 1,
+        "recommendedCap": 3
       },
-      "ability": {
-        "trigger": "passive",
-        "text": "Gain +10% Restoration.",
-        "effect": "stat_bonus"
-      },
-      "tags": [
-        "natural",
-        "healing"
-      ]
+      "description": "Whenever you apply Slowness, also apply +1 Consecration per stack."
     },
     {
-      "id": "ring_ring_of_renewal",
-      "name": "Ring of Renewal",
-      "slot": "ring",
-      "stars": 2,
-      "affinity": "neutral",
-      "stats": {
-        "maxHealth": 0,
-        "maxMana": 6,
-        "spellPowerPct": 0,
-        "restorationPct": 0,
-        "critChancePct": 0,
-        "critPowerBonusPct": 0,
-        "startingWard": 0
+      "id": "saints_medallion",
+      "name": "Saint's Medallion",
+      "rarity": 3,
+      "affinity": "holy",
+      "effect": {
+        "type": "healing_percent_while_status",
+        "status": "guard",
+        "amountPerStack": 4
       },
-      "ability": {
-        "trigger": "after_reshuffle",
-        "text": "Restore 6 Mana after every Reshuffle.",
-        "effect": "restore_mana",
-        "value": 6
-      },
-      "tags": [
-        "mana",
-        "reshuffle"
-      ]
+      "description": "While Guard is active, gain +4% healing per stack."
     },
     {
-      "id": "ring_twin_sigil",
-      "name": "Twin Sigil",
-      "slot": "ring",
-      "stars": 2,
-      "affinity": "neutral",
-      "stats": {
-        "maxHealth": 0,
-        "maxMana": 0,
-        "spellPowerPct": 3,
-        "restorationPct": 3,
-        "critChancePct": 0,
-        "critPowerBonusPct": 0,
-        "startingWard": 0
+      "id": "incense_burner",
+      "name": "Incense Burner",
+      "rarity": 4,
+      "affinity": "holy",
+      "effect": {
+        "type": "heal_when_guard_blocks_damage",
+        "amountPerStack": 5,
+        "maxTriggersPerTick": 1
       },
-      "ability": {
-        "trigger": "exactly_two_domains",
-        "text": "If your deck contains exactly two Domains, gain an additional +5% Spell Power and +5% Restoration.",
-        "effect": "two_domain_stat_bonus",
-        "spellPowerPct": 5,
-        "restorationPct": 5
-      },
-      "tags": [
-        "dual_domain",
-        "buildaround"
-      ]
+      "description": "When Guard prevents damage, heal 5 Health per stack. Maximum once per tick."
     },
     {
-      "id": "ring_ring_of_embers",
-      "name": "Ring of Embers",
-      "slot": "ring",
-      "stars": 2,
-      "affinity": "fire",
-      "stats": {
-        "maxHealth": 0,
-        "maxMana": 0,
-        "spellPowerPct": 0,
-        "restorationPct": 0,
-        "critChancePct": 3,
-        "critPowerBonusPct": 0,
-        "startingWard": 0
-      },
-      "ability": {
-        "trigger": "combat_start",
-        "text": "Begin combat with 2 Hotstreak.",
-        "effect": "grant_status",
-        "status": "Hotstreak",
-        "stacks": 2
-      },
-      "tags": [
-        "fire",
-        "hotstreak",
-        "crit"
-      ]
-    },
-    {
-      "id": "ring_ring_of_fury",
-      "name": "Ring of Fury",
-      "slot": "ring",
-      "stars": 4,
-      "affinity": "fire",
-      "stats": {
-        "maxHealth": 0,
-        "maxMana": 0,
-        "spellPowerPct": 0,
-        "restorationPct": 0,
-        "critChancePct": 4,
-        "critPowerBonusPct": 0,
-        "startingWard": 0
-      },
-      "ability": {
-        "trigger": "spend_mana_threshold_each_cycle",
-        "text": "After spending 50 Mana during a Cycle, gain 2 Fury. Can trigger once per Cycle.",
-        "effect": "grant_status",
-        "status": "Fury",
-        "stacks": 2,
-        "thresholdMana": 50,
-        "oncePer": "cycle"
-      },
-      "tags": [
-        "fire",
-        "mana",
-        "fury"
-      ]
-    },
-    {
-      "id": "ring_elemental_convergence",
-      "name": "Elemental Convergence",
-      "slot": "ring",
-      "stars": 5,
-      "affinity": "neutral",
-      "stats": {
-        "maxHealth": 0,
-        "maxMana": 0,
-        "spellPowerPct": 5,
-        "restorationPct": 5,
-        "critChancePct": 0,
-        "critPowerBonusPct": 0,
-        "startingWard": 0
-      },
-      "ability": {
-        "trigger": "domain_changes_between_spells",
-        "text": "Whenever your spell Domain changes, gain 1 Convergence charge. Your next spell consumes all charges for +10% damage or healing per charge, up to 2 charges.",
-        "effect": "convergence_charges",
-        "valuePctPerCharge": 10,
-        "maxCharges": 2
-      },
-      "tags": [
-        "legendary",
-        "dual_domain",
-        "sequence"
-      ]
-    },
-    {
-      "id": "ring_merchants_signet",
-      "name": "Merchant's Signet",
-      "slot": "ring",
-      "stars": 5,
-      "affinity": "neutral",
-      "stats": {
-        "maxHealth": 0,
-        "maxMana": 10,
-        "spellPowerPct": 0,
-        "restorationPct": 0,
-        "critChancePct": 0,
-        "critPowerBonusPct": 0,
-        "startingWard": 0
-      },
-      "ability": {
-        "trigger": "shop_round_start",
-        "text": "Your first shop reroll each round is free.",
-        "effect": "free_rerolls",
-        "count": 1
-      },
-      "tags": [
-        "legendary",
-        "economy",
-        "shop"
-      ]
+      "id": "sacred_reliquary",
+      "name": "Sacred Reliquary",
+      "rarity": 5,
+      "affinity": "holy",
+      "effects": [
+        {
+          "type": "max_health",
+          "amountPerStack": 25
+        },
+        {
+          "type": "healing_percent",
+          "amountPerStack": 4
+        },
+        {
+          "type": "bonus_consecration_first_holy_spell_cycle",
+          "amountPerStack": 1
+        }
+      ],
+      "description": "+25 Maximum Health, +4% healing and your first Holy spell each cycle applies +1 Consecration per stack."
     }
   ]
 }

@@ -1,4 +1,5 @@
-import {equipmentKeywords} from '../game/equipment';
+import {ItemIcon} from '../components/ItemInventory';
+import {equipmentKeywords,itemTotals} from '../game/equipment';
 import { cardAt, canMerge, UPGRADE_XP } from '../game/upgrades';
 import { Leaderboard } from './Leaderboard';
 import { SpellCard, KeywordBoxes, RulesText, CardPreview } from '../components/cards/SpellCard';
@@ -11,7 +12,7 @@ import { EQUIPMENT } from '../game/shop';
 import type { Command, EquipmentId, Session, SpellId } from '../game/model';
 
 const serif = Platform.select({ ios: 'Georgia', android: 'serif', default: 'Georgia, serif' });
-type Selection = { kind: 'shop'; id: SpellId; shopSlot:number } | { kind: 'hand'; index: number } | { kind: 'equipment'; id: EquipmentId };
+type Selection = { kind: 'shop'; id: SpellId; shopSlot:number } | { kind: 'hand'; index: number } | { kind: 'equipment'; id: EquipmentId; shopSlot?:number };
 
 function Action({ label, onPress, disabled, green, small }: { label: string; onPress: () => void; disabled?: boolean; green?: boolean; small?: boolean }) {
   return <Pressable accessibilityRole="button" accessibilityLabel={label} accessibilityState={{ disabled: !!disabled }}
@@ -37,7 +38,7 @@ export function ShopScreen({ session, busy, act, onMenu, onLibrary, error }: {
 
   return <View style={{ flex: 1 }}>
     <CompactShop session={session} busy={busy} act={act} onMenu={onMenu} onLibrary={onLibrary} onLeaderboard={()=>setLeaderboard(true)} error={error}
-      inspectSpell={(id,shopSlot) => inspect({kind: 'shop', id,shopSlot})} inspectItem={id => inspect({kind: 'equipment', id})}
+      inspectSpell={(id,shopSlot) => inspect({kind: 'shop', id,shopSlot})} inspectItem={(id,shopSlot) => inspect({kind: 'equipment', id,shopSlot})}
       inspectHand={index => inspect({kind: 'hand', index})} renderCard={(id, expanded,index) => <SpellFace id={id} shop={index===undefined} xp={index===undefined?0:session.spellXp?.[index]} small={!expanded} />} renderPreview={(id, height, width,index) => <CardPreview shop={index===undefined} card={cardAt(id,index===undefined?0:session.spellXp?.[index])} height={height} width={width} />} />
     <Leaderboard lobby={session.lobby} visible={leaderboard} onClose={()=>setLeaderboard(false)} />
     <Modal visible={!!selection} transparent animationType="fade" onRequestClose={() => setSelection(null)}>
@@ -57,11 +58,14 @@ export function ShopScreen({ session, busy, act, onMenu, onLibrary, error }: {
                 <View style={{ flex: 1 }}><Action label="Later →" disabled={busy || selection.index === session.spells.length - 1} onPress={() => { act({ type: 'move', from: selection.index, to: selection.index + 1 }); setSelection(null); }} /></View>
               </View></>}
           </>}
-          {selectedItem && <><Text style={[s.largeItem,{fontSize:32}]}>{selectedItem.symbol}</Text><Text style={s.modalTitle}>{selectedItem.name} {'★'.repeat(selectedItem.stars)}</Text><RulesText rules={selectedItem.description} keywords={equipmentKeywords(selectedItem)} color="#e0d0ad" fontSize={13} /><KeywordBoxes keywords={equipmentKeywords(selectedItem)} /><Text style={s.caption}>Equips to your {selectedItem.slot} slot. Replaces existing gear without a refund. Applies to every duel.</Text>
-            <Action green label={!session.equipmentShop.includes(selectedItem.id)?'Equipped':`${session.equipment[selectedItem.slot]?'Replace with':'Buy'} ${selectedItem.name} · ${selectedItem.price} gold`}
+          {selectedItem && <><View style={{alignItems:'center'}}><ItemIcon id={selectedItem.id} count={session.equipment[selectedItem.id]??0} size={52}/></View><Text style={s.modalTitle}>{selectedItem.name} {'★'.repeat(selectedItem.stars)}</Text><RulesText rules={selectedItem.description} keywords={equipmentKeywords(selectedItem)} color="#e0d0ad" fontSize={13} /><KeywordBoxes keywords={equipmentKeywords(selectedItem)} />
+            <Text style={s.caption}>Owned ×{session.equipment[selectedItem.id]??0} · Unlimited copies · Persists for this run</Text>
+            <Text style={{color:'#efcf87',fontWeight:'700'}}>Current bonus</Text>{itemTotals(selectedItem,session.equipment[selectedItem.id]??0).map((line,i)=><Text key={i} style={{color:'#c0deac',fontSize:12}}>{line}</Text>)}
+            <Text style={{color:'#efcf87',fontWeight:'700'}}>After buying one</Text>{itemTotals(selectedItem,(session.equipment[selectedItem.id]??0)+1).map((line,i)=><Text key={i} style={{color:'#c0deac',fontSize:12}}>{line}</Text>)}
+            <Action green label={!session.equipmentShop.includes(selectedItem.id)?'Not in this shop':'Buy +1 '+selectedItem.name+' · '+selectedItem.price+' gold'}
               disabled={busy || !session.equipmentShop.includes(selectedItem.id) || session.gold < selectedItem.price}
-              onPress={() => { act({ type: 'buyEquipment', item: selectedItem.id }); setSelection(null); }} />
-            {session.gold < selectedItem.price && !session.equipment[selectedItem.slot] && <Text style={s.caption}>Not enough gold.</Text>}
+              onPress={() => { act({ type: 'buyEquipment', item: selectedItem.id,shopSlot:selection?.kind==='equipment'?selection.shopSlot:undefined }); setSelection(null); }} />
+            {session.gold < selectedItem.price && <Text style={s.caption}>Not enough gold.</Text>}
           </>}
           <Action label="Close" onPress={() => setSelection(null)} />
         </ScrollView>

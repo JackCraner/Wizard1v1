@@ -4,7 +4,8 @@
     "startingGold": 10,
     "roundIncome": 10,
     "rerollCost": 1,
-    "equipmentStartRound": 3
+    "equipmentStartRound": 3,
+    "spellGoldReserve": 8
   },
   "deck": {
     "openingSize": 3,

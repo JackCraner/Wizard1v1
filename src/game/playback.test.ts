@@ -87,3 +87,24 @@ it('does not precharge the next card after an Instant or after lethal periodic d
  const dead=continuousCombatFrame(simulate(a,fighter('B',['splash'])),0);
  expect(dead.player.mana).toBe(100);expect(dead.player.casting).toBeNull();
 });
+
+it('keeps the final reshuffle tick visible instead of previewing a phantom cast',()=>{
+ const battle=simulate(fighter('A',['wrath']),fighter('B',['sap']));
+ // Each fighter has a different cast length, so their cycle boundaries differ.
+ for(const side of ['player','bot'] as const) {
+  const boundary=battle.frames.findIndex(f=>(f[side].reshuffleRemaining??0)>0);
+  expect(boundary).toBeGreaterThan(0);
+  for(let offset=0;offset<2;offset++) {
+   const frame=continuousCombatFrame(battle,boundary+offset);
+   expect(frame[side].reshuffleRemaining).toBe(2-offset);
+   expect(frame[side].casting).toBeNull();
+   expect(battle.frames[boundary+offset+1].events.filter(e=>e.side===side&&e.status==='cast')).toEqual([]);
+  }
+  const firstCast=continuousCombatFrame(battle,boundary+2)[side];
+  expect(firstCast.reshuffleRemaining).toBe(0);
+  expect(firstCast.casting?.index).toBe(0);
+  const ticks=side==='player'?1:2;
+  expect(firstCast.casting?.remaining).toBe(ticks);
+  expect(battle.frames[boundary+2+ticks].events.filter(e=>e.side===side&&e.status==='cast')).toHaveLength(1);
+ }
+});

@@ -69,8 +69,8 @@ export function prepareBot(state:BotState,previous:SpellId[],round:number,index:
  let deck=[...previous],xp=deckXp(previous,state.spellXp);
  const remap=(next:SpellId[])=>{const pools=new Map<string,number[]>();deck.forEach((id,i)=>pools.set(id,[...(pools.get(id)??[]),xp[i]]));return next.map(id=>pools.get(id)?.shift()??0);};
  if(round>=config.economy.equipmentStartRound){
-  let budget=Math.min(Math.max(0,state.gold-config.economy.roundIncome/2),level.equipmentBudget);
-  for(const item of offersFor(round,state.strategy+round).equipmentShop.map(id=>EQUIPMENT[id!]).filter(Boolean).sort((a,b)=>b.stars-a.stars))if((!state.equipment[item.slot]||EQUIPMENT[state.equipment[item.slot]!]!.stars<item.stars)&&item.price<=budget){state.equipment[item.slot]=item.id;state.gold-=item.price;budget-=item.price;}
+  let budget=Math.min(Math.max(0,state.gold-config.economy.spellGoldReserve),level.equipmentBudget);
+  for(const item of offersFor(round,state.strategy+round,deck).equipmentShop.map(id=>EQUIPMENT[id!]).filter(Boolean).sort((a,b)=>(Number(b.affinity==='neutral'||profile.domains.includes(b.affinity))-Number(a.affinity==='neutral'||profile.domains.includes(a.affinity)))||b.stars-a.stars))if(item.price<=budget){state.equipment[item.id]=(state.equipment[item.id]??0)+1;state.gold-=item.price;budget-=item.price;}
  }
  const target=Math.min(RULES.slots,config.deck.openingSize+(round-1)*config.deck.cardsPerRound);
  for(let roll=0;roll<level.shoppingRolls;roll++){

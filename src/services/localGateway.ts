@@ -36,7 +36,7 @@ export class LocalGameGateway implements GameGateway {
         const slot=command.shopSlot??s.equipmentShop.indexOf(command.item);
         if (!item || !Number.isInteger(slot)||slot<0||s.equipmentShop[slot]!==command.item) throw new Error('Equipment unavailable.');
         if (s.gold < item.price) throw new Error('Not enough gold.');
-        s.gold -= item.price; s.equipment[item.slot] = item.id;s.equipmentShop[slot]=null;
+        s.gold -= item.price; s.equipment[item.id] = (s.equipment[item.id]??0)+1;s.equipmentShop[slot]=null;
       } else if (command.type === 'buy') {
         const spell = SPELLS[command.spell];
         const shopSlot=command.shopSlot??s.shop.indexOf(command.spell);

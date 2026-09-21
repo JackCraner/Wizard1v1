@@ -1,8 +1,9 @@
 import { EQUIPMENT } from './equipment';
-export {EQUIPMENT,EQUIPMENT_SLOTS,equipmentModifiers,rerollCost} from './equipment';
+export {EQUIPMENT,equipmentModifiers,rerollCost} from './equipment';
 import { shopRankOdds } from '../config/shopOdds';
 import { canOfferSpell, RULES, PLAYABLE_SPELLS, SPELLS } from './engine';
-import type { Equipment, EquipmentId, EquipmentSlot, SpellId } from './model';
+import itemShop from '../config/itemShop.json';
+import type { SpellId } from './model';
 
 const spells = PLAYABLE_SPELLS;
 const items=Object.keys(EQUIPMENT);
@@ -34,9 +35,17 @@ export function offersFor(round: number, rerolls: number, deck: SpellId[] = []) 
   }
   return {
     shop,
-    equipmentShop: Array.from({length:2},()=>{
+    equipmentShop: Array.from({length:itemShop.offers},()=>{
       let roll=random()*odds.reduce((a,b)=>a+b,0);let stars=odds.findIndex(weight=>(roll-=weight)<0)+1;if(!stars)stars=5;
-      const pool=items.filter(id=>EQUIPMENT[id].stars===stars);return pool[Math.floor(random()*pool.length)];
+      const pool=items.filter(id=>EQUIPMENT[id].stars===stars);
+      const domains=[...new Set(deck.map(id=>SPELLS[id].domain))];
+      const affinities=[...new Set(pool.map(id=>EQUIPMENT[id].affinity))];
+      const matching=affinities.filter(a=>a!=='neutral'&&domains.includes(a as any));
+      const other=affinities.filter(a=>a!=='neutral'&&!matching.includes(a));
+      const weights=itemShop.affinityWeights;
+      const weighted=affinities.map(a=>({a,w:a==='neutral'?weights.neutral:matching.includes(a)?weights.matching/matching.length:(weights.other+(matching.length?0:weights.matching))/other.length}));
+      let affinityRoll=random()*weighted.reduce((n,x)=>n+x.w,0);const affinity=(weighted.find(x=>(affinityRoll-=x.w)<0)??weighted[weighted.length-1]).a;
+      const candidates=pool.filter(id=>EQUIPMENT[id].affinity===affinity);return candidates[Math.floor(random()*candidates.length)];
     }),
   };
 }

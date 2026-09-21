@@ -1,3 +1,4 @@
+import {ItemInventoryView} from '../components/ItemInventory';
 import { useMemo } from 'react';
 import { presentedCombatFrame, continuousCombatFrame, PLAYBACK_CONFIG } from '../game/playback';
 import { CombatDeck } from './CombatDeck';
@@ -9,13 +10,10 @@ import { Image, Pressable, StyleSheet, Text, useWindowDimensions, View } from 'r
 import { SafeAreaView } from 'react-native-safe-area-context';
 import type { useGame } from '../useGame';
 import type { Fighter, Session } from '../game/model';
-import { EQUIPMENT, EQUIPMENT_SLOTS } from '../game/shop';
+import { EQUIPMENT } from '../game/shop';
 
 function Control({ label, onPress, selected, disabled }: { label: string; onPress: () => void; selected?: boolean; disabled?: boolean }) {
   return <Pressable accessibilityRole="button" accessibilityState={{ selected, disabled }} disabled={disabled} onPress={onPress} style={[s.control, selected && s.selected, disabled && { opacity: .4 }]}><Text style={s.text}>{label}</Text></Pressable>;
-}
-function Gear({ equipment = {}, compact }: { equipment?: Session['equipment']; compact: boolean }) {
-  return <View style={s.gear}>{EQUIPMENT_SLOTS.map(slot => { const id = equipment[slot]; return <View key={slot} accessibilityLabel={`${slot}: ${id ? EQUIPMENT[id].name : 'empty'}`} style={[s.gearSlot, { height: compact ? 26 : 40 }]}><Text style={s.gearIcon}>{id ? EQUIPMENT[id].symbol : '·'}</Text></View>; })}</View>;
 }
 function Mage({ fighter, opponent, compact, finished, tick, speed, playing, highlights, onInspect }: { fighter: Fighter; opponent?: boolean; compact: boolean; finished:boolean; tick:number; speed:number; playing:boolean; highlights:string[]; onInspect:()=>void }) {
   return <View style={[s.mage, opponent ? { right: '18%', top: 0 } : { left: '13%', bottom: 0 }, { width: compact ? 112 : 190, height: '100%' }]}>
@@ -45,11 +43,11 @@ export function CombatScreen({ game }: { game: ReturnType<typeof useGame> }) {
         <View style={s.leftField}>
           <View style={s.arena}>
             
-            <Mage fighter={current.player} compact={compact} finished={finished} tick={frame} speed={speed} playing={castingBeatPlaying} highlights={(current.notices??[]).filter(n=>n.side==='player').map(n=>n.status)} onInspect={()=>game.setPaused(true)} /><Mage fighter={current.bot} opponent compact={compact} finished={finished} tick={frame} speed={speed} playing={castingBeatPlaying} highlights={(current.notices??[]).filter(n=>n.side==='bot').map(n=>n.status)} onInspect={()=>game.setPaused(true)} /><View accessibilityLabel="Opponent equipment" style={{position:'absolute',right:3,top:82,bottom:24,width:compact?32:45,gap:4}}><Text style={s.label}>GEAR</Text><Gear compact={compact} equipment={current.bot.equipment} /></View><DamageNumbers frame={current} />
+            <Mage fighter={current.player} compact={compact} finished={finished} tick={frame} speed={speed} playing={castingBeatPlaying} highlights={(current.notices??[]).filter(n=>n.side==='player').map(n=>n.status)} onInspect={()=>game.setPaused(true)} /><Mage fighter={current.bot} opponent compact={compact} finished={finished} tick={frame} speed={speed} playing={castingBeatPlaying} highlights={(current.notices??[]).filter(n=>n.side==='bot').map(n=>n.status)} onInspect={()=>game.setPaused(true)} /><View accessibilityLabel="Opponent items" style={{position:'absolute',right:3,top:82,bottom:24,width:compact?32:45,gap:4}}><Text style={s.label}>ITEMS</Text><ItemInventoryView inventory={current.bot.equipment} size={compact?26:34} vertical maxVisible={compact?3:5} onInspect={()=>{const wasPaused=game.paused;game.setPaused(true);return()=>game.setPaused(wasPaused);}}/></View><DamageNumbers frame={current} />
             {(['player','bot'] as const).map(side=><View key={side} style={{position:'absolute',...(side==='player'?{left:'33%' as const}:{right:'33%' as const}),top:36,bottom:0,width:compact?72:110,zIndex:25}}><CombatDeck fighter={current[side]} side={side} frame={current} compact={compact} speed={speed} finished={finished} onInspect={()=>{const wasPaused=game.paused;game.setPaused(true);return()=>game.setPaused(wasPaused);}} /></View>)}
             <View style={s.beatNotice}><Text numberOfLines={2} style={s.event}>{finished ? { victory: 'Victory', defeat: 'Defeat', draw: 'Draw' }[battle.outcome] : frame === 0 ? 'Spells locked · Duel begins' : current.notices?.length?[...new Set(current.notices.map(n=>`${n.side==='player'?'You':'Foe'} · ${n.text}`))].join('\n'):current.messages.join('\n')}</Text></View>
           </View>
-          <View style={{flexDirection:'row',alignItems:'center',gap:8}}><View style={{flex:1}}><PlayerHotbar fighter={current.player} equipment={session.equipment} compact={compact} /></View>{finished&&<Control label="Return to shop →" disabled={busy} selected onPress={()=>act({type:'next'})} />}</View>
+          <View style={{flexDirection:'row',alignItems:'center',gap:8}}><View style={{flex:1}}><PlayerHotbar fighter={current.player} equipment={session.equipment} compact={compact} onInspect={()=>{const wasPaused=game.paused;game.setPaused(true);return()=>game.setPaused(wasPaused);}} /></View>{finished&&<Control label="Return to shop →" disabled={busy} selected onPress={()=>act({type:'next'})} />}</View>
         </View>
 
       </View>

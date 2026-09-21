@@ -1,3 +1,4 @@
+import {ItemInventoryView,ItemIcon} from '../components/ItemInventory';
 import {DomainSlots} from '../components/cards/DomainSlots';
 import {cardUnderPointer,type CardBounds} from '../game/shopDrop';
 import {MergeBurst} from './MergeBurst';
@@ -8,18 +9,24 @@ import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { RULES, SPELLS, deriveStats, deckDomains, spellAddReason, canAddSpell } from '../game/engine';
-import { EQUIPMENT, EQUIPMENT_SLOTS, equipmentModifiers, rerollCost } from '../game/shop';
+import { EQUIPMENT, equipmentModifiers, rerollCost } from '../game/shop';
 import type { Command, EquipmentId, Session, SpellId } from '../game/model';
 import { DraggableHand } from './DraggableHand';
 
 export function CompactShop({ session, busy, act, onMenu, onLibrary, onLeaderboard, error, inspectSpell, inspectItem, inspectHand, renderCard, renderPreview }: {
   session: Session; busy: boolean; act: (command: Command) => void; onMenu: () => void; onLibrary: () => void; onLeaderboard:()=>void; error?: string;
-  inspectSpell: (id: SpellId,shopSlot:number) => void; inspectItem: (id: EquipmentId) => void; inspectHand: (index: number) => void;
+  inspectSpell: (id: SpellId,shopSlot:number) => void; inspectItem: (id: EquipmentId,shopSlot?:number) => void; inspectHand: (index: number) => void;
   renderPreview: (id: SpellId, height: number, width: number, index?:number) => ReactNode;
   renderCard: (id: SpellId, expanded?: boolean, index?:number) => ReactNode;
 }) {
   const [size, setSize] = useState({ width: 800, height: 360 });
   const [dragging, setDragging] = useState(false);
+  const itemBoxRef=useRef<View>(null);
+  const itemBounds=useRef({x:0,y:0,width:0,height:0});
+  const [itemDrag,setItemDrag]=useState<{id:EquipmentId;shopSlot:number;x:number;y:number;over:boolean}|null>(null);
+  const itemReason=(id:EquipmentId)=>busy?'Please wait':session.gold<EQUIPMENT[id].price?'Not enough gold':null;
+  const overItems=(p:ShopPointer)=>{const b=itemBounds.current;return b.width>0&&p.x>=b.x&&p.x<=b.x+b.width&&p.y>=b.y&&p.y<=b.y+b.height;};
+  const moveItem=(id:EquipmentId,shopSlot:number,p:ShopPointer)=>setItemDrag({id,shopSlot,x:p.x-bounds.current.rootX,y:p.y-bounds.current.rootY,over:overItems(p)});
   const [overTrash,setOverTrash]=useState(false);
   const trashRef=useRef<View>(null);
   const trashBounds=useRef({x:0,y:0,width:0,height:0});
@@ -36,6 +43,7 @@ export function CompactShop({ session, busy, act, onMenu, onLibrary, onLeaderboa
   const dropReason=(id:SpellId,target?:number)=>target===undefined?purchaseReason(id):busy?'Please wait':session.gold<SPELLS[id].price?'Not enough gold':(session.spellXp?.[target]??0)>=3?'Already upgraded · drop in empty hand space to buy another':null;
   const canMergeOffer=(id:SpellId)=>!busy&&session.gold>=SPELLS[id].price&&session.spells.some((s,i)=>s===id&&(session.spellXp?.[i]??0)<3);
   const measure=()=>{
+    itemBoxRef.current?.measureInWindow((x,y,width,height)=>{itemBounds.current={x,y,width,height};});
     trashRef.current?.measureInWindow((x,y,width,height)=>{trashBounds.current={x,y,width,height};});
     rootRef.current?.measureInWindow((x,y)=>{bounds.current.rootX=x;bounds.current.rootY=y;});
     handRef.current?.measureInWindow((x,y,width,height)=>{Object.assign(bounds.current,{x,y,width,height});});
@@ -70,11 +78,10 @@ export function CompactShop({ session, busy, act, onMenu, onLibrary, onLeaderboa
             </View></View>
             <DomainSlots domains={deckDomains(session.spells)} slots={RULES.maxDomains} compact={compact} />
             <Pressable accessibilityRole="button" onPress={onLeaderboard} style={[s.menu,{minHeight:28,alignItems:'center'}]}><Text style={s.text}>Leaderboard</Text></Pressable>
-            <Text style={s.label}>YOUR EQUIPMENT</Text>
-            <View style={s.slots}>{EQUIPMENT_SLOTS.map(slot => {
-              const id = session.equipment[slot];
-              return <View key={slot} style={{ flex: 1, gap: 4 }}><Pressable accessibilityRole={id ? 'button' : undefined} accessibilityLabel={id ? `Equipped ${EQUIPMENT[id].name}` : `Empty ${slot} slot`} disabled={!id} onPress={() => id && inspectItem(id)} style={[s.slot, { height: compact ? 32 : 50 }]}><Text style={s.slotSymbol}>{id ? EQUIPMENT[id].symbol : '+'}</Text></Pressable><Text numberOfLines={1} adjustsFontSizeToFit style={s.slotName}>{slot}</Text></View>;
-            })}</View>
+            <View ref={itemBoxRef} collapsable={false} onLayout={measure} accessibilityLabel="Equipment box. Drop shop items here to buy." style={[s.itemBox,itemDrag&&{borderColor:itemReason(itemDrag.id)?'#e78775':itemDrag.over?'#c7f49c':'#baa46c',backgroundColor:itemReason(itemDrag.id)?'#562822':itemDrag.over?'#326442':'#293522'}]}>
+              <Text accessibilityLiveRegion="polite" style={s.label}>{itemDrag?(itemReason(itemDrag.id)??(itemDrag.over?`RELEASE TO BUY · ${EQUIPMENT[itemDrag.id].price} GOLD`:'DROP ITEM HERE TO BUY')):'YOUR ITEMS · DROP TO BUY'}</Text>
+              <ItemInventoryView inventory={session.equipment} maxVisible={compact?3:8} size={compact?26:32} onSelectItem={id=>inspectItem(id)}/>
+            </View>
             {!compact && <Text style={s.hint}>Build your strategy. Let your spells do the fighting.</Text>}
           </View>
           <View style={[s.board, { padding: compact ? 6 : 12, gap: compact ? 3 : 8 }]}>
@@ -90,13 +97,15 @@ export function CompactShop({ session, busy, act, onMenu, onLibrary, onLeaderboa
               <View style={[s.cardSpace,{opacity:offerDrag?.id===id? .35 : purchaseReason(id)&&!canMergeOffer(id)? .5:1}]}><View style={s.card}>{renderCard(id)}</View></View>
               <Text style={s.cost}>◉ {SPELLS[id].price}</Text>
             </ShopOffer>)}</View>
-            <Text style={s.label}>EQUIPMENT SHOP</Text>
+            <Text style={s.label}>ITEM SHOP · DRAG TO YOUR ITEMS · TAP FOR DETAILS</Text>
             <View style={[s.equipment, { height: compact ? 43 : 76 }]}>{session.equipmentShop.map((id,shopSlot) => {
               if(id===null)return <View key={shopSlot} style={s.item}><Text style={s.itemInfo}>SOLD · Reroll to refill</Text></View>;
               const item = EQUIPMENT[id];
-              return <Pressable key={shopSlot} accessibilityRole="button" accessibilityLabel={`Inspect ${item.name}, ${item.price} gold`} onPress={() => inspectItem(id)} style={s.item}>
-                <Text style={s.itemSymbol}>{item.symbol}</Text><View style={{ flex: 1 }}><Text numberOfLines={1} adjustsFontSizeToFit style={s.itemName}>{item.name} {'★'.repeat(item.stars)}</Text><Text numberOfLines={1} adjustsFontSizeToFit style={s.itemInfo}>{item.description}</Text></View><Text style={s.cost}>{`◉ ${item.price}`}</Text>
-              </Pressable>;
+              return <ShopOffer key={shopSlot} label={`Inspect ${item.name}, ${item.price} gold`} hint="Drag to your equipment box to buy. Tap for item details and purchase controls." disabled={busy} style={[s.item,{opacity:itemDrag?.shopSlot===shopSlot? .35:session.gold<item.price? .5:1}]}
+                onInspect={()=>inspectItem(id,shopSlot)} onLift={p=>{measure();moveItem(id,shopSlot,p);}} onMove={p=>moveItem(id,shopSlot,p)} onCancel={()=>setItemDrag(null)}
+                onDrop={p=>{setItemDrag(null);if(!overItems(p)||itemReason(id)||session.equipmentShop[shopSlot]!==id)return;act({type:'buyEquipment',item:id,shopSlot});}}>
+                <ItemIcon id={id} size={compact?24:36}/><View style={{ flex: 1 }}><Text numberOfLines={1} adjustsFontSizeToFit style={s.itemName}>{item.name} {'★'.repeat(item.stars)}</Text><Text numberOfLines={1} adjustsFontSizeToFit style={s.itemInfo}>{(session.equipment[id]??0)>0?`Owned ×${session.equipment[id]} · +1 copy`:item.description}</Text></View><Text style={s.cost}>{`◉ ${item.price}`}</Text>
+              </ShopOffer>;
             })}</View>
           </View>
         </View>
@@ -112,10 +121,15 @@ export function CompactShop({ session, busy, act, onMenu, onLibrary, onLeaderboa
       </View>
     </SafeAreaView>
     {burst&&<MergeBurst key={burst.key} x={burst.x} y={burst.y} upgraded={burst.upgraded} onDone={()=>setBurst(null)} />}
+    {itemDrag&&<View pointerEvents="none" style={[s.itemGhost,{left:Math.max(6,Math.min(size.width-196,itemDrag.x-95)),top:Math.max(45,Math.min(size.height-96,itemDrag.y-106))}]}>
+      <ItemIcon id={itemDrag.id} size={32}/><View style={{flex:1}}><Text style={s.itemName}>{EQUIPMENT[itemDrag.id].name}</Text><Text style={s.cost}>+1 copy · {EQUIPMENT[itemDrag.id].price} gold</Text><Text style={s.itemInfo}>{itemReason(itemDrag.id)??(itemDrag.over?'Release to buy':'Drop in your items box')}</Text></View>
+    </View>}
     {offerDrag && <View pointerEvents="none" style={{position:'absolute',zIndex:1000,elevation:30,left:Math.max(6,Math.min(size.width-previewWidth-6,offerDrag.x-previewHeight/3)),top:Math.max(48,Math.min(size.height-previewHeight-30,offerDrag.y-previewHeight-18)),width:previewWidth,height:previewHeight}}>{renderPreview(offerDrag.id,previewHeight,previewWidth)}</View>}
   </View>;
 }
 const s = StyleSheet.create({
+  itemBox:{borderWidth:1,borderColor:'#79613c',borderRadius:5,padding:4,gap:4,minHeight:50,justifyContent:'center'},
+  itemGhost:{position:'absolute',zIndex:1000,elevation:30,width:190,padding:10,gap:8,flexDirection:'row',alignItems:'center',backgroundColor:'#231d12',borderColor:'#e8c27a',borderWidth:2,borderRadius:7},
   root: { flex: 1, overflow: 'hidden', backgroundColor: '#18110b' }, page: { flex: 1, minHeight: 0, width: '100%' },
   header: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 10, height: 40 }, headerRight: { flexDirection: 'row', gap: 12, alignItems: 'center' },
   menu: { paddingHorizontal: 12, minHeight: 36, justifyContent: 'center', backgroundColor: '#1b201c', borderWidth: 1, borderColor: '#987844', borderRadius: 4 }, text: { color: '#ecdcb9', fontSize: 12 }, title: { color: '#f0dfb2', fontWeight: '600' }, gold: { color: '#eed090', fontSize: 21 },

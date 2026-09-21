@@ -18,11 +18,11 @@ Nature focuses on damage over time and healing. Water focuses on mana, healing, 
 
 ### Gold, offers, and equipment
 
-- The shop has **five spell offers** and two equipment offers. Equipment also costs its 1–5 star rank and uses the same round-based rarity probabilities as spells. A spell's gold price equals its star rank: a 3-star spell costs 3 gold. Mana is a separate combat resource.
+- The shop has **five spell offers** and three stackable item offers. Equipment also costs its 1–5 star rank and uses the same round-based rarity probabilities as spells. A spell's gold price equals its star rank: a 3-star spell costs 3 gold. Mana is a separate combat resource.
 - Drag a shop spell into your hand to buy it. Each offer can be purchased once; its slot stays empty until a reroll or the next round.
 - Rerolling costs **1 gold** and refreshes both shop rows. Unspent gold carries over; each new round adds **10 gold**.
 - Round 1 offers only rank 1 spells. Higher ranks gradually become more likely. The probabilities for each round are in `src/config/shopOdds.json`; rounds beyond the last entry use that entry's probabilities.
-- Weapon, armor, ring, and boots slots provide equipment bonuses. Current equipment increases maximum health or mana. Equipment persists between rounds. Buying gear for an occupied slot replaces the old item without a refund. Each shop offer is consumed on purchase.
+- Items have no equipment slots or ownership limit. Each copy adds one stack; items persist for the run. Each shop offer is consumed on purchase.
 
 ### Hand order and domains
 
@@ -39,6 +39,30 @@ Each owned card starts at **0/3 XP**. Consume a matching copy to add **1 XP** to
 Drag a shop copy onto a matching hand card to buy and merge it directly. The purchase consumes the shop offer and costs its normal gold price. Owned copies can also be merged through inspection controls. A direct shop merge works even when the hand is full and can upgrade a Unique card without creating a second deck copy.
 
 Upgraded cards use a different border and their configured upgraded mana cost, cast time, and effects. Their star rank and domain stay the same. XP follows a card when reordered and persists between rounds. A partially trained donor still grants only 1 XP; its other progress is lost. Upgraded cards cannot gain more XP or be consumed as donors.
+
+## Stackable items
+
+The 80-item catalogue is in `src/config/equipment.json`. Items have **no equipment slots, inventory limit, or duplicate limit**. Buying a copy adds one stack of that item and consumes only that shop offer. Items persist for the run and apply to every duel. Affinity describes synergy, not a requirement: any deck may own any item.
+
+The shop has **three item offers** alongside five spells. Price equals 1–5★ rarity. Item rarity uses the same round-based probabilities as spells. After rolling rarity, offers favor your domains: 35% neutral, 60% shared between matching domains, and 5% shared between other domains when all groups are available. With no chosen domain, domain items share that 65%. These weights and offer count are editable in `src/config/itemShop.json`.
+
+Owned items appear as icons with **×N** badges. Tap one to inspect its per-copy effect and current total. Shop inspection also previews the bonus after buying another copy. Large collections use an expandable grid, keeping the shop and combat screens free of horizontal scrolling. Placeholder initials are supplied; add future assets to `ITEM_ART` in `src/components/ItemInventory.tsx`.
+
+### Stacking and combat timing
+
+- Item effects scale linearly. Polished Lens ×3 gives +6 percentage points of crit chance; Vitality Charm ×4 gives +80 maximum Health. Health has a minimum of 1, Mana a minimum of 0, and crit chance caps at 100%.
+- All applicable **item damage percentages add into one bucket**, including conditional, domain, critical and first-spell bonuses. Rain, Fury and other spell/status multipliers then multiply that bucket. Generic spell damage affects direct damage and DoTs; direct-only bonuses do not affect DoTs or retaliation. Flat Moonfire/Sunfire bonuses apply before percentages. Item-triggered damage is the listed flat value per copy.
+- Healing-done percentages add together, including applicable HoT/domain bonuses. Healing-received modifiers form a separate bucket that multiplies healing done, with a minimum of zero. Prayer Beads uses the healing spell/status source's Holy domain. Lifebloom Petal adds to the per-stack base before multiplying by remaining Lifebloom stacks.
+- A Cycle ends after the entire reshuffle, including Penance. First-cast mana discounts commit when a cast starts, survive an unaffordable skip, and are still consumed if that cast is interrupted. First-spell damage and first-domain completion triggers count completed cards once; Tidecaller repeats do not re-trigger them. First-spell damage bonuses affect damage at cast resolution, not future DoT ticks.
+- **Clockwork Spring** restores its listed amount once at reshuffle start. **Scholar's Quill**, **Brine Flask**, and **Restoration Stone** trigger when reshuffling finishes. **Chapel Bell** damages only on the extra Penance ticks appended after the normal two ticks, during the periodic damage phase.
+- **Conch Shell** adds mana to positive Water spell mana gains (including Water status effects). It does not trigger from costs, rebirth, item mana or itself. Mana remains capped at maximum.
+- **Small Censer** and **Sacred Reliquary** trigger after the first completed Holy card each Cycle. **Golden Chain** triggers per application of Slowness. **Templar Seal** rewards a fulfilled Oath; **Battle Rosary** heals once per Guard grant, not per Guard stack.
+- **Incense Burner** heals at most once per item type per world tick when Guard blocks positive damage. Mirrors retaliate after direct enemy spell damage reaches Health, at most once per item type per tick; they ignore DoTs, self-damage and other retaliation. Multiple copies increase the trigger's amount, not its frequency.
+- **Scorched Band** reduces actual self-inflicted damage, including Combust, but does not reduce Overheat's explicit half-current-Health cost. **Ancient Bark** applies only while a HoT remains active. **Stone Charm** reduces the first unguarded opposing direct hit each Cycle, before Ward absorption.
+
+The catalogue's recommended caps are enforced: Lucky Coin 10 mana reduction; Conch Shell +10 mana per trigger; Ancient Bark 30% reduction; Small Censer +4 Consecration per trigger; Golden Chain +3 per application. Sacred Reliquary has no such cap. Buying beyond a cap is allowed; the inspection panel shows the capped total. Different items' bonuses add rather than sharing a duplicate cap.
+
+Bots accumulate item stacks with the same effects and shop rules. Their editable spending budget and spell-gold reserve keep resources available for deck development. This overhaul replaces the old 155 slotted items; old rule-changing equipment and proposed Relics are not part of this catalogue. Start a new run when switching from the old equipment version.
 
 ## Combat mechanics
 
@@ -175,7 +199,7 @@ Holy has 27 spells across ranks 1–5. It uses the same shop odds, star prices, 
 | Keyword | Behavior |
 | --- | --- |
 | **Consecration** | Persistent stacks applied to the enemy. Every **5 stacks** are immediately consumed for **+1 Penance tick**, with **no cap**. Unconverted stacks remain between ticks. Cleanse removes those stacks, but cannot remove Penance already queued. |
-| **Penance** | Extra ticks on the next reshuffle, added after equipment adjusts its base duration. Damage, healing and timed effects continue. Penance received during an active reshuffle waits for the following reshuffle. The deck shows queued and active extra ticks. |
+| **Penance** | Extra ticks on the next reshuffle, added after the normal base duration. Damage, healing and timed effects continue. Penance received during an active reshuffle waits for the following reshuffle. The deck shows queued and active extra ticks. |
 | **Oath** | One active condition-based Oath per wizard; a new one replaces it. The buff panel shows its remaining requirement. Swearing the Oath does not count toward its own condition. Skipped or interrupted cards do not count as completed; Tidecaller repeats count once. |
 | **Retribution** | For 5 ticks, retaliate for 15 damage after an opposing direct spell damages your Health, at most once per tick. DoTs, costs, retaliation, and fully absorbed hits do not trigger it. Retaliation cannot trigger retaliation. |
 | **Templar's Oath** | A 6-tick stance: incoming damage ×0.8 and your direct spell damage ×0.9. Despite its name, this timed stance does not replace a condition-based Oath. |
@@ -206,7 +230,8 @@ The JSON files are the source of truth for balancing:
 
 | File | Controls |
 | --- | --- |
-| `src/config/equipment.json` | All 155 equipment entries: slot, 1–5 stars, affinity, stats and triggered abilities. |
+| `src/config/itemShop.json` | Item offer count, affinity weights and timing notes. |
+| `src/config/equipment.json` | All 80 stackable items: 1–5 stars, affinity, per-stack effects and caps. |
 | `src/config/spells.json` | Every spell's base and upgraded values, rules text, keywords, and effects. |
 | `src/config/holy.json` | Consecration-to-Penance threshold and Holy rule notes. |
 | `src/config/statuses.json` | Shared status values, such as Burn damage per stack and crit bonuses. |
@@ -274,9 +299,9 @@ Official references: [Expo CLI](https://docs.expo.dev/more/expo-cli/) and [Andro
 
 `GameGateway` is asynchronous and injected at the app root. Replace the local implementation with an HTTP/WebSocket adapter; keep the same screens and shared rules. The server must own sessions, matchmaking, loadout locking, command validation, concurrency/idempotency, and combat results. Add authentication, persistence, runtime request validation, reconnection, and ruleset versioning before real multiplayer. The current local adapter is not a server or a security boundary.
 
-Equipment can feed health/mana modifiers into `deriveStats` and `fighter`. The equipment catalogue fills weapon, armor, ring, and boots slots with stat bonuses and triggered abilities. Equipment replacement and triggered combat abilities are implemented; selling remains future work. Game data uses JSON-compatible snapshots and does not depend on DOM, browser crypto, or structuredClone, making it portable to Hermes and a future Node backend.
+Item inventories are JSON maps of item ID to stack count. `equipmentModifiers`, `deriveStats` and the pure combat runtime apply their configured effects. Purchases validate session revision, offer slot, price and phase before incrementing inventory. Selling remains future work. Game data uses JSON-compatible snapshots and does not depend on DOM, browser crypto, or structuredClone, making it portable to Hermes and a future Node backend.
 
 ## Validation
 
-`npm test` covers deterministic combat, simultaneous knockouts, shields, healing, mana exhaustion, equipment stats, purchase/slot validation, stale revisions, phase locking, and native-safe snapshots. `npm run build` compiles Android and iOS Hermes bundles plus a web export. Bundle export is not a signed native application build.
+`npm test` covers deterministic combat, simultaneous knockouts, shields, healing, mana exhaustion, equipment stats, purchase/offer validation, stale revisions, phase locking, and native-safe snapshots. `npm run build` compiles Android and iOS Hermes bundles plus a web export. Bundle export is not a signed native application build.
 

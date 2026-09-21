@@ -1,8 +1,9 @@
 import { useEffect, useRef, type ReactNode } from 'react';
-import { PanResponder, Platform, View } from 'react-native';
+import { PanResponder, Platform, View, type StyleProp, type ViewStyle } from 'react-native';
 
 export type ShopPointer = { x: number; y: number };
-export function ShopOffer({ label, disabled, children, onInspect, onLift, onMove, onDrop, onCancel }: {
+export function ShopOffer({ label, hint, style, disabled, children, onInspect, onLift, onMove, onDrop, onCancel }: {
+  hint?: string; style?: StyleProp<ViewStyle>;
   label: string; disabled: boolean; children: ReactNode;
   onInspect: () => void; onLift: (p: ShopPointer) => void; onMove: (p: ShopPointer) => void;
   onDrop: (p: ShopPointer) => void; onCancel: () => void;
@@ -26,8 +27,8 @@ export function ShopOffer({ label, disabled, children, onInspect, onLift, onMove
     onPanResponderTerminationRequest:()=>false,
   })).current;
   return <View {...responder.panHandlers} accessibilityRole="button" accessible accessibilityLabel={label}
-    accessibilityHint="Hold for card and keyword details. Drag into your hand to buy. Tap for accessible purchase controls."
+    accessibilityHint={hint ?? 'Hold for card and keyword details. Drag into your hand to buy. Tap for accessible purchase controls.'}
     accessibilityState={{disabled}} onAccessibilityTap={()=>!disabled&&onInspect()}
     {...(Platform.OS==='web'?{tabIndex:0,onKeyDown:(e:{key:string;preventDefault:()=>void})=>{if(!disabled&&(e.key==='Enter'||e.key===' ')){e.preventDefault();onInspect();}}}:{})}
-    style={{flex:1,minWidth:0,alignItems:'center',...(Platform.OS==='web'?{touchAction:'none' as const,userSelect:'none' as const}:{})}}>{children}</View>;
+    style={[{flex:1,minWidth:0,alignItems:'center',...(Platform.OS==='web'?{touchAction:'none' as const,userSelect:'none' as const}:{})},style]}>{children}</View>;
 }

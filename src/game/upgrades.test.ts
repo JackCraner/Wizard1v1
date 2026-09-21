@@ -67,11 +67,12 @@ it('buys XP into a full hand, validates transactions, and preserves XP through r
  await expect(g.execute(s.id,s.revision,{type:'merge',from:1,to:0})).rejects.toThrow('locked');
  s=await g.execute(s.id,s.revision,{type:'next'});expect(s.spellXp).toEqual(xp);
 });
-it('bots earn and retain upgrades with actual purchased copies',()=>{
+it('bots earn upgrades and retain XP in combat snapshots as decks evolve',()=>{
  const state=createBotStates(['bot']).bot;let deck:string[]=[];
- for(let round=1;round<=10;round++)deck=prepareBot(state,deck,round,1,'hard');
+ let earnedUpgrade=false;
+ for(let round=1;round<=10;round++){deck=prepareBot(state,deck,round,1,'hard');earnedUpgrade ||= state.spellXp?.some(x=>x===3)??false;expect(botFighter('Bot',deck,state).spellXp).toEqual(state.spellXp);const before=[...state.spellXp!];expect(prepareBot(state,deck,round,1,'hard')).toEqual(deck);expect(state.spellXp).toEqual(before);}
  expect(state.spellXp).toHaveLength(deck.length);
- expect(state.spellXp?.some(x=>x===3)).toBe(true);
+ expect(earnedUpgrade).toBe(true);
  expect(botFighter('Bot',deck,state).spellXp).toEqual(state.spellXp);
  expect(state.gold).toBeGreaterThanOrEqual(0);
 });
