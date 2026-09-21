@@ -1,3 +1,5 @@
+import { useMemo } from 'react';
+import { presentedCombatFrame, continuousCombatFrame, PLAYBACK_CONFIG } from '../game/playback';
 import { CombatDeck } from './CombatDeck';
 import { CastBar } from './CastBar';
 import { DamageNumbers, EffectBar } from './CombatFeedback';
@@ -30,20 +32,21 @@ export function CombatScreen({ game }: { game: ReturnType<typeof useGame> }) {
   const { battle, session, frame, finished, speed, setSpeed, setFrame, act, busy } = game;
   const { height } = useWindowDimensions();
   const compact = height < 500;
-  if (!battle || !session) return null;
-  const current = battle.frames[frame];
+  const castingBeatPlaying=game.active&&!game.paused&&!finished&&game.beat==='cast';
+  const current=useMemo(()=>battle?(game.beat==='cast'?continuousCombatFrame(battle,frame):presentedCombatFrame(battle,frame,'hold')):null,[battle,frame,game.beat]);
+  if (!battle || !session || !current) return null;
   return <View style={s.root}>
     <Image accessible={false} source={combatArt.background} resizeMode="cover" style={[StyleSheet.absoluteFill, { width: '100%', height: '100%' }]} />
     <View pointerEvents="none" style={[StyleSheet.absoluteFill, { backgroundColor: '#130e0928' }]} />
     <SafeAreaView style={{ flex: 1 }}>
     <View style={[s.page, { padding: compact ? 7 : 16, gap: compact ? 6 : 12 }]}>
-      <CombatTimeline key={session.round} battle={battle} frame={frame} round={session.round} compact={compact} onInspect={()=>game.setPaused(true)} controls={<View style={s.controls}><Control label="‹ Menu" onPress={()=>game.setScreen('menu')} /><Control label="‹ Tick" disabled={frame===0} onPress={()=>game.step(-1)} /><Control label={finished?'Replay':game.paused?'Play':'Pause'} onPress={()=>{if(finished)setFrame(0);game.setPaused(finished?false:!game.paused);}} /><Control label="Tick ›" disabled={finished} onPress={()=>game.step(1)} />{[1, 2, 4].map(value => <Control key={value} label={`${value}×`} selected={speed === value} onPress={() => setSpeed(value)} />)}<Control label="Skip" disabled={finished} onPress={() => setFrame(battle.frames.length - 1)} /></View>} />
+      <CombatTimeline key={session.round} battle={battle} frame={frame} activeTick={current.tick} round={session.round} pacing={finished?'Complete':game.paused?'Paused':'● Combat'} compact={compact} onInspect={()=>game.setPaused(true)} controls={<View style={s.controls}><Control label="‹ Menu" onPress={()=>game.setScreen('menu')} /><Control label="‹ Tick" disabled={frame===0} onPress={()=>game.step(-1)} /><Control label={finished?'Replay':game.paused?'Play':'Pause'} onPress={()=>{if(finished)setFrame(0);game.setPaused(finished?false:!game.paused);}} /><Control label="Tick ›" disabled={finished} onPress={()=>game.step(1)} />{PLAYBACK_CONFIG.speedMultipliers.map(value => <Control key={value} label={`${value}×`} selected={speed === value} onPress={() => setSpeed(value)} />)}<Control label="Skip" disabled={finished} onPress={() => setFrame(battle.frames.length - 1)} /></View>} />
       <View style={s.field}>
         <View style={s.leftField}>
           <View style={s.arena}>
             
-            <Mage fighter={current.player} compact={compact} finished={finished} tick={frame} speed={speed} playing={game.active && !game.paused && !finished} highlights={(current.notices??[]).filter(n=>n.side==='player').map(n=>n.status)} onInspect={()=>game.setPaused(true)} /><Mage fighter={current.bot} opponent compact={compact} finished={finished} tick={frame} speed={speed} playing={game.active && !game.paused && !finished} highlights={(current.notices??[]).filter(n=>n.side==='bot').map(n=>n.status)} onInspect={()=>game.setPaused(true)} /><View accessibilityLabel="Opponent equipment" style={{position:'absolute',right:3,top:82,bottom:24,width:compact?32:45,gap:4}}><Text style={s.label}>GEAR</Text><Gear compact={compact} /></View><DamageNumbers frame={current} />
-            {(['player','bot'] as const).map(side=><View key={side} style={{position:'absolute',...(side==='player'?{left:'33%' as const}:{right:'33%' as const}),top:36,bottom:0,width:compact?72:110,zIndex:25}}><CombatDeck fighter={current[side]} side={side} frame={current} compact={compact} speed={speed} finished={finished} onInspect={()=>game.setPaused(true)} /></View>)}
+            <Mage fighter={current.player} compact={compact} finished={finished} tick={frame} speed={speed} playing={castingBeatPlaying} highlights={(current.notices??[]).filter(n=>n.side==='player').map(n=>n.status)} onInspect={()=>game.setPaused(true)} /><Mage fighter={current.bot} opponent compact={compact} finished={finished} tick={frame} speed={speed} playing={castingBeatPlaying} highlights={(current.notices??[]).filter(n=>n.side==='bot').map(n=>n.status)} onInspect={()=>game.setPaused(true)} /><View accessibilityLabel="Opponent equipment" style={{position:'absolute',right:3,top:82,bottom:24,width:compact?32:45,gap:4}}><Text style={s.label}>GEAR</Text><Gear compact={compact} equipment={current.bot.equipment} /></View><DamageNumbers frame={current} />
+            {(['player','bot'] as const).map(side=><View key={side} style={{position:'absolute',...(side==='player'?{left:'33%' as const}:{right:'33%' as const}),top:36,bottom:0,width:compact?72:110,zIndex:25}}><CombatDeck fighter={current[side]} side={side} frame={current} compact={compact} speed={speed} finished={finished} onInspect={()=>{const wasPaused=game.paused;game.setPaused(true);return()=>game.setPaused(wasPaused);}} /></View>)}
             <View style={s.beatNotice}><Text numberOfLines={2} style={s.event}>{finished ? { victory: 'Victory', defeat: 'Defeat', draw: 'Draw' }[battle.outcome] : frame === 0 ? 'Spells locked · Duel begins' : current.notices?.length?[...new Set(current.notices.map(n=>`${n.side==='player'?'You':'Foe'} · ${n.text}`))].join('\n'):current.messages.join('\n')}</Text></View>
           </View>
           <View style={{flexDirection:'row',alignItems:'center',gap:8}}><View style={{flex:1}}><PlayerHotbar fighter={current.player} equipment={session.equipment} compact={compact} /></View>{finished&&<Control label="Return to shop →" disabled={busy} selected onPress={()=>act({type:'next'})} />}</View>

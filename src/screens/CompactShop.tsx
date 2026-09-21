@@ -1,3 +1,4 @@
+import botConfig from '../config/bots.json';
 import { ShopOffer, type ShopPointer } from './ShopOffer';
 import { explainedKeywords } from '../config/catalogue';
 import { useRef, useState, type ReactNode } from 'react';
@@ -8,8 +9,8 @@ import { EQUIPMENT, EQUIPMENT_SLOTS, equipmentModifiers } from '../game/shop';
 import type { Command, EquipmentId, Session, SpellId } from '../game/model';
 import { DraggableHand } from './DraggableHand';
 
-export function CompactShop({ session, busy, act, onMenu, onLibrary, error, inspectSpell, inspectItem, inspectHand, renderCard, renderPreview }: {
-  session: Session; busy: boolean; act: (command: Command) => void; onMenu: () => void; onLibrary: () => void; error?: string;
+export function CompactShop({ session, busy, act, onMenu, onLibrary, onLeaderboard, error, inspectSpell, inspectItem, inspectHand, renderCard, renderPreview }: {
+  session: Session; busy: boolean; act: (command: Command) => void; onMenu: () => void; onLibrary: () => void; onLeaderboard:()=>void; error?: string;
   inspectSpell: (id: SpellId) => void; inspectItem: (id: EquipmentId) => void; inspectHand: (index: number) => void;
   renderPreview: (id: SpellId, height: number, width: number) => ReactNode;
   renderCard: (id: SpellId, expanded?: boolean) => ReactNode;
@@ -44,19 +45,20 @@ export function CompactShop({ session, busy, act, onMenu, onLibrary, error, insp
         <View style={s.header}>
           <Pressable accessibilityRole="button" accessibilityLabel="Main menu" onPress={onMenu} style={s.menu}><Text style={s.text}>‹ Menu</Text></Pressable>
           <Pressable accessibilityRole="button" onPress={onLibrary} style={s.menu}><Text style={s.text}>Spell library</Text></Pressable>
-          <Text accessibilityRole="header" style={[s.title, { fontSize: compact ? 17 : 26 }]}>SHOP · ROUND {session.round}</Text>
+          <Text accessibilityRole="header" style={[s.title, { fontSize: compact ? 14 : 26 }]}>SHOP · ROUND {session.round} · {botConfig.difficulties[session.difficulty].label}</Text>
           <View style={s.headerRight}><Text accessibilityLabel={`${session.gold} gold`} style={s.gold}>◉ {session.gold}</Text>
             <Pressable accessibilityRole="button" accessibilityLabel="Reroll for 1 gold" disabled={busy || session.gold < 1} onPress={() => act({ type: 'reroll' })} style={[s.menu, (busy || session.gold < 1) && s.disabled]}><Text style={s.text}>⟳ Reroll (1)</Text></Pressable>
           </View>
         </View>
-        <View style={[s.middle, { gap: compact ? 7 : 14 }]}>
+        <View style={[s.middle, { gap: compact ? 4 : 14 }]}>
           <View style={[s.player, { width: compact ? 150 : 220, padding: compact ? 8 : 16, gap: compact ? 7 : 14 }]}>
             <View style={s.playerTop}><Text style={[s.avatar, { fontSize: compact ? 30 : 48 }]}>♙</Text><View style={{ flex: 1, gap: 5 }}>
-              <Text style={s.text}>Apprentice</Text>
+              <Text accessibilityLabel={`${session.wins} of ${session.lobby.winsToWin} trophies`} style={[s.text,{color:'#f0d180'}]}>🏆 {session.wins}/{session.lobby.winsToWin} wins</Text>
               <Text accessibilityLabel={`Health ${stats.health} of ${stats.health}`} style={[s.bar, { backgroundColor: '#882e2c' }]}>♥ {stats.health}/{stats.health}</Text>
               <Text accessibilityLabel={`Mana ${stats.mana} of ${stats.mana}`} style={[s.bar, { backgroundColor: '#275d7e' }]}>◈ {stats.mana}/{stats.mana}</Text>
             </View></View>
             <Text style={s.label}>DOMAINS {deckDomains(session.spells).length}/{RULES.maxDomains} · {(deckDomains(session.spells).join(' / ') || 'Choose up to 2').toUpperCase()}</Text>
+            <Pressable accessibilityRole="button" onPress={onLeaderboard} style={[s.menu,{minHeight:28,alignItems:'center'}]}><Text style={s.text}>Leaderboard</Text></Pressable>
             <Text style={s.label}>YOUR EQUIPMENT</Text>
             <View style={s.slots}>{EQUIPMENT_SLOTS.map(slot => {
               const id = session.equipment[slot];

@@ -11,9 +11,9 @@ export function EffectBar({fighter,compact,group,highlight=[],onInspect}:{fighte
  const bad=group==='debuff';const color=bad?'#ff9388':'#a6e4a1';
  const items=Object.entries(fighter.statuses).filter(([id,n])=>{const kind=(statuses as Record<string,{kind:string}>)[id]?.kind;return n>0&&(kind==='dot'||kind==='debuff')===bad;});
  const info=selected&&fighter.statuses[selected]?KEYWORDS[selected]:null;
- return <View style={{flex:1,borderWidth:1,borderColor:bad?'#8a4540':'#436e4e',borderRadius:4,backgroundColor:bad?'#301514dc':'#12271de8',padding:2}}>
+ return <View style={{flex:bad?1:undefined,flexShrink:1,maxHeight:'100%',borderWidth:1,borderColor:bad?'#8a4540':'#436e4e',borderRadius:4,backgroundColor:bad?'#301514dc':'#12271de8',padding:2}}>
    <Text style={{color,fontSize:7,fontWeight:'800',textAlign:'center'}}>{bad?'− DEBUFFS':'+ BUFFS'}</Text>
-   <ScrollView nestedScrollEnabled showsVerticalScrollIndicator={false} contentContainerStyle={{flexDirection:bad?'row':'column',flexWrap:bad?'wrap':'nowrap',gap:2,alignItems:bad?'center':'stretch',justifyContent:bad?'center':'flex-start'}}>
+   <ScrollView style={{flexGrow:0,flexShrink:1}} nestedScrollEnabled showsVerticalScrollIndicator={false} contentContainerStyle={{flexDirection:bad?'row':'column',flexWrap:bad?'wrap':'nowrap',gap:2,alignItems:bad?'center':'stretch',justifyContent:bad?'center':'flex-start'}}>
      {!items.length&&<Text style={{color:'#aaa08c',fontSize:8,textAlign:'center'}}>None</Text>}
      {items.map(([id,count])=><Pressable key={id} accessibilityRole="button" accessibilityLabel={`${bad?'Debuff':'Buff'}: ${KEYWORDS[id]?.name??id}, ${count} ticks. Tap for details.`} onPress={()=>{onInspect?.();setSelected(id);}} style={{flexDirection:'row',alignItems:'center',gap:2,borderWidth:1,borderColor:highlight.includes(id)?'#fff0a2':bad?'#9d5750':'#619069',borderRadius:3,backgroundColor:highlight.includes(id)?'#625025':'#10150fee',minHeight:bad?18:24,paddingHorizontal:2}}>
        {STATUS_ART[id]?<Image accessible={false} source={STATUS_ART[id]} resizeMode="cover" style={{width:bad?16:20,height:bad?16:20,borderRadius:2}}/>:<Text style={{color,fontSize:13}}>{icons[id]??'✧'}</Text>}
@@ -33,9 +33,9 @@ function FloatingHit({hit,index,onDone}:{hit:Hit;index:number;onDone:(key:string
 export function DamageNumbers({frame}:{frame:CombatFrame}) {
  const [hits,setHits]=useState<Hit[]>([]);const previous=useRef(frame.tick);
  useEffect(()=>{
-   const sequential=frame.tick===previous.current+1;previous.current=frame.tick;
+   const sequential=frame.tick===previous.current+1||frame.tick===previous.current;previous.current=frame.tick;
    if(!sequential){setHits([]);return;}
-   setHits(old=>[...old,...(frame.damageEvents??[]).map((hit,i)=>({...hit,healing:false,delay:0,key:`${frame.tick}-damage-${i}`})),...(frame.healingEvents??[]).map((hit,i)=>({...hit,healing:true,critical:false,delay:0,key:`${frame.tick}-heal-${i}`})),...(frame.manaEvents??[]).map((hit,i)=>({...hit,mana:true,healing:false,critical:false,delay:80,key:`${frame.tick}-mana-${i}`}))].slice(-36));
+   setHits(old=>[...old,...(frame.damageEvents??[]).map((hit,i)=>({...hit,healing:false,delay:0,key:`${frame.tick}-${frame.presentationPhase}-damage-${i}`})),...(frame.healingEvents??[]).map((hit,i)=>({...hit,healing:true,critical:false,delay:0,key:`${frame.tick}-${frame.presentationPhase}-heal-${i}`})),...(frame.manaEvents??[]).filter(hit=>hit.kind!=='cost').map((hit,i)=>({...hit,mana:true,healing:false,critical:false,delay:80,key:`${frame.tick}-${frame.presentationPhase}-mana-${i}`}))].slice(-36));
  },[frame]);
  return <View pointerEvents="none" style={[StyleSheet.absoluteFill,{zIndex:50}]}>{hits.map((hit,i)=><FloatingHit key={hit.key} hit={hit} index={i} onDone={key=>setHits(old=>old.filter(h=>h.key!==key))}/>)}</View>;
 }

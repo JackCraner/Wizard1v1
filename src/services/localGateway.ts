@@ -1,20 +1,25 @@
+import { BOT_CONFIG, createBotStates, type BotStates } from '../game/botAI';
+import { createLobby, resolveLobbyRound } from '../game/tournament';
 import { EQUIPMENT, offersFor, equipmentModifiers } from '../game/shop';
 import { cloneSnapshot } from '../game/clone';
-import { canAddSpell, fighter, RULES, simulate, SPELLS } from '../game/engine';
-import type { Command, GameGateway, Session, SpellId } from '../game/model';
-const bots: SpellId[][] = [['wrath', 'moonfire', 'regrowth'], ['ember', 'splash', 'brine', 'healing-surge'], ['seed-shot', 'sunfire', 'photosynthesis']];
+import { canAddSpell, RULES, SPELLS } from '../game/engine';
+import type { Command, Difficulty, GameGateway, Session, SpellId } from '../game/model';
 // IDs are local-only; a remote adapter receives its IDs from the server.
 let nextSessionId = 0;
 export class LocalGameGateway implements GameGateway {
+  private bots:BotStates={};
   private session: Session | null = null;
-  async start(): Promise<Session> {
-    this.session = { id: `local-${++nextSessionId}`, revision: 0, round: 1, gold: RULES.gold, spells: [], ...offersFor(1, 0), rerolls: 0, equipment: {}, phase: 'shop', wins: 0, losses: 0, battle: null };
+  async start(difficulty:Difficulty=BOT_CONFIG.defaultDifficulty as Difficulty): Promise<Session> {
+    if(!Object.prototype.hasOwnProperty.call(BOT_CONFIG.difficulties,difficulty))throw new Error('Unknown difficulty.');
+    this.session = { difficulty, lobby:createLobby(), id: `local-${++nextSessionId}`, revision: 0, round: 1, gold: RULES.gold, spells: [], ...offersFor(1, 0), rerolls: 0, equipment: {}, phase: 'shop', wins: 0, losses: 0, battle: null };
+    this.bots=createBotStates(this.session.lobby.players.filter(p=>!p.human).map(p=>p.id));
     return cloneSnapshot(this.session);
   }
   async execute(id: string, revision: number, command: Command): Promise<Session> {
     if (!this.session || this.session.id !== id) throw new Error('Session not found. Start a new run.');
     if (this.session.revision !== revision) throw new Error('This action is out of date. Please try again.');
     const s = cloneSnapshot(this.session);
+    if(s.lobby.finished)throw new Error('This game is complete. Start a new game.');
     if (command.type === 'next') {
       if (s.phase !== 'result') throw new Error('Finish combat first.');
       s.phase = 'shop'; s.round++; s.gold += RULES.gold; s.battle = null; s.rerolls = 0; Object.assign(s, offersFor(s.round, 0, s.spells));
@@ -45,10 +50,9 @@ export class LocalGameGateway implements GameGateway {
         const [spell] = s.spells.splice(from, 1); s.spells.splice(to, 0, spell);
       } else {
         if (!s.spells.length) throw new Error('Equip a spell first.');
-        s.battle = simulate(fighter('You', s.spells, equipmentModifiers(s.equipment)), fighter('Training construct', bots[(s.round - 1) % bots.length]));
-        s.phase = 'result';
-        if (s.battle.outcome === 'victory') s.wins++;
-        if (s.battle.outcome === 'defeat') s.losses++;
+        const bots=cloneSnapshot(this.bots);
+        resolveLobbyRound(s,bots);
+        this.bots=bots;
       }
     }
     s.revision++; this.session = s;

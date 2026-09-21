@@ -1,0 +1,9 @@
+{
+  "tickDurationMs": 2000,
+  "defaultSpeed": 1,
+  "speedMultipliers": [
+    1,
+    2,
+    4
+  ]
+}

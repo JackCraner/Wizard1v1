@@ -50,7 +50,8 @@ export function simulate(playerInput: Fighter, botInput: Fighter, seed = RULES.s
   let damageEvents:DamageEvent[]=[];
   let healingEvents:HealingEvent[]=[];
   let manaEvents:ManaEvent[]=[];
-  const snapshot = (tick: number) => frames.push({ tick, manaEvents:cloneSnapshot(manaEvents), notices:cloneSnapshot(notices), player: cloneSnapshot(fighters.player), bot: cloneSnapshot(fighters.bot), messages: [...messages], events: cloneSnapshot(events), damageEvents:cloneSnapshot(damageEvents), healingEvents:cloneSnapshot(healingEvents) });
+  let tickStart:Battle['frames'][number]|undefined;
+  const snapshot = (tick: number) => frames.push({ tick, tickStart, manaEvents:cloneSnapshot(manaEvents), notices:cloneSnapshot(notices), player: cloneSnapshot(fighters.player), bot: cloneSnapshot(fighters.bot), messages: [...messages], events: cloneSnapshot(events), damageEvents:cloneSnapshot(damageEvents), healingEvents:cloneSnapshot(healingEvents) });
   messages = ['Both spell orders are locked.']; snapshot(0);
   const applyStatus = (f: Fighter, id: string, amount: number) => {
     const previous=f.statuses[id]??0;f.statuses[id]=previous+amount;
@@ -74,7 +75,7 @@ export function simulate(playerInput: Fighter, botInput: Fighter, seed = RULES.s
   const alive = () => fighters.player.health > 0 && fighters.bot.health > 0;
   const damageMultiplier = (f: Fighter, domain: string, periodic = false) => (f.statuses.fury ? 1+(statusConfig.fury.power??0)/100 : 1) * (f.statuses.rain && domain === 'water' ? 1+(statusConfig.rain.power??0)/100 : 1) * (periodic && f.statuses['star-empowerment'] ? 1+(statusConfig['star-empowerment'].power??0)/100 : 1);
   for (let tick=1; tick<=RULES.maxTicks && alive(); tick++) {
-    events=[]; messages=[]; notices=[]; damageEvents=[]; healingEvents=[]; manaEvents=[];
+    tickStart=undefined; events=[]; messages=[]; notices=[]; damageEvents=[]; healingEvents=[]; manaEvents=[];
     const existing = { player: Object.keys(fighters.player.statuses), bot: Object.keys(fighters.bot.statuses) };
     // Both periodic effects resolve before either side starts a new cast.
     const periodicDamage = { player: 0, bot: 0 }, periodicHeal = { player: 0, bot: 0 };
@@ -91,6 +92,7 @@ export function simulate(playerInput: Fighter, botInput: Fighter, seed = RULES.s
       if (periodicDamage[side] && !f.statuses.guard) messages.push(`${f.name} takes ${periodicDamage[side]} damage over time.`);
       if (periodicHeal[side]) messages.push(`${f.name} heals ${periodicHeal[side]} over time.`);
     }
+    tickStart={tick,player:cloneSnapshot(fighters.player),bot:cloneSnapshot(fighters.bot),events:[],messages:[...messages],damageEvents:cloneSnapshot(damageEvents),healingEvents:cloneSnapshot(healingEvents),manaEvents:cloneSnapshot(manaEvents),notices:cloneSnapshot(notices),presentationPhase:'start'};
     const spent = { player: false, bot: false };
     for(const side of ['player','bot'] as const){const f=fighters[side];if((f.reshuffleRemaining??0)>0){spent[side]=true;f.reshuffleRemaining!--;messages.push(`${f.name} reshuffling · ${f.reshuffleRemaining}T remaining.`);}}
     // One traversal per tick bounds all-Instant loadouts without hanging.

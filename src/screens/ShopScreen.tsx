@@ -1,3 +1,4 @@
+import { Leaderboard } from './Leaderboard';
 import { SpellCard, KeywordBoxes, RulesText, CardPreview } from '../components/cards/SpellCard';
 import { CARD_BY_ID, manaLabel, castLabel } from '../config/catalogue';
 import { CompactShop } from './CompactShop';
@@ -24,6 +25,7 @@ function SpellFace({ id, small = false }: { id: SpellId; small?: boolean }) {
 export function ShopScreen({ session, busy, act, onMenu, onLibrary, error }: {
   session: Session; busy: boolean; act: (command: Command) => void; onMenu: () => void; onLibrary: () => void; error?: string;
 }) {
+  const [leaderboard,setLeaderboard]=useState(false);
   const [selection, setSelection] = useState<Selection | null>(null);
   const selectedSpell = selection?.kind === 'shop' ? selection.id : selection?.kind === 'hand' ? session.spells[selection.index] : undefined;
   const domainBlocked = !!selectedSpell && !canAddSpell(session.spells, selectedSpell);
@@ -31,9 +33,10 @@ export function ShopScreen({ session, busy, act, onMenu, onLibrary, error }: {
   const inspect = (next: Selection) => setSelection(next);
 
   return <View style={{ flex: 1 }}>
-    <CompactShop session={session} busy={busy} act={act} onMenu={onMenu} onLibrary={onLibrary} error={error}
+    <CompactShop session={session} busy={busy} act={act} onMenu={onMenu} onLibrary={onLibrary} onLeaderboard={()=>setLeaderboard(true)} error={error}
       inspectSpell={id => inspect({kind: 'shop', id})} inspectItem={id => inspect({kind: 'equipment', id})}
       inspectHand={index => inspect({kind: 'hand', index})} renderCard={(id, expanded) => <SpellFace id={id} small={!expanded} />} renderPreview={(id, height, width) => <CardPreview card={CARD_BY_ID[id]} height={height} width={width} />} />
+    <Leaderboard lobby={session.lobby} visible={leaderboard} onClose={()=>setLeaderboard(false)} />
     <Modal visible={!!selection} transparent animationType="fade" onRequestClose={() => setSelection(null)}>
       <View style={s.modalShade}><View accessibilityViewIsModal style={s.modalPanel}>
         <ScrollView contentContainerStyle={{ gap: 16 }}>

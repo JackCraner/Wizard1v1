@@ -6,14 +6,14 @@ import { SPELLS, RULES } from '../game/engine';
 import { castsAt } from '../game/combatTimeline';
 import { spellVisual } from '../components/cards/spellVisual';
 
-export function CombatTimeline({battle,frame,round,compact,controls,onInspect}:{battle:Battle;frame:number;round:number;compact:boolean;controls:ReactNode;onInspect:()=>void}) {
+export function CombatTimeline({battle,frame,activeTick,round,pacing,compact,controls,onInspect}:{battle:Battle;frame:number;activeTick:number;round:number;pacing:string;compact:boolean;controls:ReactNode;onInspect:()=>void}) {
   const [inspected,setInspected]=useState<number|null>(null);
   const [history,setHistory]=useState(false);
   const start=history?1:frame>30?31:1;
   const end=Math.min(start+29,RULES.maxTicks);
   const cellHeight=compact?17:25;
   return <View style={s.panel}>
-    <View style={s.header}><View style={{flex:1}}><Text style={s.title}>ROUND {round} · TICK {frame}/{RULES.maxTicks}</Text><Text style={s.legend}>Ticks {start}–{end} · × skipped · Tap for details</Text></View>{frame>30&&<Pressable accessibilityRole="button" onPress={()=>setHistory(!history)} style={s.pageButton}><Text style={s.sub}>{history?'31–50 →':'← 1–30'}</Text></Pressable>}{controls}</View>
+    <View style={s.header}><View style={{flex:1}}><Text style={s.title}>ROUND {round} · TICK {activeTick}/{RULES.maxTicks} · {pacing}</Text><Text style={s.legend}>Ticks {start}–{end} · × skipped · Tap for details</Text></View>{frame>30&&<Pressable accessibilityRole="button" onPress={()=>setHistory(!history)} style={s.pageButton}><Text style={s.sub}>{history?'31–50 →':'← 1–30'}</Text></Pressable>}{controls}</View>
     <View style={s.tracks}><View style={s.labels}><Text style={[s.rowLabel,{height:12}]}>TICK</Text><Text style={[s.rowLabel,{height:cellHeight,color:'#95cede'}]}>YOU</Text><Text style={[s.rowLabel,{height:cellHeight,color:'#e3a597'}]}>FOE</Text></View>
       {Array.from({length:end-start+1},(_,i)=>{
         const tick=start+i, revealed=tick<=frame&&tick<battle.frames.length;

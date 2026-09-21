@@ -1,3 +1,5 @@
+import { DifficultyPicker } from './screens/DifficultyPicker';
+import { TournamentResult } from './screens/TournamentResult';
 import { CardLibrary } from './screens/CardLibrary';
 import { useEffect, useRef, useState } from 'react';
 import { Pressable, ScrollView, Text, useWindowDimensions, View } from 'react-native';
@@ -12,6 +14,7 @@ import { MainMenu } from './screens/MainMenu';
 
 export function GameApp({ gateway }: { gateway: GameGateway }) {
   const game = useGame(gateway);
+  const [choosingDifficulty,setChoosingDifficulty]=useState(false);
   const [library, setLibrary] = useState(false);
   const scroll = useRef<ScrollView>(null);
   const { width, height } = useWindowDimensions();
@@ -20,12 +23,14 @@ export function GameApp({ gateway }: { gateway: GameGateway }) {
 
   useEffect(() => { scroll.current?.scrollTo({ y: 0, animated: false }); }, [game.screen, game.session?.phase]);
 
+  if(choosingDifficulty)return <DifficultyPicker busy={game.busy} onCancel={()=>setChoosingDifficulty(false)} onStart={difficulty=>{setChoosingDifficulty(false);game.start(difficulty);}} />;
+
   if (library) return <CardLibrary onClose={() => setLibrary(false)} />;
 
   // The menu is intentionally outside the scrolling gameplay layout.
   if (game.screen === 'menu') {
     return <MainMenu hasRun={!!game.session} busy={game.busy} round={game.session?.round}
-      onLibrary={() => setLibrary(true)} error={game.error} onNewGame={game.start} onContinue={() => game.setScreen('game')} />;
+      onLibrary={() => setLibrary(true)} error={game.error} onNewGame={()=>setChoosingDifficulty(true)} onContinue={() => game.setScreen('game')} />;
   }
 
   if (game.screen === 'game' && width < height) {
@@ -40,6 +45,8 @@ export function GameApp({ gateway }: { gateway: GameGateway }) {
     return <ShopScreen key={game.session.id} session={game.session} busy={game.busy} act={game.act}
       onLibrary={() => setLibrary(true)} error={game.error} onMenu={() => game.setScreen('menu')} />;
   }
+
+  if(game.screen==='game'&&game.finished&&game.session?.lobby.finished)return <TournamentResult key={game.session.id} session={game.session} onNewGame={()=>setChoosingDifficulty(true)} onMenu={()=>game.setScreen('menu')} busy={game.busy} error={game.error} />;
 
   if (game.screen === 'game' && game.session?.battle) return <CombatScreen game={game} />;
 
@@ -65,7 +72,7 @@ export function GameApp({ gateway }: { gateway: GameGateway }) {
               ['03 / Battle', 'Every duel starts at 500 health and 100 mana. Mana does not regenerate. Unaffordable spells are skipped; Wrath is free. Healing and shields resolve before damage.'],
               ['04 / Repeat', 'Bring the opponent to zero health to win. Combat ends after 50 ticks: the lower health total loses; equal health is a draw. Return to the shop to refine your spell order.'],
             ].map(([title, body]) => <Panel key={title}><Heading>{title}</Heading><Body>{body}</Body></Panel>)}
-            <Button title="Enter practice grounds" disabled={game.busy} onPress={game.start} />
+            <Button title="Enter practice grounds" disabled={game.busy} onPress={()=>setChoosingDifficulty(true)} />
             <Body>Runs are kept in memory. Reloading or restarting the app starts fresh.</Body>
           </>}
 

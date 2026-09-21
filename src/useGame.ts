@@ -1,16 +1,18 @@
-import { COMBAT_TICK_MS } from './game/playback';
+import { COMBAT_TICK_MS, PLAYBACK_CONFIG, nextCombatBeat, type CombatBeat } from './game/playback';
 import { useEffect, useRef, useState } from 'react';
 import { AppState, BackHandler } from 'react-native';
-import type { Command, GameGateway, Session } from './game/model';
+import type { Command, Difficulty, GameGateway, Session } from './game/model';
 
 export function useGame(gateway: GameGateway) {
   const [session, setSession] = useState<Session | null>(null);
   const [screen, setScreen] = useState<'menu' | 'game' | 'guide'>('menu');
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
-  const [frame, setFrame] = useState(0);
+  const [frame, setFrameState] = useState(0);
+  const [beat,setBeat]=useState<CombatBeat>('cast');
+  function setFrame(value:number|((previous:number)=>number)){setFrameState(value);setBeat(value===0?'cast':'hold');}
   const [paused, setPaused] = useState(false);
-  const [speed, setSpeed] = useState(1);
+  const [speed, setSpeed] = useState(PLAYBACK_CONFIG.defaultSpeed);
   const [active, setActive] = useState(AppState.currentState === 'active');
   const locked = useRef(false);
   const playback = useRef({key:'',remaining:1});
@@ -32,13 +34,14 @@ export function useGame(gateway: GameGateway) {
   }, [screen]);
 
   useEffect(() => {
-    const key=`${session?.id}-${session?.round}-${frame}`;
+    const key=`${session?.id}-${session?.round}-${frame}-${beat}`;
     if(playback.current.key!==key)playback.current={key,remaining:1};
     if (paused || !active || screen !== 'game' || !battle || finished) return;
+    if(beat==='hold'){setBeat('cast');return;}
     const started=Date.now(),duration=COMBAT_TICK_MS/speed;
-    const timer = setTimeout(() => setFrame(value => Math.min(value + 1, battle.frames.length - 1)), playback.current.remaining*duration);
+    const timer = setTimeout(() => {const next=nextCombatBeat(frame,beat,battle.frames.length-1);setFrameState(next.frame);setBeat(next.beat);}, playback.current.remaining*duration);
     return () => {clearTimeout(timer);playback.current.remaining=Math.max(0,playback.current.remaining-(Date.now()-started)/duration);};
-  }, [paused, active, screen, battle, finished, frame, speed]);
+  }, [paused, active, screen, battle, finished, frame, beat, speed]);
 
   async function request(operation: () => Promise<void>) {
     if (locked.current) return;
@@ -50,9 +53,9 @@ export function useGame(gateway: GameGateway) {
     finally { locked.current = false; setBusy(false); }
   }
 
-  function start() {
+  function start(difficulty?:Difficulty) {
     return request(async () => {
-      setSession(await gateway.start());
+      setSession(await gateway.start(difficulty));
       setFrame(0); setPaused(false);
       setScreen('game');
     });
@@ -62,11 +65,11 @@ export function useGame(gateway: GameGateway) {
     return request(async () => {
       if (!session) return;
       const next = await gateway.execute(session.id, session.revision, command);
-      if (command.type === 'fight' || command.type === 'next') setFrame(0);
+      if (command.type === 'fight' || command.type === 'next') {setFrame(0);setPaused(false);}
       setSession(next);
     });
   }
 
   function step(delta:number) {setPaused(true);setFrame(value=>Math.max(0,Math.min((battle?.frames.length??1)-1,value+delta)));}
-  return { paused, setPaused, step, active, session, screen, setScreen, busy, error, frame, setFrame, speed, setSpeed, battle, finished, start, act };
+  return { beat, paused, setPaused, step, active, session, screen, setScreen, busy, error, frame, setFrame, speed, setSpeed, battle, finished, start, act };
 }

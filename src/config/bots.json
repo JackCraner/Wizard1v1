@@ -1,0 +1,19 @@
+{
+  "defaultDifficulty": "normal",
+  "economy": { "startingGold": 10, "roundIncome": 10, "rerollCost": 1, "equipmentStartRound": 3 },
+  "deck": { "openingSize": 3, "cardsPerRound": 1, "maxSupportFraction": 0.5, "replacementThreshold": 2, "duplicatePenalty": 3 },
+  "weights": { "damage": 1, "healing": 0.6, "mana": 1.8, "status": 0.65, "synergy": 18, "preference": 9, "manaShortfall": 0.65 },
+  "difficulties": {
+    "easy": { "label": "Easy", "description": "Relaxed rivals learning their craft.", "shoppingRolls": 2, "orderTrials": 0, "mistakeChance": 0.35, "bonusGoldPerRound": 0, "freeRerolls": 0, "shopRoundBonus": 0, "advantageStartsRound": 3, "equipmentBudget": 0 },
+    "normal": { "label": "Normal", "description": "Thoughtful rivals with developing strategies.", "shoppingRolls": 5, "orderTrials": 5, "mistakeChance": 0.12, "bonusGoldPerRound": 0, "freeRerolls": 0, "shopRoundBonus": 0, "advantageStartsRound": 3, "equipmentBudget": 4 },
+    "hard": { "label": "Hard", "description": "Focused rivals with strong spell combinations.", "shoppingRolls": 10, "orderTrials": 12, "mistakeChance": 0.03, "bonusGoldPerRound": 4, "freeRerolls": 3, "shopRoundBonus": 1, "advantageStartsRound": 3, "equipmentBudget": 5 },
+    "nightmare": { "label": "Nightmare", "description": "Relentless rivals. Every spell slot matters.", "shoppingRolls": 16, "orderTrials": 20, "mistakeChance": 0, "bonusGoldPerRound": 8, "freeRerolls": 6, "shopRoundBonus": 2, "advantageStartsRound": 3, "equipmentBudget": 8 }
+  },
+  "strategies": [
+    { "id": "lunar", "domains": ["nature", "water"], "preferredSpells": ["moonfire", "sunfire", "lunar-strike", "starsurge", "moon-blast", "photosynthesis"] },
+    { "id": "inferno", "domains": ["fire", "nature"], "preferredSpells": ["scorch", "cinder", "overheat", "pyroblast", "flame-fury", "sap"] },
+    { "id": "tide", "domains": ["water", "nature"], "preferredSpells": ["tidal", "undertow", "tidal-burst", "whirlpool", "water-heart", "splash"] },
+    { "id": "renewal", "domains": ["nature", "water"], "preferredSpells": ["moonfire", "sunfire", "lifebloom", "regrowth", "mend", "brine"] },
+    { "id": "burst", "domains": ["fire", "water"], "preferredSpells": ["ember", "fire-bolt", "flood-fury", "lava-drain", "aqua-steal", "splash"] }
+  ]
+}
