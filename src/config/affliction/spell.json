@@ -132,7 +132,7 @@
     "domain": "affliction",
     "stars": 2,
     "castTicks": 2,
-    "rules": "Summon an Imp with 50 Health. If alive, add 50 current and max Health.",
+    "rules": "Summon 50 Imp Health.",
     "keywords": [
       "summon"
     ],
@@ -147,7 +147,7 @@
     },
     "upgrade": {
       "castTicks": 2,
-      "rules": "Summon an Imp with 80 Health. If alive, add 80 current and max Health.",
+      "rules": "Summon 80 Imp Health.",
       "keywords": [
         "summon"
       ],
@@ -252,7 +252,7 @@
     "domain": "affliction",
     "stars": 2,
     "castTicks": 1,
-    "rules": "Interrupt the enemy spell, including 1T spells and Channel.",
+    "rules": "Interrupt.",
     "keywords": [
       "interrupt",
       "channel"
@@ -267,7 +267,7 @@
     },
     "upgrade": {
       "castTicks": 1,
-      "rules": "Interrupt the enemy spell, including 1T spells and Channel. Affliction attuned: Apply Poison for 5 ticks.",
+      "rules": "Interrupt. Affliction attuned: Apply Poison for 5 ticks.",
       "keywords": [
         "poison",
         "interrupt",
@@ -402,7 +402,7 @@
     "domain": "affliction",
     "stars": 3,
     "castTicks": 2,
-    "rules": "Affliction attuned: Summon an Imp with 100 Health, or add 100 current and max Health.",
+    "rules": "Affliction attuned: Summon 100 Imp Health.",
     "keywords": [
       "summon",
       "attunement"
@@ -419,7 +419,7 @@
     },
     "upgrade": {
       "castTicks": 2,
-      "rules": "Affliction attuned: Summon an Imp with 150 Health, or add 150 current and max Health.",
+      "rules": "Affliction attuned: Summon 150 Imp Health.",
       "keywords": [
         "summon",
         "attunement"
@@ -442,7 +442,7 @@
     "domain": "affliction",
     "stars": 3,
     "castTicks": 1,
-    "rules": "Deal 40 damage. Heal 50. Channel: +10 damage and healing per extra adjacent copy (max 3 copies).",
+    "rules": "Deal 40 damage. Heal 50. Channel: +10 damage and healing per extra copy.",
     "keywords": [
       "channel"
     ],
@@ -463,7 +463,7 @@
     },
     "upgrade": {
       "castTicks": 1,
-      "rules": "Deal 40 damage. Heal 50. Channel: +20 damage and healing per extra adjacent copy (max 3 copies).",
+      "rules": "Deal 40 damage. Heal 50. Channel: +20 damage and healing per extra copy.",
       "keywords": [
         "channel"
       ],
@@ -566,7 +566,7 @@
     "domain": "affliction",
     "stars": 3,
     "castTicks": 2,
-    "rules": "Affliction attuned: Cultivate all enemy Poison, consuming it to deal 10 damage per remaining tick.",
+    "rules": "Affliction attuned: Cultivate all enemy Poison. Deal 10 damage per tick consumed.",
     "keywords": [
       "poison",
       "cultivate",
@@ -586,7 +586,7 @@
     },
     "upgrade": {
       "castTicks": 2,
-      "rules": "Affliction attuned: Cultivate all enemy Poison, consuming it to deal 15 damage per remaining tick.",
+      "rules": "Affliction attuned: Cultivate all enemy Poison. Deal 15 damage per tick consumed.",
       "keywords": [
         "poison",
         "cultivate",
@@ -890,7 +890,7 @@
     "domain": "affliction",
     "stars": 5,
     "castTicks": 2,
-    "rules": "Affliction attuned: For this combat, your living Imp deals 30 damage after each spell you complete.",
+    "rules": "Affliction attuned: This combat, your Imp deals 30 damage after each spell you complete.",
     "keywords": [
       "attunement"
     ],
@@ -906,7 +906,7 @@
     },
     "upgrade": {
       "castTicks": 2,
-      "rules": "Affliction attuned: For this combat, your living Imp deals 50 damage after each spell you complete.",
+      "rules": "Affliction attuned: This combat, your Imp deals 50 damage after each spell you complete.",
       "keywords": [
         "attunement"
       ],

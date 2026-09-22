@@ -24,7 +24,7 @@ export function resolveLobbyRound(session:Session,botStates:BotStates) {
  const lobby=session.lobby;
  if(lobby.finished)throw new Error('This game is complete. Start a new game.');
  for(const [i,p] of lobby.players.entries()) {
-  p.deck=p.human?[...session.spells]:prepareBot(botStates[p.id],p.deck,session.round,i,session.difficulty);
+  p.deck=p.human?[...session.spells]:prepareBot(botStates[p.id],p.deck,session.round,i,session.difficulty,session.seed);
   p.augments=p.human?[...session.augments]:[...botStates[p.id].augments];p.lastCombatAugments=[...p.augments];
   p.deckAcquired=p.human?[...(session.spellAcquired??[])]:[...botStates[p.id].spellAcquired];p.lastCombatAttuned=attunedDomains(p.deck,p.deckAcquired);
   p.deckXp=p.human?deckXp(p.deck,session.spellXp):deckXp(p.deck,botStates[p.id].spellXp);
@@ -33,7 +33,7 @@ export function resolveLobbyRound(session:Session,botStates:BotStates) {
  for(const [aId,bId] of roundPairings(lobby.players.map(p=>p.id),session.round)) {
   let a=lobby.players.find(p=>p.id===aId)!,b=lobby.players.find(p=>p.id===bId)!;
   if(b.human)[a,b]=[b,a];
-  const battle=simulate(a.human?fighter(a.name,a.deck,session.augments,session.spellXp,session.spellAcquired,a.level):botFighter(a.name,a.deck,botStates[a.id],a.level),b.human?fighter(b.name,b.deck,session.augments,session.spellXp,session.spellAcquired,b.level):botFighter(b.name,b.deck,botStates[b.id],b.level),RULES.seed+session.round*101+lobby.players.indexOf(a)*17);
+  const battle=simulate(a.human?fighter(a.name,a.deck,session.augments,session.spellXp,session.spellAcquired,a.level):botFighter(a.name,a.deck,botStates[a.id],a.level),b.human?fighter(b.name,b.deck,session.augments,session.spellXp,session.spellAcquired,b.level):botFighter(b.name,b.deck,botStates[b.id],b.level),session.seed+session.round*101+lobby.players.indexOf(a)*17);
   if(battle.outcome==='draw'){a.draws++;b.draws++;}
   else {const winner=battle.outcome==='victory'?a:b,loser=winner===a?b:a;winner.wins++;winner.trophies+=winner.level;loser.losses++;}
   if(a.human)session.battle=battle;

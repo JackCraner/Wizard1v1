@@ -6,7 +6,7 @@ Implemented from the supplied Wizard1v1_Simplification_Redesign proposal, using 
 
 - 109 playable spells: Nature 25, Water 19, Fire 20, Holy 23 and Affliction 22. See [the spell overhaul](Spell_Overhaul_Notes.md) for the latest changes.
 - Start at level 1 with 500 base Health; every two completed rounds grant one level, +100 max Health and an augment. Wins grant current-level trophies; reach 20 to win.
-- 1–3T spells plus Instant upgrades; fixed 1T reshuffle; 40-tick limit; no mana. Combust supplies seeded critical chance.
+- 1–3T spells plus Instant upgrades; fixed 1T reshuffle; 40-tick limit; no mana. Potency supplies seeded critical chance.
 - Expanded shared glossary for the spell overhaul: 10-point Poison/Regeneration, duration-based Slow, Guard immunity, capped Channel, Tidecaller Echoes and Heat cast-speed payoffs.
 - 32 permanent, nonstacking augments. Pick one of three after rounds 2, 4, 6, etc., regardless of duel outcome. All seven bots receive rewards too.
 - Retained five-offer shop, gold, rank odds, rerolls, ten-card order, duplicate XP upgrades, drag purchases/reorder/trash, eight-player tournament and scouting.

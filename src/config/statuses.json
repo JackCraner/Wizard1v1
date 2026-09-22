@@ -17,7 +17,7 @@
     "kind": "charge",
     "unit": "charges"
   },
-  "combust": {
+  "potency": {
     "kind": "charge",
     "unit": "charges"
   },

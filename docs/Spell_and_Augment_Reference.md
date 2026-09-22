@@ -1,6 +1,6 @@
 # Wizard 1v1 — Spell and Augment Reference
 
-Updated 22 September 2026. **109 spells · 5 domains · 32 augments.** All five domains use their latest spell overhauls.
+Updated 22 September 2026. **109 spells · 5 domains · 27 augments.** All five domains use their latest spell overhauls.
 
 Edit this document to propose changes, then share it back. Markdown edits do not automatically change the game. Stable IDs identify every entry. See [overhaul decisions](Spell_Overhaul_Notes.md) for the defaults chosen for incomplete entries.
 
@@ -467,9 +467,9 @@ Source: [fire/spell.json](../src/config/fire/spell.json)
 - **ID:** `scorch`
 - **Rarity / cost:** ★★ (2 gold)
 - **Base cast:** 2T
-- **Base effect:** Take 30 damage. Gain 2 Combust.
+- **Base effect:** Take 30 damage. Gain 2 Potency.
 - **Upgraded cast:** 2T
-- **Upgraded effect:** Take 30 damage. Gain 2 Combust. Fire attuned: 4 instead.
+- **Upgraded effect:** Take 30 damage. Gain 2 Potency. Fire attuned: 4 instead.
 
 #### Lava Floor
 
@@ -512,9 +512,9 @@ Source: [fire/spell.json](../src/config/fire/spell.json)
 - **ID:** `overheat`
 - **Rarity / cost:** ★★★ (3 gold)
 - **Base cast:** 1T
-- **Base effect:** Fire attuned: Lose half your current Health. Fire attuned: Gain 5 Combust.
+- **Base effect:** Fire attuned: Lose half your current Health. Fire attuned: Gain 5 Potency.
 - **Upgraded cast:** 1T
-- **Upgraded effect:** Fire attuned: Lose half your current Health. Fire attuned: Gain 5 Combust. Fire attuned: Gain 2 Heat.
+- **Upgraded effect:** Fire attuned: Lose half your current Health. Fire attuned: Gain 5 Potency. Fire attuned: Gain 2 Heat.
 
 #### Flameshield
 
@@ -539,9 +539,9 @@ Source: [fire/spell.json](../src/config/fire/spell.json)
 - **ID:** `immolate`
 - **Rarity / cost:** ★★★ (3 gold)
 - **Base cast:** 2T
-- **Base effect:** Fire attuned: Deal 80 damage. Fire attuned: Gain 2 Combust.
+- **Base effect:** Fire attuned: Deal 80 damage. Fire attuned: Gain 2 Potency.
 - **Upgraded cast:** 1T with Fire attunement; otherwise 2T
-- **Upgraded effect:** Fire attuned: 1T; otherwise 2T. Fire attuned: Deal 80 damage. Fire attuned: Gain 2 Combust.
+- **Upgraded effect:** Fire attuned: 1T; otherwise 2T. Fire attuned: Deal 80 damage. Fire attuned: Gain 2 Potency.
 
 #### Flamekick
 
@@ -1019,213 +1019,41 @@ Source: [affliction/spell.json](../src/config/affliction/spell.json)
 - **Upgraded cast:** 1T
 - **Upgraded effect:** Affliction attuned: Kill your Imp and deal damage equal to its max Health.
 
-## Permanent augments — 32
-
-Source: [augments.json](../src/config/augments.json). Pick one of three every level-up. Identical augments cannot stack.
-
-### Domain augments
-
-#### Wild Garden
-
-- **ID:** `wild-garden`
-- **Domain theme:** Nature
-- **Effect:** Nature attuned: Poison you apply lasts 2 extra ticks.
-
-#### Verdant Cycle
-
-- **ID:** `verdant-cycle`
-- **Domain theme:** Nature
-- **Effect:** Nature attuned: At each Cycle start, gain 3 Regeneration.
-
-#### Rising Tide
-
-- **ID:** `rising-tide`
-- **Domain theme:** Water
-- **Effect:** Water attuned: Every third Water spell grants 2 Tidecaller.
-
-#### Reservoir
-
-- **ID:** `reservoir`
-- **Domain theme:** Water
-- **Effect:** Water attuned: Start combat with 3 Tidecaller.
-
-#### Inferno
-
-- **ID:** `inferno`
-- **Domain theme:** Fire
-- **Effect:** Fire attuned: Spending 5 Heat makes your next Fire spell 1T faster.
-
-#### Sacred Rhythm
-
-- **ID:** `sacred-rhythm`
-- **Domain theme:** Holy
-- **Effect:** Holy attuned: Completing an Oath Empowers your next Holy spell.
-
-#### Venomous Hex
-
-- **ID:** `venomous-hex`
-- **Domain theme:** Affliction
-- **Effect:** Nature attuned: Applying Slow also applies 2 Poison.
-
-### Hybrid augments
-
-#### Steam
-
-- **ID:** `steam`
-- **Domain theme:** Fire
-- **Effect:** Fire attuned: After Water, a Fire spell gains 2 Heat after resolving.
-
-#### Wildfire
-
-- **ID:** `wildfire`
-- **Domain theme:** Nature
-- **Effect:** Nature + Fire attuned: Applying Poison while you have Heat also deals 20 damage.
-
-#### Purifying Rain
-
-- **ID:** `purifying-rain`
-- **Domain theme:** Water
-- **Effect:** After Holy, a Water spell grants 45 Ward.
-
-#### Blighted Tide
-
-- **ID:** `blighted-tide`
-- **Domain theme:** Water
-- **Effect:** Nature + Water attuned: Spending Tidecaller extends existing enemy Poison by 2 ticks.
-
-### Sequence augments
-
-#### First Strike
-
-- **ID:** `first-strike`
-- **Domain theme:** Any
-- **Effect:** Your first spell each Cycle deals 50% more direct damage.
-
-#### Finisher
-
-- **ID:** `finisher`
-- **Domain theme:** Any
-- **Effect:** Your final spell each Cycle is Empowered.
-
-#### Echo Chamber
-
-- **ID:** `echo-chamber`
-- **Domain theme:** Any
-- **Effect:** Every fourth completed spell resolves twice.
-
-#### Alternation
-
-- **ID:** `alternation`
-- **Domain theme:** Any
-- **Effect:** Changing domains gives the next spell 20% more damage, healing and Ward.
-
-#### Crescendo
-
-- **ID:** `crescendo`
-- **Domain theme:** Any
-- **Effect:** Each preceding spell this Cycle adds 5% direct damage.
-
-#### Opening Ward
-
-- **ID:** `opening-ward`
-- **Domain theme:** Any
-- **Effect:** Your first spell each Cycle grants 50 Ward.
-
-### Casting augments
-
-#### Heavy Hitter
-
-- **ID:** `heavy-hitter`
-- **Domain theme:** Any
-- **Effect:** Printed 3T spells deal 40% more direct damage.
-
-#### Rapid Casting
-
-- **ID:** `rapid-casting`
-- **Domain theme:** Any
-- **Effect:** Every third printed 1T spell repeats at half power.
-
-#### Patience
-
-- **ID:** `patience`
-- **Domain theme:** Any
-- **Effect:** Completing a printed 3T spell grants 80 Ward.
-
-#### Momentum
-
-- **ID:** `momentum`
-- **Domain theme:** Any
-- **Effect:** Three consecutive printed 1T spells make your next 2T+ spell 1T faster.
-
-### Risk augments
-
-#### Glass Cannon
-
-- **ID:** `glass-cannon`
-- **Domain theme:** Any
-- **Effect:** Deal 30% more damage. Maximum Health is reduced by 125.
-
-#### Blood Magic
-
-- **ID:** `blood-magic`
-- **Domain theme:** Any
-- **Effect:** Self-damage adds 50 direct damage to your next completed spell.
-
-#### Last Stand
-
-- **ID:** `last-stand`
-- **Domain theme:** Any
-- **Effect:** Below 30% Health, spells start 1T faster (minimum 1T).
-
-#### Reckless Loop
-
-- **ID:** `reckless-loop`
-- **Domain theme:** Any
-- **Effect:** Skip the reshuffle tick. Lose 25 Health at each new Cycle.
-
-#### Second Wind
-
-- **ID:** `second-wind`
-- **Domain theme:** Any
-- **Effect:** Once per combat, reaching 30% Health restores 120 Health.
-
-### Economy augments
-
-#### Specialist
-
-- **ID:** `specialist`
-- **Domain theme:** Any
-- **Effect:** Your most common domain has triple shop weight.
-
-#### Wanderer
-
-- **ID:** `wanderer`
-- **Domain theme:** Any
-- **Effect:** Domains absent from your deck have triple shop weight.
-
-#### Recycler
-
-- **ID:** `recycler`
-- **Domain theme:** Any
-- **Effect:** Trashing a spell refunds 1 gold.
-
-#### Scholar
-
-- **ID:** `scholar`
-- **Domain theme:** Any
-- **Effect:** Your first purchased duplicate each shop grants 2 XP instead of 1.
-
-#### Scavenger
-
-- **ID:** `scavenger`
-- **Domain theme:** Any
-- **Effect:** Your first reroll each shop is free.
-
-#### Deep Pockets
-
-- **ID:** `deep-pockets`
-- **Domain theme:** Any
-- **Effect:** Receive 4 extra gold whenever you enter a new shop.
+## Permanent augments — 27
+
+All augments are available to every build, without Domain Attunement requirements. Pick one of three each level-up. Identical augments cannot stack.
+
+| Augment | Effect |
+| --- | --- |
+| Deep Pockets | Gain 3 extra gold each shopping phase. |
+| First Strike | Your first spell each Cycle deals 50% more direct damage. |
+| Finisher | Your final spell each Cycle deals 50% more direct damage. |
+| Crescendo | Each preceding spell this Cycle adds 5% direct damage. |
+| Alternation | After a different domain, your spell deals 20% more damage, healing and Ward. |
+| Opening Ward | Start combat with 100 Ward. |
+| Heavy Hitters | Printed 3T spells deal 40% more direct damage. |
+| Momentum | Three consecutive printed 1T spells grant 5 Fury. |
+| Glass Cannon | Deal 30% more damage. Lose 125 maximum Health. |
+| Blood Magic | Self-damage grants 3 Regeneration. |
+| Blood Infusion | Self-damage grants 1 Potency. |
+| Reckless Loop | Skip the reshuffle tick. Lose 25 Health at each new Cycle. |
+| Last Stand | Below 30% Health, spells start 1T faster (minimum 1T). |
+| Second Wind | Once per combat, reaching 30% Health restores 120 Health. |
+| Specialist | Your most common domain has triple shop weight. |
+| Recycler | Trashing a spell refunds 80% of its gold value, rounded down. |
+| Scavenger | Your first two rerolls each shop are free. |
+| Wildfire | Applying Poison while you have Heat also deals 20 damage. |
+| Super Poison | Your Poison deals 100% more damage. Stacks with other damage modifiers. |
+| Toxic Start | Your opponent starts combat with 5 Poison and 1 Curse. |
+| Cursed | Curse adds one tick to enemy reshuffles. |
+| Hot Stuff | While you have Heat, deal 10% more damage and take 10% more damage. |
+| Friendly Imp | Direct healing restores your living Imp first; excess healing restores you. |
+| Bloom | When your Poison expires, deal 60 damage. |
+| Criticality | Crossing from below 10 to 10+ Potency grants 15 Heat. |
+| Monster | Gain 200 maximum Health, plus 100 extra for each level gained. |
+| Tough Skin | Resilience reduces damage by 65%. |
+
+Recycler refunds whole gold: 1–5★ spells return **0, 1, 2, 3, 4 gold** respectively.
 
 ## Keyword glossary
 
@@ -1253,7 +1081,7 @@ Source: [augments.json](../src/config/augments.json). Pick one of three every le
 - **Resilience:** Buff duration. Take 50% less damage. Loses 1 duration each following tick unless granted for the rest of combat. Explicit Health costs bypass it.
 - **Tidecaller:** Counter. At 5 charges, starting the next spell consumes 5 and gives it one Echo at 50% effectiveness. Extra charges remain. Interrupted spells lose their reserved Echo.
 - **Echo:** Resolve the spell’s effects again at the stated effectiveness (normally 50%). Echoes do not trigger another Echo or another cast. Whole-number amounts round to the nearest integer.
-- **Combust:** Counter. Each charge adds 10 percentage points of critical-hit chance, capped at 100%. Charges persist. Critical rolls are seeded for repeatable replays.
+- **Potency:** Counter. Each charge adds 10 percentage points of critical-hit chance, capped at 100%. Charges persist. Critical rolls are seeded for repeatable replays.
 - **Critical:** A critical spell deals 150% damage by default. Eruption can change this to 200% or 250%. Echoes share the original spell’s critical result.
 - **Fury:** Buff duration. Deal 10% more damage. Loses 1 duration each following tick.
 - **Cultivate:** Consume the specified over-time effect to resolve the printed payoff immediately.

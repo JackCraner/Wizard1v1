@@ -12,7 +12,7 @@ describe('catalogue shop authority',()=>{
  });
  it('charges rerolls once and rejects stale commands',async()=>{
   const g=new LocalGameGateway();const first=await g.start();const s=await g.execute(first.id,first.revision,{type:'reroll'});
-  expect(s.gold).toBe(9);expect(s.shop).not.toEqual(first.shop);expect(s.shop).toEqual(offersFor(1,1).shop);
+  expect(s.gold).toBe(9);expect(s.shop).not.toEqual(first.shop);expect(s.shop).toEqual(offersFor(1,1,s.spells,s.augments,s.seed).shop);
   await expect(g.execute(first.id,first.revision,{type:'reroll'})).rejects.toThrow('out of date');
  });
 

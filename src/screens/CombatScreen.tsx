@@ -7,7 +7,7 @@ import { CombatDeck } from './CombatDeck';
 import { CastBar } from './CastBar';
 import { DamageNumbers, EffectBar, ImpCompanion } from './CombatFeedback';
 import { CombatTimeline } from './CombatTimeline';
-import { combatArt, OrnateMeter } from './CombatAssets';
+import { combatArt, OrnateMeter, WardMeter } from './CombatAssets';
 import { Image, Pressable, ScrollView, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import type { useGame } from '../useGame';
@@ -18,11 +18,11 @@ function Control({ label, onPress, selected, disabled }: { label: string; onPres
 }
 function Mage({ fighter, opponent, compact, finished, tick, speed, playing, highlights, onInspect, feedback }: { feedback:CombatFrame; fighter: Fighter; opponent?: boolean; compact: boolean; finished:boolean; tick:number; speed:number; playing:boolean; highlights:string[]; onInspect:()=>void }) {
   return <View style={[s.mage, opponent ? { right: '18%', top: 0 } : { left: '13%', bottom: 0 }, { width: compact ? 112 : 190, height: '100%' }]}>
-    <View style={{position:'absolute',top:0,height:32,width:compact?150:210,zIndex:20}}><EffectBar fighter={fighter} compact={compact} group="debuff" highlight={highlights} onInspect={onInspect} /></View>
-    <Text numberOfLines={1} style={[s.mageName,{position:'absolute',top:33}]}>{opponent ? fighter.name : 'You'} · Lv {fighter.level}</Text>
-    <View style={{position:'absolute',top:44,width:'100%',gap:1}}><OrnateMeter value={fighter.health} max={fighter.maxHealth} /></View>
+    <View style={{position:'absolute',top:0,height:40,width:compact?150:210,zIndex:20}}><EffectBar fighter={fighter} compact={compact} group="debuff" highlight={highlights} onInspect={onInspect} /></View>
+    <Text numberOfLines={1} style={[s.mageName,{position:'absolute',top:41}]}>{opponent ? fighter.name : 'You'} · Lv {fighter.level}</Text>
+    <View style={{position:'absolute',top:52,width:'100%',gap:1}}><OrnateMeter value={fighter.health} max={fighter.maxHealth} /><WardMeter value={fighter.shield} capacity={fighter.wardCapacity??fighter.shield}/></View>
     <View style={{position:'absolute',top:82,bottom:24,width:'100%',overflow:'hidden'}}><Image source={combatArt.pose} accessible={false} resizeMode="contain" style={{position:'absolute',width:'180%',height:'117%',left:'-40%',top:'-9%',transform:[{scaleX:opponent?-1:1}],opacity:fighter.health>0?1:.4}} /></View>
-    <View style={{position:'absolute',top:82,bottom:24,width:opponent?(compact?65:90):(compact?40:65),...(opponent?{left:'100%' as const}:{right:'100%' as const}),zIndex:10}}><EffectBar fighter={fighter} compact={compact} group="buff" highlight={highlights} onInspect={onInspect} /></View>
+    <View style={{position:'absolute',top:82,bottom:24,width:opponent?(compact?65:90):(compact?48:65),...(opponent?{left:'100%' as const}:{right:'100%' as const}),zIndex:10}}><EffectBar fighter={fighter} compact={compact} group="buff" highlight={highlights} onInspect={onInspect} /></View>
     <ImpCompanion fighter={fighter} onInspect={onInspect} frame={feedback} side={opponent?'bot':'player'}/>
     <CastBar fighter={fighter} compact={compact} finished={finished} tick={tick} speed={speed} playing={playing} />
   </View>;

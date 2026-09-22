@@ -10,7 +10,7 @@ export const DOMAIN_INK: Record<Domain, string> = {
 };
 export const KEYWORD_DOMAINS: Record<string, Domain> = {
     poison: 'nature', regeneration: 'nature', heat: 'fire',
-    tidecaller: 'water', combust:'fire', fury:'fire', resilience:'nature',
+    tidecaller: 'water', potency:'fire', fury:'fire', resilience:'nature',
     oath: 'holy', unholy:'holy', frailty: 'affliction', curse: 'affliction', repetition: 'affliction', summon:'affliction', stun:'affliction', doom:'affliction',
 };
 export function cardAges(deck: readonly string[], ages: readonly number[] = []): number[] {

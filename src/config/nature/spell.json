@@ -228,7 +228,7 @@
         }
       ]
     },
-    "rules": "Gain Regeneration for 3 ticks. Channel: +1 Regeneration per adjacent copy (max 3 copies).",
+    "rules": "Gain 3 Regeneration. Channel: +1 Regeneration per extra copy.",
     "keywords": [
       "regeneration",
       "channel"
@@ -252,7 +252,7 @@
           }
         ]
       },
-      "rules": "Gain Regeneration for 3 ticks. Channel: +1 Regeneration per adjacent copy (max 3 copies). Nature attuned: Heal 20.",
+      "rules": "Gain 3 Regeneration. Channel: +1 Regeneration per extra copy. Nature attuned: Heal 20.",
       "keywords": [
         "regeneration",
         "channel",

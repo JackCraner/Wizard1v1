@@ -1,7 +1,16 @@
 import {expect,it} from 'vitest';
 import {CARDS} from '../config/catalogue';
 import {cardAt} from './upgrades';
-import {cardRequirements,ruleSections} from './cardText';
+import {cardRequirements,ruleSections,upgradeSummary} from './cardText';
+
+it('summarizes upgrade changes while retaining attunement and complete upgraded rules',()=>{
+ expect(upgradeSummary(cardAt('starsurge'))).toBe('Cast time becomes 1T.');
+ expect(upgradeSummary(cardAt('prayer'))).toBe('Holy attuned: Gain Resilience for 1 tick.');
+ expect(upgradeSummary(cardAt('germination'))).toBe('Nature attuned: Become Instant.');
+ expect(upgradeSummary(cardAt('ice-block'))).toBe('Water attuned: Cast time becomes 1T.');
+ expect(cardAt('starsurge',3).rules).toContain('Deal 100 damage');
+ expect(upgradeSummary(cardAt('leech'))).toBe('Deal 45 damage. Heal 20.');
+});
 
 it('does not confuse a themed keyword with an attunement requirement',()=>{
  const agony=cardAt('agony');expect(cardRequirements(agony).domains).toEqual([]);

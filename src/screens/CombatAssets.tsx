@@ -20,3 +20,11 @@ export function OrnateMeter({ value, max }: { value: number; max: number }) {
     <Text style={{ color: '#fff2d9', fontSize: 9, textAlign: 'center', lineHeight: 17, textShadowColor: '#000', textShadowRadius: 3, textShadowOffset: { width: 1, height: 1 } }}>{value} / {max}</Text>
   </View>;
 }
+
+export function WardMeter({ value, capacity }: { value: number; capacity: number }) {
+  if (value <= 0) return null;
+  return <View accessible accessibilityLabel={`${value} of ${capacity} Ward`} style={{ height: 13, marginHorizontal: '8%', borderWidth: 1, borderColor: '#8bc8ed', borderRadius: 3, backgroundColor: '#102a40e6', overflow: 'hidden' }}>
+    <View style={{ position: 'absolute', left: 0, top: 0, bottom: 0, width: `${Math.min(100, value / Math.max(1, capacity) * 100)}%`, backgroundColor: '#428dbc' }}/>
+    <Text style={{ color: '#e0f5ff', fontSize: 9, lineHeight: 11, textAlign: 'center', fontWeight: '800', textShadowColor: '#102030', textShadowRadius: 2, textShadowOffset: { width: 0, height: 1 } }}>⬡ {value}/{capacity} Ward</Text>
+  </View>;
+}

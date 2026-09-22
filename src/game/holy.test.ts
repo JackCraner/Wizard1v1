@@ -60,9 +60,9 @@ it('a new Oath replaces the old one; interrupting another spell does not break a
  const b=fighter('B',['current','disrupt','current']);
  const s=simulate(fighter('A',['oath-restraint','smite','prayer']),b);expect(s.frames[3].player.statuses.guard).toBe(4);
 });
-it('Oath Echo retains full rewards and Sacred Rhythm empowers the next Holy spell',()=>{
- const a=fighter('A',['oath-restraint','current','current','radiant-spear'],['sacred-rhythm']);a.statuses.tidecaller=5;
- const r=simulate(a,idle());expect(r.frames[3].player.statuses.guard).toBe(4);expect(r.frames[4].bot.health).toBe(425);expect(r.frames[4].player.memory.nextHolyEmpowered).toBe(false);
+it('Oath Echo retains full rewards',()=>{
+ const a=fighter('A',['oath-restraint','current','current','radiant-spear']);a.statuses.tidecaller=5;
+ const r=simulate(a,idle());expect(r.frames[3].player.statuses.guard).toBe(4);expect(r.frames[4].bot.health).toBe(450);
 });
 it('Consecration grants Ward only after an Oath completed in the current cycle',()=>{
  const r=simulate(fighter('A',['oath-restraint','prayer','current','consecration']),idle());expect(r.frames[5].player.shield).toBe(50);

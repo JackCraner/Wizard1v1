@@ -142,7 +142,7 @@
           }
         ]
       },
-      "rules": "Gain 1 Heat. Fire attuned: 2 instead.",
+      "rules": "Gain 1 Heat. Fire attuned: Gain 2 Heat instead.",
       "keywords": [
         "heat",
         "attunement"
@@ -164,15 +164,15 @@
         },
         {
           "kind": "status",
-          "status": "combust",
+          "status": "potency",
           "amount": 2,
           "target": "self"
         }
       ]
     },
-    "rules": "Take 30 damage. Gain 2 Combust.",
+    "rules": "Take 30 damage. Gain 2 Potency.",
     "keywords": [
-      "combust"
+      "potency"
     ],
     "notes": [],
     "upgrade": {
@@ -185,7 +185,7 @@
           },
           {
             "kind": "status",
-            "status": "combust",
+            "status": "potency",
             "amount": 2,
             "target": "self",
             "bonusDomain": "fire",
@@ -193,9 +193,9 @@
           }
         ]
       },
-      "rules": "Take 30 damage. Gain 2 Combust. Fire attuned: 4 instead.",
+      "rules": "Take 30 damage. Gain 2 Potency. Fire attuned: Gain 4 Potency instead.",
       "keywords": [
-        "combust",
+        "potency",
         "attunement"
       ],
       "notes": []
@@ -276,7 +276,7 @@
           }
         ]
       },
-      "rules": "Apply Weaken for 3 ticks. Fire attuned: 5 instead.",
+      "rules": "Apply Weaken for 3 ticks. Fire attuned: Apply Weaken for 5 ticks instead.",
       "keywords": [
         "weaken",
         "attunement"
@@ -355,7 +355,7 @@
           }
         ]
       },
-      "rules": "Gain Fury for 2 ticks. Fire attuned: 5 instead.",
+      "rules": "Gain Fury for 2 ticks. Fire attuned: Gain Fury for 5 ticks instead.",
       "keywords": [
         "fury",
         "attunement"
@@ -378,16 +378,16 @@
         },
         {
           "kind": "status",
-          "status": "combust",
+          "status": "potency",
           "amount": 5,
           "target": "self",
           "requiresAttunement": "fire"
         }
       ]
     },
-    "rules": "Fire attuned: Lose half your current Health. Fire attuned: Gain 5 Combust.",
+    "rules": "Fire attuned: Lose half your current Health. Fire attuned: Gain 5 Potency.",
     "keywords": [
-      "combust",
+      "potency",
       "attunement"
     ],
     "notes": [],
@@ -402,7 +402,7 @@
           },
           {
             "kind": "status",
-            "status": "combust",
+            "status": "potency",
             "amount": 5,
             "target": "self",
             "requiresAttunement": "fire"
@@ -416,10 +416,10 @@
           }
         ]
       },
-      "rules": "Fire attuned: Lose half your current Health. Fire attuned: Gain 5 Combust. Fire attuned: Gain 2 Heat.",
+      "rules": "Fire attuned: Lose half your current Health. Fire attuned: Gain 5 Potency. Fire attuned: Gain 2 Heat.",
       "keywords": [
         "heat",
-        "combust",
+        "potency",
         "attunement"
       ],
       "notes": []
@@ -509,16 +509,16 @@
         },
         {
           "kind": "status",
-          "status": "combust",
+          "status": "potency",
           "amount": 2,
           "target": "self",
           "requiresAttunement": "fire"
         }
       ]
     },
-    "rules": "Fire attuned: Deal 80 damage. Fire attuned: Gain 2 Combust.",
+    "rules": "Fire attuned: Deal 80 damage. Fire attuned: Gain 2 Potency.",
     "keywords": [
-      "combust",
+      "potency",
       "attunement"
     ],
     "notes": [],
@@ -533,16 +533,16 @@
           },
           {
             "kind": "status",
-            "status": "combust",
+            "status": "potency",
             "amount": 2,
             "target": "self",
             "requiresAttunement": "fire"
           }
         ]
       },
-      "rules": "Fire attuned: 1T; otherwise 2T. Fire attuned: Deal 80 damage. Fire attuned: Gain 2 Combust.",
+      "rules": "Fire attuned: 1T; otherwise 2T. Fire attuned: Deal 80 damage. Fire attuned: Gain 2 Potency.",
       "keywords": [
-        "combust",
+        "potency",
         "attunement"
       ],
       "notes": [],
@@ -581,7 +581,7 @@
           }
         ]
       },
-      "rules": "Deal 50 damage. Fire attuned: Interrupt the enemy spell, including 1T spells and Channel.",
+      "rules": "Deal 50 damage. Fire attuned: Interrupt.",
       "keywords": [
         "channel",
         "interrupt",
@@ -699,7 +699,7 @@
           }
         ]
       },
-      "rules": "Gain Fury for 5 ticks. Fire attuned: 10 instead.",
+      "rules": "Gain Fury for 5 ticks. Fire attuned: Gain Fury for 10 ticks instead.",
       "keywords": [
         "fury",
         "attunement"
@@ -813,7 +813,7 @@
         }
       ]
     },
-    "rules": "Fire attuned: Gain Guard for 1 per Heat ticks.",
+    "rules": "Fire attuned: Gain Guard for 1 tick per Heat.",
     "keywords": [
       "heat",
       "guard",
@@ -834,7 +834,7 @@
           }
         ]
       },
-      "rules": "Fire attuned: Gain Guard for 2 per Heat ticks.",
+      "rules": "Fire attuned: Gain Guard for 2 ticks per Heat.",
       "keywords": [
         "heat",
         "guard",

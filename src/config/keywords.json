@@ -14,7 +14,7 @@
   "ward": {
     "name": "Ward",
     "aliases": [],
-    "description": "Absorbs damage before Health. Does not stack: gaining Ward keeps the higher of your current Ward and the new amount. Does not decay.",
+    "description": "Absorbs direct damage before Health; excess damage hits Health. Damage over time bypasses Ward. Does not stack: gaining Ward keeps the higher of your current Ward and the new amount. Does not decay.",
     "related": []
   },
   "interrupt": {
@@ -68,7 +68,7 @@
   "channel": {
     "name": "Channel",
     "aliases": [],
-    "description": "Adjacent matching copies form a Channel. Each additional copy adds the printed bonus, capped at 3 copies (two bonuses). Interrupt cancels the rest of that channel group.",
+    "description": "Link up to 3 matching spells in adjacent slots. Each extra copy adds the Channel bonus to every spell in the group. Interrupt cancels the remaining group.",
     "related": []
   },
   "unique": {
@@ -147,8 +147,8 @@
     "description": "Resolve the spell’s effects again at the stated effectiveness (normally 50%). Echoes do not trigger another Echo or another cast. Whole-number amounts round to the nearest integer.",
     "related": []
   },
-  "combust": {
-    "name": "Combust",
+  "potency": {
+    "name": "Potency",
     "aliases": [],
     "description": "Counter. Each charge adds 10 percentage points of critical-hit chance, capped at 100%. Charges persist. Critical rolls are seeded for repeatable replays.",
     "related": [

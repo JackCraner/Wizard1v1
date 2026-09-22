@@ -296,7 +296,7 @@
     "domain": "holy",
     "stars": 2,
     "castTicks": 2,
-    "rules": "Holy attuned: Cultivate all your Curse; remove it and heal 20 per stack.",
+    "rules": "Holy attuned: Cultivate all your Curse. Heal 20 per stack.",
     "keywords": [
       "curse",
       "cultivate",
@@ -315,7 +315,7 @@
     },
     "upgrade": {
       "castTicks": 2,
-      "rules": "Holy attuned: Cultivate all your Curse; remove it and heal 30 per stack.",
+      "rules": "Holy attuned: Cultivate all your Curse. Heal 30 per stack.",
       "keywords": [
         "curse",
         "cultivate",
@@ -782,7 +782,7 @@
     "domain": "holy",
     "stars": 4,
     "castTicks": 3,
-    "rules": "Holy attuned: Heal to full Health. Fragile: breaks after its first completed cast this duel.",
+    "rules": "Holy attuned: Heal to full Health. Fragile.",
     "keywords": [
       "fragile",
       "attunement"

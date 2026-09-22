@@ -24,7 +24,7 @@ The user authorized reasonable defaults for later revision.
 - “All” means all enemies for damage and all allies for healing. Each side has one fighter in this duel, so Starfall/Wild Growth affect that one target; Emberstorm's area upgrade is equivalent in the current 1v1 format.
 - “Regeneration — 10 damage” is treated as 10 healing, consistent with its HoT description.
 - Venom Bloom and Eruption keep their strongest multiplier for the rest of combat; recasting does not stack them. Flourish's extra healing lasts until the next Cycle. Celestial Alignment/Tidal Power are consumed by the next relevant spell/Echo.
-- Critical hits deal 150% total damage by default; Eruption changes this to 200%/250%. Combust adds 10 percentage points per charge, capped at 100%, and is not consumed. Each spell and its Echo share one seeded critical result.
+- Critical hits deal 150% total damage by default; Eruption changes this to 200%/250%. Potency adds 10 percentage points per charge, capped at 100%, and is not consumed. Each spell and its Echo share one seeded critical result.
 - Five Heat are consumed at the start of the next non-Instant spell, making it exactly 1T even through Slow. Instant remains Instant. Extra charges remain.
 - Five Tidecaller are reserved at cast start for one Echo. Charges gained by that spell cannot echo itself. Interrupt loses the reserved Echo. Per-charge payoffs read the remaining charges at resolution.
 - Duration buffs/debuffs lose one tick at the end of each following tick; Poison/Regeneration tick after Instant. Reapplications extend duration. Fury/Weaken/Resilience percentages do not stack.

@@ -68,6 +68,7 @@ export interface CombatMemory {
     nextFireFaster?: boolean;
     nextHolyEmpowered?: boolean;
     nextBonus?: number;
+    recklessCostPending?: boolean;
     nextRepeats?: number;
     nextFaster?: boolean;
     nextPoison?: number;
@@ -83,6 +84,7 @@ export interface Fighter {
     health: number;
     maxHealth: number;
     shield: number;
+    wardCapacity?: number;
     spells: SpellId[];
     spellXp?: number[];
     spellAcquired?: number[];
@@ -114,7 +116,7 @@ export interface CastEvent {
     details?: string[];
 }
 export interface DamageEvent {
-    target?: 'wizard' | 'imp';
+    target?: 'wizard' | 'imp' | 'ward';
     domain?: Domain;
     side: 'player' | 'bot';
     amount: number;
@@ -122,6 +124,7 @@ export interface DamageEvent {
     kind: 'hit' | 'dot' | 'cost';
 }
 export interface HealingEvent {
+    target?: 'wizard' | 'imp';
     side: 'player' | 'bot';
     amount: number;
     kind: 'heal' | 'hot';
@@ -174,6 +177,7 @@ export interface Lobby {
     winnerIds: string[];
 }
 export interface Session {
+    seed: number;
     level: number;
     trophies: number;
     spellAcquired?: number[];
@@ -223,6 +227,6 @@ export type Command = {
     type: 'next';
 };
 export interface GameGateway {
-    start(difficulty?: Difficulty): Promise<Session>;
+    start(difficulty?: Difficulty, seed?: number): Promise<Session>;
     execute(sessionId: string, expectedRevision: number, command: Command): Promise<Session>;
 }

@@ -19,7 +19,7 @@ After the final card, spend one full tick reshuffling and restart the same order
 - Trap deals 10 damage on each completed spell, once regardless of Echoes. Fury adds 10% outgoing damage; Weaken reduces outgoing damage by 20%.
 - Tidecaller: at five, the next started spell consumes five and receives a 50% Echo. Echo effects round to integers, do not recurse, and share the original critical roll. Tidal Power modifies the next Echo. Interrupted spells lose reserved charges.
 - Heat: at five, the next non-Instant spell consumes five and has exactly 1T cast time. It no longer boosts damage or triggers Empowered.
-- Combust: +10 percentage points of critical chance per persistent charge, capped at 100%. Seeded rolls make replays deterministic. Critical spells deal 150% damage by default; Eruption can set 200% or 250%.
+- Potency: +10 percentage points of critical chance per persistent charge, capped at 100%. Seeded rolls make replays deterministic. Critical spells deal 150% damage by default; Eruption can set 200% or 250%.
 - Generic Empowered remains +50% direct damage, healing and Ward. Critical damage is separate.
 - Poison/Regeneration durations add. Venom Bloom modifies Poison potency; Flourish modifies Regeneration healing until next Cycle. Cultivate consumes the specified over-time effect for its printed payoff: Cycle of Life heals remaining Regeneration, while Nightmare damages from remaining enemy Poison.
 - Oaths track the next full ticks and resolve rewards after normal combat. A new Oath replaces the old one; interruption and reshuffling do not cancel it. See the Holy notes for condition and reward timing.

@@ -3,7 +3,7 @@ import { deckXp, mergeCards, UPGRADE_XP } from '../game/upgrades';
 import { BOT_CONFIG, createBotStates, grantBotAugment, type BotStates } from '../game/botAI';
 import { createLobby, resolveLobbyRound } from '../game/tournament';
 import { offersFor, rerollCost } from '../game/shop';
-import { augmentOffers, shopIncome } from '../game/augments';
+import { augmentOffers, shopIncome, trashRefund } from '../game/augments';
 import { cloneSnapshot } from '../game/clone';
 import { spellAddReason, RULES, SPELLS } from '../game/engine';
 import type { Command, Difficulty, GameGateway, Session, SpellId } from '../game/model';
@@ -12,10 +12,11 @@ let nextSessionId = 0;
 export class LocalGameGateway implements GameGateway {
     private bots: BotStates = {};
     private session: Session | null = null;
-    async start(difficulty: Difficulty = BOT_CONFIG.defaultDifficulty as Difficulty): Promise<Session> {
+    async start(difficulty: Difficulty = BOT_CONFIG.defaultDifficulty as Difficulty, seed = Math.floor(Math.random() * 4294967296)): Promise<Session> {
         if (!Object.prototype.hasOwnProperty.call(BOT_CONFIG.difficulties, difficulty))
             throw new Error('Unknown difficulty.');
-        this.session = { level:1, trophies:0, difficulty, lobby: createLobby(), id: `local-${++nextSessionId}`, revision: 0, round: 1, gold: RULES.gold, spells: [], spellXp: [], spellAcquired: [], nextAcquisition: 0, ...offersFor(1, 0), rerolls: 0, augments: [], augmentOffers: [], phase: 'shop', wins: 0, losses: 0, battle: null };
+        if (!Number.isInteger(seed) || seed < 0 || seed > 0xffffffff) throw new Error('Run seed must be a 32-bit unsigned integer.');
+        this.session = { seed, level:1, trophies:0, difficulty, lobby: createLobby(), id: `local-${++nextSessionId}`, revision: 0, round: 1, gold: RULES.gold, spells: [], spellXp: [], spellAcquired: [], nextAcquisition: 0, ...offersFor(1, 0, [], [], seed), rerolls: 0, augments: [], augmentOffers: [], phase: 'shop', wins: 0, losses: 0, battle: null };
         this.bots = createBotStates(this.session.lobby.players.filter(p => !p.human).map(p => p.id));
         return cloneSnapshot(this.session);
     }
@@ -30,7 +31,7 @@ export class LocalGameGateway implements GameGateway {
         s.nextAcquisition = Math.max(s.nextAcquisition ?? 0, ...s.spellAcquired.map(n => n + 1));
         if (s.lobby.finished)
             throw new Error('This game is complete. Start a new game.');
-        const enterShop = () => { s.phase = 'shop'; s.round++; s.gold += shopIncome(s.augments); s.battle = null; s.rerolls = 0; s.augmentOffers = []; s.bonusMergeUsed = false; Object.assign(s, offersFor(s.round, 0, s.spells, s.augments)); };
+        const enterShop = () => { s.phase = 'shop'; s.round++; s.gold += shopIncome(s.augments); s.battle = null; s.rerolls = 0; s.augmentOffers = []; s.bonusMergeUsed = false; Object.assign(s, offersFor(s.round, 0, s.spells, s.augments, s.seed)); };
         if (command.type === 'chooseAugment') {
             if (s.phase !== 'augment' || !s.augmentOffers.includes(command.augment) || s.augments.includes(command.augment))
                 throw new Error('Augment unavailable.');
@@ -47,11 +48,11 @@ export class LocalGameGateway implements GameGateway {
                 const bots = cloneSnapshot(this.bots);
                 s.lobby.players.forEach((p, i) => {
                     if (!p.human) {
-                        grantBotAugment(bots[p.id], p.deck, s.round, i);
+                        grantBotAugment(bots[p.id], p.deck, s.round, i, s.seed);
                         p.augments = [...bots[p.id].augments];
                     }
                 });
-                s.augmentOffers = augmentOffers(s.round, s.augments);
+                s.augmentOffers = augmentOffers(s.round, s.augments, s.seed);
                 this.bots = bots;
                 if (s.augmentOffers.length) {
                     s.phase = 'augment';
@@ -72,7 +73,7 @@ export class LocalGameGateway implements GameGateway {
                     throw new Error('Not enough gold to reroll.');
                 s.gold -= cost;
                 s.rerolls++;
-                Object.assign(s, offersFor(s.round, s.rerolls, s.spells, s.augments));
+                Object.assign(s, offersFor(s.round, s.rerolls, s.spells, s.augments, s.seed));
             }
             else if (command.type === 'buy') {
                 const spell = SPELLS[command.spell];
@@ -91,10 +92,7 @@ export class LocalGameGateway implements GameGateway {
                 s.gold -= spell.price;
                 s.shop[shopSlot] = null;
                 if (command.target !== undefined) {
-                    const bonus = s.augments.includes('scholar') && !s.bonusMergeUsed ? 1 : 0;
-                    s.spellXp[command.target] = Math.min(UPGRADE_XP, s.spellXp[command.target] + 1 + bonus);
-                    if (bonus)
-                        s.bonusMergeUsed = true;
+                    s.spellXp[command.target] = Math.min(UPGRADE_XP, s.spellXp[command.target] + 1);
                 }
                 else {
                     s.spells.push(spell.id);
@@ -109,8 +107,7 @@ export class LocalGameGateway implements GameGateway {
             else if (command.type === 'trash') {
                 if (!Number.isInteger(command.index) || command.index < 0 || command.index >= s.spells.length)
                     throw new Error('Invalid spell position.');
-                if (s.augments.includes('recycler'))
-                    s.gold++;
+                s.gold += trashRefund(s.augments, SPELLS[s.spells[command.index]].stars);
                 s.spells.splice(command.index, 1);
                 s.spellXp.splice(command.index, 1);
                 s.spellAcquired.splice(command.index, 1);

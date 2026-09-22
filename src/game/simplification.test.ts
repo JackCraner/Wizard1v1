@@ -10,7 +10,7 @@ it('Poison and Regeneration use ten-point ticks with additive duration',()=>{
 });
 it('Ward keeps the larger shield and never adds repeated shields or augment shields',()=>{
  const b=duel(['barkskin','barkskin']);expect(b.frames[1].player.shield).toBe(40);expect(b.frames[2].player.shield).toBe(40);
- const a=fighter('A',['barkskin'],['opening-ward']);a.shield=90;expect(simulate(a,fighter('B',['current'])).frames[1].player.shield).toBe(90);
+ const a=fighter('A',['barkskin'],['opening-ward']);a.shield=110;expect(simulate(a,fighter('B',['current'])).frames[1].player.shield).toBe(110);
 });
 it('Channel caps at three matching copies and adds only the per-copy bonus',()=>{
  expect(channelPower(Array(4).fill('photosynthesis'),1)).toBe(3);expect(channelPower(Array(4).fill('photosynthesis'),3)).toBe(1);
@@ -57,9 +57,9 @@ it('Tidal Power changes the next Echo only; upgraded Crash doubles its Echo dama
 it('Heat consumes five for an exact 1T cast, without the former damage bonus',()=>{
  const a=fighter('A',['pyroblast']);a.statuses={heat:7,slow:3};const b=simulate(a,fighter('B',['current']));expect(b.frames[1].bot.health).toBe(350);expect(b.frames[1].player.statuses.heat).toBe(2);
 });
-it('Combust crits are seeded, capped, and use Eruption multipliers',()=>{
- const a=fighter('A',['spark']);a.statuses.combust=10;const b=simulate(a,fighter('B',['current']),77);expect(b.frames[1].bot.health).toBe(432);expect(b.frames[1].events[0].critical).toBe(true);expect(simulate(a,fighter('B',['current']),77)).toEqual(b);
- const eruption=fighter('A',['eruption','spark']);eruption.statuses.combust=10;expect(simulate(eruption,fighter('B',['current'])).frames[4].bot.health).toBe(410);
+it('Potency crits are seeded, capped, and use Eruption multipliers',()=>{
+ const a=fighter('A',['spark']);a.statuses.potency=10;const b=simulate(a,fighter('B',['current']),77);expect(b.frames[1].bot.health).toBe(432);expect(b.frames[1].events[0].critical).toBe(true);expect(simulate(a,fighter('B',['current']),77)).toEqual(b);
+ const eruption=fighter('A',['eruption','spark']);eruption.statuses.potency=10;expect(simulate(eruption,fighter('B',['current'])).frames[4].bot.health).toBe(410);
  const normal=duel(['spark']);expect(normal.frames[1].events[0].critical).toBe(false);
 });
 it('Sporeburst guarantees a crit on a debuff, and Starsurge counts unique debuffs',()=>{

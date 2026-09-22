@@ -34,7 +34,7 @@ export function channelPower(deck: readonly string[], index: number) {
     const groupStart = first + Math.floor((index - first) / 3) * 3;
     return Math.min(3, last - groupStart + 1);
 }
-export function deriveStats(augments: readonly string[] = [], level = 1): Stats { return { health: RULES.health + (level - 1) * RULES.healthPerLevel - (augments.includes('glass-cannon') ? 125 : 0) }; }
+export function deriveStats(augments: readonly string[] = [], level = 1): Stats { return { health: RULES.health + (level - 1) * RULES.healthPerLevel - (augments.includes('glass-cannon') ? 125 : 0) + (augments.includes('monster') ? 200 + (level - 1) * 100 : 0) }; }
 export function fighter(name: string, spells: SpellId[], augments: string[] = [], xp: number[] = [], acquired: number[] = [], level = 1): Fighter {
     validateDeck(spells);
     validateXp(spells, xp);
@@ -52,6 +52,7 @@ const durations = ['slow', 'trap', 'weaken', 'resilience', 'guard', 'fury', 'fra
 export function simulate(player: Fighter, bot: Fighter, seed = RULES.seed): Battle {
     const f = { player: cloneSnapshot(player), bot: cloneSnapshot(bot) };
     for (const unit of Object.values(f)) {
+        if (unit.shield > 0) unit.wardCapacity = Math.max(unit.shield, unit.wardCapacity ?? 0);
         validateDeck(unit.spells); validateXp(unit.spells, unit.spellXp); validateAugments(unit.augments);
     }
     let randomState = seed >>> 0;
@@ -64,20 +65,35 @@ export function simulate(player: Fighter, bot: Fighter, seed = RULES.seed): Batt
     let pendingSummons = {player:0,bot:0};
     const secondWind = new Set<Side>();
     const has = (side: Side, id: string) => f[side].augments.includes(id);
+    const damageMultiplier = (side: Side, unit = f[side]) => (has(side, 'glass-cannon') ? 1.3 : 1) * (unit.statuses.fury ? 1.1 : 1) * (unit.statuses.weaken ? .8 : 1) * (has(side, 'hot-stuff') && unit.statuses.heat ? 1.1 : 1);
     const attuned = (side: Side, domain: Domain) => f[side].attuned.includes(domain);
     const notify = (side: Side, status: string, text: string) => notices.push({ side, status, text });
     const addStatus = (side: Side, status: string, amount: number, source:Side=opposite(side)) => {
         if (amount > 0) {
+            const previous = f[side].statuses[status] ?? 0;
             f[side].statuses[status] = (f[side].statuses[status] ?? 0) + Math.round(amount);
             if(['poison','curse','trap'].includes(status)) (f[side].statusSources??={})[status]=source===side?'self':'enemy';
+            if (status === 'potency' && previous < 10 && f[side].statuses.potency >= 10 && has(side, 'criticality')) {
+                addStatus(side, 'heat', 15, side);
+                notify(side, 'heat', 'Criticality: +15 Heat');
+            }
         }
     };
-    const ward = (side: Side, amount: number) => { f[side].shield = Math.max(f[side].shield, Math.round(amount)); };
-    const heal = (side: Side, amount: number, kind: HealingEvent['kind'] = 'heal', source:Side=side) => {
+    const ward = (side: Side, amount: number) => {
+        const value = Math.round(amount), unit = f[side];
+        if (value >= unit.shield && value > 0) { unit.shield = value; unit.wardCapacity = value; }
+    };
+    const heal = (side: Side, amount: number, kind: HealingEvent['kind'] = 'heal', source:Side=side, direct = false) => {
         if (f[source].statuses.unholy) {
-            const power=(f[source].statuses.fury?1.1:1)*(f[source].statuses.weaken?.8:1)*(has(source,'glass-cannon')?1.3:1);
+            const power=damageMultiplier(source);
             queue(opposite(source), Math.max(0,amount)*power, kind==='hot'?'dot':'hit', 'holy', false, kind!=='hot', source);
             return;
+        }
+        if (direct && has(side, 'friendly-imp') && (f[side].imp?.health ?? 0) > 0) {
+            const imp = f[side].imp!;
+            const restored = Math.min(imp.maxHealth - imp.health, Math.max(0, Math.round(amount)));
+            imp.health += restored; amount -= restored;
+            if (restored) healingEvents.push({side, amount: restored, kind, target:'imp'});
         }
         const value = Math.min(f[side].maxHealth - f[side].health, Math.max(0, Math.round(amount)));
         f[side].health += value;
@@ -103,17 +119,25 @@ export function simulate(player: Fighter, bot: Fighter, seed = RULES.seed): Batt
             // Explicit Health costs ("lose Health") bypass protection. Damage does not.
             if (h.kind !== 'cost') {
                 if (unit.statuses.guard) { notify(h.side, 'guard', 'Guard prevented damage'); continue; }
-                if (unit.statuses.resilience || unit.memory.permanentResilience) amount *= .5;
+                if (has(h.side, 'hot-stuff') && unit.statuses.heat) amount *= 1.1;
+                if (unit.statuses.resilience || unit.memory.permanentResilience) amount *= has(h.side, 'tough-skin') ? .35 : .5;
                 if (unit.statuses.frailty) amount *= 1.2;
                 amount = Math.round(amount);
-                const absorbed = Math.min(unit.shield, amount);
+                const absorbed = h.kind === 'dot' ? 0 : Math.min(unit.shield, amount);
                 unit.shield -= absorbed; amount -= absorbed;
-                if (absorbed) notify(h.side, 'ward', 'Ward absorbed ' + absorbed);
+                if (absorbed) {
+                    damageEvents.push({ ...h, amount: absorbed, target: 'ward' });
+                    notify(h.side, 'ward', 'Ward absorbed ' + absorbed);
+                }
             }
             if (amount) {
                 const actual = Math.min(amount, Math.max(0,unit.health-totals[h.side]));
                 totals[h.side] += amount; damageEvents.push({ ...h, amount });
                 if(h.kind!=='cost') {tickDamage[h.side].taken += actual; if(h.source!==h.side) tickDamage[h.source].dealt += actual;}
+                if (actual > 0 && h.source === h.side) {
+                    if (has(h.side, 'blood-magic')) addStatus(h.side, 'regeneration', 3, h.side);
+                    if (has(h.side, 'blood-infusion')) addStatus(h.side, 'potency', 1, h.side);
+                }
             }
         }
         for (const side of sides) {
@@ -128,8 +152,8 @@ export function simulate(player: Fighter, bot: Fighter, seed = RULES.seed): Batt
     const startCycle = (side: Side) => {
         const unit = f[side]; unit.memory.cycleCasts = 0; unit.memory.oathCompleted = false;
         unit.memory.regenerationPower = 1;
-        if (unit.statuses.curse) queue(side, unit.statuses.curse * statusRules.curse.power, 'dot', 'affliction', false, false, unit.statusSources?.curse==='self'?side:opposite(side));
-        if (has(side, 'verdant-cycle') && attuned(side, 'nature')) addStatus(side, 'regeneration', 3);
+        if (unit.statuses.curse) { const source=unit.statusSources?.curse==='self'?side:opposite(side); queue(side, unit.statuses.curse * statusRules.curse.power * damageMultiplier(source), 'dot', 'affliction', false, false, source); }
+        if (unit.memory.recklessCostPending) { unit.memory.recklessCostPending=false; queue(side,25,'cost',undefined,false,false,side); notify(side,'cycle','Reckless Loop: lose 25 Health'); }
     };
     const advance = (side: Side) => {
         const unit = f[side]; unit.casting = null;
@@ -137,10 +161,12 @@ export function simulate(player: Fighter, bot: Fighter, seed = RULES.seed): Batt
         if(!active.length) {unit.cursor=0;unit.reshuffleRemaining=0;return;}
         if(next!==undefined) unit.cursor=next;
         else {
-            unit.cursor = active[0]; unit.reshuffleRemaining = has(side, 'reckless-loop') ? 0 : RULES.reshuffleTicks;
+            unit.cursor = active[0];
+            const curseSource = unit.statusSources?.curse === 'self' ? side : opposite(side);
+            unit.reshuffleRemaining = (has(side, 'reckless-loop') ? 0 : RULES.reshuffleTicks) + (unit.statuses.curse && has(curseSource, 'cursed') ? 1 : 0);
+            if (has(side, 'reckless-loop') && unit.reshuffleRemaining) unit.memory.recklessCostPending = true;
             if (!unit.reshuffleRemaining) {
                 unit.cycle++; startCycle(side); queue(side, 25, 'cost', undefined, false, false, side);
-                if (has(side, 'blood-magic')) unit.memory.nextBonus = 50;
                 notify(side, 'cycle', 'Reckless Loop: lose 25 Health');
             }
         }
@@ -167,8 +193,12 @@ export function simulate(player: Fighter, bot: Fighter, seed = RULES.seed): Batt
         unit.cursor = last; advance(side); notify(side, 'interrupt', 'Interrupted');
     };
     for (const side of sides) {
-        if (has(side, 'reservoir') && attuned(side, 'water')) addStatus(side, 'tidecaller', 3);
+        if (has(side, 'opening-ward')) ward(side, 100);
         startCycle(side);
+    }
+    for (const side of sides) if (has(side, 'toxic-start')) {
+        addStatus(opposite(side), 'poison', 5, side);
+        addStatus(opposite(side), 'curse', 1, side);
     }
     messages = ['Cast left to right. One tick to reshuffle.']; frames.push(snapshot(0));
     for (let tick = 1; tick <= RULES.maxTicks; tick++) {
@@ -195,19 +225,15 @@ export function simulate(player: Fighter, bot: Fighter, seed = RULES.seed): Batt
                 if (card.enemyStatusCast && f[opposite(side)].statuses[card.enemyStatusCast.status]) duration = card.enemyStatusCast.ticks;
                 if (unit.statuses.slow) duration++;
                 if (has(side, 'last-stand') && unit.health < unit.maxHealth * .3) duration--;
-                if (card.domain === 'fire' && unit.memory.nextFireFaster) { duration--; unit.memory.nextFireFaster = false; }
-                if ((card.castTicks ?? 1) >= 2 && unit.memory.nextFaster) { duration--; unit.memory.nextFaster = false; }
                 duration = Math.max(1, duration);
                 if ((unit.statuses.heat ?? 0) >= 5) {
                     unit.statuses.heat -= 5; duration = 1;
-                    if (has(side, 'inferno')) unit.memory.nextFireFaster = true;
                     notify(side, 'heat', card.name + ': spent 5 Heat for 1T');
                 }
             }
             let echoPower: number | undefined;
             if ((unit.statuses.tidecaller ?? 0) >= 5) {
                 unit.statuses.tidecaller -= 5; echoPower = unit.memory.nextEcho ?? .5; unit.memory.nextEcho = undefined;
-                if (has(side, 'blighted-tide') && attuned(side, 'nature') && f[opposite(side)].statuses.poison) addStatus(opposite(side), 'poison', 2);
                 notify(side, 'tidecaller', card.name + ': spent 5 Tidecaller');
             }
             unit.casting = { spell: card.id, index: unit.cursor, remaining: duration, totalTicks: duration, instant, echoPower };
@@ -230,24 +256,20 @@ export function simulate(player: Fighter, bot: Fighter, seed = RULES.seed): Batt
                 const effects = card.combat!.effects!.filter(e => effectEnabled(e, unit.attuned));
                 const previousDomain = memory.previousDomain;
                 const active=activeSpellIndices(unit);
-                const empowered = has(side, 'finisher') && cast.index === active.at(-1) || card.domain === 'holy' && !!memory.nextHolyEmpowered;
-                if (card.domain === 'holy') memory.nextHolyEmpowered = false;
                 const basePower = has(side, 'alternation') && previousDomain && previousDomain !== card.domain ? 1.2 : 1;
-                const damagePower = basePower * (has(side, 'glass-cannon') ? 1.3 : 1) * (has(side, 'first-strike') && cast.index === active[0] ? 1.5 : 1) * (has(side, 'heavy-hitter') && card.castTicks === 3 ? 1.4 : 1) * (has(side, 'crescendo') ? 1 + memory.cycleCasts * .05 : 1) * (before[side].statuses.fury ? 1.1 : 1) * (before[side].statuses.weaken ? .8 : 1);
+                const damagePower = basePower * damageMultiplier(side, before[side]) * (has(side, 'first-strike') && cast.index === active[0] ? 1.5 : 1) * (has(side, 'finisher') && cast.index === active.at(-1) ? 1.5 : 1) * (has(side, 'heavy-hitter') && card.castTicks === 3 ? 1.4 : 1) * (has(side, 'crescendo') ? 1 + memory.cycleCasts * .05 : 1);
                 const enemyDebuffs = NEGATIVE_STATUSES.filter(id => before[enemySide].statuses[id] > 0).length;
                 const canDamage = effects.some(e => e.kind === 'damage' || e.kind === 'consume' || e.kind === 'sacrificeImp');
-                const critical = canDamage && (effects.some(e => e.criticalIfDebuffed) && enemyDebuffs > 0 || random() < Math.min(1, (before[side].statuses.combust ?? 0) * .1));
+                const critical = canDamage && (effects.some(e => e.criticalIfDebuffed) && enemyDebuffs > 0 || random() < Math.min(1, (before[side].statuses.potency ?? 0) * .1));
                 const critPower = critical ? memory.critDamage ?? 1.5 : 1;
                 const nextDamage = memory.nextDamage ?? 1; memory.nextDamage = undefined;
                 const bonus = memory.nextBonus ?? 0; memory.nextBonus = 0;
                 let bonusUsed = false, selfHurt = false, direct = false;
                 let repeats = memory.nextRepeats ?? 1; memory.nextRepeats = undefined;
                 memory.casts++; memory.cycleCasts++;
-                if ((card.castTicks ?? 1) <= 1) { memory.fast++; memory.fastStreak++; } else memory.fastStreak = 0;
-                if (has(side, 'momentum') && memory.fastStreak >= 3) { memory.nextFaster = true; memory.fastStreak = 0; }
-                if (has(side, 'echo-chamber') && memory.casts % 4 === 0) repeats = Math.max(2, repeats);
-                const rapid = has(side, 'rapid-casting') && (card.castTicks ?? 1) <= 1 && memory.fast % 3 === 0;
-                const event: CastEvent = { side, spell: card.id, index: cast.index, status: 'cast', critical, xp: unit.spellXp?.[cast.index] ?? 0, repeats: repeats + (rapid ? 1 : 0) + (cast.echoPower !== undefined ? 1 : 0), details: [...(empowered ? ['Empowered'] : []), ...(critical ? ['Critical'] : []), ...(cast.instant ? ['Instant'] : []), ...(cast.echoPower !== undefined ? [`Echo ${cast.echoPower * 100}%`] : [])] };
+                if (card.castTicks === 1) { memory.fast++; memory.fastStreak++; } else memory.fastStreak = 0;
+                if (has(side, 'momentum') && memory.fastStreak >= 3) { addStatus(side, 'fury', 5, side); memory.fastStreak = 0; notify(side, 'fury', 'Momentum: +5 Fury'); }
+                const event: CastEvent = { side, spell: card.id, index: cast.index, status: 'cast', critical, xp: unit.spellXp?.[cast.index] ?? 0, repeats: repeats + (cast.echoPower !== undefined ? 1 : 0), details: [...(critical ? ['Critical'] : []), ...(cast.instant ? ['Instant'] : []), ...(cast.echoPower !== undefined ? [`Echo ${cast.echoPower * 100}%`] : [])] };
                 events.push(event);
                 const execute = (e: Effect, repeatPower: number, echo = false) => {
                     if (!effectEnabled(e, unit.attuned)) return;
@@ -271,30 +293,28 @@ export function simulate(player: Fighter, bot: Fighter, seed = RULES.seed): Batt
                     }
                     if (e.kind === 'damage') {
                         direct = true; if (!bonusUsed) { value += bonus; bonusUsed = true; }
-                        queue(enemySide, value * damagePower * repeatPower * nextDamage * critPower * (empowered ? 1.5 : 1), 'hit', card.domain, critical, true);
-                    } else if (e.kind === 'heal') heal(target, value * basePower * repeatPower * (empowered ? 1.5 : 1), 'heal', side);
-                    else if(e.kind==='healFull') heal(side, (unit.maxHealth-unit.health)*repeatPower);
-                    else if (e.kind === 'ward') ward(target, value * basePower * repeatPower * (empowered ? 1.5 : 1));
+                        queue(enemySide, value * damagePower * repeatPower * nextDamage * critPower, 'hit', card.domain, critical, true);
+                    } else if (e.kind === 'heal') heal(target, value * basePower * repeatPower, 'heal', side, true);
+                    else if(e.kind==='healFull') heal(side, ((unit.maxHealth-unit.health)+(has(side,'friendly-imp')&&(unit.imp?.health??0)>0?unit.imp!.maxHealth-unit.imp!.health:0))*repeatPower, 'heal', side, true);
+                    else if (e.kind === 'ward') ward(target, value * basePower * repeatPower);
                     else if (e.kind === 'selfDamage') { queue(side, (e.currentHealthFraction ? before[side].health * e.currentHealthFraction : value) * repeatPower, e.currentHealthFraction ? 'cost' : 'hit',undefined,false,false,side); selfHurt = true; }
                     else if (e.kind === 'status') {
                         let amount = value * repeatPower;
                         if (e.status === 'poison' && target !== side) {
-                            if (has(side, 'wild-garden') && attuned(side, 'nature')) amount += 2;
-                            if (has(side, 'wildfire') && attuned(side, 'nature') && attuned(side, 'fire') && (unit.statuses.heat ?? 0) > 0) queue(enemySide, 20 * (has(side, 'glass-cannon') ? 1.3 : 1), 'hit', 'fire');
+                            if (has(side, 'wildfire') && (unit.statuses.heat ?? 0) > 0) queue(enemySide, 20 * damageMultiplier(side, before[side]), 'hit', 'fire', false, true);
                         }
                         if (e.permanent && e.status === 'resilience') memory.permanentResilience = true;
                         else addStatus(target, e.status!, e.roundDown?Math.floor(amount):amount, side);
-                        if (e.status === 'slow' && has(side, 'venomous-hex') && attuned(side, 'nature')) addStatus(target, 'poison', 2 + (has(side, 'wild-garden') ? 2 : 0));
                     } else if (e.kind === 'cleanse') {
                         const active = NEGATIVE_STATUSES.filter(id => unit.statuses[id] > 0);
                         for (const id of active.slice(0, e.amount ?? active.length)) delete unit.statuses[id];
                     } else if (e.kind === 'multiply') unit.statuses[e.status!] = Math.round((unit.statuses[e.status!] ?? 0) * value);
                     else if (e.kind === 'cultivate') {
                         const duration = unit.statuses[e.status!] ?? 0; delete unit.statuses[e.status!];
-                        heal(side, duration * value * (e.status==='regeneration'?memory.regenerationPower ?? 1:1) * repeatPower);
+                        heal(side, duration * value * (e.status==='regeneration'?memory.regenerationPower ?? 1:1) * repeatPower, 'heal', side, true);
                     } else if (e.kind === 'consume') {
                         const amount = f[target].statuses[e.status!] ?? 0; delete f[target].statuses[e.status!]; direct = true;
-                        queue(enemySide, amount * value * damagePower * repeatPower * nextDamage * critPower * (empowered ? 1.5 : 1), 'hit', card.domain, critical, true);
+                        queue(enemySide, amount * value * damagePower * repeatPower * nextDamage * critPower, 'hit', card.domain, critical, true);
                     } else if (e.kind === 'summon') {
                         const amount = Math.round((e.currentHealthFraction ? before[side].health * e.currentHealthFraction * value : value) * repeatPower);
                         if (amount > 0) pendingSummons[side] += amount;
@@ -306,7 +326,7 @@ export function simulate(player: Fighter, bot: Fighter, seed = RULES.seed): Batt
                         if (unit.imp && unit.imp.health > 0) {
                             const amount = e.useMaxHealth ? unit.imp.maxHealth : unit.imp.health;
                             unit.imp.health = 0; unit.imp.guard = 0; direct = true;
-                            queue(enemySide, amount * damagePower * repeatPower * nextDamage * critPower * (empowered?1.5:1), 'hit', card.domain, critical, true);
+                            queue(enemySide, amount * damagePower * repeatPower * nextDamage * critPower, 'hit', card.domain, critical, true);
                             notify(side, 'summon', 'Imp sacrificed');
                         }
                     } else if (e.kind === 'spend' && (unit.statuses[e.status!] ?? 0) >= value) {
@@ -325,23 +345,16 @@ export function simulate(player: Fighter, bot: Fighter, seed = RULES.seed): Batt
                     }
                 };
                 for (let repeat = 0; repeat < Math.min(4, repeats); repeat++) for (const effect of effects) execute(effect, 1);
-                if (rapid) for (const effect of effects) execute(effect, .5);
                 if (cast.echoPower !== undefined) for (const effect of effects) execute(effect, cast.echoPower, true);
                 if ((unit.imp?.health??0)>0 && memory.impDamage) {
-                    queue(enemySide, memory.impDamage * (before[side].statuses.fury?1.1:1) * (before[side].statuses.weaken?.8:1), 'hit', 'affliction', false, true);
+                    queue(enemySide, memory.impDamage * damageMultiplier(side, before[side]), 'hit', 'affliction', false, true);
                     notify(side, 'summon', `Imp attacks for ${memory.impDamage}`);
                 }
-                if (has(side, 'opening-ward') && cast.index === active[0]) ward(side, 50);
-                if (has(side, 'patience') && card.castTicks === 3) ward(side, 80);
                 if (card.domain === 'water') {
                     memory.water++;
-                    if (has(side, 'rising-tide') && attuned(side, 'water') && memory.water % 3 === 0) addStatus(side, 'tidecaller', 2);
-                    if (has(side, 'purifying-rain') && previousDomain === 'holy') ward(side, 45);
                 }
-                if (has(side, 'steam') && attuned(side, 'fire') && previousDomain === 'water' && card.domain === 'fire') addStatus(side, 'heat', 2);
-                if (before[side].statuses.trap) queue(side, 10, 'dot');
+                if (before[side].statuses.trap) { const source=unit.statusSources?.trap==='self'?side:enemySide; queue(side,10*damageMultiplier(source),'dot',undefined,false,false,source); }
                 if (before[side].statuses.repetition && previousDomain === card.domain) queue(side, 25, 'cost');
-                if (selfHurt && has(side, 'blood-magic')) memory.nextBonus = 50;
                 memory.previousDomain = card.domain;
                 messages.push(unit.name + ' casts ' + card.name + '.');
                 if(effects.some(e=>e.kind==='fragile')) {
@@ -359,8 +372,9 @@ export function simulate(player: Fighter, bot: Fighter, seed = RULES.seed): Batt
         for (const side of sides) {
             const unit = f[side], sourceSide=unit.statusSources?.poison==='self'?side:opposite(side),source = f[sourceSide];
             if (unit.statuses.poison) {
-                const multiplier = (source.memory.poisonPower ?? 1) * (has(sourceSide, 'glass-cannon') ? 1.3 : 1) * (source.statuses.fury ? 1.1 : 1) * (source.statuses.weaken ? .8 : 1);
+                const multiplier = (source.memory.poisonPower ?? 1) * (has(sourceSide, 'super-poison') ? 2 : 1) * damageMultiplier(sourceSide);
                 queue(side, statusRules.poison.power * multiplier, 'dot', 'nature',false,false,sourceSide); unit.statuses.poison--;
+                if (unit.statuses.poison === 0 && has(sourceSide, 'bloom')) { queue(side, 60 * damageMultiplier(sourceSide), 'hit', undefined, false, true, sourceSide); notify(sourceSide, 'poison', 'Bloom: Poison expired'); }
             }
             if (unit.statuses.regeneration) { heal(side, statusRules.regeneration.power * (unit.memory.regenerationPower ?? 1), 'hot'); unit.statuses.regeneration--;
             }
@@ -387,8 +401,7 @@ export function simulate(player: Fighter, bot: Fighter, seed = RULES.seed): Batt
             delete unit.oath;
             if(oath.requirement==='deal100'&&(oath.progress??0)<100) {notify(side,'oath','Oath broken: less than 100 damage');continue;}
             unit.memory.oathCompleted=true;
-            if(has(side,'sacred-rhythm'))unit.memory.nextHolyEmpowered=true;
-            if(oath.reward==='damage')queue(opposite(side),oath.amount*(unit.statuses.fury?1.1:1)*(unit.statuses.weaken?.8:1)*(has(side,'glass-cannon')?1.3:1),'hit','holy',false,true,side);
+            if(oath.reward==='damage')queue(opposite(side),oath.amount*damageMultiplier(side),'hit','holy',false,true,side);
             else addStatus(oath.reward==='stun'?opposite(side):side,oath.reward,oath.amount,side);
             notify(side,'oath','Oath completed: '+oath.amount+' '+(oath.reward==='damage'?'damage':oath.reward+' ticks'));
         }

@@ -46,30 +46,29 @@ export function scoreBotDeck(deck: SpellId[], strategy: number, xp: number[] = [
         return sum + value / Math.max(1, c.castTicks ?? 1) + (xp[index] ?? 0) % 3 * 8 + (profile.domains.includes(c.domain) ? 8 : 0);
     }, 0);
 }
-export function grantBotAugment(state: BotState, deck: SpellId[], round: number, index: number) {
+export function grantBotAugment(state: BotState, deck: SpellId[], round: number, index: number, runSeed = RULES.seed) {
     if (round % RULES.augmentEvery || state.lastRewardRound >= round)
         return;
-    const offers = augmentOffers(round, state.augments, RULES.seed + index * 101);
-    offers.sort((a, b) => { const score = (id: string) => { const a = AUGMENTS[id]; return (a.domain ? deck.filter(id => SPELLS[id].domain === a.domain).length * 3 : 5) + (a.category === 'sequence' ? 2 : 0); }; return score(b) - score(a); });
+    const offers = augmentOffers(round, state.augments, runSeed + index * 101);
+    offers.sort((a, b) => { const score = (id: string) => { const a = AUGMENTS[id]; return 5 + (a.category === 'sequence' ? 2 : 0); }; return score(b) - score(a); });
     if (offers[0])
         state.augments.push(offers[0]);
     state.lastRewardRound = round;
 }
-export function prepareBot(state: BotState, previous: SpellId[], round: number, index: number, difficulty: Difficulty): SpellId[] {
+export function prepareBot(state: BotState, previous: SpellId[], round: number, index: number, difficulty: Difficulty, runSeed = RULES.seed): SpellId[] {
     if (state.lastPreparedRound === round)
         return [...previous];
     const level = config.difficulties[difficulty];
-    state.gold += RULES.gold + (state.augments.includes('deep-pockets') ? 4 : 0) + (round >= level.advantageStartsRound ? level.bonusGoldPerRound : 0);
+    state.gold += RULES.gold + (state.augments.includes('deep-pockets') ? 3 : 0) + (round >= level.advantageStartsRound ? level.bonusGoldPerRound : 0);
     let deck = [...previous], xp = deckXp(deck, state.spellXp), ages = cardAges(deck, state.spellAcquired);
     state.nextAcquisition = Math.max(state.nextAcquisition, ...ages.map(n => n + 1));
     const target = Math.min(RULES.slots, config.deck.openingSize + (round - 1) * config.deck.cardsPerRound);
-    let scholarUsed = false;
     for (let roll = 0; roll < level.shoppingRolls; roll++) {
         const fee = roll === 0 ? 0 : rerollCost(state.augments, roll - 1);
         if (state.gold < fee)
             break;
         state.gold -= fee;
-        const offers = offersFor(round, roll + index * 101, deck, state.augments).shop;
+        const offers = offersFor(round, roll + index * 101, deck, state.augments, runSeed).shop;
         for (const id of offers) {
             if (SPELLS[id].price > state.gold)
                 continue;
@@ -89,7 +88,7 @@ export function prepareBot(state: BotState, previous: SpellId[], round: number, 
             deck.forEach((owned, i) => {
                 if (owned === id && xp[i] < UPGRADE_XP) {
                     const next = [...xp];
-                    next[i] = Math.min(3, next[i] + (state.augments.includes("scholar") && !scholarUsed ? 2 : 1));
+                    next[i] = Math.min(3, next[i] + 1);
                     consider([...deck], next);
                 }
                 else if (canAddSpell(deck.filter((_, at) => at !== i), id)) {
@@ -105,8 +104,6 @@ export function prepareBot(state: BotState, previous: SpellId[], round: number, 
                 gain: number;
             } | null;
             if (choice && choice.gain > 0) {
-                if (choice.deck.length === deck.length && choice.deck.every((id, i) => id === deck[i]) && choice.xp.some((v, i) => v > xp[i]))
-                    scholarUsed = true;
                 ages = choice.deck.map((id, i) => id === deck[i] ? ages[i] : state.nextAcquisition++);
                 deck = choice.deck;
                 xp = choice.xp;

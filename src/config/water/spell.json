@@ -190,7 +190,7 @@
           }
         ]
       },
-      "rules": "Deal 10 damage. Apply Slow for 3 ticks. Water attuned: 5 instead.",
+      "rules": "Deal 10 damage. Apply Slow for 3 ticks. Water attuned: Apply Slow for 5 ticks instead.",
       "keywords": [
         "slow",
         "attunement"
@@ -214,7 +214,7 @@
         }
       ]
     },
-    "rules": "Gain Guard for 1 ticks.",
+    "rules": "Gain Guard for 1 tick.",
     "keywords": [
       "guard"
     ],
@@ -454,7 +454,7 @@
           }
         ]
       },
-      "rules": "Apply Slow for 3 ticks. Apply Weaken for 4 ticks. Water attuned: 6 instead.",
+      "rules": "Apply Slow for 3 ticks. Apply Weaken for 4 ticks. Water attuned: Apply Weaken for 6 ticks instead.",
       "keywords": [
         "slow",
         "weaken",
@@ -521,7 +521,7 @@
         }
       ]
     },
-    "rules": "Deal 50 damage. Water attuned: Channel: +10 damage per adjacent copy (max 3 copies).",
+    "rules": "Deal 50 damage. Water attuned: Channel: +10 damage per extra copy.",
     "keywords": [
       "channel",
       "attunement"
@@ -539,7 +539,7 @@
           }
         ]
       },
-      "rules": "Deal 50 damage. Water attuned: Channel: +20 damage per adjacent copy (max 3 copies).",
+      "rules": "Deal 50 damage. Water attuned: Channel: +20 damage per extra copy.",
       "keywords": [
         "channel",
         "attunement"

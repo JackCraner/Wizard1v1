@@ -64,15 +64,15 @@
 | Flare | 1 | 1T | Deal 55 damage. Take 10 damage. |
 | Char | 1 | 1T | Deal 30 damage. |
 | Ember | 2 | 1T | Gain 1 Heat. |
-| Scorch | 2 | 2T | Take 30 damage. Gain 2 Combust. |
+| Scorch | 2 | 2T | Take 30 damage. Gain 2 Potency. |
 | Lava Floor | 2 | 1T | Apply Trap for 3 ticks. |
 | Heatwave | 2 | 1T | Apply Weaken for 3 ticks. |
 | Firebolt | 2 | 1T | Deal 80 damage. |
 | Firefury | 2 | 1T | Gain Fury for 2 ticks. |
-| Overheat | 3 | 1T | Fire attuned: Lose half your current Health. Fire attuned: Gain 5 Combust. |
+| Overheat | 3 | 1T | Fire attuned: Lose half your current Health. Fire attuned: Gain 5 Potency. |
 | Flameshield | 3 | 2T | Gain 40 Ward. |
 | Emberstorm | 3 | 1T | Deal 120 damage. |
-| Immolate | 3 | 2T | Fire attuned: Deal 80 damage. Fire attuned: Gain 2 Combust. |
+| Immolate | 3 | 2T | Fire attuned: Deal 80 damage. Fire attuned: Gain 2 Potency. |
 | Flamekick | 3 | 1T | Deal 50 damage. |
 | Pyroblast | 4 | 3T | Deal 150 damage. |
 | Phoenix Renewal | 4 | 2T | Fire attuned: Heal 25 per Heat. |

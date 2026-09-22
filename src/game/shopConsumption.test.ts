@@ -10,7 +10,7 @@ it('consumes exactly the purchased slot, rejects rebuys and refills on reroll',a
  await expect(g.execute(s.id,s.revision,{type:'buy',spell,shopSlot:1})).rejects.toThrow('unavailable');
  await expect(g.execute(s.id,s.revision,{type:'buy',spell})).rejects.toThrow('unavailable');
  s=await g.execute(s.id,s.revision,{type:'reroll'});
- expect(s.gold).toBe(gold-1);expect(s.shop).toEqual(offersFor(1,1).shop);expect(s.shop.every(Boolean)).toBe(true);
+ expect(s.gold).toBe(gold-1);expect(s.shop).toEqual(offersFor(1,1,s.spells,s.augments,s.seed).shop);expect(s.shop.every(Boolean)).toBe(true);
 });
 it('consumes the chosen duplicate offer when buying XP, even with a full hand',async()=>{
  const g=new LocalGameGateway();await g.start();const raw=(g as unknown as {session:Session}).session;
@@ -30,5 +30,5 @@ it('does not consume offers or money on failed purchases and refills next round'
  await expect(g.execute(raw.id,0,{type:'buy',spell:'wrath',shopSlot:1})).rejects.toThrow('unavailable');
  let s=await g.execute(raw.id,0,{type:'buy',spell:'wrath',shopSlot:0});
  s=await g.execute(s.id,s.revision,{type:'fight'});s=await g.execute(s.id,s.revision,{type:'next'});
- expect(s.shop).toEqual(offersFor(2,0,s.spells).shop);expect(s.shop.every(Boolean)).toBe(true);
+ expect(s.shop).toEqual(offersFor(2,0,s.spells,s.augments,s.seed).shop);expect(s.shop.every(Boolean)).toBe(true);
 });
