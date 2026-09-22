@@ -289,7 +289,22 @@ npm run build            # Production JS/Hermes bundles for all platforms; NOT a
 npm run android:build    # Generate native Android project, compile and install debug app
 ```
 
-`android:build` uses Expo Prebuild and Gradle, and requires an installed Android SDK, compatible JDK, and emulator. It does not require an Expo account. Generated `android/` and `ios/` folders are ignored; app configuration belongs in `app.json`. The package identifier `com.wizard1v1.app` is a placeholder that can be changed before publishing. Store distribution and signed release builds are not configured yet.
+`android:build` uses Expo Prebuild and Gradle, and requires an installed Android SDK, compatible JDK, and emulator. It does not require an Expo account. The native `android/` project and Gradle wrapper are kept in the repository. Android build outputs, caches and machine-specific `local.properties` remain ignored. The generated `ios/` folder is ignored. Expo app configuration belongs in `app.json`; use Expo prebuild to synchronize native settings after changing it, and review generated changes. The package identifier `com.wizard1v1.app` is a placeholder that can be changed before publishing. Store distribution and signed release builds are not configured yet.
+
+### Build an APK with Gradle on Windows
+
+The native project includes `android/gradlew.bat` and its Gradle wrapper. No separate Gradle installation or Expo account is required. Install Node dependencies first and have Java 17+ and the Android SDK available.
+
+```powershell
+cd D:\Apps\Wizard1v1\android
+.\gradlew.bat assembleDebug
+```
+
+The APK is `android/app/build/outputs/apk/debug/app-debug.apk`. To build and install over USB debugging, use `./gradlew.bat installDebug`. Debug builds require Metro: run `npx expo start --localhost` from the project root and `adb reverse tcp:8081 tcp:8081` for a USB-connected phone.
+
+For standalone local testing, `./gradlew.bat assembleRelease` bundles JavaScript and assets and writes `android/app/build/outputs/apk/release/app-release.apk`. The generated release configuration currently uses the debug signing key, so it is for local testing; configure a private release key for store distribution.
+
+`android/local.properties` must point `sdk.dir` to your Android SDK, not your Java installation. On this machine it is `C:/Users/jackc/AppData/Local/Android/Sdk`. Keep this machine-specific file out of version control. `JAVA_HOME` points to the JDK. The wrapper downloads its configured Gradle version and build dependencies on the first run.
 
 ### Android connection troubleshooting
 

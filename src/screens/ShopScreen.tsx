@@ -1,18 +1,17 @@
 import {ItemIcon} from '../components/ItemInventory';
 import {equipmentKeywords,itemTotals} from '../game/equipment';
-import { cardAt, canMerge, UPGRADE_XP } from '../game/upgrades';
+import { cardAt } from '../game/upgrades';
 import { Leaderboard } from './Leaderboard';
 import { SpellCard, KeywordBoxes, RulesText, CardPreview } from '../components/cards/SpellCard';
-import { CARD_BY_ID, manaLabel, castLabel } from '../config/catalogue';
+import { SpellDialog, type SpellSelection } from './SpellDialog';
 import { CompactShop } from './CompactShop';
 import { useState } from 'react';
-import { Image, Modal, Platform, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
-import { spellAddReason, canAddSpell, channelPower, RULES, SPELLS } from '../game/engine';
+import { Modal, Platform, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { EQUIPMENT } from '../game/shop';
 import type { Command, EquipmentId, Session, SpellId } from '../game/model';
 
 const serif = Platform.select({ ios: 'Georgia', android: 'serif', default: 'Georgia, serif' });
-type Selection = { kind: 'shop'; id: SpellId; shopSlot:number } | { kind: 'hand'; index: number } | { kind: 'equipment'; id: EquipmentId; shopSlot?:number };
+type Selection = SpellSelection | { kind: 'equipment'; id: EquipmentId; shopSlot?:number };
 
 function Action({ label, onPress, disabled, green, small }: { label: string; onPress: () => void; disabled?: boolean; green?: boolean; small?: boolean }) {
   return <Pressable accessibilityRole="button" accessibilityLabel={label} accessibilityState={{ disabled: !!disabled }}
@@ -30,9 +29,6 @@ export function ShopScreen({ session, busy, act, onMenu, onLibrary, error }: {
 }) {
   const [leaderboard,setLeaderboard]=useState(false);
   const [selection, setSelection] = useState<Selection | null>(null);
-  const selectedSpell = selection?.kind === 'shop' ? selection.id : selection?.kind === 'hand' ? session.spells[selection.index] : undefined;
-  const selectedCard=selectedSpell?cardAt(selectedSpell,selection?.kind==='hand'?session.spellXp?.[selection.index]:0):undefined;
-  const domainBlocked = !!selectedSpell && !canAddSpell(session.spells, selectedSpell);
   const selectedItem = selection?.kind === 'equipment' ? EQUIPMENT[selection.id] : undefined;
   const inspect = (next: Selection) => setSelection(next);
 
@@ -41,23 +37,10 @@ export function ShopScreen({ session, busy, act, onMenu, onLibrary, error }: {
       inspectSpell={(id,shopSlot) => inspect({kind: 'shop', id,shopSlot})} inspectItem={(id,shopSlot) => inspect({kind: 'equipment', id,shopSlot})}
       inspectHand={index => inspect({kind: 'hand', index})} renderCard={(id, expanded,index) => <SpellFace id={id} shop={index===undefined} xp={index===undefined?0:session.spellXp?.[index]} small={!expanded} />} renderPreview={(id, height, width,index) => <CardPreview shop={index===undefined} card={cardAt(id,index===undefined?0:session.spellXp?.[index])} height={height} width={width} />} />
     <Leaderboard lobby={session.lobby} visible={leaderboard} onClose={()=>setLeaderboard(false)} />
-    <Modal visible={!!selection} transparent animationType="fade" onRequestClose={() => setSelection(null)}>
+    {selection && selection.kind !== 'equipment' && <SpellDialog selection={selection} session={session} busy={busy} error={error} act={act} onClose={() => setSelection(null)} onSelect={setSelection} />}
+    <Modal visible={selection?.kind === 'equipment'} transparent animationType="fade" onRequestClose={() => setSelection(null)}>
       <View style={s.modalShade}><View accessibilityViewIsModal style={s.modalPanel}>
-        {selectedSpell && <View style={{height:240,width:160,alignSelf:'center'}}><SpellFace id={selectedSpell} shop={selection?.kind==='shop'} xp={selectedCard?.xp} /></View>}
         <ScrollView style={{flex:1}} contentContainerStyle={{ gap: 10 }}>
-          {selectedSpell && <>
-            <Text style={s.modalTitle}>{SPELLS[selectedSpell].name}</Text><RulesText rules={selectedCard!.rules} keywords={selectedCard!.keywords} color="#d8c7aa" /><KeywordBoxes keywords={selectedCard!.keywords} /><Text style={s.caption}>{manaLabel(selectedCard!.mana)} mana · {castLabel(selectedCard!.castTicks)}</Text>
-            <Text style={s.caption}>{selectedCard?.upgraded?'Upgraded · maximum level':(selectedCard?.xp??0)+'/3 XP · Consume 3 matching copies to upgrade'}</Text>
-            {selectedCard && !selectedCard.upgraded && selectedCard.upgrade && <View style={{padding:10,backgroundColor:'#342817',gap:5}}><Text style={[s.caption,{color:'#f3ce77'}]}>AT 3 XP · {manaLabel(selectedCard.upgrade.mana)} mana · {castLabel(selectedCard.upgrade.castTicks)}</Text><RulesText rules={selectedCard.upgrade.rules} keywords={selectedCard.upgrade.keywords} color="#f1dfba" /></View>}
-            {selection?.kind === 'shop' ? <><Action green label={`Buy ${SPELLS[selectedSpell].name} · ${SPELLS[selectedSpell].price} gold`} disabled={busy || domainBlocked || session.gold < SPELLS[selectedSpell].price || session.spells.length >= RULES.slots}
-              onPress={() => { act({ type: 'buy', spell: selectedSpell,shopSlot:selection.shopSlot }); setSelection(null); }} />
-              {session.spells.map((id,i)=>id===selectedSpell&&(session.spellXp?.[i]??0)<UPGRADE_XP?<Action key={i} green label={'Buy & merge into slot '+(i+1)+' · '+((session.spellXp?.[i]??0)+1)+'/3 XP · '+SPELLS[id].price+' gold'} disabled={busy||session.gold<SPELLS[id].price} onPress={()=>{act({type:'buy',spell:id,target:i,shopSlot:selection.shopSlot});setSelection(null);}} />:null)}
-              {(domainBlocked || session.gold < SPELLS[selectedSpell].price || session.spells.length >= RULES.slots) && <Text style={s.caption}>{domainBlocked ? spellAddReason(session.spells,selectedSpell) : session.spells.length >= RULES.slots ? 'Your hand is full.' : 'Not enough gold.'}</Text>}</>
-              : selection?.kind === 'hand' && <>{session.spells.map((id,from)=>canMerge(session.spells,session.spellXp??[],from,selection.index)?<Action key={from} green label={'Consume slot '+(from+1)+' ('+(session.spellXp?.[from]??0)+' XP) → +1 XP here'} disabled={busy} onPress={()=>{act({type:'merge',from,to:selection.index});setSelection(null);}} />:null)}<Text style={s.caption}>Casting position {selection.index + 1} of {session.spells.length}</Text><Action label="Trash spell · no refund" disabled={busy} onPress={() => { act({type:'trash',index:selection.index}); setSelection(null); }} />{SPELLS[selectedSpell].keywords.includes('channel') && <Text style={s.caption}>Channel X = {channelPower(session.spells, selection.index)}</Text>}<View style={s.modalMoves}>
-                <View style={{ flex: 1 }}><Action label="← Earlier" disabled={busy || selection.index === 0} onPress={() => { act({ type: 'move', from: selection.index, to: selection.index - 1 }); setSelection(null); }} /></View>
-                <View style={{ flex: 1 }}><Action label="Later →" disabled={busy || selection.index === session.spells.length - 1} onPress={() => { act({ type: 'move', from: selection.index, to: selection.index + 1 }); setSelection(null); }} /></View>
-              </View></>}
-          </>}
           {selectedItem && <><View style={{alignItems:'center'}}><ItemIcon id={selectedItem.id} count={session.equipment[selectedItem.id]??0} size={52}/></View><Text style={s.modalTitle}>{selectedItem.name} {'★'.repeat(selectedItem.stars)}</Text><RulesText rules={selectedItem.description} keywords={equipmentKeywords(selectedItem)} color="#e0d0ad" fontSize={13} /><KeywordBoxes keywords={equipmentKeywords(selectedItem)} />
             <Text style={s.caption}>Owned ×{session.equipment[selectedItem.id]??0} · Unlimited copies · Persists for this run</Text>
             <Text style={{color:'#efcf87',fontWeight:'700'}}>Current bonus</Text>{itemTotals(selectedItem,session.equipment[selectedItem.id]??0).map((line,i)=><Text key={i} style={{color:'#c0deac',fontSize:12}}>{line}</Text>)}
@@ -84,7 +67,4 @@ const s = StyleSheet.create({
   modalShade: { flex: 1, justifyContent: 'center', alignItems: 'center', padding: 24, backgroundColor: 'rgba(0,0,0,.78)' },
   modalPanel: { width: '100%', maxWidth: 700, maxHeight: '94%', padding: 14, flexDirection:'row', gap:16, backgroundColor: '#211a13', borderWidth: 2, borderColor: '#ae8b50', borderRadius: 8 },
   modalTitle: { color: '#f1dfb6', fontFamily: serif, fontSize: 25, textAlign: 'center' },
-  modalBody: { color: '#d8c7aa', fontSize: 14, lineHeight: 22, textAlign: 'center' },
-  modalMoves: { flexDirection: 'row', gap: 10 },
-  largeItem: { color: '#ddbd7b', fontSize: 70, textAlign: 'center' },
 });
