@@ -28,21 +28,21 @@ it('consuming a partially trained copy still grants exactly one XP',()=>{
 });
 it('applies upgrades per card, with real upgraded damage, costs and cast times',()=>{
  const a=fighter('A',['wrath','wrath'],[],[3,0]);
- const battle=simulate(a,fighter('B',['splash']));
+ const battle=simulate(a,fighter('B',['riptide']));
  expect(battle.frames[1].bot.health).toBe(430);expect(battle.frames[2].bot.health).toBe(380);
  expect(battle.frames[1].events[0].xp).toBe(3);expect(a.spellXp).toEqual([3,0]);
- const pyro=simulate(fighter('A',['pyroblast'],[],[3]),fighter('B',['splash']));
+ const pyro=simulate(fighter('A',['pyroblast'],[],[3]),fighter('B',['riptide']));
  expect(pyro.frames[3].bot.health).toBe(248);
  expect(()=>fighter('bad',['wrath'],[],[4])).toThrow();
 });
 it('upgrades status duration while retaining the shared per-tick power',()=>{
- const battle=simulate(fighter('A',['moonfire'],[],[3]),fighter('B',['splash']));
+ const battle=simulate(fighter('A',['moonfire'],[],[3]),fighter('B',['riptide']));
  expect(battle.frames[1].bot.statuses.poison).toBe(6);
- expect(battle.frames[2].bot.statuses.poison).toBe(5);expect(battle.frames[2].bot.health).toBe(485);
+ expect(battle.frames[2].bot.statuses.poison).toBe(5);expect(battle.frames[2].bot.health).toBe(457);
 });
 it('runs every playable upgrade deterministically with legal resources',()=>{
  for(const id of PLAYABLE_SPELLS){
-  const a=fighter('A',[id],[],[UPGRADE_XP]),b=fighter('B',['splash']);
+  const a=fighter('A',[id],[],[UPGRADE_XP]),b=fighter('B',['riptide']);
   const result=simulate(a,b);expect(simulate(a,b)).toEqual(result);
   expect(result.frames.every(f=>[f.player,f.bot].every(p=>p.health>=0&&p.health<=p.maxHealth)),id).toBe(true);
  }

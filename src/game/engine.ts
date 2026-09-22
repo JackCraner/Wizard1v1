@@ -1,3 +1,4 @@
+import { attunedDomains, effectEnabled, KEYWORD_DOMAINS } from './attunement';
 import { CARDS, type Domain } from '../config/catalogue';
 import settings from '../config/rules.json';
 import statusRules from '../config/statuses.json';
@@ -11,22 +12,33 @@ export const PLAYABLE_SPELLS = CARDS.filter(c => c.combat?.effects && !c.combat.
 export const deckDomains = (deck: readonly string[]) => [...new Set(deck.map(id => SPELLS[id]?.domain).filter(Boolean))];
 export function domainProgress(deck: readonly string[]) { return deckDomains(deck).map(domain => ({ domain, count: deck.filter(id => SPELLS[id].domain === domain).length })).sort((a, b) => b.count - a.count); }
 export const canOfferSpell = (_deck: readonly string[], id: string) => PLAYABLE_SPELLS.includes(id);
-export function spellAddReason(deck: readonly string[], id: string): string | null { if (!canOfferSpell(deck, id))
-    return 'Spell unavailable.'; return SPELLS[id].keywords.includes('unique') && deck.includes(id) ? 'Unique: only one copy may be held. Merge a duplicate to upgrade.' : null; }
+export function spellAddReason(deck: readonly string[], id: string): string | null {
+    if (!canOfferSpell(deck, id))
+        return 'Spell unavailable.';
+    return SPELLS[id].keywords.includes('unique') && deck.includes(id) ? 'Unique: only one copy may be held. Merge a duplicate to upgrade.' : null;
+}
 export const canAddSpell = (deck: readonly string[], id: string) => spellAddReason(deck, id) === null;
-export function validateDeck(deck: readonly string[]) { if (!deck.length || deck.length > RULES.slots || deck.some(id => !PLAYABLE_SPELLS.includes(id)))
-    throw new Error('Loadout contains an unavailable spell or invalid slot count.'); if (deck.some((id, i) => SPELLS[id].keywords.includes('unique') && deck.indexOf(id) !== i))
-    throw new Error('Unique spell duplicated.'); }
-export function channelPower(deck: readonly string[], index: number) { let first = index, last = index; while (first > 0 && deck[first - 1] === deck[index])
-    first--; while (last + 1 < deck.length && deck[last + 1] === deck[index])
-    last++; return last - first + 1; }
+export function validateDeck(deck: readonly string[]) {
+    if (!deck.length || deck.length > RULES.slots || deck.some(id => !PLAYABLE_SPELLS.includes(id)))
+        throw new Error('Loadout contains an unavailable spell or invalid slot count.');
+    if (deck.some((id, i) => SPELLS[id].keywords.includes('unique') && deck.indexOf(id) !== i))
+        throw new Error('Unique spell duplicated.');
+}
+export function channelPower(deck: readonly string[], index: number) {
+    let first = index, last = index;
+    while (first > 0 && deck[first - 1] === deck[index])
+        first--;
+    while (last + 1 < deck.length && deck[last + 1] === deck[index])
+        last++;
+    return last - first + 1;
+}
 export function deriveStats(augments: readonly string[] = []): Stats { return { health: augments.includes('glass-cannon') ? 375 : RULES.health }; }
-export function fighter(name: string, spells: SpellId[], augments: string[] = [], xp: number[] = []): Fighter {
+export function fighter(name: string, spells: SpellId[], augments: string[] = [], xp: number[] = [], acquired: number[] = []): Fighter {
     validateDeck(spells);
     validateXp(spells, xp);
     validateAugments(augments);
     const { health } = deriveStats(augments);
-    return { name, spells: [...spells], spellXp: deckXp(spells, xp), augments: [...augments], health, maxHealth: health, shield: 0, statuses: {}, cursor: 0, cycle: 1, reshuffleRemaining: 0, casting: null, memory: { casts: 0, water: 0, fast: 0, fastStreak: 0, cycleCasts: 0 } };
+    return { name, attuned: attunedDomains(spells, acquired), spellAcquired: [...acquired], spells: [...spells], spellXp: deckXp(spells, xp), augments: [...augments], health, maxHealth: health, shield: 0, statuses: {}, cursor: 0, cycle: 1, reshuffleRemaining: 0, casting: null, memory: { casts: 0, water: 0, fast: 0, fastStreak: 0, cycleCasts: 0 } };
 }
 type Side = 'player' | 'bot';
 const sides: Side[] = ['player', 'bot'];
@@ -48,15 +60,23 @@ export function simulate(player: Fighter, bot: Fighter, _seed = RULES.seed): Bat
         kind: DamageEvent['kind'];
         domain?: Domain;
     }[] = [];
+    const attuned = (side: Side, domain: Domain) => f[side].attuned.includes(domain);
     const has = (side: Side, id: string) => f[side].augments.includes(id);
     const notify = (side: Side, status: string, text: string) => notices.push({ side, status, text });
-    const addStatus = (side: Side, status: string, amount: number) => { if (amount > 0)
-        f[side].statuses[status] = (f[side].statuses[status] ?? 0) + Math.round(amount); };
-    const heal = (side: Side, amount: number, kind: HealingEvent['kind'] = 'heal') => { const value = Math.min(f[side].maxHealth - f[side].health, Math.max(0, Math.round(amount))); f[side].health += value; if (value)
-        healingEvents.push({ side, amount: value, kind }); };
-    const power = (side: Side, domain: Domain) => { const count = f[side].spells.filter(id => SPELLS[id].domain === domain).length; return count >= RULES.mastery ? 1.2 : count >= RULES.affinity ? 1.1 : 1; };
-    const queue = (side: Side, amount: number, kind: DamageEvent['kind'] = 'hit', domain?: Domain) => { if (amount > 0)
-        hits.push({ side, amount: Math.round(amount), kind, domain }); };
+    const addStatus = (side: Side, status: string, amount: number) => {
+        if (amount > 0)
+            f[side].statuses[status] = (f[side].statuses[status] ?? 0) + Math.round(amount);
+    };
+    const heal = (side: Side, amount: number, kind: HealingEvent['kind'] = 'heal') => {
+        const value = Math.min(f[side].maxHealth - f[side].health, Math.max(0, Math.round(amount)));
+        f[side].health += value;
+        if (value)
+            healingEvents.push({ side, amount: value, kind });
+    };
+    const queue = (side: Side, amount: number, kind: DamageEvent['kind'] = 'hit', domain?: Domain) => {
+        if (amount > 0)
+            hits.push({ side, amount: Math.round(amount), kind, domain });
+    };
     const applyHits = () => {
         const totals = { player: 0, bot: 0 };
         for (const h of hits) {
@@ -88,23 +108,33 @@ export function simulate(player: Fighter, bot: Fighter, _seed = RULES.seed): Bat
         hits = [];
     };
     const secondWind = new Set<Side>();
-    const startCycle = (side: Side) => { const unit = f[side]; unit.memory.cycleCasts = 0; unit.memory.oathCompleted = false; if (has(side, 'verdant-cycle'))
-        addStatus(side, 'regeneration', 3); };
-    const advance = (side: Side) => { const unit = f[side]; unit.casting = null; unit.cursor++; if (unit.cursor >= unit.spells.length) {
-        unit.cursor = 0;
-        unit.reshuffleRemaining = has(side, 'reckless-loop') ? 0 : RULES.reshuffleTicks;
-        if (!unit.reshuffleRemaining) {
-            unit.cycle++;
-            startCycle(side);
-            queue(side, 25, 'cost');
-            if (has(side, 'blood-magic'))
-                unit.memory.nextBonus = 50;
-            notify(side, 'cycle', 'Reckless Loop: lose 25 Health');
+    const startCycle = (side: Side) => {
+        const unit = f[side];
+        unit.memory.cycleCasts = 0;
+        unit.memory.oathCompleted = false;
+        if (has(side, 'verdant-cycle') && attuned(side, 'nature'))
+            addStatus(side, 'regeneration', 3);
+    };
+    const advance = (side: Side) => {
+        const unit = f[side];
+        unit.casting = null;
+        unit.cursor++;
+        if (unit.cursor >= unit.spells.length) {
+            unit.cursor = 0;
+            unit.reshuffleRemaining = has(side, 'reckless-loop') ? 0 : RULES.reshuffleTicks;
+            if (!unit.reshuffleRemaining) {
+                unit.cycle++;
+                startCycle(side);
+                queue(side, 25, 'cost');
+                if (has(side, 'blood-magic'))
+                    unit.memory.nextBonus = 50;
+                notify(side, 'cycle', 'Reckless Loop: lose 25 Health');
+            }
         }
-    } };
+    };
     const snapshot = (tick: number, tickStart?: CombatFrame): CombatFrame => ({ tick, player: cloneSnapshot(f.player), bot: cloneSnapshot(f.bot), events: cloneSnapshot(events), damageEvents: cloneSnapshot(damageEvents), healingEvents: cloneSnapshot(healingEvents), notices: cloneSnapshot(notices), messages: [...messages], ...(tickStart ? { tickStart } : {}) });
     for (const side of sides) {
-        if (has(side, 'reservoir'))
+        if (has(side, 'reservoir') && attuned(side, 'water'))
             addStatus(side, 'tide', 3);
         startCycle(side);
     }
@@ -172,12 +202,13 @@ export function simulate(player: Fighter, bot: Fighter, _seed = RULES.seed): Bat
         for (const side of ready) {
             const unit = f[side], enemy = f[opposite(side)], memory = unit.memory, cast = unit.casting!;
             const card = cardAt(cast.spell, unit.spellXp?.[cast.index]);
-            const effects = card.combat!.effects!;
+            const allEffects = card.combat!.effects!;
+            const effects = allEffects.filter(e => effectEnabled(e, unit.attuned));
             const previousOath = unit.oath ? cloneSnapshot(unit.oath) : null;
             const previousDomain = memory.previousDomain;
-            if (has(side, 'steam') && previousDomain === 'water' && card.domain === 'fire')
+            if (has(side, 'steam') && attuned(side, 'fire') && previousDomain === 'water' && card.domain === 'fire')
                 addStatus(side, 'heat', 2);
-            const heat = unit.statuses.heat ?? 0;
+            const heat = attuned(side, "fire") ? unit.statuses.heat ?? 0 : 0;
             const heatEmpowered = card.domain === 'fire' && heat >= 5 && effects.some(e => e.empowered !== undefined);
             const empowered = heatEmpowered || has(side, 'finisher') && cast.index === unit.spells.length - 1 || card.domain === 'holy' && !!memory.nextHolyEmpowered;
             if (card.domain === 'holy')
@@ -189,7 +220,7 @@ export function simulate(player: Fighter, bot: Fighter, _seed = RULES.seed): Bat
                 notify(side, 'empowered', card.name + ' Empowered · spent 5 Heat');
             }
             const alternating = has(side, 'alternation') && previousDomain && previousDomain !== card.domain ? 1.2 : 1;
-            const basePower = power(side, card.domain) * alternating;
+            const basePower = alternating;
             let damagePower = basePower * (has(side, 'glass-cannon') ? 1.3 : 1) * (has(side, 'first-strike') && cast.index === 0 ? 1.5 : 1) * (has(side, 'heavy-hitter') && card.castTicks === 3 ? 1.4 : 1) * (has(side, 'crescendo') ? 1 + memory.cycleCasts * .05 : 1) * (card.domain === 'fire' ? 1 + heat * .04 : 1);
             const bonus = memory.nextBonus ?? 0;
             memory.nextBonus = 0;
@@ -214,29 +245,34 @@ export function simulate(player: Fighter, bot: Fighter, _seed = RULES.seed): Bat
                 if (e.kind === 'spend' && e.repeats && (unit.statuses.tide ?? 0) >= (e.amount ?? 0)) {
                     unit.statuses.tide -= e.amount!;
                     repeats = Math.max(repeats, e.repeats);
-                    if (has(side, 'blighted-tide') && enemy.statuses.poison)
+                    if (has(side, 'blighted-tide') && attuned(side, 'nature') && enemy.statuses.poison)
                         addStatus(opposite(side), 'poison', 2);
                 }
             const rapid = has(side, 'rapid-casting') && card.castTicks === 1 && memory.fast % 3 === 0;
             const event: CastEvent = { side, spell: card.id, index: cast.index, status: 'cast', critical: false, xp: unit.spellXp?.[cast.index] ?? 0, repeats: repeats + (rapid ? 1 : 0), details: empowered ? ['Empowered'] : [] };
             events.push(event);
             const execute = (effect: Effect, repeatPower: number) => {
+                if (!effectEnabled(effect, unit.attuned))
+                    return;
                 const e = effect, target = e.target === 'enemy' ? opposite(side) : side;
-                let value = e.amount ?? 0;
+                let value = e.bonusDomain && attuned(side, e.bonusDomain) ? e.attunedAmount ?? e.amount ?? 0 : e.amount ?? 0;
                 if (e.perStatus) {
+                    const required = KEYWORD_DOMAINS[e.perStatus.replace("enemy:", "")];
+                    if (required && !attuned(side, required))
+                        return;
                     const enemyStatus = e.perStatus.startsWith('enemy:');
                     value *= stateBefore[enemyStatus ? opposite(side) : side].statuses[e.perStatus.replace('enemy:', '')] ?? 0;
                 }
                 if (e.perChannel)
                     value *= channelPower(unit.spells, cast.index);
                 if (e.condition) {
-                    const yes = e.condition === 'poison' ? !!stateBefore[opposite(side)].statuses.poison : e.condition === 'oath' ? !!memory.oathCompleted : e.condition === 'previousFire' ? previousDomain === 'fire' : previousDomain === 'water';
+                    const yes = e.condition === 'poison' ? attuned(side, 'nature') && !!stateBefore[opposite(side)].statuses.poison : e.condition === 'oath' ? attuned(side, 'holy') && !!memory.oathCompleted : e.condition === 'previousFire' ? previousDomain === 'fire' : previousDomain === 'water';
                     if (yes)
                         value += e.bonus ?? 0;
                 }
                 if (e.kind === 'damage') {
                     direct = true;
-                    if (empowered && e.empowered !== undefined)
+                    if (empowered && e.empowered !== undefined && attuned(side, "fire"))
                         value = e.empowered;
                     else if (empowered)
                         value *= 1.5;
@@ -259,11 +295,11 @@ export function simulate(player: Fighter, bot: Fighter, _seed = RULES.seed): Bat
                     if (e.status === 'poison' && target !== side) {
                         if (has(side, 'wild-garden'))
                             amount += 2;
-                        if (has(side, 'wildfire') && (unit.statuses.heat ?? 0) > 0)
+                        if (has(side, 'wildfire') && attuned(side, 'fire') && (unit.statuses.heat ?? 0) > 0)
                             queue(opposite(side), 20 * (has(side, 'glass-cannon') ? 1.3 : 1), 'hit', 'fire');
                     }
                     addStatus(target, e.status!, amount);
-                    if (e.status === 'slow' && has(side, 'venomous-hex'))
+                    if (e.status === 'slow' && has(side, 'venomous-hex') && attuned(side, 'nature'))
                         addStatus(target, 'poison', 2 + (has(side, 'wild-garden') ? 2 : 0));
                 }
                 else if (e.kind === 'interrupt') {
@@ -291,7 +327,7 @@ export function simulate(player: Fighter, bot: Fighter, _seed = RULES.seed): Bat
                     unit.statuses[e.status!] -= value;
                     for (const child of e.effects ?? [])
                         execute(child, repeatPower);
-                    if (has(side, 'blighted-tide') && enemy.statuses.poison)
+                    if (has(side, 'blighted-tide') && attuned(side, 'nature') && enemy.statuses.poison)
                         addStatus(opposite(side), 'poison', 2);
                 }
                 else if (e.kind === 'oath')
@@ -330,7 +366,7 @@ export function simulate(player: Fighter, bot: Fighter, _seed = RULES.seed): Bat
                 unit.shield += 80;
             if (card.domain === 'water') {
                 memory.water++;
-                if (has(side, 'rising-tide') && memory.water % 3 === 0)
+                if (has(side, 'rising-tide') && attuned(side, 'water') && memory.water % 3 === 0)
                     addStatus(side, 'tide', 2);
                 if (has(side, 'purifying-rain') && previousDomain === 'holy')
                     unit.shield += 45;

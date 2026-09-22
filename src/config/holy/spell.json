@@ -153,10 +153,11 @@
     "domain": "holy",
     "stars": 2,
     "castTicks": 1,
-    "rules": "Oath: if your next 3 spells have a printed cast time of 2T or 3T, gain 150 Ward.",
+    "rules": "Holy attuned: Oath: complete 3 printed 2T/3T spells to gain 150 Ward.",
     "keywords": [
       "oath",
-      "ward"
+      "ward",
+      "attunement"
     ],
     "notes": [],
     "combat": {
@@ -169,16 +170,18 @@
             "requirement": "slow",
             "reward": "ward",
             "amount": 150
-          }
+          },
+          "requiresAttunement": "holy"
         }
       ]
     },
     "upgrade": {
       "castTicks": 1,
-      "rules": "Oath: if your next 3 spells have a printed cast time of 2T or 3T, gain 210 Ward.",
+      "rules": "Holy attuned: Oath: complete 3 printed 2T/3T spells to gain 210 Ward.",
       "keywords": [
         "oath",
-        "ward"
+        "ward",
+        "attunement"
       ],
       "combat": {
         "effects": [
@@ -190,7 +193,8 @@
               "requirement": "slow",
               "reward": "ward",
               "amount": 210
-            }
+            },
+            "requiresAttunement": "holy"
           }
         ]
       },
@@ -203,9 +207,10 @@
     "domain": "holy",
     "stars": 2,
     "castTicks": 1,
-    "rules": "Oath: if your next 3 spells deal no direct damage, heal 150.",
+    "rules": "Holy attuned: Oath: complete 3 spells with no direct damage to heal 150.",
     "keywords": [
-      "oath"
+      "oath",
+      "attunement"
     ],
     "notes": [],
     "combat": {
@@ -218,15 +223,17 @@
             "requirement": "peaceful",
             "reward": "heal",
             "amount": 150
-          }
+          },
+          "requiresAttunement": "holy"
         }
       ]
     },
     "upgrade": {
       "castTicks": 1,
-      "rules": "Oath: if your next 3 spells deal no direct damage, heal 210.",
+      "rules": "Holy attuned: Oath: complete 3 spells with no direct damage to heal 210.",
       "keywords": [
-        "oath"
+        "oath",
+        "attunement"
       ],
       "combat": {
         "effects": [
@@ -238,7 +245,8 @@
               "requirement": "peaceful",
               "reward": "heal",
               "amount": 210
-            }
+            },
+            "requiresAttunement": "holy"
           }
         ]
       },
@@ -293,36 +301,42 @@
     "domain": "holy",
     "stars": 3,
     "castTicks": 2,
-    "rules": "Deal 80 damage. Deal +70 if you completed an Oath this Cycle.",
+    "rules": "Deal 32 damage. Holy attuned: 80 instead. Holy attuned: +70 damage if you completed an Oath this Cycle.",
     "keywords": [
       "cycle",
-      "oath"
+      "oath",
+      "attunement"
     ],
     "notes": [],
     "combat": {
       "effects": [
         {
           "kind": "damage",
-          "amount": 80,
+          "amount": 32,
           "condition": "oath",
-          "bonus": 70
+          "bonus": 70,
+          "attunedAmount": 80,
+          "bonusDomain": "holy"
         }
       ]
     },
     "upgrade": {
       "castTicks": 2,
-      "rules": "Deal 112 damage. Deal +70 if you completed an Oath this Cycle.",
+      "rules": "Deal 45 damage. Holy attuned: 112 instead. Holy attuned: +70 damage if you completed an Oath this Cycle.",
       "keywords": [
         "cycle",
-        "oath"
+        "oath",
+        "attunement"
       ],
       "combat": {
         "effects": [
           {
             "kind": "damage",
-            "amount": 112,
+            "amount": 45,
             "condition": "oath",
-            "bonus": 70
+            "bonus": 70,
+            "attunedAmount": 112,
+            "bonusDomain": "holy"
           }
         ]
       },
@@ -335,30 +349,36 @@
     "domain": "holy",
     "stars": 4,
     "castTicks": 3,
-    "rules": "Gain 180 Ward.",
+    "rules": "Gain 72 Ward. Holy attuned: 180 instead.",
     "keywords": [
-      "ward"
+      "ward",
+      "attunement"
     ],
     "notes": [],
     "combat": {
       "effects": [
         {
           "kind": "ward",
-          "amount": 180
+          "amount": 72,
+          "attunedAmount": 180,
+          "bonusDomain": "holy"
         }
       ]
     },
     "upgrade": {
       "castTicks": 3,
-      "rules": "Gain 252 Ward.",
+      "rules": "Gain 101 Ward. Holy attuned: 252 instead.",
       "keywords": [
-        "ward"
+        "ward",
+        "attunement"
       ],
       "combat": {
         "effects": [
           {
             "kind": "ward",
-            "amount": 252
+            "amount": 101,
+            "attunedAmount": 252,
+            "bonusDomain": "holy"
           }
         ]
       },
@@ -371,46 +391,60 @@
     "domain": "holy",
     "stars": 5,
     "castTicks": 3,
-    "rules": "Deal 100 damage. Heal 100. Gain 80 Ward.",
+    "rules": "Deal 40 damage. Holy attuned: 100 instead. Heal 40. Holy attuned: 100 instead. Gain 32 Ward. Holy attuned: 80 instead.",
     "keywords": [
-      "ward"
+      "ward",
+      "attunement"
     ],
     "notes": [],
     "combat": {
       "effects": [
         {
           "kind": "damage",
-          "amount": 100
+          "amount": 40,
+          "attunedAmount": 100,
+          "bonusDomain": "holy"
         },
         {
           "kind": "heal",
-          "amount": 100
+          "amount": 40,
+          "attunedAmount": 100,
+          "bonusDomain": "holy"
         },
         {
           "kind": "ward",
-          "amount": 80
+          "amount": 32,
+          "attunedAmount": 80,
+          "bonusDomain": "holy"
         }
       ]
     },
     "upgrade": {
       "castTicks": 3,
-      "rules": "Deal 140 damage. Heal 100. Gain 80 Ward.",
+      "rules": "Deal 56 damage. Holy attuned: 140 instead. Heal 40. Holy attuned: 100 instead. Gain 32 Ward. Holy attuned: 80 instead.",
       "keywords": [
-        "ward"
+        "ward",
+        "attunement"
       ],
       "combat": {
         "effects": [
           {
             "kind": "damage",
-            "amount": 140
+            "amount": 56,
+            "attunedAmount": 140,
+            "bonusDomain": "holy"
           },
           {
             "kind": "heal",
-            "amount": 100
+            "amount": 40,
+            "attunedAmount": 100,
+            "bonusDomain": "holy"
           },
           {
             "kind": "ward",
-            "amount": 80
+            "amount": 32,
+            "attunedAmount": 80,
+            "bonusDomain": "holy"
           }
         ]
       },

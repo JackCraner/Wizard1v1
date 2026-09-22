@@ -1,3 +1,4 @@
+import {DOMAIN_COLORS} from '../game/attunement';
 import {AugmentInventory} from '../components/AugmentInventory';
 import { cardAt } from '../game/upgrades';
 import { useState } from 'react';
@@ -17,7 +18,7 @@ export function Leaderboard({lobby,visible,onClose}:{lobby:Lobby;visible:boolean
    {players.map((p,index)=><View key={p.id} style={[s.row,p.human&&s.you]}>
     <View style={s.header}><Text style={s.rank}>{index+1}</Text><Text style={[s.text,{flex:1,fontWeight:'700'}]}>{p.name}{p.human?' · You':''}{lobby.winnerIds.includes(p.id)?' · Winner':''}</Text><Text style={s.trophies}>🏆 {p.wins}/{lobby.winsToWin}</Text><Text style={s.muted}>{p.losses}L · {p.draws}D</Text></View>
     <Text style={s.muted}>{p.lastCombatRound===null?'No combat yet':`Last combat · Round ${p.lastCombatRound} · Cast order →`}</Text>
-    <AugmentInventory augments={p.augments} compact/><View style={s.deck}>{p.lastCombatDeck.map((id,i)=><Pressable key={i} accessibilityRole="button" accessibilityLabel={`${p.name}, spell ${i+1}: ${SPELLS[id].name}`} onPress={()=>setCard({id,xp:p.lastCombatXp?.[i]??0})} style={s.spell}><SpellIcon id={id} size={24}/><Text numberOfLines={2} style={s.spellName}>{i+1}. {SPELLS[id].name}{(p.lastCombatXp?.[i]??0)>=3?' ↑':''}</Text></Pressable>)}</View>
+    <Text style={s.muted}>Last combat attunement: {(p.lastCombatAttuned??[]).map((d,i)=><Text key={d} style={{color:DOMAIN_COLORS[d]}}>{i?" + ":""}{d}</Text>)}</Text><AugmentInventory augments={p.augments} compact/><View style={s.deck}>{p.lastCombatDeck.map((id,i)=><Pressable key={i} accessibilityRole="button" accessibilityLabel={`${p.name}, spell ${i+1}: ${SPELLS[id].name}`} onPress={()=>setCard({id,xp:p.lastCombatXp?.[i]??0})} style={s.spell}><SpellIcon id={id} size={24}/><Text numberOfLines={2} style={s.spellName}>{i+1}. {SPELLS[id].name}{(p.lastCombatXp?.[i]??0)>=3?' ↑':''}</Text></Pressable>)}</View>
    </View>)}
   </ScrollView>}
  </View></View></Modal>;

@@ -4,63 +4,63 @@
     "name": "Wild Garden",
     "category": "domain",
     "domain": "nature",
-    "description": "Poison you apply lasts 2 extra ticks."
+    "description": "Nature attuned: Poison you apply lasts 2 extra ticks."
   },
   {
     "id": "verdant-cycle",
     "name": "Verdant Cycle",
     "category": "domain",
     "domain": "nature",
-    "description": "At each Cycle start, gain 3 Regeneration."
+    "description": "Nature attuned: At each Cycle start, gain 3 Regeneration."
   },
   {
     "id": "rising-tide",
     "name": "Rising Tide",
     "category": "domain",
     "domain": "water",
-    "description": "Every third Water spell grants 2 Tide."
+    "description": "Water attuned: Every third Water spell grants 2 Tide."
   },
   {
     "id": "reservoir",
     "name": "Reservoir",
     "category": "domain",
     "domain": "water",
-    "description": "Start combat with 3 Tide."
+    "description": "Water attuned: Start combat with 3 Tide."
   },
   {
     "id": "inferno",
     "name": "Inferno",
     "category": "domain",
     "domain": "fire",
-    "description": "Spending 5 Heat makes your next Fire spell 1T faster."
+    "description": "Fire attuned: Spending 5 Heat makes your next Fire spell 1T faster."
   },
   {
     "id": "sacred-rhythm",
     "name": "Sacred Rhythm",
     "category": "domain",
     "domain": "holy",
-    "description": "Completing an Oath Empowers your next Holy spell."
+    "description": "Holy attuned: Completing an Oath Empowers your next Holy spell."
   },
   {
     "id": "venomous-hex",
     "name": "Venomous Hex",
     "category": "domain",
     "domain": "affliction",
-    "description": "Applying Slow also applies 2 Poison."
+    "description": "Nature attuned: Applying Slow also applies 2 Poison."
   },
   {
     "id": "steam",
     "name": "Steam",
     "category": "hybrid",
     "domain": "fire",
-    "description": "After Water, a Fire spell gains 2 Heat before resolving."
+    "description": "Fire attuned: After Water, a Fire spell gains 2 Heat before resolving."
   },
   {
     "id": "wildfire",
     "name": "Wildfire",
     "category": "hybrid",
     "domain": "nature",
-    "description": "Applying Poison while you have Heat also deals 20 damage."
+    "description": "Nature + Fire attuned: Applying Poison while you have Heat also deals 20 damage."
   },
   {
     "id": "purifying-rain",
@@ -74,7 +74,7 @@
     "name": "Blighted Tide",
     "category": "hybrid",
     "domain": "water",
-    "description": "Spending Tide extends existing enemy Poison by 2 ticks."
+    "description": "Nature + Water attuned: Spending Tide extends existing enemy Poison by 2 ticks."
   },
   {
     "id": "first-strike",

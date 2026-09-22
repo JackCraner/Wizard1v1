@@ -1,3 +1,5 @@
+import {AttunementPanel} from '../components/Attunement';
+import {attunedDomains} from '../game/attunement';
 import { ShopSpellPreview } from './ShopSpellPreview';
 import { LiftedPreview } from './LiftedPreview';
 import { liftedPreviewLayout, spellPreviewSize } from './liftedPreviewLayout';
@@ -9,7 +11,7 @@ import { ShopOffer, type ShopPointer } from './ShopOffer';
 import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react';
 import { Image, Platform, Pressable, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
-import { RULES, SPELLS, deriveStats, domainProgress, spellAddReason, canAddSpell } from '../game/engine';
+import { RULES, SPELLS, deriveStats, spellAddReason, canAddSpell } from '../game/engine';
 import { rerollCost } from '../game/shop';
 import type { Command, Session, SpellId } from '../game/model';
 import { DraggableHand } from './DraggableHand';
@@ -100,9 +102,7 @@ export function CompactShop({ session, busy, act, onMenu, onLibrary, onLeaderboa
 
         <View style={s.dock}>
           <View style={[s.player, { width: tight ? 106 : compact ? 124 : 172 }]}>
-            <Text style={s.sectionTitle}>AFFINITIES</Text>
-            {domainProgress(session.spells).filter(d=>d.count>=3).map(d=><Text key={d.domain} style={{color:'#d8e6ba',fontSize:10}}>{d.domain} {d.count} · {d.count>=5?'Mastery':'Affinity'}</Text>)}
-            {!domainProgress(session.spells).some(d=>d.count>=3)&&<Text style={s.bagHint}>3 matching spells: +10% power. 5: +20%.</Text>}
+            <AttunementPanel spells={session.spells} ages={session.spellAcquired}/>
             <AugmentInventory augments={session.augments} compact/>
             <Text style={s.bagHint}>Reward after round {Math.ceil(session.round/2)*2}</Text>
           </View>
@@ -110,7 +110,7 @@ export function CompactShop({ session, busy, act, onMenu, onLibrary, onLeaderboa
 
           <View ref={handRef} collapsable={false} onLayout={measure} style={[s.handDrop, offerDrag && (dropReason(offerDrag.id, offerDrag.target) ? s.blockedDrop : offerDrag.over ? s.activeDrop : s.readyDrop)]}>
             <View style={s.handHeading}><Text style={s.sectionTitle}>YOUR HAND <Text style={s.muted}>{session.spells.length}/{RULES.slots}</Text></Text><Text accessibilityLiveRegion="polite" numberOfLines={1} style={s.handHint}>{handMessage}</Text></View>
-            <DraggableHand xp={session.spellXp} onCardBounds={b => { cardBounds.current = b; }} mergeSpell={offerDrag && canMergeOffer(offerDrag.id) ? offerDrag.id : undefined} mergeTarget={offerDrag?.target !== undefined && !dropReason(offerDrag.id, offerDrag.target) ? offerDrag.target : undefined} height={handHeight} spells={session.spells} disabled={busy || !!offerDrag} renderCard={renderCard} renderPreview={(id, height, width, index) => <ShopSpellPreview id={id} height={height} width={width} xp={index === undefined ? 0 : session.spellXp?.[index]} />} onInspect={inspectHand} onMove={(from, to) => act({ type: 'move', from, to })} onDragging={handleDragging} onDragPoint={(x, y) => setOverTrash(hitsTrash(x, y))} onDrop={(index, x, y) => { setOverTrash(false); if (!hitsTrash(x, y)) return false; act({ type: 'trash', index }); return true; }} />
+            <DraggableHand xp={session.spellXp} onCardBounds={b => { cardBounds.current = b; }} mergeSpell={offerDrag && canMergeOffer(offerDrag.id) ? offerDrag.id : undefined} mergeTarget={offerDrag?.target !== undefined && !dropReason(offerDrag.id, offerDrag.target) ? offerDrag.target : undefined} height={handHeight} spells={session.spells} disabled={busy || !!offerDrag} renderCard={renderCard} renderPreview={(id, height, width, index) => <ShopSpellPreview domains={attunedDomains(session.spells,session.spellAcquired)} id={id} height={height} width={width} xp={index === undefined ? 0 : session.spellXp?.[index]} />} onInspect={inspectHand} onMove={(from, to) => act({ type: 'move', from, to })} onDragging={handleDragging} onDragPoint={(x, y) => setOverTrash(hitsTrash(x, y))} onDrop={(index, x, y) => { setOverTrash(false); if (!hitsTrash(x, y)) return false; act({ type: 'trash', index }); return true; }} />
           </View>
           <View style={[s.roundActions, { width: tight ? 102 : 134 }]}>
             <View ref={trashRef} collapsable={false} onLayout={measure} accessibilityLabel={"Trash drop target. Drag a hand card here to remove it. "+(session.augments.includes("recycler")?"Refund 1 gold.":"No gold refund.")} style={[s.trash, dragging && s.trashReady, dragging && overTrash && s.trashActive]}><Text style={s.trashText}>{dragging && overTrash ? 'Release to trash' : '×  Trash spell'}</Text><Text style={s.trashHint}>{session.augments.includes("recycler")?"Refund 1 gold":"No gold refund"}</Text></View>
@@ -121,7 +121,7 @@ export function CompactShop({ session, busy, act, onMenu, onLibrary, onLeaderboa
       </View>
     </SafeAreaView>
     {burst && <MergeBurst key={burst.key} x={burst.x} y={burst.y} upgraded={burst.upgraded} onDone={() => setBurst(null)} />}
-    {offerDrag && <LiftedPreview {...previewPosition} {...previewSize}>{<ShopSpellPreview id={offerDrag.id} shop {...previewSize} />}</LiftedPreview>}
+    {offerDrag && <LiftedPreview {...previewPosition} {...previewSize}>{<ShopSpellPreview domains={attunedDomains(session.spells,session.spellAcquired)} id={offerDrag.id} shop {...previewSize} />}</LiftedPreview>}
   </View>;
 }
 

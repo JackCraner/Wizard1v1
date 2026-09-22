@@ -5,34 +5,46 @@
     "domain": "water",
     "stars": 1,
     "castTicks": 1,
-    "rules": "Gain 1 Tide.",
+    "rules": "Deal 20 damage. Water attuned: Gain 1 Tide.",
     "keywords": [
-      "tide"
+      "tide",
+      "attunement"
     ],
     "notes": [],
     "combat": {
       "effects": [
         {
+          "kind": "damage",
+          "amount": 20
+        },
+        {
           "kind": "status",
           "status": "tide",
           "amount": 1,
-          "target": "self"
+          "target": "self",
+          "requiresAttunement": "water"
         }
       ]
     },
     "upgrade": {
       "castTicks": 1,
-      "rules": "Gain 2 Tide.",
+      "rules": "Deal 28 damage. Water attuned: Gain 2 Tide.",
       "keywords": [
-        "tide"
+        "tide",
+        "attunement"
       ],
       "combat": {
         "effects": [
           {
+            "kind": "damage",
+            "amount": 28
+          },
+          {
             "kind": "status",
             "status": "tide",
             "amount": 2,
-            "target": "self"
+            "target": "self",
+            "requiresAttunement": "water"
           }
         ]
       },
@@ -45,9 +57,10 @@
     "domain": "water",
     "stars": 1,
     "castTicks": 1,
-    "rules": "Deal 30 damage. Gain 1 Tide.",
+    "rules": "Deal 30 damage. Water attuned: Gain 1 Tide.",
     "keywords": [
-      "tide"
+      "tide",
+      "attunement"
     ],
     "notes": [],
     "combat": {
@@ -60,15 +73,17 @@
           "kind": "status",
           "status": "tide",
           "amount": 1,
-          "target": "self"
+          "target": "self",
+          "requiresAttunement": "water"
         }
       ]
     },
     "upgrade": {
       "castTicks": 1,
-      "rules": "Deal 42 damage. Gain 1 Tide.",
+      "rules": "Deal 42 damage. Water attuned: Gain 1 Tide.",
       "keywords": [
-        "tide"
+        "tide",
+        "attunement"
       ],
       "combat": {
         "effects": [
@@ -80,7 +95,8 @@
             "kind": "status",
             "status": "tide",
             "amount": 1,
-            "target": "self"
+            "target": "self",
+            "requiresAttunement": "water"
           }
         ]
       },
@@ -125,9 +141,10 @@
     "domain": "water",
     "stars": 2,
     "castTicks": 1,
-    "rules": "Spend 2 Tide: Heal 100.",
+    "rules": "Water attuned: Spend 2 Tide: Heal 100.",
     "keywords": [
-      "tide"
+      "tide",
+      "attunement"
     ],
     "notes": [],
     "combat": {
@@ -141,15 +158,17 @@
               "kind": "heal",
               "amount": 100
             }
-          ]
+          ],
+          "requiresAttunement": "water"
         }
       ]
     },
     "upgrade": {
       "castTicks": 1,
-      "rules": "Spend 2 Tide: Heal 150.",
+      "rules": "Water attuned: Spend 2 Tide: Heal 150.",
       "keywords": [
-        "tide"
+        "tide",
+        "attunement"
       ],
       "combat": {
         "effects": [
@@ -162,7 +181,8 @@
                 "kind": "heal",
                 "amount": 150
               }
-            ]
+            ],
+            "requiresAttunement": "water"
           }
         ]
       },
@@ -175,9 +195,10 @@
     "domain": "water",
     "stars": 2,
     "castTicks": 1,
-    "rules": "Deal 20 damage per Tide.",
+    "rules": "Water attuned: Deal 20 damage per Tide.",
     "keywords": [
-      "tide"
+      "tide",
+      "attunement"
     ],
     "notes": [],
     "combat": {
@@ -185,22 +206,25 @@
         {
           "kind": "damage",
           "amount": 20,
-          "perStatus": "tide"
+          "perStatus": "tide",
+          "requiresAttunement": "water"
         }
       ]
     },
     "upgrade": {
       "castTicks": 1,
-      "rules": "Deal 28 damage per Tide.",
+      "rules": "Water attuned: Deal 28 damage per Tide.",
       "keywords": [
-        "tide"
+        "tide",
+        "attunement"
       ],
       "combat": {
         "effects": [
           {
             "kind": "damage",
             "amount": 28,
-            "perStatus": "tide"
+            "perStatus": "tide",
+            "requiresAttunement": "water"
           }
         ]
       },
@@ -261,44 +285,52 @@
     "domain": "water",
     "stars": 3,
     "castTicks": 2,
-    "rules": "Deal 60 damage. Spend 2 Tide: cast this spell 2 times.",
+    "rules": "Deal 24 damage. Water attuned: 60 instead. Water attuned: Spend 2 Tide: resolve this spell 2 times.",
     "keywords": [
       "tide",
-      "repeat"
+      "repeat",
+      "attunement"
     ],
     "notes": [],
     "combat": {
       "effects": [
         {
           "kind": "damage",
-          "amount": 60
+          "amount": 24,
+          "attunedAmount": 60,
+          "bonusDomain": "water"
         },
         {
           "kind": "spend",
           "status": "tide",
           "amount": 2,
-          "repeats": 2
+          "repeats": 2,
+          "requiresAttunement": "water"
         }
       ]
     },
     "upgrade": {
       "castTicks": 2,
-      "rules": "Deal 84 damage. Spend 2 Tide: cast this spell 2 times.",
+      "rules": "Deal 34 damage. Water attuned: 84 instead. Water attuned: Spend 2 Tide: resolve this spell 2 times.",
       "keywords": [
         "tide",
-        "repeat"
+        "repeat",
+        "attunement"
       ],
       "combat": {
         "effects": [
           {
             "kind": "damage",
-            "amount": 84
+            "amount": 34,
+            "attunedAmount": 84,
+            "bonusDomain": "water"
           },
           {
             "kind": "spend",
             "status": "tide",
             "amount": 2,
-            "repeats": 2
+            "repeats": 2,
+            "requiresAttunement": "water"
           }
         ]
       },
@@ -311,16 +343,19 @@
     "domain": "water",
     "stars": 3,
     "castTicks": 2,
-    "rules": "Deal 80 damage. Interrupt the enemy’s current spell.",
+    "rules": "Deal 32 damage. Water attuned: 80 instead. Interrupt the enemy’s current spell.",
     "keywords": [
-      "interrupt"
+      "interrupt",
+      "attunement"
     ],
     "notes": [],
     "combat": {
       "effects": [
         {
           "kind": "damage",
-          "amount": 80
+          "amount": 32,
+          "attunedAmount": 80,
+          "bonusDomain": "water"
         },
         {
           "kind": "interrupt"
@@ -329,15 +364,18 @@
     },
     "upgrade": {
       "castTicks": 2,
-      "rules": "Deal 112 damage. Interrupt the enemy’s current spell.",
+      "rules": "Deal 45 damage. Water attuned: 112 instead. Interrupt the enemy’s current spell.",
       "keywords": [
-        "interrupt"
+        "interrupt",
+        "attunement"
       ],
       "combat": {
         "effects": [
           {
             "kind": "damage",
-            "amount": 112
+            "amount": 45,
+            "attunedAmount": 112,
+            "bonusDomain": "water"
           },
           {
             "kind": "interrupt"
@@ -353,17 +391,20 @@
     "domain": "water",
     "stars": 4,
     "castTicks": 3,
-    "rules": "Deal 120 damage. Spend 3 Tide: Gain 100 Ward.",
+    "rules": "Deal 48 damage. Water attuned: 120 instead. Water attuned: Spend 3 Tide: Gain 100 Ward.",
     "keywords": [
       "tide",
-      "ward"
+      "ward",
+      "attunement"
     ],
     "notes": [],
     "combat": {
       "effects": [
         {
           "kind": "damage",
-          "amount": 120
+          "amount": 48,
+          "attunedAmount": 120,
+          "bonusDomain": "water"
         },
         {
           "kind": "spend",
@@ -374,22 +415,26 @@
               "kind": "ward",
               "amount": 100
             }
-          ]
+          ],
+          "requiresAttunement": "water"
         }
       ]
     },
     "upgrade": {
       "castTicks": 3,
-      "rules": "Deal 168 damage. Spend 3 Tide: Gain 100 Ward.",
+      "rules": "Deal 67 damage. Water attuned: 168 instead. Water attuned: Spend 3 Tide: Gain 100 Ward.",
       "keywords": [
         "tide",
-        "ward"
+        "ward",
+        "attunement"
       ],
       "combat": {
         "effects": [
           {
             "kind": "damage",
-            "amount": 168
+            "amount": 67,
+            "attunedAmount": 168,
+            "bonusDomain": "water"
           },
           {
             "kind": "spend",
@@ -400,7 +445,8 @@
                 "kind": "ward",
                 "amount": 100
               }
-            ]
+            ],
+            "requiresAttunement": "water"
           }
         ]
       },
@@ -413,30 +459,34 @@
     "domain": "water",
     "stars": 5,
     "castTicks": 2,
-    "rules": "Your next spell repeats 3 times in total.",
+    "rules": "Water attuned: Your next spell resolves 3 times.",
     "keywords": [
-      "repeat"
+      "repeat",
+      "attunement"
     ],
     "notes": [],
     "combat": {
       "effects": [
         {
           "kind": "repeatNext",
-          "amount": 3
+          "amount": 3,
+          "requiresAttunement": "water"
         }
       ]
     },
     "upgrade": {
       "castTicks": 2,
-      "rules": "Your next spell repeats 4 times in total.",
+      "rules": "Water attuned: Your next spell resolves 4 times.",
       "keywords": [
-        "repeat"
+        "repeat",
+        "attunement"
       ],
       "combat": {
         "effects": [
           {
             "kind": "repeatNext",
-            "amount": 4
+            "amount": 4,
+            "requiresAttunement": "water"
           }
         ]
       },

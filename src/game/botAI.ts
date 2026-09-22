@@ -1,3 +1,4 @@
+import { cardAges, attunedDomains, effectEnabled } from './attunement';
 import config from '../config/bots.json';
 import { cardAt, deckXp, UPGRADE_XP } from './upgrades';
 import { AUGMENTS, augmentOffers } from './augments';
@@ -7,6 +8,8 @@ import type { Difficulty, SpellId } from './model';
 export const BOT_CONFIG = config;
 export type BotState = {
     spellXp: number[];
+    spellAcquired: number[];
+    nextAcquisition: number;
     gold: number;
     strategy: number;
     augments: string[];
@@ -14,21 +17,30 @@ export type BotState = {
     lastRewardRound: number;
 };
 export type BotStates = Record<string, BotState>;
-export function createBotStates(ids: string[]): BotStates { return Object.fromEntries(ids.map((id, i) => [id, { spellXp: [], gold: 0, strategy: i % config.strategies.length, augments: [], lastPreparedRound: 0, lastRewardRound: 0 }])); }
-export function scoreBotDeck(deck: SpellId[], strategy: number, xp: number[] = []): number {
+export function createBotStates(ids: string[]): BotStates { return Object.fromEntries(ids.map((id, i) => [id, { spellXp: [], spellAcquired: [], nextAcquisition: 0, gold: 0, strategy: i % config.strategies.length, augments: [], lastPreparedRound: 0, lastRewardRound: 0 }])); }
+export function scoreBotDeck(deck: SpellId[], strategy: number, xp: number[] = [], acquired: number[] = []): number {
     const profile = config.strategies[strategy];
-    return deck.reduce((sum, id, index) => { const c = cardAt(id, xp[index]); let value = 0; for (const e of c.combat?.effects ?? []) {
-        if (e.kind === 'damage')
-            value += (e.amount ?? 0) + (e.empowered && deck.some(x => SPELLS[x].keywords.includes('heat')) ? 40 : 0);
-        if (e.kind === 'heal' || e.kind === 'ward')
-            value += (e.amount ?? 0) * .6;
-        if (e.kind === 'status')
-            value += (e.amount ?? 0) * (e.status === 'poison' ? 12 : e.status === 'regeneration' ? 8 : e.status === 'heat' || e.status === 'tide' ? 15 : 12);
-        if (['consume', 'spend', 'multiply', 'oath', 'repeatNext', 'interrupt'].includes(e.kind))
-            value += 40;
-        if (e.kind === 'selfDamage')
-            value -= (e.amount ?? 0) * .4;
-    } return sum + value / (c.castTicks ?? 1) + (xp[index] ?? 0) % 3 * 8 + (profile.domains.includes(c.domain) ? 8 : 0); }, 0);
+    const attuned = attunedDomains(deck, acquired);
+    return deck.reduce((sum, id, index) => {
+        const c = cardAt(id, xp[index]);
+        let value = 0;
+        for (const e of c.combat?.effects ?? []) {
+            if (!effectEnabled(e, attuned))
+                continue;
+            const amount = e.bonusDomain && attuned.includes(e.bonusDomain) ? e.attunedAmount ?? e.amount ?? 0 : e.amount ?? 0;
+            if (e.kind === 'damage')
+                value += amount + (e.empowered && attuned.includes('fire') && deck.some(x => SPELLS[x].keywords.includes('heat')) ? 40 : 0);
+            if (e.kind === 'heal' || e.kind === 'ward')
+                value += amount * .6;
+            if (e.kind === 'status')
+                value += amount * (e.status === 'poison' ? 12 : e.status === 'regeneration' ? 8 : e.status === 'heat' || e.status === 'tide' ? 15 : 12);
+            if (['consume', 'spend', 'multiply', 'oath', 'repeatNext', 'interrupt'].includes(e.kind))
+                value += 40;
+            if (e.kind === 'selfDamage')
+                value -= amount * .4;
+        }
+        return sum + value / (c.castTicks ?? 1) + (xp[index] ?? 0) % 3 * 8 + (profile.domains.includes(c.domain) ? 8 : 0);
+    }, 0);
 }
 export function grantBotAugment(state: BotState, deck: SpellId[], round: number, index: number) {
     if (round % RULES.augmentEvery || state.lastRewardRound >= round)
@@ -44,7 +56,8 @@ export function prepareBot(state: BotState, previous: SpellId[], round: number, 
         return [...previous];
     const level = config.difficulties[difficulty];
     state.gold += RULES.gold + (state.augments.includes('deep-pockets') ? 4 : 0) + (round >= level.advantageStartsRound ? level.bonusGoldPerRound : 0);
-    let deck = [...previous], xp = deckXp(deck, state.spellXp);
+    let deck = [...previous], xp = deckXp(deck, state.spellXp), ages = cardAges(deck, state.spellAcquired);
+    state.nextAcquisition = Math.max(state.nextAcquisition, ...ages.map(n => n + 1));
     const target = Math.min(RULES.slots, config.deck.openingSize + (round - 1) * config.deck.cardsPerRound);
     let scholarUsed = false;
     for (let roll = 0; roll < level.shoppingRolls; roll++) {
@@ -61,22 +74,27 @@ export function prepareBot(state: BotState, previous: SpellId[], round: number, 
                 xp: number[];
                 gain: number;
             } | null = null;
-            const before = scoreBotDeck(deck, state.strategy, xp);
-            const consider = (next: string[], nextXp: number[]) => { const gain = scoreBotDeck(next, state.strategy, nextXp) - before; if (!best || gain > best.gain)
-                best = { deck: next, xp: nextXp, gain }; };
+            const before = scoreBotDeck(deck, state.strategy, xp, ages);
+            const consider = (next: string[], nextXp: number[]) => {
+                const gain = scoreBotDeck(next, state.strategy, nextXp, next.map((id, i) => id === deck[i] ? ages[i] : state.nextAcquisition)) - before;
+                if (!best || gain > best.gain)
+                    best = { deck: next, xp: nextXp, gain };
+            };
             if (deck.length < target && canAddSpell(deck, id))
                 consider([...deck, id], [...xp, 0]);
-            deck.forEach((owned, i) => { if (owned === id && xp[i] < UPGRADE_XP) {
-                const next = [...xp];
-                next[i] = Math.min(3, next[i] + (state.augments.includes("scholar") && !scholarUsed ? 2 : 1));
-                consider([...deck], next);
-            }
-            else if (canAddSpell(deck.filter((_, at) => at !== i), id)) {
-                const next = [...deck], nextXp = [...xp];
-                next[i] = id;
-                nextXp[i] = 0;
-                consider(next, nextXp);
-            } });
+            deck.forEach((owned, i) => {
+                if (owned === id && xp[i] < UPGRADE_XP) {
+                    const next = [...xp];
+                    next[i] = Math.min(3, next[i] + (state.augments.includes("scholar") && !scholarUsed ? 2 : 1));
+                    consider([...deck], next);
+                }
+                else if (canAddSpell(deck.filter((_, at) => at !== i), id)) {
+                    const next = [...deck], nextXp = [...xp];
+                    next[i] = id;
+                    nextXp[i] = 0;
+                    consider(next, nextXp);
+                }
+            });
             const choice = best as {
                 deck: string[];
                 xp: number[];
@@ -85,6 +103,7 @@ export function prepareBot(state: BotState, previous: SpellId[], round: number, 
             if (choice && choice.gain > 0) {
                 if (choice.deck.length === deck.length && choice.deck.every((id, i) => id === deck[i]) && choice.xp.some((v, i) => v > xp[i]))
                     scholarUsed = true;
+                ages = choice.deck.map((id, i) => id === deck[i] ? ages[i] : state.nextAcquisition++);
                 deck = choice.deck;
                 xp = choice.xp;
                 state.gold -= SPELLS[id].price;
@@ -94,12 +113,14 @@ export function prepareBot(state: BotState, previous: SpellId[], round: number, 
     if (!deck.length) {
         deck = ['wrath'];
         xp = [0];
+        ages = [state.nextAcquisition++];
         state.gold--;
     }
     const priority = (id: string) => { const e = SPELLS[id].combat?.effects ?? []; return e.some(e => e.kind === 'oath') ? 0 : e.some(e => e.kind === 'status') ? 1 : e.some(e => e.kind === 'consume' || e.empowered) ? 3 : 2; };
-    const ordered = deck.map((id, i) => ({ id, xp: xp[i] })).sort((a, b) => priority(a.id) - priority(b.id));
+    const ordered = deck.map((id, i) => ({ id, xp: xp[i], age: ages[i] })).sort((a, b) => priority(a.id) - priority(b.id));
     state.spellXp = ordered.map(x => x.xp);
+    state.spellAcquired = ordered.map(x => x.age);
     state.lastPreparedRound = round;
     return ordered.map(x => x.id);
 }
-export function botFighter(name: string, deck: SpellId[], state: BotState) { return fighter(name, deck, state.augments, state.spellXp); }
+export function botFighter(name: string, deck: SpellId[], state: BotState) { return fighter(name, deck, state.augments, state.spellXp, state.spellAcquired); }

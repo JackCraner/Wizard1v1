@@ -37,9 +37,10 @@
     "domain": "fire",
     "stars": 1,
     "castTicks": 1,
-    "rules": "Deal 30 damage. Gain 2 Heat.",
+    "rules": "Deal 30 damage. Fire attuned: Gain 2 Heat.",
     "keywords": [
-      "heat"
+      "heat",
+      "attunement"
     ],
     "notes": [],
     "combat": {
@@ -52,15 +53,17 @@
           "kind": "status",
           "status": "heat",
           "amount": 2,
-          "target": "self"
+          "target": "self",
+          "requiresAttunement": "fire"
         }
       ]
     },
     "upgrade": {
       "castTicks": 1,
-      "rules": "Deal 42 damage. Gain 2 Heat.",
+      "rules": "Deal 42 damage. Fire attuned: Gain 2 Heat.",
       "keywords": [
-        "heat"
+        "heat",
+        "attunement"
       ],
       "combat": {
         "effects": [
@@ -72,7 +75,8 @@
             "kind": "status",
             "status": "heat",
             "amount": 2,
-            "target": "self"
+            "target": "self",
+            "requiresAttunement": "fire"
           }
         ]
       },
@@ -85,34 +89,46 @@
     "domain": "fire",
     "stars": 1,
     "castTicks": 1,
-    "rules": "Gain 3 Heat.",
+    "rules": "Deal 20 damage. Fire attuned: Gain 3 Heat.",
     "keywords": [
-      "heat"
+      "heat",
+      "attunement"
     ],
     "notes": [],
     "combat": {
       "effects": [
         {
+          "kind": "damage",
+          "amount": 20
+        },
+        {
           "kind": "status",
           "status": "heat",
           "amount": 3,
-          "target": "self"
+          "target": "self",
+          "requiresAttunement": "fire"
         }
       ]
     },
     "upgrade": {
       "castTicks": 1,
-      "rules": "Gain 4 Heat.",
+      "rules": "Deal 28 damage. Fire attuned: Gain 4 Heat.",
       "keywords": [
-        "heat"
+        "heat",
+        "attunement"
       ],
       "combat": {
         "effects": [
           {
+            "kind": "damage",
+            "amount": 28
+          },
+          {
             "kind": "status",
             "status": "heat",
             "amount": 4,
-            "target": "self"
+            "target": "self",
+            "requiresAttunement": "fire"
           }
         ]
       },
@@ -125,9 +141,10 @@
     "domain": "fire",
     "stars": 1,
     "castTicks": 1,
-    "rules": "Take 20 damage. Gain 2 Heat.",
+    "rules": "Take 20 damage. Fire attuned: Gain 2 Heat.",
     "keywords": [
-      "heat"
+      "heat",
+      "attunement"
     ],
     "notes": [],
     "combat": {
@@ -140,15 +157,17 @@
           "kind": "status",
           "status": "heat",
           "amount": 2,
-          "target": "self"
+          "target": "self",
+          "requiresAttunement": "fire"
         }
       ]
     },
     "upgrade": {
       "castTicks": 1,
-      "rules": "Take 20 damage. Gain 3 Heat.",
+      "rules": "Take 20 damage. Fire attuned: Gain 3 Heat.",
       "keywords": [
-        "heat"
+        "heat",
+        "attunement"
       ],
       "combat": {
         "effects": [
@@ -160,7 +179,8 @@
             "kind": "status",
             "status": "heat",
             "amount": 3,
-            "target": "self"
+            "target": "self",
+            "requiresAttunement": "fire"
           }
         ]
       },
@@ -173,9 +193,10 @@
     "domain": "fire",
     "stars": 2,
     "castTicks": 1,
-    "rules": "Deal 60 damage. Empowered: deal 100 instead.",
+    "rules": "Deal 60 damage. Fire attuned — Empowered: 100 damage instead.",
     "keywords": [
-      "empowered"
+      "empowered",
+      "attunement"
     ],
     "notes": [],
     "combat": {
@@ -189,9 +210,10 @@
     },
     "upgrade": {
       "castTicks": 1,
-      "rules": "Deal 84 damage. Empowered: deal 100 instead.",
+      "rules": "Deal 84 damage. Fire attuned — Empowered: 100 damage instead.",
       "keywords": [
-        "empowered"
+        "empowered",
+        "attunement"
       ],
       "combat": {
         "effects": [
@@ -253,9 +275,10 @@
     "domain": "fire",
     "stars": 3,
     "castTicks": 1,
-    "rules": "Take 80 damage. Gain 5 Heat.",
+    "rules": "Take 80 damage. Fire attuned: Gain 5 Heat.",
     "keywords": [
-      "heat"
+      "heat",
+      "attunement"
     ],
     "notes": [],
     "combat": {
@@ -268,15 +291,17 @@
           "kind": "status",
           "status": "heat",
           "amount": 5,
-          "target": "self"
+          "target": "self",
+          "requiresAttunement": "fire"
         }
       ]
     },
     "upgrade": {
       "castTicks": 1,
-      "rules": "Take 80 damage. Gain 7 Heat.",
+      "rules": "Take 80 damage. Fire attuned: Gain 7 Heat.",
       "keywords": [
-        "heat"
+        "heat",
+        "attunement"
       ],
       "combat": {
         "effects": [
@@ -288,7 +313,8 @@
             "kind": "status",
             "status": "heat",
             "amount": 7,
-            "target": "self"
+            "target": "self",
+            "requiresAttunement": "fire"
           }
         ]
       },
@@ -301,32 +327,38 @@
     "domain": "fire",
     "stars": 4,
     "castTicks": 3,
-    "rules": "Deal 180 damage. Empowered: deal 300 instead.",
+    "rules": "Deal 72 damage. Fire attuned: 180 instead. Fire attuned — Empowered: 300 damage instead.",
     "keywords": [
-      "empowered"
+      "empowered",
+      "attunement"
     ],
     "notes": [],
     "combat": {
       "effects": [
         {
           "kind": "damage",
-          "amount": 180,
-          "empowered": 300
+          "amount": 72,
+          "empowered": 300,
+          "attunedAmount": 180,
+          "bonusDomain": "fire"
         }
       ]
     },
     "upgrade": {
       "castTicks": 3,
-      "rules": "Deal 252 damage. Empowered: deal 300 instead.",
+      "rules": "Deal 101 damage. Fire attuned: 252 instead. Fire attuned — Empowered: 300 damage instead.",
       "keywords": [
-        "empowered"
+        "empowered",
+        "attunement"
       ],
       "combat": {
         "effects": [
           {
             "kind": "damage",
-            "amount": 252,
-            "empowered": 300
+            "amount": 101,
+            "empowered": 300,
+            "attunedAmount": 252,
+            "bonusDomain": "fire"
           }
         ]
       },
@@ -339,10 +371,11 @@
     "domain": "fire",
     "stars": 4,
     "castTicks": 1,
-    "rules": "Consume all Heat. Deal 40 damage per charge consumed.",
+    "rules": "Fire attuned: Consume all Heat. Deal 40 damage per charge consumed.",
     "keywords": [
       "heat",
-      "consume"
+      "consume",
+      "attunement"
     ],
     "notes": [],
     "combat": {
@@ -350,23 +383,26 @@
         {
           "kind": "consume",
           "status": "heat",
-          "amount": 40
+          "amount": 40,
+          "requiresAttunement": "fire"
         }
       ]
     },
     "upgrade": {
       "castTicks": 1,
-      "rules": "Consume all Heat. Deal 56 damage per charge consumed.",
+      "rules": "Fire attuned: Consume all Heat. Deal 56 damage per charge consumed.",
       "keywords": [
         "heat",
-        "consume"
+        "consume",
+        "attunement"
       ],
       "combat": {
         "effects": [
           {
             "kind": "consume",
             "status": "heat",
-            "amount": 56
+            "amount": 56,
+            "requiresAttunement": "fire"
           }
         ]
       },
@@ -379,46 +415,54 @@
     "domain": "fire",
     "stars": 5,
     "castTicks": 3,
-    "rules": "Deal 160 damage. Empowered: deal 240 instead. Gain 3 Heat.",
+    "rules": "Deal 64 damage. Fire attuned: 160 instead. Fire attuned — Empowered: 240 damage instead. Fire attuned: Gain 3 Heat.",
     "keywords": [
       "empowered",
-      "heat"
+      "heat",
+      "attunement"
     ],
     "notes": [],
     "combat": {
       "effects": [
         {
           "kind": "damage",
-          "amount": 160,
-          "empowered": 240
+          "amount": 64,
+          "empowered": 240,
+          "attunedAmount": 160,
+          "bonusDomain": "fire"
         },
         {
           "kind": "status",
           "status": "heat",
           "amount": 3,
-          "target": "self"
+          "target": "self",
+          "requiresAttunement": "fire"
         }
       ]
     },
     "upgrade": {
       "castTicks": 3,
-      "rules": "Deal 224 damage. Empowered: deal 240 instead. Gain 3 Heat.",
+      "rules": "Deal 90 damage. Fire attuned: 224 instead. Fire attuned — Empowered: 240 damage instead. Fire attuned: Gain 3 Heat.",
       "keywords": [
         "empowered",
-        "heat"
+        "heat",
+        "attunement"
       ],
       "combat": {
         "effects": [
           {
             "kind": "damage",
-            "amount": 224,
-            "empowered": 240
+            "amount": 90,
+            "empowered": 240,
+            "attunedAmount": 224,
+            "bonusDomain": "fire"
           },
           {
             "kind": "status",
             "status": "heat",
             "amount": 3,
-            "target": "self"
+            "target": "self",
+            "requiresAttunement": "fire"
           }
         ]
       },

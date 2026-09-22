@@ -7,7 +7,5 @@
   "maxDomains": 2,
   "reshuffleTicks": 1,
   "shopSlots": 5,
-  "augmentEvery": 2,
-  "affinity": 3,
-  "mastery": 5
+  "augmentEvery": 2
 }

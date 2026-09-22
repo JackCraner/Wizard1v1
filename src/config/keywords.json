@@ -2,13 +2,13 @@
   "poison": {
     "name": "Poison",
     "aliases": [],
-    "description": "Duration. Take 15 damage at the start of each tick, then lose 1 duration. Adding Poison extends its duration.",
+    "description": "Nature attunement required to gain or apply this keyword. Duration. Take 15 damage at the start of each tick, then lose 1 duration. Adding Poison extends its duration.",
     "related": []
   },
   "regeneration": {
     "name": "Regeneration",
     "aliases": [],
-    "description": "Duration. Heal 15 at the start of each tick, then lose 1 duration. Adding Regeneration extends its duration.",
+    "description": "Nature attunement required to gain or apply this keyword. Duration. Heal 15 at the start of each tick, then lose 1 duration. Adding Regeneration extends its duration.",
     "related": []
   },
   "ward": {
@@ -34,19 +34,19 @@
   "tide": {
     "name": "Tide",
     "aliases": [],
-    "description": "Charge. Water generates Tide and spends it on printed effects. Tide persists until spent.",
+    "description": "Water attunement required to gain or apply this keyword. Charge. Water generates Tide and spends it on printed effects. Tide persists until spent.",
     "related": []
   },
   "heat": {
     "name": "Heat",
     "aliases": [],
-    "description": "Charge. Each Heat adds 4% Fire damage. Eligible Empowered Fire payoffs spend 5 Heat. Heat does not decay.",
+    "description": "Fire attunement required to gain or apply this keyword. Charge. Each Heat adds 4% Fire damage. Eligible Empowered Fire payoffs spend 5 Heat. Heat does not decay.",
     "related": []
   },
   "oath": {
     "name": "Oath",
     "aliases": [],
-    "description": "A condition on your next 3 spells. Complete all 3 to earn the reward. An interrupt or failed condition breaks it. A new Oath replaces an older one.",
+    "description": "Holy attunement required to gain or apply this keyword. A condition on your next 3 spells. Complete all 3 to earn the reward. An interrupt or failed condition breaks it. A new Oath replaces an older one.",
     "related": []
   },
   "slow": {
@@ -94,19 +94,21 @@
   "frailty": {
     "name": "Frailty",
     "aliases": [],
-    "description": "Duration. Take 20% more incoming enemy damage. Loses 1 duration at the end of each following tick.",
+    "description": "Affliction attunement required to gain or apply this keyword. Duration. Take 20% more incoming enemy damage. Loses 1 duration at the end of each following tick.",
     "related": []
   },
   "curse": {
     "name": "Curse",
     "aliases": [],
-    "description": "Duration. Completing the same domain twice in succession costs 25 Health. Loses 1 duration at the end of each following tick.",
+    "description": "Affliction attunement required to gain or apply this keyword. Duration. Completing the same domain twice in succession costs 25 Health. Loses 1 duration at the end of each following tick.",
     "related": []
   },
-  "affinity": {
-    "name": "Affinity",
-    "aliases": [],
-    "description": "At 3 cards in a domain, its direct damage, healing and Ward gain 10% power. At 5 cards, Mastery increases this to 20%. At most two Masteries fit a 10-card deck.",
+  "attunement": {
+    "name": "Attunement",
+    "aliases": [
+      "attuned"
+    ],
+    "description": "Your two most numerous domains are attuned. Ties favor the oldest card still held; cast order does not matter. Only attuned domains activate their colored signature keywords and attuned spell bonuses.",
     "related": []
   }
 }

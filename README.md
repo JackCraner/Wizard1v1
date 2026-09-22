@@ -15,9 +15,11 @@ A mobile spell auto-battler built with Expo, React Native, and TypeScript. Build
 
 ## Domains and card upgrades
 
-All five domains are playable, with ten spells each. Shops remain open to every domain. Three cards in one domain give its direct damage, healing and Ward +10%; five increase this to +20%. Two Masteries fit in a ten-card deck; off-domain pivots are always allowed.
+All five domains are playable, with ten spells each. Shops remain open to every domain. Your two most numerous domains are attuned. Ties favor the oldest card still held; reordering never changes priority. Buying, merging or trashing can change the counts. Merging preserves the recipient’s age and removes the donor. There are no passive Affinity/Mastery stat bonuses.
 
-Nature uses Poison and Regeneration, each with fixed 15-point ticks and additive duration. Water builds and spends persistent Tide. Fire builds Heat (+4% Fire damage per charge) and spends five on printed Empowered payoffs. Holy uses Ward and three-spell Oaths. Affliction uses Slow, Frailty, Poison and Curse of Repetition.
+Colored signature keywords require the source deck’s matching attunement: Nature activates Poison and Regeneration; Water activates Tide; Fire activates Heat; Holy activates Oath; Affliction activates Frailty and Curse of Repetition. Incoming enemy debuffs still affect unattuned targets. Ward, Slow, Cleanse and basic damage/healing remain shared.
+
+Early spells retain useful basic effects; late-game spells depend more heavily on attunement. Printed conditions show exactly what changes. Nature uses Poison and Regeneration, each with fixed 15-point ticks and additive duration. Water builds and spends persistent Tide. Fire builds Heat (+4% Fire damage per charge) and spends five on printed Empowered payoffs. Holy uses Ward and three-spell Oaths. Affliction uses Slow, Frailty, Poison and Curse of Repetition.
 
 Cards start at 0/3 XP. Merge a matching card to add 1 XP; reaching 3 upgrades its printed effects. Drag a shop copy onto a matching owned card to buy and merge it, even when your hand is full. Owned-card merges remain available in inspection. A partially trained donor grants only 1 XP; upgraded cards cannot be donors. Scholar makes the first purchased duplicate each shop grant 2 XP.
 

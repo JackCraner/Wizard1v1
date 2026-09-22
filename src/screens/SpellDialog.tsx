@@ -1,3 +1,5 @@
+import {AttunementNote} from '../components/Attunement';
+import {attunedDomains,cardAges} from '../game/attunement';
 import { useEffect, useRef, useState } from 'react';
 import { Modal, Platform, Pressable, ScrollView, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
 import { KeywordBoxes, RulesText, SpellCard } from '../components/cards/SpellCard';
@@ -24,6 +26,7 @@ export function SpellDialog({ selection, session, busy, error, act, onClose, onS
   act: (command: Command) => void; onClose: () => void; onSelect: (next: SpellSelection) => void;
 }) {
   const { width, height } = useWindowDimensions();
+  const compact = height < 500;
   const [showKeywords, setShowKeywords] = useState(false);
   const [confirmTrash, setConfirmTrash] = useState(false);
   const pendingMove = useRef<{ to: number; revision: number } | null>(null);
@@ -57,21 +60,21 @@ export function SpellDialog({ selection, session, busy, error, act, onClose, onS
     <View style={s.shade}>
       <Pressable accessible={false} onPress={onClose} style={StyleSheet.absoluteFill} />
       <View accessibilityViewIsModal accessibilityLabel={`${card.name} spell details`} style={[s.panel, { maxHeight: height - 24, borderTopColor: accent }]}>
-        <View style={s.header}>
+        <View style={[s.header,compact&&{paddingVertical:6}]}>
           <View style={{ flex: 1, gap: 4 }}>
             <Text style={[s.eyebrow, { color: accent }]}>{card.domain.toUpperCase()} · {'★'.repeat(card.stars)} · {shop ? 'SHOP SPELL' : 'YOUR SPELL'}</Text>
-            <Text accessibilityRole="header" style={s.title}>{card.name}</Text>
+            <Text accessibilityRole="header" style={[s.title,compact&&{fontSize:24}]}>{card.name}</Text>
           </View>
           <Pressable accessibilityRole="button" accessibilityLabel="Close spell details" onPress={onClose} style={({ pressed }) => [s.close, pressed && { backgroundColor: '#44382a' }]}><Text style={s.closeText}>×</Text></Pressable>
         </View>
         <View style={s.body}>
           {showArt && <View style={s.art}><View style={{ width: artHeight * 2 / 3, height: artHeight }}><SpellCard {...card} shop={shop} /></View><Text style={[s.caption, { color: accent }]}>{card.upgraded ? '✦ Upgraded spell' : '✦ ' + card.domain[0].toUpperCase() + card.domain.slice(1) + ' magic'}</Text></View>}
-          <ScrollView style={s.scroll} contentContainerStyle={s.details}>
-            <View style={s.stats}>
+          <ScrollView style={s.scroll} contentContainerStyle={[s.details,compact&&{padding:12,gap:10}]}>
+            {compact ? <Text style={s.caption}>{castLabel(card.castTicks)} cast · {shop ? `${price} gold` : `${xp}/${UPGRADE_XP} XP`}</Text> : <View style={s.stats}>
               <View style={s.stat}><Text style={s.statValue}>{castLabel(card.castTicks)}</Text><Text style={s.caption}>Cast time</Text></View>
               <View style={s.stat}><Text style={[s.statValue, { color: '#efd088' }]}>{shop ? price : `${xp}/${UPGRADE_XP}`}</Text><Text style={s.caption}>{shop ? 'Gold' : 'Upgrade XP'}</Text></View>
-            </View>
-            <View style={s.effect}><Text style={s.eyebrow}>SPELL EFFECT</Text><RulesText rules={card.rules} keywords={card.keywords} fontSize={16} color="#f2e6d0" /></View>
+            </View>}
+            <AttunementNote card={card} domains={attunedDomains(session.spells,session.spellAcquired)}/>{shop&&!purchaseReason&&<Text style={s.caption}>After buying a new copy: {attunedDomains([...session.spells,id],[...cardAges(session.spells,session.spellAcquired),session.nextAcquisition??session.spells.length]).join(" + ")} attuned.</Text>}<View style={[s.effect,compact&&{gap:4}]}><Text style={s.eyebrow}>SPELL EFFECT</Text><RulesText rules={card.rules} keywords={card.keywords} fontSize={16} color="#f2e6d0" /></View>
             {!shop && selection.kind === 'hand' && card.keywords.includes('channel') && <Text style={s.caption}>Channel X = {channelPower(session.spells, selection.index)} in this position</Text>}
             <View style={s.upgrade}>
               <View style={s.row}><Text style={s.sectionTitle}>{card.upgraded ? '✦ Fully upgraded' : 'Upgrade'}</Text><Text style={s.caption}>{xp}/{UPGRADE_XP} XP</Text></View>
@@ -88,7 +91,7 @@ export function SpellDialog({ selection, session, busy, error, act, onClose, onS
             </View>}
           </ScrollView>
         </View>
-        <View style={s.footer}>
+        <View style={[s.footer,compact&&{paddingVertical:6,gap:4}]}>
           {!!error && <Text accessibilityRole="alert" style={s.warning}>{error}</Text>}
           {shop ? <>
             <View style={s.row}><Text style={s.caption}>Your gold: <Text style={{ color: '#efd088' }}>{session.gold}</Text></Text><Text style={s.caption}>{session.spells.length}/{RULES.slots} spell slots</Text></View>

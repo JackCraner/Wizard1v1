@@ -37,34 +37,46 @@
     "domain": "nature",
     "stars": 1,
     "castTicks": 1,
-    "rules": "Apply 4 Poison.",
+    "rules": "Deal 20 damage. Nature attuned: Apply 4 Poison.",
     "keywords": [
-      "poison"
+      "poison",
+      "attunement"
     ],
     "notes": [],
     "combat": {
       "effects": [
         {
+          "kind": "damage",
+          "amount": 20
+        },
+        {
           "kind": "status",
           "status": "poison",
           "amount": 4,
-          "target": "enemy"
+          "target": "enemy",
+          "requiresAttunement": "nature"
         }
       ]
     },
     "upgrade": {
       "castTicks": 1,
-      "rules": "Apply 6 Poison.",
+      "rules": "Deal 28 damage. Nature attuned: Apply 6 Poison.",
       "keywords": [
-        "poison"
+        "poison",
+        "attunement"
       ],
       "combat": {
         "effects": [
           {
+            "kind": "damage",
+            "amount": 28
+          },
+          {
             "kind": "status",
             "status": "poison",
             "amount": 6,
-            "target": "enemy"
+            "target": "enemy",
+            "requiresAttunement": "nature"
           }
         ]
       },
@@ -77,34 +89,46 @@
     "domain": "nature",
     "stars": 1,
     "castTicks": 1,
-    "rules": "Gain 4 Regeneration.",
+    "rules": "Heal 20. Nature attuned: Gain 4 Regeneration.",
     "keywords": [
-      "regeneration"
+      "regeneration",
+      "attunement"
     ],
     "notes": [],
     "combat": {
       "effects": [
         {
+          "kind": "heal",
+          "amount": 20
+        },
+        {
           "kind": "status",
           "status": "regeneration",
           "amount": 4,
-          "target": "self"
+          "target": "self",
+          "requiresAttunement": "nature"
         }
       ]
     },
     "upgrade": {
       "castTicks": 1,
-      "rules": "Gain 6 Regeneration.",
+      "rules": "Heal 28. Nature attuned: Gain 6 Regeneration.",
       "keywords": [
-        "regeneration"
+        "regeneration",
+        "attunement"
       ],
       "combat": {
         "effects": [
           {
+            "kind": "heal",
+            "amount": 28
+          },
+          {
             "kind": "status",
             "status": "regeneration",
             "amount": 6,
-            "target": "self"
+            "target": "self",
+            "requiresAttunement": "nature"
           }
         ]
       },
@@ -157,9 +181,10 @@
     "domain": "nature",
     "stars": 2,
     "castTicks": 1,
-    "rules": "Deal 45 damage. Deal +35 if the enemy has Poison.",
+    "rules": "Deal 45 damage. Nature attuned: +35 damage if the enemy has Poison.",
     "keywords": [
-      "poison"
+      "poison",
+      "attunement"
     ],
     "notes": [],
     "combat": {
@@ -174,9 +199,10 @@
     },
     "upgrade": {
       "castTicks": 1,
-      "rules": "Deal 63 damage. Deal +35 if the enemy has Poison.",
+      "rules": "Deal 63 damage. Nature attuned: +35 damage if the enemy has Poison.",
       "keywords": [
-        "poison"
+        "poison",
+        "attunement"
       ],
       "combat": {
         "effects": [
@@ -197,10 +223,11 @@
     "domain": "nature",
     "stars": 2,
     "castTicks": 1,
-    "rules": "Gain Regeneration equal to enemy Poison duration.",
+    "rules": "Nature attuned: Gain Regeneration equal to enemy Poison duration.",
     "keywords": [
       "regeneration",
-      "poison"
+      "poison",
+      "attunement"
     ],
     "notes": [],
     "combat": {
@@ -209,16 +236,18 @@
           "kind": "status",
           "status": "regeneration",
           "perStatus": "enemy:poison",
-          "amount": 1
+          "amount": 1,
+          "requiresAttunement": "nature"
         }
       ]
     },
     "upgrade": {
       "castTicks": 1,
-      "rules": "Gain Regeneration equal to twice enemy Poison duration.",
+      "rules": "Nature attuned: Gain Regeneration equal to twice enemy Poison duration.",
       "keywords": [
         "regeneration",
-        "poison"
+        "poison",
+        "attunement"
       ],
       "combat": {
         "effects": [
@@ -226,7 +255,8 @@
             "kind": "status",
             "status": "regeneration",
             "perStatus": "enemy:poison",
-            "amount": 2
+            "amount": 2,
+            "requiresAttunement": "nature"
           }
         ]
       },
@@ -271,9 +301,10 @@
     "domain": "nature",
     "stars": 3,
     "castTicks": 2,
-    "rules": "Multiply your Regeneration duration by 2.",
+    "rules": "Nature attuned: Multiply your Regeneration duration by 2.",
     "keywords": [
-      "regeneration"
+      "regeneration",
+      "attunement"
     ],
     "notes": [],
     "combat": {
@@ -281,22 +312,25 @@
         {
           "kind": "multiply",
           "status": "regeneration",
-          "amount": 2
+          "amount": 2,
+          "requiresAttunement": "nature"
         }
       ]
     },
     "upgrade": {
       "castTicks": 2,
-      "rules": "Multiply your Regeneration duration by 3.",
+      "rules": "Nature attuned: Multiply your Regeneration duration by 3.",
       "keywords": [
-        "regeneration"
+        "regeneration",
+        "attunement"
       ],
       "combat": {
         "effects": [
           {
             "kind": "multiply",
             "status": "regeneration",
-            "amount": 3
+            "amount": 3,
+            "requiresAttunement": "nature"
           }
         ]
       },
@@ -309,10 +343,11 @@
     "domain": "nature",
     "stars": 4,
     "castTicks": 2,
-    "rules": "Consume all enemy Poison. Deal 15 damage per tick consumed.",
+    "rules": "Nature attuned: Consume all enemy Poison. Deal 15 damage per tick consumed.",
     "keywords": [
       "poison",
-      "consume"
+      "consume",
+      "attunement"
     ],
     "notes": [],
     "combat": {
@@ -321,16 +356,18 @@
           "kind": "consume",
           "status": "poison",
           "target": "enemy",
-          "amount": 15
+          "amount": 15,
+          "requiresAttunement": "nature"
         }
       ]
     },
     "upgrade": {
       "castTicks": 2,
-      "rules": "Consume all enemy Poison. Deal 21 damage per tick consumed.",
+      "rules": "Nature attuned: Consume all enemy Poison. Deal 21 damage per tick consumed.",
       "keywords": [
         "poison",
-        "consume"
+        "consume",
+        "attunement"
       ],
       "combat": {
         "effects": [
@@ -338,7 +375,8 @@
             "kind": "consume",
             "status": "poison",
             "target": "enemy",
-            "amount": 21
+            "amount": 21,
+            "requiresAttunement": "nature"
           }
         ]
       },
@@ -351,10 +389,11 @@
     "domain": "nature",
     "stars": 5,
     "castTicks": 3,
-    "rules": "Gain 10 Regeneration. Gain 100 Ward.",
+    "rules": "Nature attuned: Gain 10 Regeneration. Gain 40 Ward. Nature attuned: 100 instead.",
     "keywords": [
       "regeneration",
-      "ward"
+      "ward",
+      "attunement"
     ],
     "notes": [],
     "combat": {
@@ -363,20 +402,24 @@
           "kind": "status",
           "status": "regeneration",
           "amount": 10,
-          "target": "self"
+          "target": "self",
+          "requiresAttunement": "nature"
         },
         {
           "kind": "ward",
-          "amount": 100
+          "amount": 40,
+          "attunedAmount": 100,
+          "bonusDomain": "nature"
         }
       ]
     },
     "upgrade": {
       "castTicks": 3,
-      "rules": "Gain 14 Regeneration. Gain 100 Ward.",
+      "rules": "Nature attuned: Gain 14 Regeneration. Gain 40 Ward. Nature attuned: 100 instead.",
       "keywords": [
         "regeneration",
-        "ward"
+        "ward",
+        "attunement"
       ],
       "combat": {
         "effects": [
@@ -384,11 +427,14 @@
             "kind": "status",
             "status": "regeneration",
             "amount": 14,
-            "target": "self"
+            "target": "self",
+            "requiresAttunement": "nature"
           },
           {
             "kind": "ward",
-            "amount": 100
+            "amount": 40,
+            "attunedAmount": 100,
+            "bonusDomain": "nature"
           }
         ]
       },

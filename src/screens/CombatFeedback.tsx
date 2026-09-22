@@ -1,3 +1,4 @@
+import {KEYWORD_DOMAINS,DOMAIN_COLORS} from '../game/attunement';
 import { STATUS_ART } from '../components/cards/spellArt';
 import { useEffect, useRef, useState } from 'react';
 import { Animated, Image, Modal, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
@@ -24,7 +25,7 @@ export function EffectBar({fighter,compact,group,highlight=[],onInspect}:{fighte
      {!items.length&&<Text style={{color:'#aaa08c',fontSize:8,textAlign:'center'}}>None</Text>}
      {items.map(([id,count])=><Pressable key={id} accessibilityRole="button" accessibilityLabel={`${bad?'Debuff':'Buff'}: ${keyword(id)?.name??id}, ${count+' '+unit(id)}. Tap for details.`} onPress={()=>{onInspect?.();setSelected(id);}} style={{flexDirection:'row',alignItems:'center',gap:2,borderWidth:1,borderColor:highlight.includes(id)?'#fff0a2':bad?'#9d5750':'#619069',borderRadius:3,backgroundColor:highlight.includes(id)?'#625025':'#10150fee',minHeight:bad?18:24,paddingHorizontal:2}}>
        {STATUS_ART[id]?<Image accessible={false} source={STATUS_ART[id]} resizeMode="cover" style={{width:bad?16:20,height:bad?16:20,borderRadius:2}}/>:<Text style={{color,fontSize:13}}>{icons[id]??'✧'}</Text>}
-       {!bad&&<Text numberOfLines={1} adjustsFontSizeToFit style={{flex:1,color:'#ddedda',fontSize:8}}>{keyword(id)?.name??id}</Text>}
+       {!bad&&<Text numberOfLines={1} adjustsFontSizeToFit style={{flex:1,color:KEYWORD_DOMAINS[id]?DOMAIN_COLORS[KEYWORD_DOMAINS[id]]:'#ddedda',fontSize:8}}>{keyword(id)?.name??id}</Text>}
        <Text style={{color:'#fff',fontSize:10,fontWeight:'900'}}>{count+(unit(id)==='ticks'?'T':'')}</Text>
      </Pressable>)}
    </ScrollView>

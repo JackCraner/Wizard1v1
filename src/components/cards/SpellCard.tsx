@@ -1,9 +1,10 @@
+import {keywordDomain,DOMAIN_COLORS,DOMAIN_INK} from '../../game/attunement';
 import { cardAt, UPGRADE_XP } from '../../game/upgrades';
 import { useState } from 'react';
 import { Image, Platform, ScrollView, StyleSheet, Text, View, type ImageSourcePropType } from 'react-native';
 import { castLabel, goldCost, keywordSpans, explainedKeywords, type CardDefinition } from '../../config/catalogue';
 import { SPELL_ART } from './spellArt';
-const colors = { nature: '#a6d982', water: '#89d4ed', fire: '#f2a16d', holy: '#ffe29b', affliction: '#cea5ef' };
+const colors=DOMAIN_COLORS;
 const domainArt = { nature: require("../../../assets/Nature_Domain.png"), water: require("../../../assets/Water_Domain.png"), fire: require("../../../assets/Fire_Domain.png"), holy: require("../../../assets/Holy_Domain.png"), affliction: require("../../../assets/Affliction_Domain.png") };
 const serif = Platform.select({ ios: 'Georgia', android: 'serif', default: 'Georgia, serif' });
 export type SpellCardProps = CardDefinition & {
@@ -17,7 +18,7 @@ export function RulesText({ rules, keywords, fontSize = 12, color = '#302117' }:
     fontSize?: number;
     color?: string;
 }) {
-    return <Text style={{ fontSize, color, lineHeight: fontSize * 1.25, textAlign: 'center' }}>{keywordSpans(rules, keywords).map((part, i) => <Text key={i} style={part.bold ? { fontWeight: '800' } : undefined}>{part.text}</Text>)}</Text>;
+    return <Text style={{ fontSize, color, lineHeight: fontSize * 1.25, textAlign: 'center' }}>{keywordSpans(rules, keywords).map((part, i) => <Text key={i} style={part.bold ? { fontWeight: '800',...(keywordDomain(part.text)?{color:(color==='#302117'?DOMAIN_INK:DOMAIN_COLORS)[keywordDomain(part.text)!]}:{}) } : undefined}>{part.text}</Text>)}</Text>;
 }
 export function SpellCard({ compact = false, shop = false, art, ...input }: SpellCardProps) {
     const card = input.xp !== undefined ? cardAt(input.id, input.xp) : input;
@@ -32,7 +33,7 @@ export function SpellCard({ compact = false, shop = false, art, ...input }: Spel
    <View style={{ position: 'absolute', bottom: 0, left: 0, right: 0, backgroundColor: '#10191cd9', paddingVertical: 2 * scale }}><Text style={{ color, fontSize: Math.max(6, 8 * scale), textAlign: 'center', letterSpacing: scale, fontWeight: '800' }}>{card.domain.toUpperCase()}{card.upgraded ? ' · UPGRADED' : ''}</Text></View>
   </View>
   <View style={{ height: tiny ? '40%' : '15%', justifyContent: 'center', paddingHorizontal: 4 * scale, borderTopWidth: 1, borderTopColor: color + '66' }}><Text numberOfLines={2} adjustsFontSizeToFit minimumFontScale={.8} style={{ color: '#fff0d2', fontFamily: serif, fontWeight: '700', fontSize: Math.max(9, 13 * scale), textAlign: 'center' }}>{card.name}</Text></View>
-  <View style={{ flex: 1, backgroundColor: '#e7dfc7', paddingHorizontal: 5 * scale, paddingVertical: 3 * scale, justifyContent: 'center' }}>{tiny ? null : <RulesText rules={card.rules} keywords={card.keywords} fontSize={Math.max(9, Math.min(14, scale * (card.rules.length > 85 ? 10 : 12)))}/>}</View>
+  <View style={{ flex: 1, backgroundColor: '#e7dfc7', paddingHorizontal: 5 * scale, paddingVertical: 3 * scale, justifyContent: 'center' }}>{tiny ? null : <RulesText rules={size.height<200&&card.rules.length>100?card.rules.split('. ').slice(0,2).join('. ').replace(/\.$/,'')+'. Hold for full effects.':card.rules} keywords={card.keywords} fontSize={Math.max(9, Math.min(14, scale * (card.rules.length > 85 ? 10 : 12)))}/>}</View>
   {!shop && <View style={{ height: '4%', flexDirection: 'row', gap: 2, backgroundColor: '#171c19', padding: 1 }}>{[0, 1, 2].map(i => <View key={i} style={{ flex: 1, backgroundColor: i < (card.xp ?? 0) ? '#ffe19a' : '#526050' }}/>)}</View>}
  </View>;
 }
@@ -43,7 +44,7 @@ export function KeywordBoxes({ keywords, small = false }: {
     const items = explainedKeywords(keywords);
     if (!items.length)
         return null;
-    return <View style={{ gap: small ? 3 : 6 }}>{items.map(item => <View key={item.id} style={[s.keyword, { padding: small ? 5 : 8 }]}><Text style={{ color: '#f2d394', fontSize: small ? 10 : 13, fontWeight: '800' }}>{item.name}</Text><Text style={{ color: '#e0d0ad', fontSize: small ? 9 : 11, lineHeight: small ? 11 : 15 }}>{item.description}</Text></View>)}</View>;
+    return <View style={{ gap: small ? 3 : 6 }}>{items.map(item => <View key={item.id} style={[s.keyword, { padding: small ? 5 : 8 }]}><Text style={{ color: keywordDomain(item.name)?DOMAIN_COLORS[keywordDomain(item.name)!]:'#f2d394', fontSize: small ? 10 : 13, fontWeight: '800' }}>{item.name}</Text><Text style={{ color: '#e0d0ad', fontSize: small ? 9 : 11, lineHeight: small ? 11 : 15 }}>{item.description}</Text></View>)}</View>;
 }
 export function CardPreview({ card, height = 260, width, shop = false }: {
     card: CardDefinition;

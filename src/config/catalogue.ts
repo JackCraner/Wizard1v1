@@ -29,7 +29,7 @@ export function explainedKeywords(ids: readonly string[]) {
 }
 // Use text spans rather than injecting markup. Longer names win over shorter terms.
 export function keywordSpans(text: string, ids: readonly string[]) {
-  const words = explainedKeywords(ids).flatMap(k => [k.name, ...k.aliases]).sort((a,b) => b.length - a.length);
+  const words = [...new Set([...explainedKeywords(ids).flatMap(k => [k.name, ...k.aliases]),'Nature','Water','Fire','Holy','Affliction'])].sort((a,b) => b.length - a.length);
   if (!words.length) return [{ text, bold: false }];
   const escaped = words.map(word => word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
   const pattern = new RegExp(`\\b(${escaped.join('|')})\\b`, 'gi');

@@ -5,13 +5,17 @@
     "domain": "affliction",
     "stars": 1,
     "castTicks": 1,
-    "rules": "Apply 1 Slow.",
+    "rules": "Deal 20 damage. Apply 1 Slow.",
     "keywords": [
       "slow"
     ],
     "notes": [],
     "combat": {
       "effects": [
+        {
+          "kind": "damage",
+          "amount": 20
+        },
         {
           "kind": "status",
           "status": "slow",
@@ -22,12 +26,16 @@
     },
     "upgrade": {
       "castTicks": 1,
-      "rules": "Apply 2 Slow.",
+      "rules": "Deal 28 damage. Apply 2 Slow.",
       "keywords": [
         "slow"
       ],
       "combat": {
         "effects": [
+          {
+            "kind": "damage",
+            "amount": 28
+          },
           {
             "kind": "status",
             "status": "slow",
@@ -77,9 +85,10 @@
     "domain": "affliction",
     "stars": 1,
     "castTicks": 1,
-    "rules": "Deal 20 damage. Apply 2 Poison.",
+    "rules": "Deal 20 damage. Nature attuned: Apply 2 Poison.",
     "keywords": [
-      "poison"
+      "poison",
+      "attunement"
     ],
     "notes": [],
     "combat": {
@@ -92,15 +101,17 @@
           "kind": "status",
           "status": "poison",
           "amount": 2,
-          "target": "enemy"
+          "target": "enemy",
+          "requiresAttunement": "nature"
         }
       ]
     },
     "upgrade": {
       "castTicks": 1,
-      "rules": "Deal 28 damage. Apply 2 Poison.",
+      "rules": "Deal 28 damage. Nature attuned: Apply 2 Poison.",
       "keywords": [
-        "poison"
+        "poison",
+        "attunement"
       ],
       "combat": {
         "effects": [
@@ -112,7 +123,8 @@
             "kind": "status",
             "status": "poison",
             "amount": 2,
-            "target": "enemy"
+            "target": "enemy",
+            "requiresAttunement": "nature"
           }
         ]
       },
@@ -125,9 +137,10 @@
     "domain": "affliction",
     "stars": 2,
     "castTicks": 1,
-    "rules": "Apply 4 Frailty.",
+    "rules": "Affliction attuned: Apply 4 Frailty.",
     "keywords": [
-      "frailty"
+      "frailty",
+      "attunement"
     ],
     "notes": [],
     "combat": {
@@ -136,15 +149,17 @@
           "kind": "status",
           "status": "frailty",
           "amount": 4,
-          "target": "enemy"
+          "target": "enemy",
+          "requiresAttunement": "affliction"
         }
       ]
     },
     "upgrade": {
       "castTicks": 1,
-      "rules": "Apply 6 Frailty.",
+      "rules": "Affliction attuned: Apply 6 Frailty.",
       "keywords": [
-        "frailty"
+        "frailty",
+        "attunement"
       ],
       "combat": {
         "effects": [
@@ -152,7 +167,8 @@
             "kind": "status",
             "status": "frailty",
             "amount": 6,
-            "target": "enemy"
+            "target": "enemy",
+            "requiresAttunement": "affliction"
           }
         ]
       },
@@ -247,9 +263,10 @@
     "domain": "affliction",
     "stars": 3,
     "castTicks": 2,
-    "rules": "Apply 5 Curse.",
+    "rules": "Affliction attuned: Apply 5 Curse.",
     "keywords": [
-      "curse"
+      "curse",
+      "attunement"
     ],
     "notes": [],
     "combat": {
@@ -258,15 +275,17 @@
           "kind": "status",
           "status": "repetition",
           "amount": 5,
-          "target": "enemy"
+          "target": "enemy",
+          "requiresAttunement": "affliction"
         }
       ]
     },
     "upgrade": {
       "castTicks": 2,
-      "rules": "Apply 7 Curse.",
+      "rules": "Affliction attuned: Apply 7 Curse.",
       "keywords": [
-        "curse"
+        "curse",
+        "attunement"
       ],
       "combat": {
         "effects": [
@@ -274,7 +293,8 @@
             "kind": "status",
             "status": "repetition",
             "amount": 7,
-            "target": "enemy"
+            "target": "enemy",
+            "requiresAttunement": "affliction"
           }
         ]
       },
@@ -287,42 +307,50 @@
     "domain": "affliction",
     "stars": 3,
     "castTicks": 2,
-    "rules": "Deal 60 damage. Apply 3 Poison.",
+    "rules": "Deal 24 damage. Affliction attuned: 60 instead. Nature attuned: Apply 3 Poison.",
     "keywords": [
-      "poison"
+      "poison",
+      "attunement"
     ],
     "notes": [],
     "combat": {
       "effects": [
         {
           "kind": "damage",
-          "amount": 60
+          "amount": 24,
+          "attunedAmount": 60,
+          "bonusDomain": "affliction"
         },
         {
           "kind": "status",
           "status": "poison",
           "amount": 3,
-          "target": "enemy"
+          "target": "enemy",
+          "requiresAttunement": "nature"
         }
       ]
     },
     "upgrade": {
       "castTicks": 2,
-      "rules": "Deal 84 damage. Apply 3 Poison.",
+      "rules": "Deal 34 damage. Affliction attuned: 84 instead. Nature attuned: Apply 3 Poison.",
       "keywords": [
-        "poison"
+        "poison",
+        "attunement"
       ],
       "combat": {
         "effects": [
           {
             "kind": "damage",
-            "amount": 84
+            "amount": 34,
+            "attunedAmount": 84,
+            "bonusDomain": "affliction"
           },
           {
             "kind": "status",
             "status": "poison",
             "amount": 3,
-            "target": "enemy"
+            "target": "enemy",
+            "requiresAttunement": "nature"
           }
         ]
       },
@@ -335,34 +363,40 @@
     "domain": "affliction",
     "stars": 4,
     "castTicks": 3,
-    "rules": "Deal 120 damage. Deal +70 if the enemy has Poison.",
+    "rules": "Deal 48 damage. Affliction attuned: 120 instead. Nature attuned: +70 damage if the enemy has Poison.",
     "keywords": [
-      "poison"
+      "poison",
+      "attunement"
     ],
     "notes": [],
     "combat": {
       "effects": [
         {
           "kind": "damage",
-          "amount": 120,
+          "amount": 48,
           "condition": "poison",
-          "bonus": 70
+          "bonus": 70,
+          "attunedAmount": 120,
+          "bonusDomain": "affliction"
         }
       ]
     },
     "upgrade": {
       "castTicks": 3,
-      "rules": "Deal 168 damage. Deal +70 if the enemy has Poison.",
+      "rules": "Deal 67 damage. Affliction attuned: 168 instead. Nature attuned: +70 damage if the enemy has Poison.",
       "keywords": [
-        "poison"
+        "poison",
+        "attunement"
       ],
       "combat": {
         "effects": [
           {
             "kind": "damage",
-            "amount": 168,
+            "amount": 67,
             "condition": "poison",
-            "bonus": 70
+            "bonus": 70,
+            "attunedAmount": 168,
+            "bonusDomain": "affliction"
           }
         ]
       },
@@ -375,42 +409,50 @@
     "domain": "affliction",
     "stars": 5,
     "castTicks": 3,
-    "rules": "Deal 150 damage. Apply 4 Frailty.",
+    "rules": "Deal 60 damage. Affliction attuned: 150 instead. Affliction attuned: Apply 4 Frailty.",
     "keywords": [
-      "frailty"
+      "frailty",
+      "attunement"
     ],
     "notes": [],
     "combat": {
       "effects": [
         {
           "kind": "damage",
-          "amount": 150
+          "amount": 60,
+          "attunedAmount": 150,
+          "bonusDomain": "affliction"
         },
         {
           "kind": "status",
           "status": "frailty",
           "amount": 4,
-          "target": "enemy"
+          "target": "enemy",
+          "requiresAttunement": "affliction"
         }
       ]
     },
     "upgrade": {
       "castTicks": 3,
-      "rules": "Deal 210 damage. Apply 4 Frailty.",
+      "rules": "Deal 84 damage. Affliction attuned: 210 instead. Affliction attuned: Apply 4 Frailty.",
       "keywords": [
-        "frailty"
+        "frailty",
+        "attunement"
       ],
       "combat": {
         "effects": [
           {
             "kind": "damage",
-            "amount": 210
+            "amount": 84,
+            "attunedAmount": 210,
+            "bonusDomain": "affliction"
           },
           {
             "kind": "status",
             "status": "frailty",
             "amount": 4,
-            "target": "enemy"
+            "target": "enemy",
+            "requiresAttunement": "affliction"
           }
         ]
       },

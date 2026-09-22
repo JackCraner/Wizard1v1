@@ -2,6 +2,9 @@ import type { CardDefinition, Domain } from '../config/catalogue';
 export type SpellId = string;
 export type Difficulty = 'easy' | 'normal' | 'hard' | 'nightmare';
 export interface Effect {
+    requiresAttunement?: Domain;
+    attunedAmount?: number;
+    bonusDomain?: Domain;
     kind: 'damage' | 'heal' | 'ward' | 'selfDamage' | 'status' | 'interrupt' | 'cleanse' | 'consume' | 'multiply' | 'spend' | 'oath' | 'repeatNext';
     amount?: number;
     status?: string;
@@ -46,12 +49,14 @@ export interface CombatMemory {
     previousSelfDamage?: boolean;
 }
 export interface Fighter {
+    attuned: Domain[];
     name: string;
     health: number;
     maxHealth: number;
     shield: number;
     spells: SpellId[];
     spellXp?: number[];
+    spellAcquired?: number[];
     augments: string[];
     statuses: Record<string, number>;
     cursor: number;
@@ -113,6 +118,8 @@ export interface Battle {
 }
 export interface LobbyPlayer {
     deckXp?: number[];
+    deckAcquired?: number[];
+    lastCombatAttuned?: Domain[];
     lastCombatXp?: number[];
     augments: string[];
     lastCombatAugments: string[];
@@ -133,6 +140,8 @@ export interface Lobby {
     winnerIds: string[];
 }
 export interface Session {
+    spellAcquired?: number[];
+    nextAcquisition?: number;
     bonusMergeUsed?: boolean;
     spellXp?: number[];
     difficulty: Difficulty;

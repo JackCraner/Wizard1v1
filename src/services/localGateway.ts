@@ -1,3 +1,4 @@
+import { cardAges } from '../game/attunement';
 import { deckXp, mergeCards, UPGRADE_XP } from '../game/upgrades';
 import { BOT_CONFIG, createBotStates, grantBotAugment, type BotStates } from '../game/botAI';
 import { createLobby, resolveLobbyRound } from '../game/tournament';
@@ -14,7 +15,7 @@ export class LocalGameGateway implements GameGateway {
     async start(difficulty: Difficulty = BOT_CONFIG.defaultDifficulty as Difficulty): Promise<Session> {
         if (!Object.prototype.hasOwnProperty.call(BOT_CONFIG.difficulties, difficulty))
             throw new Error('Unknown difficulty.');
-        this.session = { difficulty, lobby: createLobby(), id: `local-${++nextSessionId}`, revision: 0, round: 1, gold: RULES.gold, spells: [], spellXp: [], ...offersFor(1, 0), rerolls: 0, augments: [], augmentOffers: [], phase: 'shop', wins: 0, losses: 0, battle: null };
+        this.session = { difficulty, lobby: createLobby(), id: `local-${++nextSessionId}`, revision: 0, round: 1, gold: RULES.gold, spells: [], spellXp: [], spellAcquired: [], nextAcquisition: 0, ...offersFor(1, 0), rerolls: 0, augments: [], augmentOffers: [], phase: 'shop', wins: 0, losses: 0, battle: null };
         this.bots = createBotStates(this.session.lobby.players.filter(p => !p.human).map(p => p.id));
         return cloneSnapshot(this.session);
     }
@@ -25,6 +26,8 @@ export class LocalGameGateway implements GameGateway {
             throw new Error('This action is out of date. Please try again.');
         const s = cloneSnapshot(this.session);
         s.spellXp = deckXp(s.spells, s.spellXp);
+        s.spellAcquired = cardAges(s.spells, s.spellAcquired);
+        s.nextAcquisition = Math.max(s.nextAcquisition ?? 0, ...s.spellAcquired.map(n => n + 1));
         if (s.lobby.finished)
             throw new Error('This game is complete. Start a new game.');
         const enterShop = () => { s.phase = 'shop'; s.round++; s.gold += shopIncome(s.augments); s.battle = null; s.rerolls = 0; s.augmentOffers = []; s.bonusMergeUsed = false; Object.assign(s, offersFor(s.round, 0, s.spells, s.augments)); };
@@ -40,10 +43,12 @@ export class LocalGameGateway implements GameGateway {
                 throw new Error('Finish combat first.');
             if (s.round % RULES.augmentEvery === 0) {
                 const bots = cloneSnapshot(this.bots);
-                s.lobby.players.forEach((p, i) => { if (!p.human) {
-                    grantBotAugment(bots[p.id], p.deck, s.round, i);
-                    p.augments = [...bots[p.id].augments];
-                } });
+                s.lobby.players.forEach((p, i) => {
+                    if (!p.human) {
+                        grantBotAugment(bots[p.id], p.deck, s.round, i);
+                        p.augments = [...bots[p.id].augments];
+                    }
+                });
                 s.augmentOffers = augmentOffers(s.round, s.augments);
                 this.bots = bots;
                 if (s.augmentOffers.length) {
@@ -92,10 +97,12 @@ export class LocalGameGateway implements GameGateway {
                 else {
                     s.spells.push(spell.id);
                     s.spellXp.push(0);
+                    s.spellAcquired.push(s.nextAcquisition++);
                 }
             }
             else if (command.type === 'merge') {
                 mergeCards(s.spells, s.spellXp, command.from, command.to);
+                s.spellAcquired.splice(command.from, 1);
             }
             else if (command.type === 'trash') {
                 if (!Number.isInteger(command.index) || command.index < 0 || command.index >= s.spells.length)
@@ -104,6 +111,7 @@ export class LocalGameGateway implements GameGateway {
                     s.gold++;
                 s.spells.splice(command.index, 1);
                 s.spellXp.splice(command.index, 1);
+                s.spellAcquired.splice(command.index, 1);
             }
             else if (command.type === 'move') {
                 const { from, to } = command;
@@ -113,6 +121,8 @@ export class LocalGameGateway implements GameGateway {
                 s.spells.splice(to, 0, spell);
                 const [xp] = s.spellXp.splice(from, 1);
                 s.spellXp.splice(to, 0, xp);
+                const [age] = s.spellAcquired.splice(from, 1);
+                s.spellAcquired.splice(to, 0, age);
             }
             else {
                 if (!s.spells.length)
