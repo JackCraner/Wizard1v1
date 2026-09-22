@@ -15,22 +15,13 @@ describe('catalogue shop authority',()=>{
   expect(s.gold).toBe(9);expect(s.shop).not.toEqual(first.shop);expect(s.shop).toEqual(offersFor(1,1).shop);
   await expect(g.execute(first.id,first.revision,{type:'reroll'})).rejects.toThrow('out of date');
  });
- it('applies equipment to the new base stats and locks purchases during combat',async()=>{
-  const g=new LocalGameGateway();let s=await g.start();(g as any).session.gold=30;(g as any).session.equipmentShop=['mana_flask','vitality_charm'];
-  s=await g.execute(s.id,s.revision,{type:'buyEquipment',item:'mana_flask'});s=await g.execute(s.id,s.revision,{type:'buyEquipment',item:'vitality_charm'});
-  await expect(g.execute(s.id,s.revision,{type:'buyEquipment',item:'vitality_charm'})).rejects.toThrow('unavailable');
-  s=await g.execute(s.id,s.revision,{type:'buy',spell:s.shop.find(id=>id!==null&&SPELLS[id].price<=s.gold)!});
-  const goldBeforeFight=s.gold;
-  s=await g.execute(s.id,s.revision,{type:'fight'});expect(s.battle!.frames[0].player.maxHealth).toBe(520);expect(s.battle!.frames[0].player.maxMana).toBe(104);
-  await expect(g.execute(s.id,s.revision,{type:'buy',spell:'seed-shot'})).rejects.toThrow('locked');
-  s=await g.execute(s.id,s.revision,{type:'next'});expect(s.gold).toBe(goldBeforeFight+10);expect(s.equipment.vitality_charm).toBe(1);
- });
+
  it('limits loadouts, validates reorder and isolates returned state',async()=>{
   const g=new LocalGameGateway();let s=await g.start();const internal=(g as unknown as {session:{shop:string[];spells:string[];spellXp:number[]}}).session;internal.shop=['seed-shot'];internal.spells=Array(10).fill('seed-shot');internal.spellXp=Array(10).fill(0);
   await expect(g.execute(s.id,s.revision,{type:'buy',spell:'seed-shot'})).rejects.toThrow('full');
   s=await g.execute(s.id,s.revision,{type:'move',from:9,to:0});expect(s.spells[0]).toBe('seed-shot');
   await expect(g.execute(s.id,s.revision,{type:'move',from:0,to:10})).rejects.toThrow('Invalid');
-  s.equipment.vitality_charm=999;s=await g.execute(s.id,s.revision,{type:'fight'});expect(s.battle!.frames[0].player.maxHealth).toBe(500);
+  s.augments.push("glass-cannon");s=await g.execute(s.id,s.revision,{type:'fight'});expect(s.battle!.frames[0].player.maxHealth).toBe(500);
  });
 });
 
@@ -39,10 +30,10 @@ it('mixes domains deterministically and starts with no spells',async()=>{
  await expect(g.execute(s.id,s.revision,{type:'fight'})).rejects.toThrow('Equip a spell');
  for(let roll=0;roll<20;roll++) {
   const offers=offersFor(1,roll).shop;
-  expect(new Set(offers.map(id=>SPELLS[id].domain)).size).toBe(4);
+  expect(new Set(offers.map(id=>SPELLS[id].domain)).size).toBe(5);
   expect(offers).toHaveLength(RULES.shopSlots);
   expect(new Set(offers).size).toBe(RULES.shopSlots);
   expect(offersFor(1,roll).shop).toEqual(offers);
-  expect(new Set(offersFor(1,roll,['ember','splash']).shop.map(id=>SPELLS[id].domain))).toEqual(new Set(['fire','water']));
+  expect(new Set(offersFor(1,roll,['ember','splash']).shop.map(id=>SPELLS[id].domain)).size).toBe(5);
  }
 });

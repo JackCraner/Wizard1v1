@@ -1,15 +1,2 @@
-import { expect, it } from 'vitest';
-import { fighter, simulate } from './engine';
-import { castAt, castsAt } from './combatTimeline';
-it('reads actual completion events and never invents casts during charging',()=>{
- const battle=simulate(fighter('A',['seed-shot']),fighter('B',['splash']));
- expect(castAt(battle,1,'player',1)).toBeNull();
- expect(castAt(battle,2,'player',2)?.spell).toBe('seed-shot');
- expect(castAt(battle,2,'player',1)).toBeNull();
- expect(castAt(battle,0,'player',3)).toBeNull();
-});
-it('records Instant completions on separate ticks',()=>{
- const battle=simulate(fighter('A',['mist','rejuvenation']),fighter('B',['splash']));
- expect(castsAt(battle,1,'player',1).map(e=>e.spell)).toEqual(['mist']);
- expect(castsAt(battle,2,'player',2).map(e=>e.spell)).toEqual(['rejuvenation']);
-});
+import {expect,it} from 'vitest';import {fighter,simulate} from './engine';import {castAt,castsAt} from './combatTimeline';
+it('reads completed casts only and hides future ticks',()=>{const b=simulate(fighter('A',['nourish']),fighter('B',['splash']));expect(castAt(b,1,'player',1)).toBeNull();expect(castAt(b,2,'player',2)?.spell).toBe('nourish');expect(castAt(b,2,'player',1)).toBeNull();expect(castsAt(b,0,'player',3)).toEqual([]);});

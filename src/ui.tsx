@@ -5,7 +5,7 @@ import type { Fighter, SpellId } from './game/model';
 
 export const colors = {
   background: '#101512', panel: '#1b231c', surface: '#242e23', line: '#354330',
-  text: '#edf1e7', muted: '#a3b29a', accent: '#c3e3a7', ink: '#172112', mana: '#91b9d6',
+  text: '#edf1e7', muted: '#a3b29a', accent: '#c3e3a7', ink: '#172112',
 };
 
 export function Button({ title, onPress, disabled, secondary, label }: {
@@ -42,7 +42,6 @@ export function FighterCard({ fighter }: { fighter: Fighter }) {
     <Text style={styles.fighterRune}>✦</Text>
     <Text style={styles.fighterName}>{fighter.name}</Text>
     <Meter label="Health" value={fighter.health} max={fighter.maxHealth} color={colors.accent} />
-    <Meter label="Mana" value={fighter.mana} max={fighter.maxMana} color={colors.mana} />
     <Text style={styles.small}>{fighter.shield} shield</Text>
   </View>;
 }

@@ -1,1 +1,462 @@
-[]
+[
+  {
+    "id": "hex",
+    "name": "Hex",
+    "domain": "affliction",
+    "stars": 1,
+    "castTicks": 1,
+    "rules": "Deal 20 damage. Apply 1 Slow.",
+    "keywords": [
+      "slow"
+    ],
+    "notes": [],
+    "combat": {
+      "effects": [
+        {
+          "kind": "damage",
+          "amount": 20
+        },
+        {
+          "kind": "status",
+          "status": "slow",
+          "amount": 1,
+          "target": "enemy"
+        }
+      ]
+    },
+    "upgrade": {
+      "castTicks": 1,
+      "rules": "Deal 28 damage. Apply 2 Slow.",
+      "keywords": [
+        "slow"
+      ],
+      "combat": {
+        "effects": [
+          {
+            "kind": "damage",
+            "amount": 28
+          },
+          {
+            "kind": "status",
+            "status": "slow",
+            "amount": 2,
+            "target": "enemy"
+          }
+        ]
+      },
+      "notes": []
+    }
+  },
+  {
+    "id": "torment",
+    "name": "Torment",
+    "domain": "affliction",
+    "stars": 1,
+    "castTicks": 1,
+    "rules": "Deal 45 damage.",
+    "keywords": [],
+    "notes": [],
+    "combat": {
+      "effects": [
+        {
+          "kind": "damage",
+          "amount": 45
+        }
+      ]
+    },
+    "upgrade": {
+      "castTicks": 1,
+      "rules": "Deal 63 damage.",
+      "keywords": [],
+      "combat": {
+        "effects": [
+          {
+            "kind": "damage",
+            "amount": 63
+          }
+        ]
+      },
+      "notes": []
+    }
+  },
+  {
+    "id": "poison-needle",
+    "name": "Poison Needle",
+    "domain": "affliction",
+    "stars": 1,
+    "castTicks": 1,
+    "rules": "Deal 20 damage. Nature attuned: Apply 2 Poison.",
+    "keywords": [
+      "poison",
+      "attunement"
+    ],
+    "notes": [],
+    "combat": {
+      "effects": [
+        {
+          "kind": "damage",
+          "amount": 20
+        },
+        {
+          "kind": "status",
+          "status": "poison",
+          "amount": 2,
+          "target": "enemy",
+          "requiresAttunement": "nature"
+        }
+      ]
+    },
+    "upgrade": {
+      "castTicks": 1,
+      "rules": "Deal 28 damage. Nature attuned: Apply 2 Poison.",
+      "keywords": [
+        "poison",
+        "attunement"
+      ],
+      "combat": {
+        "effects": [
+          {
+            "kind": "damage",
+            "amount": 28
+          },
+          {
+            "kind": "status",
+            "status": "poison",
+            "amount": 2,
+            "target": "enemy",
+            "requiresAttunement": "nature"
+          }
+        ]
+      },
+      "notes": []
+    }
+  },
+  {
+    "id": "frailty",
+    "name": "Frailty",
+    "domain": "affliction",
+    "stars": 2,
+    "castTicks": 1,
+    "rules": "Affliction attuned: Apply 4 Frailty.",
+    "keywords": [
+      "frailty",
+      "attunement"
+    ],
+    "notes": [],
+    "combat": {
+      "effects": [
+        {
+          "kind": "status",
+          "status": "frailty",
+          "amount": 4,
+          "target": "enemy",
+          "requiresAttunement": "affliction"
+        }
+      ]
+    },
+    "upgrade": {
+      "castTicks": 1,
+      "rules": "Affliction attuned: Apply 6 Frailty.",
+      "keywords": [
+        "frailty",
+        "attunement"
+      ],
+      "combat": {
+        "effects": [
+          {
+            "kind": "status",
+            "status": "frailty",
+            "amount": 6,
+            "target": "enemy",
+            "requiresAttunement": "affliction"
+          }
+        ]
+      },
+      "notes": []
+    }
+  },
+  {
+    "id": "silence",
+    "name": "Silence",
+    "domain": "affliction",
+    "stars": 2,
+    "castTicks": 2,
+    "rules": "Interrupt the enemy’s current spell. Deal 35 damage.",
+    "keywords": [
+      "interrupt"
+    ],
+    "notes": [],
+    "combat": {
+      "effects": [
+        {
+          "kind": "interrupt"
+        },
+        {
+          "kind": "damage",
+          "amount": 35
+        }
+      ]
+    },
+    "upgrade": {
+      "castTicks": 2,
+      "rules": "Interrupt the enemy’s current spell. Deal 49 damage.",
+      "keywords": [
+        "interrupt"
+      ],
+      "combat": {
+        "effects": [
+          {
+            "kind": "interrupt"
+          },
+          {
+            "kind": "damage",
+            "amount": 49
+          }
+        ]
+      },
+      "notes": []
+    }
+  },
+  {
+    "id": "siphon",
+    "name": "Siphon",
+    "domain": "affliction",
+    "stars": 2,
+    "castTicks": 2,
+    "rules": "Deal 55 damage. Heal 45.",
+    "keywords": [],
+    "notes": [],
+    "combat": {
+      "effects": [
+        {
+          "kind": "damage",
+          "amount": 55
+        },
+        {
+          "kind": "heal",
+          "amount": 45
+        }
+      ]
+    },
+    "upgrade": {
+      "castTicks": 2,
+      "rules": "Deal 77 damage. Heal 45.",
+      "keywords": [],
+      "combat": {
+        "effects": [
+          {
+            "kind": "damage",
+            "amount": 77
+          },
+          {
+            "kind": "heal",
+            "amount": 45
+          }
+        ]
+      },
+      "notes": []
+    }
+  },
+  {
+    "id": "curse-of-repetition",
+    "name": "Curse of Repetition",
+    "domain": "affliction",
+    "stars": 3,
+    "castTicks": 2,
+    "rules": "Affliction attuned: Apply 5 Curse.",
+    "keywords": [
+      "curse",
+      "attunement"
+    ],
+    "notes": [],
+    "combat": {
+      "effects": [
+        {
+          "kind": "status",
+          "status": "repetition",
+          "amount": 5,
+          "target": "enemy",
+          "requiresAttunement": "affliction"
+        }
+      ]
+    },
+    "upgrade": {
+      "castTicks": 2,
+      "rules": "Affliction attuned: Apply 7 Curse.",
+      "keywords": [
+        "curse",
+        "attunement"
+      ],
+      "combat": {
+        "effects": [
+          {
+            "kind": "status",
+            "status": "repetition",
+            "amount": 7,
+            "target": "enemy",
+            "requiresAttunement": "affliction"
+          }
+        ]
+      },
+      "notes": []
+    }
+  },
+  {
+    "id": "unravel",
+    "name": "Unravel",
+    "domain": "affliction",
+    "stars": 3,
+    "castTicks": 2,
+    "rules": "Deal 24 damage. Affliction attuned: 60 instead. Nature attuned: Apply 3 Poison.",
+    "keywords": [
+      "poison",
+      "attunement"
+    ],
+    "notes": [],
+    "combat": {
+      "effects": [
+        {
+          "kind": "damage",
+          "amount": 24,
+          "attunedAmount": 60,
+          "bonusDomain": "affliction"
+        },
+        {
+          "kind": "status",
+          "status": "poison",
+          "amount": 3,
+          "target": "enemy",
+          "requiresAttunement": "nature"
+        }
+      ]
+    },
+    "upgrade": {
+      "castTicks": 2,
+      "rules": "Deal 34 damage. Affliction attuned: 84 instead. Nature attuned: Apply 3 Poison.",
+      "keywords": [
+        "poison",
+        "attunement"
+      ],
+      "combat": {
+        "effects": [
+          {
+            "kind": "damage",
+            "amount": 34,
+            "attunedAmount": 84,
+            "bonusDomain": "affliction"
+          },
+          {
+            "kind": "status",
+            "status": "poison",
+            "amount": 3,
+            "target": "enemy",
+            "requiresAttunement": "nature"
+          }
+        ]
+      },
+      "notes": []
+    }
+  },
+  {
+    "id": "doom",
+    "name": "Doom",
+    "domain": "affliction",
+    "stars": 4,
+    "castTicks": 3,
+    "rules": "Deal 48 damage. Affliction attuned: 120 instead. Nature attuned: +70 damage if the enemy has Poison.",
+    "keywords": [
+      "poison",
+      "attunement"
+    ],
+    "notes": [],
+    "combat": {
+      "effects": [
+        {
+          "kind": "damage",
+          "amount": 48,
+          "condition": "poison",
+          "bonus": 70,
+          "attunedAmount": 120,
+          "bonusDomain": "affliction"
+        }
+      ]
+    },
+    "upgrade": {
+      "castTicks": 3,
+      "rules": "Deal 67 damage. Affliction attuned: 168 instead. Nature attuned: +70 damage if the enemy has Poison.",
+      "keywords": [
+        "poison",
+        "attunement"
+      ],
+      "combat": {
+        "effects": [
+          {
+            "kind": "damage",
+            "amount": 67,
+            "condition": "poison",
+            "bonus": 70,
+            "attunedAmount": 168,
+            "bonusDomain": "affliction"
+          }
+        ]
+      },
+      "notes": []
+    }
+  },
+  {
+    "id": "ruin",
+    "name": "Ruin",
+    "domain": "affliction",
+    "stars": 5,
+    "castTicks": 3,
+    "rules": "Deal 60 damage. Affliction attuned: 150 instead. Affliction attuned: Apply 4 Frailty.",
+    "keywords": [
+      "frailty",
+      "attunement"
+    ],
+    "notes": [],
+    "combat": {
+      "effects": [
+        {
+          "kind": "damage",
+          "amount": 60,
+          "attunedAmount": 150,
+          "bonusDomain": "affliction"
+        },
+        {
+          "kind": "status",
+          "status": "frailty",
+          "amount": 4,
+          "target": "enemy",
+          "requiresAttunement": "affliction"
+        }
+      ]
+    },
+    "upgrade": {
+      "castTicks": 3,
+      "rules": "Deal 84 damage. Affliction attuned: 210 instead. Affliction attuned: Apply 4 Frailty.",
+      "keywords": [
+        "frailty",
+        "attunement"
+      ],
+      "combat": {
+        "effects": [
+          {
+            "kind": "damage",
+            "amount": 84,
+            "attunedAmount": 210,
+            "bonusDomain": "affliction"
+          },
+          {
+            "kind": "status",
+            "status": "frailty",
+            "amount": 4,
+            "target": "enemy",
+            "requiresAttunement": "affliction"
+          }
+        ]
+      },
+      "notes": []
+    }
+  }
+]

@@ -1,13 +1,11 @@
 {
   "health": 500,
-  "mana": 100,
   "gold": 10,
   "slots": 10,
-  "maxTicks": 50,
-  "critMultiplier": 1.5,
-  "baseCritChance": 0,
+  "maxTicks": 40,
   "seed": 42,
   "maxDomains": 2,
-  "reshuffleTicks": 2,
-  "shopSlots": 5
+  "reshuffleTicks": 1,
+  "shopSlots": 5,
+  "augmentEvery": 2
 }
