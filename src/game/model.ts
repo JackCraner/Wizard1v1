@@ -114,6 +114,7 @@ export interface CastEvent {
     details?: string[];
 }
 export interface DamageEvent {
+    target?: 'wizard' | 'imp';
     domain?: Domain;
     side: 'player' | 'bot';
     amount: number;

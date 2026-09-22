@@ -235,7 +235,7 @@
   "summon": {
     "name": "Summon",
     "aliases": [],
-    "description": "Summon an Imp with the printed Health. If alive, add that amount to its current and maximum Health. It absorbs enemy spell damage before you, with overflow reaching you. Empowered Imp unlocks an attack after each spell its owner completes.",
+    "description": "At the end of the tick, summon or revive an Imp with the printed Health. If still alive, add to its current and maximum Health. It absorbs direct enemy damage; overflow hits you. Applied effects and damage over time still hit you. Empowered Imp attacks after each spell you complete.",
     "related": []
   },
   "doom": {

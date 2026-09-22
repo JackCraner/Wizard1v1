@@ -7,7 +7,6 @@ export function validateShopOdds(rows: ShopOddsRow[]) {
     if (!Number.isInteger(row.fromRound) || (i>0 && row.fromRound<=rows[i-1].fromRound)) throw new Error('Shop odds rounds must increase.');
     if (row.rankPercent.length!==5 || row.rankPercent.some(n=>!Number.isFinite(n)||n<0) || Math.abs(row.rankPercent.reduce((a,b)=>a+b,0)-100)>0.0001) throw new Error('Shop rank percentages must contain five nonnegative numbers totaling 100.');
   });
-  if(rows[0].rankPercent[0]!==100) throw new Error('Round 1 must offer only rank 1 spells.');
 }
 validateShopOdds(config.rounds);
 export function shopRankOdds(round: number): readonly number[] {

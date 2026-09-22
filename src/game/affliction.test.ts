@@ -1,6 +1,30 @@
 import {expect,it} from 'vitest';
 import {fighter,simulate} from './engine';
 const idle=()=>fighter('B',['current']);
+it('summons after damage on either side, so the summon tick hits the wizard',()=>{
+ for (const swap of [false,true]) {
+  const summoner=fighter('Summoner',['ritual']),attacker=fighter('Attacker',['radiant-bolt']);
+  const r=simulate(swap?attacker:summoner,swap?summoner:attacker);
+  const side=swap?'bot':'player';
+  expect(r.frames[2][side].health).toBe(450);
+  expect(r.frames[2][side].imp).toEqual({health:50,maxHealth:50,guard:0});
+  expect(r.frames[2].damageEvents?.some(e=>e.target==='imp')).toBe(false);
+ }
+});
+it('clears a defeated Imp on the following tick and allows a later summon',()=>{
+ const a=fighter('A',['current','ritual']);a.imp={health:20,maxHealth:80,guard:0};
+ const r=simulate(a,fighter('B',['spark']));
+ expect(r.frames[1].player.imp?.health).toBe(0);
+ expect(r.frames[2].player.imp).toBeUndefined();
+ expect(r.frames[3].player.imp).toEqual({health:50,maxHealth:50,guard:0});
+});
+it('reinforces after damage and replaces an Imp defeated during the summon tick',()=>{
+ const a=fighter('A',['ritual']);a.imp={health:20,maxHealth:80,guard:0};
+ const r=simulate(a,fighter('B',['radiant-bolt']));
+ expect(r.frames[2].player.health).toBe(470);
+ expect(r.frames[2].player.imp).toEqual({health:50,maxHealth:50,guard:0});
+ expect(r.frames[2].damageEvents?.filter(e=>e.target==='imp')).toMatchObject([{amount:20}]);
+});
 it('grows a living Imp and replaces a defeated Imp without mutating inputs',()=>{
  const a=fighter('A',['ritual']);a.imp={health:20,maxHealth:50,guard:0};
  expect(simulate(a,idle()).frames[2].player.imp).toEqual({health:70,maxHealth:100,guard:0});
@@ -11,6 +35,25 @@ it('Imp intercepts spell damage with overflow, but not poison or self damage',()
  const a=fighter('A',['flare']);a.imp={health:30,maxHealth:30,guard:0};a.statuses.poison=1;
  const r=simulate(a,fighter('B',['spark'])).frames[1];
  expect(r.player.imp?.health).toBe(0);expect(r.player.health).toBe(465);
+ expect(r.damageEvents?.filter(e=>e.side==='player'&&e.target==='imp')).toMatchObject([{amount:30,kind:'hit'}]);
+ expect(r.damageEvents?.filter(e=>e.side==='player'&&e.target!=='imp').map(e=>e.amount)).toEqual([10,10,15]);
+});
+it('applied Poison stays on the wizard and ticks past a living Imp',()=>{
+ const a=fighter('A',['current']);a.imp={health:50,maxHealth:50,guard:0};
+ const r=simulate(a,fighter('B',['agony']));
+ expect(r.frames[1].player.statuses.poison).toBe(5);
+ expect(r.frames[2].player.imp?.health).toBe(50);
+ expect(r.frames[2].player.health).toBe(490);
+ expect(r.frames[2].damageEvents?.some(e=>e.target==='imp')).toBe(false);
+});
+it('an Imp killed in combat respawns at full summon health on the next Ritual',()=>{
+ const a=fighter('A',['ritual']);a.imp={health:20,maxHealth:80,guard:0};
+ const r=simulate(a,fighter('B',['spark']));
+ expect(r.frames[1].player.imp?.health).toBe(0);
+ expect(r.frames[1].damageEvents?.filter(e=>e.target==='imp')).toMatchObject([{amount:20}]);
+ expect(r.frames[2].player.imp).toEqual({health:50,maxHealth:50,guard:0});
+ expect(r.frames[3].player.imp?.health).toBe(5);
+ expect(r.frames[3].damageEvents?.filter(e=>e.target==='imp')).toMatchObject([{amount:45}]);
 });
 it('Imp Guard blocks entire spell hits and expires after its full duration',()=>{
  const a=fighter('A',['blood-pact','current','current','current']);a.imp={health:50,maxHealth:50,guard:0};

@@ -1,5 +1,4 @@
-import {AttunementNote} from '../components/Attunement';
-import {attunedDomains,cardAges} from '../game/attunement';
+import {attunedDomains} from '../game/attunement';
 import { useEffect, useRef, useState } from 'react';
 import { Modal, Platform, Pressable, ScrollView, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
 import { KeywordBoxes, RulesText, SpellCard } from '../components/cards/SpellCard';
@@ -74,13 +73,13 @@ export function SpellDialog({ selection, session, busy, error, act, onClose, onS
               <View style={s.stat}><Text style={s.statValue}>{castLabel(card.castTicks)}</Text><Text style={s.caption}>Cast time</Text></View>
               <View style={s.stat}><Text style={[s.statValue, { color: '#efd088' }]}>{shop ? price : `${xp}/${UPGRADE_XP}`}</Text><Text style={s.caption}>{shop ? 'Gold' : 'Upgrade XP'}</Text></View>
             </View>}
-            <AttunementNote card={card} domains={attunedDomains(session.spells,session.spellAcquired)}/>{shop&&!purchaseReason&&<Text style={s.caption}>After buying a new copy: {attunedDomains([...session.spells,id],[...cardAges(session.spells,session.spellAcquired),session.nextAcquisition??session.spells.length]).join(" + ")} attuned.</Text>}<View style={[s.effect,compact&&{gap:4}]}><Text style={s.eyebrow}>SPELL EFFECT</Text><RulesText rules={card.rules} keywords={card.keywords} fontSize={16} color="#f2e6d0" /></View>
+            <View style={[s.effect,compact&&{gap:4}]}><Text style={s.eyebrow}>SPELL EFFECT</Text><RulesText card={card} domains={attunedDomains(session.spells,session.spellAcquired)} rules={card.rules} keywords={card.keywords} fontSize={16} color="#f2e6d0" /></View>
             {!shop && selection.kind === 'hand' && card.keywords.includes('channel') && <Text style={s.caption}>Channel X = {channelPower(session.spells, selection.index)} in this position</Text>}
             <View style={s.upgrade}>
               <View style={s.row}><Text style={s.sectionTitle}>{card.upgraded ? '✦ Fully upgraded' : 'Upgrade'}</Text><Text style={s.caption}>{xp}/{UPGRADE_XP} XP</Text></View>
               <View accessible accessibilityRole="progressbar" accessibilityLabel="Spell upgrade progress" accessibilityValue={{ min: 0, max: UPGRADE_XP, now: xp }} style={s.progress}>{Array.from({ length: UPGRADE_XP }, (_, i) => <View key={i} style={[s.segment, i < xp && { backgroundColor: accent }]} />)}</View>
               {!card.upgraded && <Text style={s.caption}>Merge {UPGRADE_XP - xp} matching {UPGRADE_XP - xp === 1 ? 'copy' : 'copies'} to upgrade. Each copy adds 1 XP.{session.augments.includes("scholar")&&!session.bonusMergeUsed?" Scholar: your next purchased duplicate adds 2 XP.":""}</Text>}
-              {!card.upgraded && card.upgrade && <><Text style={s.upgradeLabel}>AT {UPGRADE_XP} XP · {castLabel(card.upgrade.castTicks)}</Text><RulesText rules={card.upgrade.rules} keywords={card.upgrade.keywords} fontSize={14} color="#e9d6ad" /></>}
+              {!card.upgraded && card.upgrade && <><Text style={s.upgradeLabel}>AT {UPGRADE_XP} XP · {castLabel(card.upgrade.castTicks)}</Text><RulesText card={{...card,...card.upgrade}} domains={attunedDomains(session.spells,session.spellAcquired)} rules={card.upgrade.rules} keywords={card.upgrade.keywords} fontSize={14} color="#e9d6ad" /></>}
             </View>
             {card.keywords.length > 0 && <><Pressable accessibilityRole="button" accessibilityState={{ expanded: showKeywords }} onPress={() => setShowKeywords(!showKeywords)} style={s.keywordToggle}><Text style={s.sectionTitle}>Keyword guide</Text><Text style={s.caption}>{showKeywords ? 'Hide −' : 'Show +'}</Text></Pressable>{showKeywords && <KeywordBoxes keywords={card.keywords} />}</>}
             {session.spells.some((owned, i) => shop ? owned === id && (session.spellXp?.[i] ?? 0) < UPGRADE_XP : canMerge(session.spells, session.spellXp ?? [], i, selection.index)) && <View style={{ gap: 8 }}>

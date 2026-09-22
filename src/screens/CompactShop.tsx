@@ -71,9 +71,9 @@ export function CompactShop({ session, busy, act, onMenu, onLibrary, onLeaderboa
       <View onLayout={event => setSize(event.nativeEvent.layout)} style={[s.page, { padding: compact ? 8 : 18, gap: compact ? 7 : 14 }]}>
         <View style={s.header}>
           <Pressable accessibilityRole="button" accessibilityLabel="Main menu" onPress={onMenu} style={s.nav}><Text style={s.navText}>‹</Text></Pressable>
-          <View style={{ flex: 1 }}><Text style={s.eyebrow}>ROUND {String(session.round).padStart(2, '0')} · LV {session.level} · {botConfig.difficulties[session.difficulty].label.toUpperCase()}</Text><Text accessibilityRole="header" style={[s.title, tight && { fontSize: 18 }]}>The Arcane Emporium</Text></View>
-          <View style={s.stats}><Text accessibilityLabel={`Health ${stats.health} of ${stats.health}`} style={s.health}>♥ {stats.health}</Text></View>
-          <Pressable accessibilityRole="button" accessibilityLabel={`Leaderboard. ${session.trophies} of ${session.lobby.trophiesToWin} trophies`} onPress={onLeaderboard} style={s.nav}><Text style={s.recordText}>✦ {session.trophies}/{session.lobby.trophiesToWin}</Text></Pressable>
+          <View style={{ flex: 1 }}><Text style={s.eyebrow}>ROUND {String(session.round).padStart(2, '0')} · LV {session.level} · {botConfig.difficulties[session.difficulty].label.toUpperCase()}</Text><Text numberOfLines={1} adjustsFontSizeToFit minimumFontScale={.8} accessibilityRole="header" style={[s.title, tight && { fontSize: 18 }]}>The Arcane Emporium</Text></View>
+          <View accessibilityLabel={`Health ${stats.health} of ${stats.health}`} style={[s.wallet,{backgroundColor:"#bd625b20"}]}><Text style={[s.coin,{color:"#efaaa0"}]}>♥</Text><Text style={s.health}>{stats.health}</Text></View>
+          <Pressable accessibilityRole="button" accessibilityLabel={`Leaderboard. ${session.trophies} of ${session.lobby.trophiesToWin} trophies`} onPress={onLeaderboard} style={[s.wallet,{backgroundColor:"#bd9b5620"}]}><Text style={s.coin}>✦</Text><Text style={s.recordText}>{session.trophies}<Text style={{fontSize:13,color:"#d3bd8d"}}>/{session.lobby.trophiesToWin}</Text></Text></Pressable>
           <Pressable accessibilityRole="button" onPress={onLibrary} style={s.nav}><Text style={s.navLabel}>Spells</Text></Pressable>
           <View accessibilityLabel={`${session.gold} gold`} style={s.wallet}><Text style={s.coin}>◈</Text><Text style={s.gold}>{session.gold}</Text></View>
           <Pressable accessibilityRole="button" accessibilityLabel={`Reroll for ${rollCost} gold`} disabled={busy || session.gold < rollCost} onPress={() => act({ type: 'reroll' })} style={({ pressed }) => [s.reroll, (busy || session.gold < rollCost) && s.disabled, pressed && s.pressed]}><Text style={s.rerollText}>⟳ Reroll  ·  {rollCost} ◈</Text></Pressable>
@@ -103,7 +103,7 @@ export function CompactShop({ session, busy, act, onMenu, onLibrary, onLeaderboa
         <View style={s.dock}>
           <View style={[s.player, { width: tight ? 106 : compact ? 124 : 172 }]}>
             <AttunementPanel spells={session.spells} ages={session.spellAcquired}/>
-            <AugmentInventory augments={session.augments} compact/>
+            <AugmentInventory augments={session.augments} compact inline/>
             <Text style={s.bagHint}>Level up after round {Math.ceil(session.round/2)*2}</Text>
           </View>
 
@@ -140,8 +140,8 @@ const s = StyleSheet.create({
   rerollText: { color: '#ecd8a7', fontSize: 12, fontWeight: '600' },
   market: { flex: 1, minHeight: 0, flexDirection: 'row' },
   player: { gap: 5, padding: 6, borderRadius: 11, backgroundColor: '#0b131bd9', borderWidth: 1, borderColor: '#34403f' },
-  recordText: { color: '#eccf8d', fontSize: 15, fontWeight: '700' }, muted: { color: '#87958e', fontWeight: '400' },
-  stats: { gap: 4 }, health: { color: '#e6a69b', fontSize: 11 },
+  recordText: { color: '#eccf8d', fontSize: 23, fontWeight: '700' }, muted: { color: '#87958e', fontWeight: '400' },
+  stats: { gap: 4 }, health: { color: '#efaaa0', fontSize: 23, fontWeight:'700' },
   bagTitle: { color: '#b5dace', fontSize: 9, fontWeight: '800', letterSpacing: .5 }, bagHint: { color: '#8eafa3', fontSize: 9 },
   spellShelf: { flex: 1, minWidth: 0, padding: 6, gap: 3, borderRadius: 12, backgroundColor: '#242722d9', borderWidth: 1, borderColor: '#756447' },
   sectionHeader: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 5, minHeight: 16 },

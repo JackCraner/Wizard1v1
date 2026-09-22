@@ -61,6 +61,7 @@ export function simulate(player: Fighter, bot: Fighter, seed = RULES.seed): Batt
     let notices: NonNullable<CombatFrame['notices']> = [], messages: string[] = [];
     let hits: (Omit<DamageEvent, 'critical'> & { critical: boolean; intercept?:boolean; source:Side })[] = [];
     let tickDamage = {player:{dealt:0,taken:0},bot:{dealt:0,taken:0}};
+    let pendingSummons = {player:0,bot:0};
     const secondWind = new Set<Side>();
     const has = (side: Side, id: string) => f[side].augments.includes(id);
     const attuned = (side: Side, domain: Domain) => f[side].attuned.includes(domain);
@@ -95,6 +96,7 @@ export function simulate(player: Fighter, bot: Fighter, seed = RULES.seed): Batt
                 if (unit.imp.guard > 0) { notify(h.side, 'summon', 'Imp Guard prevented damage'); continue; }
                 const absorbed = Math.min(unit.imp.health, amount);
                 unit.imp.health -= absorbed; amount -= absorbed;
+                damageEvents.push({ ...h, amount: absorbed, target: 'imp' });
                 if(h.source!==h.side) tickDamage[h.source].dealt += absorbed;
                 notify(h.side, 'summon', unit.imp.health ? `Imp absorbed ${absorbed}` : 'Imp defeated');
             }
@@ -171,6 +173,9 @@ export function simulate(player: Fighter, bot: Fighter, seed = RULES.seed): Batt
     messages = ['Cast left to right. One tick to reshuffle.']; frames.push(snapshot(0));
     for (let tick = 1; tick <= RULES.maxTicks; tick++) {
         events = []; damageEvents = []; healingEvents = []; notices = []; messages = []; hits = [];
+        pendingSummons = {player:0,bot:0};
+        // Keep the defeated companion in its defeat frame only.
+        for (const side of sides) if (f[side].imp && f[side].imp!.health <= 0) delete f[side].imp;
         tickDamage = {player:{dealt:0,taken:0},bot:{dealt:0,taken:0}};
         const durationBefore = cloneSnapshot({ player: f.player.statuses, bot: f.bot.statuses });
         const impGuardBefore = {player:f.player.imp?.guard??0,bot:f.bot.imp?.guard??0};
@@ -292,11 +297,7 @@ export function simulate(player: Fighter, bot: Fighter, seed = RULES.seed): Batt
                         queue(enemySide, amount * value * damagePower * repeatPower * nextDamage * critPower * (empowered ? 1.5 : 1), 'hit', card.domain, critical, true);
                     } else if (e.kind === 'summon') {
                         const amount = Math.round((e.currentHealthFraction ? before[side].health * e.currentHealthFraction * value : value) * repeatPower);
-                        if (amount > 0) {
-                            if (unit.imp && unit.imp.health > 0) { unit.imp.health += amount; unit.imp.maxHealth += amount; }
-                            else unit.imp = {health:amount,maxHealth:amount,guard:0};
-                            notify(side, 'summon', `Summon: +${amount} Imp Health`);
-                        }
+                        if (amount > 0) pendingSummons[side] += amount;
                     } else if (e.kind === 'impGuard') {
                         if (unit.imp && unit.imp.health > 0) unit.imp.guard += Math.round(value * repeatPower);
                     } else if (e.kind === 'impPower') memory.impDamage = Math.max(memory.impDamage??0, Math.round(value * repeatPower));
@@ -392,6 +393,14 @@ export function simulate(player: Fighter, bot: Fighter, seed = RULES.seed): Batt
             notify(side,'oath','Oath completed: '+oath.amount+' '+(oath.reward==='damage'?'damage':oath.reward+' ticks'));
         }
         applyHits();
+        // Summons and reinforcement arrive after every damage phase, including Oath rewards.
+        for (const side of sides) {
+            const unit = f[side], amount = pendingSummons[side];
+            if (amount <= 0 || unit.health <= 0) continue;
+            if (unit.imp && unit.imp.health > 0) { unit.imp.health += amount; unit.imp.maxHealth += amount; }
+            else unit.imp = {health:amount,maxHealth:amount,guard:0};
+            notify(side, 'summon', `Summon: +${amount} Imp Health`);
+        }
         frames.push(snapshot(tick, tickStart));
         if (sides.some(side => f[side].health === 0)) break;
     }

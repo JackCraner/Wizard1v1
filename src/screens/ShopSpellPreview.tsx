@@ -1,4 +1,3 @@
-import {AttunementNote} from '../components/Attunement';
 import {keywordDomain,DOMAIN_COLORS} from '../game/attunement';
 import type {Domain} from '../config/catalogue';
 import { Text, View } from 'react-native';
@@ -20,8 +19,8 @@ export function ShopSpellPreview({ id, xp = 0, shop, width, height,domains=[] }:
       <View style={{ flex: 1, gap: 8, overflow: 'hidden' }}>
         <Text style={{ color: '#f6e9c9', fontSize: 18, fontWeight: '700' }}>{card.name}</Text>
         <Text style={{ color: '#b4d3ca', fontSize: 12 }}>{castLabel(card.castTicks)}</Text>
-        <RulesText rules={card.rules} keywords={card.keywords} fontSize={14} color="#f0e8d5" />
-        <AttunementNote card={card} domains={domains}/>{keywords.filter(k=>k.id!=="attunement").slice(0, 1).map(keyword => <Text key={keyword.id} numberOfLines={4} style={{ color: '#adc2b5', fontSize: 11, lineHeight: 15 }}><Text style={{ color:keywordDomain(keyword.name)?DOMAIN_COLORS[keywordDomain(keyword.name)!]:'#e2d19e', fontWeight: '700' }}>{keyword.name} · </Text>{keyword.description}</Text>)}
+        <RulesText card={card} domains={domains} rules={card.rules} keywords={card.keywords} fontSize={14} color="#f0e8d5" />
+        {keywords.filter(k=>k.id!=="attunement").slice(0, 1).map(keyword => <Text key={keyword.id} numberOfLines={4} style={{ color: '#adc2b5', fontSize: 11, lineHeight: 15 }}><Text style={{ color:keywordDomain(keyword.name)?DOMAIN_COLORS[keywordDomain(keyword.name)!]:'#e2d19e', fontWeight: '700' }}>{keyword.name} · </Text>{keyword.description}</Text>)}
       </View>
     </View>
     <Text style={{ color: '#aab7a4', fontSize: 10 }}>Release to place · tap the spell for full details</Text>
