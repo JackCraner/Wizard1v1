@@ -7,7 +7,7 @@ import type { Difficulty } from '../game/model';
 export function DifficultyPicker({onStart,onCancel,busy}:{onStart:(difficulty:Difficulty)=>void;onCancel:()=>void;busy:boolean}) {
  const [selected,setSelected]=useState<Difficulty>(config.defaultDifficulty as Difficulty);
  return <View style={{flex:1,backgroundColor:'#21180e'}}><Image source={require('../../assets/MainBackground.png')} resizeMode="cover" style={[StyleSheet.absoluteFill,{width:'100%',height:'100%'}]}/><SafeAreaView style={s.shade}><View style={s.panel}>
-  <Text style={s.title}>Choose your challenge</Text><Text style={s.subtitle}>You + 7 rivals · First to 8 wins</Text>
+  <Text style={s.title}>Choose your challenge</Text><Text style={s.subtitle}>You + 7 rivals · First to 20 trophies</Text>
   <View style={s.options}>{(Object.keys(config.difficulties) as Difficulty[]).map(id=><Pressable key={id} accessibilityRole="button" accessibilityLabel={`${config.difficulties[id].label} difficulty`} accessibilityState={{selected:selected===id}} disabled={busy} onPress={()=>setSelected(id)} style={[s.option,selected===id&&s.selected]}><Text style={s.name}>{config.difficulties[id].label}</Text><Text style={s.description}>{config.difficulties[id].description}</Text></Pressable>)}</View>
   <View style={s.actions}><Pressable accessibilityRole="button" disabled={busy} onPress={onCancel} style={s.button}><Text style={s.name}>Back</Text></Pressable><Pressable accessibilityRole="button" disabled={busy} onPress={()=>onStart(selected)} style={[s.button,s.selected]}><Text style={s.name}>Start {config.difficulties[selected].label} game</Text></Pressable></View>
  </View></SafeAreaView></View>;

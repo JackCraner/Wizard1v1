@@ -32,13 +32,13 @@ export function channelPower(deck: readonly string[], index: number) {
         last++;
     return last - first + 1;
 }
-export function deriveStats(augments: readonly string[] = []): Stats { return { health: augments.includes('glass-cannon') ? 375 : RULES.health }; }
-export function fighter(name: string, spells: SpellId[], augments: string[] = [], xp: number[] = [], acquired: number[] = []): Fighter {
+export function deriveStats(augments: readonly string[] = [], level = 1): Stats { return { health: RULES.health + (level - 1) * RULES.healthPerLevel - (augments.includes('glass-cannon') ? 125 : 0) }; }
+export function fighter(name: string, spells: SpellId[], augments: string[] = [], xp: number[] = [], acquired: number[] = [], level = 1): Fighter {
     validateDeck(spells);
     validateXp(spells, xp);
     validateAugments(augments);
-    const { health } = deriveStats(augments);
-    return { name, attuned: attunedDomains(spells, acquired), spellAcquired: [...acquired], spells: [...spells], spellXp: deckXp(spells, xp), augments: [...augments], health, maxHealth: health, shield: 0, statuses: {}, cursor: 0, cycle: 1, reshuffleRemaining: 0, casting: null, memory: { casts: 0, water: 0, fast: 0, fastStreak: 0, cycleCasts: 0 } };
+    const { health } = deriveStats(augments, level);
+    return { name, level, attuned: attunedDomains(spells, acquired), spellAcquired: [...acquired], spells: [...spells], spellXp: deckXp(spells, xp), augments: [...augments], health, maxHealth: health, shield: 0, statuses: {}, cursor: 0, cycle: 1, reshuffleRemaining: 0, casting: null, memory: { casts: 0, water: 0, fast: 0, fastStreak: 0, cycleCasts: 0 } };
 }
 type Side = 'player' | 'bot';
 const sides: Side[] = ['player', 'bot'];
@@ -168,12 +168,7 @@ export function simulate(player: Fighter, bot: Fighter, _seed = RULES.seed): Bat
         for (const side of sides) {
             const unit = f[side];
             if (unit.reshuffleRemaining) {
-                unit.reshuffleRemaining--;
                 waiting.add(side);
-                if (!unit.reshuffleRemaining) {
-                    unit.cycle++;
-                    startCycle(side);
-                }
                 continue;
             }
             if (!unit.casting) {
@@ -197,6 +192,14 @@ export function simulate(player: Fighter, bot: Fighter, _seed = RULES.seed): Bat
         }
         const tickStart = snapshot(tick);
         tickStart.presentationPhase = 'start';
+        // Keep the waiting state visible for the whole playback tick. The next
+        // cycle begins only when this reshuffle tick has completed.
+        for (const side of waiting) {
+            if (--f[side].reshuffleRemaining === 0) {
+                f[side].cycle++;
+                startCycle(side);
+            }
+        }
         const ready = sides.filter(side => !waiting.has(side) && f[side].casting && --f[side].casting!.remaining === 0);
         const stateBefore = cloneSnapshot(f);
         for (const side of ready) {

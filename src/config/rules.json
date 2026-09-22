@@ -1,5 +1,6 @@
 {
   "health": 500,
+  "healthPerLevel": 100,
   "gold": 10,
   "slots": 10,
   "maxTicks": 40,

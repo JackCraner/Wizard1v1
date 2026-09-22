@@ -151,7 +151,7 @@
     "name": "Glass Cannon",
     "category": "risk",
     "domain": null,
-    "description": "Deal 30% more damage. Maximum Health is reduced to 375."
+    "description": "Deal 30% more damage. Maximum Health is reduced by 125."
   },
   {
     "id": "blood-magic",

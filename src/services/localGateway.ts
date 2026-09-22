@@ -15,7 +15,7 @@ export class LocalGameGateway implements GameGateway {
     async start(difficulty: Difficulty = BOT_CONFIG.defaultDifficulty as Difficulty): Promise<Session> {
         if (!Object.prototype.hasOwnProperty.call(BOT_CONFIG.difficulties, difficulty))
             throw new Error('Unknown difficulty.');
-        this.session = { difficulty, lobby: createLobby(), id: `local-${++nextSessionId}`, revision: 0, round: 1, gold: RULES.gold, spells: [], spellXp: [], spellAcquired: [], nextAcquisition: 0, ...offersFor(1, 0), rerolls: 0, augments: [], augmentOffers: [], phase: 'shop', wins: 0, losses: 0, battle: null };
+        this.session = { level:1, trophies:0, difficulty, lobby: createLobby(), id: `local-${++nextSessionId}`, revision: 0, round: 1, gold: RULES.gold, spells: [], spellXp: [], spellAcquired: [], nextAcquisition: 0, ...offersFor(1, 0), rerolls: 0, augments: [], augmentOffers: [], phase: 'shop', wins: 0, losses: 0, battle: null };
         this.bots = createBotStates(this.session.lobby.players.filter(p => !p.human).map(p => p.id));
         return cloneSnapshot(this.session);
     }
@@ -42,6 +42,8 @@ export class LocalGameGateway implements GameGateway {
             if (s.phase !== 'result')
                 throw new Error('Finish combat first.');
             if (s.round % RULES.augmentEvery === 0) {
+                s.level++;
+                s.lobby.players.forEach(p => { p.level = s.level; });
                 const bots = cloneSnapshot(this.bots);
                 s.lobby.players.forEach((p, i) => {
                     if (!p.human) {

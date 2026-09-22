@@ -123,4 +123,4 @@ export function prepareBot(state: BotState, previous: SpellId[], round: number, 
     state.lastPreparedRound = round;
     return ordered.map(x => x.id);
 }
-export function botFighter(name: string, deck: SpellId[], state: BotState) { return fighter(name, deck, state.augments, state.spellXp, state.spellAcquired); }
+export function botFighter(name: string, deck: SpellId[], state: BotState, level = 1) { return fighter(name, deck, state.augments, state.spellXp, state.spellAcquired, level); }

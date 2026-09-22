@@ -49,6 +49,7 @@ export interface CombatMemory {
     previousSelfDamage?: boolean;
 }
 export interface Fighter {
+    level: number;
     attuned: Domain[];
     name: string;
     health: number;
@@ -117,6 +118,8 @@ export interface Battle {
     endReason: 'timeout' | 'knockout';
 }
 export interface LobbyPlayer {
+    level: number;
+    trophies: number;
     deckXp?: number[];
     deckAcquired?: number[];
     lastCombatAttuned?: Domain[];
@@ -135,11 +138,13 @@ export interface LobbyPlayer {
 }
 export interface Lobby {
     players: LobbyPlayer[];
-    winsToWin: number;
+    trophiesToWin: number;
     finished: boolean;
     winnerIds: string[];
 }
 export interface Session {
+    level: number;
+    trophies: number;
     spellAcquired?: number[];
     nextAcquisition?: number;
     bonusMergeUsed?: boolean;

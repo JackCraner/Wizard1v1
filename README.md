@@ -4,13 +4,13 @@ A mobile spell auto-battler built with Expo, React Native, and TypeScript. Build
 
 ## The simplified game
 
-- You and seven bots race to eight duel wins. Draws award no trophy.
-- Start with 500 Health, an empty hand, and 10 gold. There is no mana or random critical-hit system.
+- You and seven bots race to 20 trophies. Each win awards trophies equal to the winner’s current level; draws award none.
+- Start at level 1 with 500 Health, an empty hand, and 10 gold. There is no mana or random critical-hit system.
 - Buy from five spell offers. Price equals the clearly displayed 1–5 star rarity. Drag into your hand to buy, or tap for full rules and purchase controls.
 - Hold a card to read a large preview placed above or beside your finger. Drag owned cards to arrange up to ten spells in casting order.
 - Spells take 1T, 2T, or 3T before modifiers. After the last spell, spend one tick reshuffling and repeat the same order.
 - Duels end on a knockout or after 40 ticks; higher remaining Health wins at timeout.
-- After rounds 2, 4, 6, and so on, every player chooses a free permanent augment from three unowned options. The pool contains 32 augments. Identical augments cannot stack.
+- After rounds 2, 4, 6, and so on, every player gains a level and 100 max Health, then chooses a free permanent augment from three unowned options. The pool contains 32 augments. Identical augments cannot stack.
 - Unspent gold carries over. Each new shop adds 10 gold, and a reroll costs 1 gold before augment modifiers.
 
 ## Domains and card upgrades

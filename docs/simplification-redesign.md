@@ -5,7 +5,8 @@ Implemented from the supplied Wizard1v1_Simplification_Redesign proposal, using 
 ## Shipped rules
 
 - 50 playable spells: 10 per domain, including Affliction, all with explicit upgrades.
-- 500 base Health; 1–3T spells; fixed 1T reshuffle; 40-tick limit; no mana, Instant category or random crit system.
+- Start at level 1 with 500 base Health; every two completed rounds grant one level, +100 max Health and an augment. Wins grant current-level trophies; reach 20 to win.
+- 1–3T spells; fixed 1T reshuffle; 40-tick limit; no mana, Instant category or random crit system.
 - 18 shared glossary terms. Poison/Regeneration use fixed 15-point ticks; Tide/Heat are charges; Ward is a shield; Slow affects the next cast; Oaths last three qualifying spells.
 - 32 permanent, nonstacking augments. Pick one of three after rounds 2, 4, 6, etc., regardless of duel outcome. All seven bots receive rewards too.
 - Retained five-offer shop, gold, rank odds, rerolls, ten-card order, duplicate XP upgrades, drag purchases/reorder/trash, eight-player tournament and scouting.

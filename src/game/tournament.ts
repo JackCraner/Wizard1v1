@@ -6,9 +6,9 @@ import { fighter, RULES, simulate } from './engine';
 import type { Lobby, Session, SpellId } from './model';
 
 export function createLobby():Lobby {
- return {winsToWin:settings.winsToWin,finished:false,winnerIds:[],players:[
-  {id:'player',name:'You',human:true,augments:[],lastCombatAugments:[],wins:0,losses:0,draws:0,deck:[],lastCombatDeck:[],lastCombatRound:null},
-  ...settings.botNames.map((name,i)=>({id:`bot-${i+1}`,name,human:false,augments:[] as string[],lastCombatAugments:[] as string[],wins:0,losses:0,draws:0,deck:[] as SpellId[],lastCombatDeck:[] as SpellId[],lastCombatRound:null})),
+ return {trophiesToWin:settings.trophiesToWin,finished:false,winnerIds:[],players:[
+  {id:'player',name:'You',human:true,augments:[],lastCombatAugments:[],level:1,trophies:0,wins:0,losses:0,draws:0,deck:[],lastCombatDeck:[],lastCombatRound:null},
+  ...settings.botNames.map((name,i)=>({id:`bot-${i+1}`,name,human:false,augments:[] as string[],lastCombatAugments:[] as string[],level:1,trophies:0,wins:0,losses:0,draws:0,deck:[] as SpellId[],lastCombatDeck:[] as SpellId[],lastCombatRound:null})),
  ]};
 }
 
@@ -33,14 +33,14 @@ export function resolveLobbyRound(session:Session,botStates:BotStates) {
  for(const [aId,bId] of roundPairings(lobby.players.map(p=>p.id),session.round)) {
   let a=lobby.players.find(p=>p.id===aId)!,b=lobby.players.find(p=>p.id===bId)!;
   if(b.human)[a,b]=[b,a];
-  const battle=simulate(a.human?fighter(a.name,a.deck,session.augments,session.spellXp,session.spellAcquired):botFighter(a.name,a.deck,botStates[a.id]),b.human?fighter(b.name,b.deck,session.augments,session.spellXp):botFighter(b.name,b.deck,botStates[b.id]),RULES.seed+session.round*101+lobby.players.indexOf(a)*17);
+  const battle=simulate(a.human?fighter(a.name,a.deck,session.augments,session.spellXp,session.spellAcquired,a.level):botFighter(a.name,a.deck,botStates[a.id],a.level),b.human?fighter(b.name,b.deck,session.augments,session.spellXp,session.spellAcquired,b.level):botFighter(b.name,b.deck,botStates[b.id],b.level),RULES.seed+session.round*101+lobby.players.indexOf(a)*17);
   if(battle.outcome==='draw'){a.draws++;b.draws++;}
-  else {const winner=battle.outcome==='victory'?a:b,loser=winner===a?b:a;winner.wins++;loser.losses++;}
+  else {const winner=battle.outcome==='victory'?a:b,loser=winner===a?b:a;winner.wins++;winner.trophies+=winner.level;loser.losses++;}
   if(a.human)session.battle=battle;
  }
  const you=lobby.players.find(p=>p.human)!;
- session.wins=you.wins;session.losses=you.losses;
- lobby.winnerIds=lobby.players.filter(p=>p.wins>=lobby.winsToWin).map(p=>p.id);
+ session.trophies=you.trophies;session.wins=you.wins;session.losses=you.losses;
+ lobby.winnerIds=lobby.players.filter(p=>p.trophies>=lobby.trophiesToWin).map(p=>p.id);
  lobby.finished=lobby.winnerIds.length>0;
  session.phase='result';
 }

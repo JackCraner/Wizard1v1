@@ -6,7 +6,7 @@ const internal=(g:LocalGameGateway)=>(g as unknown as {session:Session}).session
 
 it('starts exactly eight players with zero trophies and no invented combat history',async()=>{
  const s=await new LocalGameGateway().start();
- expect(s.lobby.players).toHaveLength(8);expect(s.lobby.winsToWin).toBe(8);
+ expect(s.lobby.players).toHaveLength(8);expect(s.lobby.trophiesToWin).toBe(20);
  expect(s.spells).toEqual([]);expect(s.lobby.players.filter(p=>p.human)).toHaveLength(1);
  for(const p of s.lobby.players){expect(p.wins).toBe(0);expect(p.lastCombatDeck).toEqual([]);expect(p.lastCombatRound).toBeNull();}
 });
@@ -28,12 +28,12 @@ it('resolves every duel and snapshots decks independently from later shopping',a
  expect(s.spells).toEqual([]);expect(s.lobby.players[0].lastCombatDeck).toEqual(snapshot);
  s.lobby.players[0].lastCombatDeck.push('wrath');expect(internal(g).lobby.players[0].lastCombatDeck).toEqual(snapshot);
 });
-it('awards the human their eighth trophy, locks the game and can start fresh',async()=>{
+it('awards the human their twentieth trophy, locks the game and can start fresh',async()=>{
  const g=new LocalGameGateway();const initial=await g.start(),state=internal(g);
- state.spells=Array(10).fill('ember');state.lobby.players[0].wins=7;
+ state.spells=Array(10).fill('ember');state.lobby.players[0].trophies=19;
  for(const bot of state.lobby.players.slice(1))bot.deck=Array(10).fill('splash');
  const s=await g.execute(initial.id,initial.revision,{type:'fight'});
- expect(s.battle?.outcome).toBe('victory');expect(s.wins).toBe(8);
+ expect(s.battle?.outcome).toBe('victory');expect(s.trophies).toBe(20);
  expect(s.lobby.finished).toBe(true);expect(s.lobby.winnerIds).toEqual(['player']);
  await expect(g.execute(s.id,s.revision,{type:'next'})).rejects.toThrow('complete');
  const fresh=await g.start();expect(fresh.wins).toBe(0);expect(fresh.lobby.finished).toBe(false);expect(fresh.id).not.toBe(s.id);
@@ -41,18 +41,18 @@ it('awards the human their eighth trophy, locks the game and can start fresh',as
 it('can lose the tournament to a bot and awards no wins for bot draws',async()=>{
  const g=new LocalGameGateway();const initial=await g.start(),state=internal(g);
  state.spells=['splash'];
- for(const bot of state.lobby.players.slice(1)){bot.deck=Array(10).fill('ember');bot.wins=7;}
+ for(const bot of state.lobby.players.slice(1)){bot.deck=Array(10).fill('ember');bot.trophies=19;}
  // Freeze shopping to make the six bot-versus-bot combatants identical.
  for(const b of Object.values((g as unknown as {bots:Record<string,{lastPreparedRound:number}>}).bots))b.lastPreparedRound=1;
  const s=await g.execute(initial.id,initial.revision,{type:'fight'});
  expect(s.lobby.finished).toBe(true);expect(s.lobby.winnerIds).toEqual(['bot-7']);expect(s.losses).toBe(1);
  expect(s.lobby.players.filter(p=>p.draws===1)).toHaveLength(6);
 });
-it('awards shared victory when separate duels reach eight wins in the same round',async()=>{
+it('awards shared victory when separate duels reach 20 trophies in the same round',async()=>{
  const g=new LocalGameGateway();const initial=await g.start(),state=internal(g);
- state.spells=Array(10).fill('ember');state.lobby.players[0].wins=7;
+ state.spells=Array(10).fill('ember');state.lobby.players[0].trophies=19;
  for(const bot of state.lobby.players.slice(1))bot.deck=Array(10).fill('splash');
- state.lobby.players[1].deck=Array(10).fill('ember');state.lobby.players[1].wins=7;
+ state.lobby.players[1].deck=Array(10).fill('ember');state.lobby.players[1].trophies=19;
  const s=await g.execute(initial.id,initial.revision,{type:'fight'});
  expect(s.lobby.winnerIds).toEqual(['player','bot-1']);
 });

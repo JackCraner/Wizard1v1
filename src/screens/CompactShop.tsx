@@ -52,7 +52,7 @@ export function CompactShop({ session, busy, act, onMenu, onLibrary, onLeaderboa
   const tight = size.width < 740;
 
   const rollCost = rerollCost(session.augments, session.rerolls);
-  const stats = deriveStats(session.augments);
+  const stats = deriveStats(session.augments, session.level);
   const handHeight = Math.max(76, Math.min(142, size.height * .21));
   const handleDragging = useCallback((value: boolean) => { setDragging(value); if (!value) setOverTrash(false); }, []);
   const viewport = { left: insets.left + 10, top: insets.top + 10,
@@ -71,9 +71,9 @@ export function CompactShop({ session, busy, act, onMenu, onLibrary, onLeaderboa
       <View onLayout={event => setSize(event.nativeEvent.layout)} style={[s.page, { padding: compact ? 8 : 18, gap: compact ? 7 : 14 }]}>
         <View style={s.header}>
           <Pressable accessibilityRole="button" accessibilityLabel="Main menu" onPress={onMenu} style={s.nav}><Text style={s.navText}>‹</Text></Pressable>
-          <View style={{ flex: 1 }}><Text style={s.eyebrow}>ROUND {String(session.round).padStart(2, '0')} · {botConfig.difficulties[session.difficulty].label.toUpperCase()}</Text><Text accessibilityRole="header" style={[s.title, tight && { fontSize: 18 }]}>The Arcane Emporium</Text></View>
+          <View style={{ flex: 1 }}><Text style={s.eyebrow}>ROUND {String(session.round).padStart(2, '0')} · LV {session.level} · {botConfig.difficulties[session.difficulty].label.toUpperCase()}</Text><Text accessibilityRole="header" style={[s.title, tight && { fontSize: 18 }]}>The Arcane Emporium</Text></View>
           <View style={s.stats}><Text accessibilityLabel={`Health ${stats.health} of ${stats.health}`} style={s.health}>♥ {stats.health}</Text></View>
-          <Pressable accessibilityRole="button" accessibilityLabel={`Leaderboard. ${session.wins} of ${session.lobby.winsToWin} wins`} onPress={onLeaderboard} style={s.nav}><Text style={s.recordText}>✦ {session.wins}/{session.lobby.winsToWin}</Text></Pressable>
+          <Pressable accessibilityRole="button" accessibilityLabel={`Leaderboard. ${session.trophies} of ${session.lobby.trophiesToWin} trophies`} onPress={onLeaderboard} style={s.nav}><Text style={s.recordText}>✦ {session.trophies}/{session.lobby.trophiesToWin}</Text></Pressable>
           <Pressable accessibilityRole="button" onPress={onLibrary} style={s.nav}><Text style={s.navLabel}>Spells</Text></Pressable>
           <View accessibilityLabel={`${session.gold} gold`} style={s.wallet}><Text style={s.coin}>◈</Text><Text style={s.gold}>{session.gold}</Text></View>
           <Pressable accessibilityRole="button" accessibilityLabel={`Reroll for ${rollCost} gold`} disabled={busy || session.gold < rollCost} onPress={() => act({ type: 'reroll' })} style={({ pressed }) => [s.reroll, (busy || session.gold < rollCost) && s.disabled, pressed && s.pressed]}><Text style={s.rerollText}>⟳ Reroll  ·  {rollCost} ◈</Text></Pressable>
@@ -104,7 +104,7 @@ export function CompactShop({ session, busy, act, onMenu, onLibrary, onLeaderboa
           <View style={[s.player, { width: tight ? 106 : compact ? 124 : 172 }]}>
             <AttunementPanel spells={session.spells} ages={session.spellAcquired}/>
             <AugmentInventory augments={session.augments} compact/>
-            <Text style={s.bagHint}>Reward after round {Math.ceil(session.round/2)*2}</Text>
+            <Text style={s.bagHint}>Level up after round {Math.ceil(session.round/2)*2}</Text>
           </View>
 
 
