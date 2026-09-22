@@ -1,117 +1,10 @@
 [
   {
-    "id": "splash",
-    "name": "Splash",
+    "id": "jet",
+    "name": "Jet",
     "domain": "water",
     "stars": 1,
     "castTicks": 1,
-    "rules": "Deal 20 damage. Water attuned: Gain 1 Tide.",
-    "keywords": [
-      "tide",
-      "attunement"
-    ],
-    "notes": [],
-    "combat": {
-      "effects": [
-        {
-          "kind": "damage",
-          "amount": 20
-        },
-        {
-          "kind": "status",
-          "status": "tide",
-          "amount": 1,
-          "target": "self",
-          "requiresAttunement": "water"
-        }
-      ]
-    },
-    "upgrade": {
-      "castTicks": 1,
-      "rules": "Deal 28 damage. Water attuned: Gain 2 Tide.",
-      "keywords": [
-        "tide",
-        "attunement"
-      ],
-      "combat": {
-        "effects": [
-          {
-            "kind": "damage",
-            "amount": 28
-          },
-          {
-            "kind": "status",
-            "status": "tide",
-            "amount": 2,
-            "target": "self",
-            "requiresAttunement": "water"
-          }
-        ]
-      },
-      "notes": []
-    }
-  },
-  {
-    "id": "undertow",
-    "name": "Undertow",
-    "domain": "water",
-    "stars": 1,
-    "castTicks": 1,
-    "rules": "Deal 30 damage. Water attuned: Gain 1 Tide.",
-    "keywords": [
-      "tide",
-      "attunement"
-    ],
-    "notes": [],
-    "combat": {
-      "effects": [
-        {
-          "kind": "damage",
-          "amount": 30
-        },
-        {
-          "kind": "status",
-          "status": "tide",
-          "amount": 1,
-          "target": "self",
-          "requiresAttunement": "water"
-        }
-      ]
-    },
-    "upgrade": {
-      "castTicks": 1,
-      "rules": "Deal 42 damage. Water attuned: Gain 1 Tide.",
-      "keywords": [
-        "tide",
-        "attunement"
-      ],
-      "combat": {
-        "effects": [
-          {
-            "kind": "damage",
-            "amount": 42
-          },
-          {
-            "kind": "status",
-            "status": "tide",
-            "amount": 1,
-            "target": "self",
-            "requiresAttunement": "water"
-          }
-        ]
-      },
-      "notes": []
-    }
-  },
-  {
-    "id": "brine",
-    "name": "Brine",
-    "domain": "water",
-    "stars": 1,
-    "castTicks": 1,
-    "rules": "Deal 45 damage.",
-    "keywords": [],
-    "notes": [],
     "combat": {
       "effects": [
         {
@@ -120,220 +13,137 @@
         }
       ]
     },
+    "rules": "Deal 45 damage.",
+    "keywords": [],
+    "notes": [],
     "upgrade": {
       "castTicks": 1,
-      "rules": "Deal 63 damage.",
+      "combat": {
+        "effects": [
+          {
+            "kind": "damage",
+            "amount": 55
+          }
+        ]
+      },
+      "rules": "Deal 55 damage.",
       "keywords": [],
-      "combat": {
-        "effects": [
-          {
-            "kind": "damage",
-            "amount": 63
-          }
-        ]
-      },
       "notes": []
     }
   },
   {
-    "id": "riptide",
-    "name": "Riptide",
+    "id": "brine",
+    "name": "Brine",
     "domain": "water",
-    "stars": 2,
-    "castTicks": 1,
-    "rules": "Water attuned: Spend 2 Tide: Heal 100.",
-    "keywords": [
-      "tide",
-      "attunement"
-    ],
-    "notes": [],
-    "combat": {
-      "effects": [
-        {
-          "kind": "spend",
-          "status": "tide",
-          "amount": 2,
-          "effects": [
-            {
-              "kind": "heal",
-              "amount": 100
-            }
-          ],
-          "requiresAttunement": "water"
-        }
-      ]
-    },
-    "upgrade": {
-      "castTicks": 1,
-      "rules": "Water attuned: Spend 2 Tide: Heal 150.",
-      "keywords": [
-        "tide",
-        "attunement"
-      ],
-      "combat": {
-        "effects": [
-          {
-            "kind": "spend",
-            "status": "tide",
-            "amount": 2,
-            "effects": [
-              {
-                "kind": "heal",
-                "amount": 150
-              }
-            ],
-            "requiresAttunement": "water"
-          }
-        ]
-      },
-      "notes": []
-    }
-  },
-  {
-    "id": "whirlpool",
-    "name": "Whirlpool",
-    "domain": "water",
-    "stars": 2,
-    "castTicks": 1,
-    "rules": "Water attuned: Deal 20 damage per Tide.",
-    "keywords": [
-      "tide",
-      "attunement"
-    ],
-    "notes": [],
+    "stars": 1,
+    "castTicks": 3,
     "combat": {
       "effects": [
         {
           "kind": "damage",
-          "amount": 20,
-          "perStatus": "tide",
-          "requiresAttunement": "water"
+          "amount": 80
         }
       ]
     },
+    "rules": "Deal 80 damage.",
+    "keywords": [],
+    "notes": [],
     "upgrade": {
-      "castTicks": 1,
-      "rules": "Water attuned: Deal 28 damage per Tide.",
-      "keywords": [
-        "tide",
-        "attunement"
-      ],
+      "castTicks": 3,
       "combat": {
         "effects": [
           {
             "kind": "damage",
-            "amount": 28,
-            "perStatus": "tide",
-            "requiresAttunement": "water"
+            "amount": 100
           }
         ]
       },
+      "rules": "Deal 100 damage.",
+      "keywords": [],
       "notes": []
     }
   },
   {
-    "id": "ice-lance",
-    "name": "Ice Lance",
+    "id": "current",
+    "name": "Current",
     "domain": "water",
-    "stars": 2,
+    "stars": 1,
     "castTicks": 1,
-    "rules": "Deal 35 damage. Apply 1 Slow.",
-    "keywords": [
-      "slow"
-    ],
-    "notes": [],
     "combat": {
       "effects": [
-        {
-          "kind": "damage",
-          "amount": 35
-        },
         {
           "kind": "status",
-          "status": "slow",
+          "status": "tidecaller",
           "amount": 1,
-          "target": "enemy"
+          "target": "self"
         }
       ]
     },
+    "rules": "Gain 1 Tidecaller.",
+    "keywords": [
+      "tidecaller"
+    ],
+    "notes": [],
     "upgrade": {
       "castTicks": 1,
-      "rules": "Deal 49 damage. Apply 1 Slow.",
-      "keywords": [
-        "slow"
-      ],
       "combat": {
         "effects": [
           {
             "kind": "damage",
-            "amount": 49
+            "amount": 15
           },
           {
             "kind": "status",
-            "status": "slow",
+            "status": "tidecaller",
             "amount": 1,
-            "target": "enemy"
+            "target": "self"
           }
         ]
       },
+      "rules": "Deal 15 damage. Gain 1 Tidecaller.",
+      "keywords": [
+        "tidecaller"
+      ],
       "notes": []
     }
   },
   {
-    "id": "tidal-burst",
-    "name": "Tidal Burst",
+    "id": "healing-surge",
+    "name": "Healing Surge",
     "domain": "water",
-    "stars": 3,
+    "stars": 1,
     "castTicks": 2,
-    "rules": "Deal 24 damage. Water attuned: 60 instead. Water attuned: Spend 2 Tide: resolve this spell 2 times.",
-    "keywords": [
-      "tide",
-      "repeat",
-      "attunement"
-    ],
-    "notes": [],
     "combat": {
       "effects": [
         {
-          "kind": "damage",
-          "amount": 24,
-          "attunedAmount": 60,
-          "bonusDomain": "water"
-        },
-        {
-          "kind": "spend",
-          "status": "tide",
-          "amount": 2,
-          "repeats": 2,
-          "requiresAttunement": "water"
+          "kind": "heal",
+          "amount": 40
         }
       ]
     },
+    "rules": "Heal 40.",
+    "keywords": [],
+    "notes": [],
     "upgrade": {
       "castTicks": 2,
-      "rules": "Deal 34 damage. Water attuned: 84 instead. Water attuned: Spend 2 Tide: resolve this spell 2 times.",
-      "keywords": [
-        "tide",
-        "repeat",
-        "attunement"
-      ],
       "combat": {
         "effects": [
           {
-            "kind": "damage",
-            "amount": 34,
-            "attunedAmount": 84,
-            "bonusDomain": "water"
+            "kind": "heal",
+            "amount": 40
           },
           {
-            "kind": "spend",
-            "status": "tide",
-            "amount": 2,
-            "repeats": 2,
-            "requiresAttunement": "water"
+            "kind": "status",
+            "status": "regeneration",
+            "amount": 4,
+            "target": "self"
           }
         ]
       },
+      "rules": "Heal 40. Gain Regeneration for 4 ticks.",
+      "keywords": [
+        "regeneration"
+      ],
       "notes": []
     }
   },
@@ -341,155 +151,674 @@
     "id": "frostbolt",
     "name": "Frostbolt",
     "domain": "water",
-    "stars": 3,
-    "castTicks": 2,
-    "rules": "Deal 32 damage. Water attuned: 80 instead. Interrupt the enemy’s current spell.",
-    "keywords": [
-      "interrupt",
-      "attunement"
-    ],
-    "notes": [],
+    "stars": 2,
+    "castTicks": 1,
     "combat": {
       "effects": [
         {
           "kind": "damage",
-          "amount": 32,
-          "attunedAmount": 80,
-          "bonusDomain": "water"
+          "amount": 10
         },
         {
-          "kind": "interrupt"
+          "kind": "status",
+          "status": "slow",
+          "amount": 3,
+          "target": "enemy"
         }
       ]
     },
+    "rules": "Deal 10 damage. Apply Slow for 3 ticks.",
+    "keywords": [
+      "slow"
+    ],
+    "notes": [],
     "upgrade": {
-      "castTicks": 2,
-      "rules": "Deal 45 damage. Water attuned: 112 instead. Interrupt the enemy’s current spell.",
-      "keywords": [
-        "interrupt",
-        "attunement"
-      ],
+      "castTicks": 1,
       "combat": {
         "effects": [
           {
             "kind": "damage",
-            "amount": 45,
-            "attunedAmount": 112,
-            "bonusDomain": "water"
+            "amount": 10
           },
           {
-            "kind": "interrupt"
+            "kind": "status",
+            "status": "slow",
+            "amount": 3,
+            "target": "enemy",
+            "bonusDomain": "water",
+            "attunedAmount": 5
           }
         ]
       },
+      "rules": "Deal 10 damage. Apply Slow for 3 ticks. Water attuned: 5 instead.",
+      "keywords": [
+        "slow",
+        "attunement"
+      ],
       "notes": []
     }
   },
   {
-    "id": "tidal-wave",
-    "name": "Tidal Wave",
+    "id": "foamguard",
+    "name": "Foamguard",
     "domain": "water",
-    "stars": 4,
-    "castTicks": 3,
-    "rules": "Deal 48 damage. Water attuned: 120 instead. Water attuned: Spend 3 Tide: Gain 100 Ward.",
+    "stars": 2,
+    "castTicks": 2,
+    "combat": {
+      "effects": [
+        {
+          "kind": "status",
+          "status": "guard",
+          "amount": 1,
+          "target": "self"
+        }
+      ]
+    },
+    "rules": "Gain Guard for 1 ticks.",
     "keywords": [
-      "tide",
-      "ward",
-      "attunement"
+      "guard"
     ],
     "notes": [],
+    "upgrade": {
+      "castTicks": 2,
+      "combat": {
+        "effects": [
+          {
+            "kind": "status",
+            "status": "guard",
+            "amount": 2,
+            "target": "self"
+          }
+        ]
+      },
+      "rules": "Gain Guard for 2 ticks.",
+      "keywords": [
+        "guard"
+      ],
+      "notes": []
+    }
+  },
+  {
+    "id": "deep-water",
+    "name": "Deep Water",
+    "domain": "water",
+    "stars": 2,
+    "castTicks": 1,
     "combat": {
       "effects": [
         {
           "kind": "damage",
-          "amount": 48,
-          "attunedAmount": 120,
-          "bonusDomain": "water"
-        },
+          "amount": 60
+        }
+      ]
+    },
+    "rules": "Deal 60 damage.",
+    "keywords": [],
+    "notes": [],
+    "upgrade": {
+      "castTicks": 1,
+      "combat": {
+        "effects": [
+          {
+            "kind": "damage",
+            "amount": 70
+          }
+        ]
+      },
+      "rules": "Deal 70 damage.",
+      "keywords": [],
+      "notes": []
+    }
+  },
+  {
+    "id": "deluge",
+    "name": "Deluge",
+    "domain": "water",
+    "stars": 2,
+    "castTicks": 1,
+    "combat": {
+      "effects": [
         {
-          "kind": "spend",
-          "status": "tide",
-          "amount": 3,
-          "effects": [
-            {
-              "kind": "ward",
-              "amount": 100
-            }
-          ],
+          "kind": "status",
+          "status": "tidecaller",
+          "amount": 2,
+          "target": "self",
           "requiresAttunement": "water"
         }
       ]
     },
+    "rules": "Water attuned: Gain 2 Tidecaller.",
+    "keywords": [
+      "tidecaller",
+      "attunement"
+    ],
+    "notes": [],
     "upgrade": {
-      "castTicks": 3,
-      "rules": "Deal 67 damage. Water attuned: 168 instead. Water attuned: Spend 3 Tide: Gain 100 Ward.",
+      "castTicks": 1,
+      "combat": {
+        "effects": [
+          {
+            "kind": "status",
+            "status": "tidecaller",
+            "amount": 3,
+            "target": "self",
+            "requiresAttunement": "water"
+          }
+        ]
+      },
+      "rules": "Water attuned: Gain 3 Tidecaller.",
       "keywords": [
-        "tide",
+        "tidecaller",
+        "attunement"
+      ],
+      "notes": []
+    }
+  },
+  {
+    "id": "downpour",
+    "name": "Downpour",
+    "domain": "water",
+    "stars": 3,
+    "castTicks": 2,
+    "combat": {
+      "effects": [
+        {
+          "kind": "damage",
+          "amount": 60
+        }
+      ]
+    },
+    "rules": "Deal 60 damage.",
+    "keywords": [],
+    "notes": [],
+    "upgrade": {
+      "castTicks": 2,
+      "combat": {
+        "effects": [
+          {
+            "kind": "damage",
+            "amount": 60,
+            "statusMultiplier": {
+              "status": "tidecaller",
+              "amount": 0.2
+            },
+            "bonusDomain": "water"
+          }
+        ]
+      },
+      "rules": "Deal 60 damage. Water attuned: +20% damage per Tidecaller you have.",
+      "keywords": [
+        "tidecaller",
+        "attunement"
+      ],
+      "notes": []
+    }
+  },
+  {
+    "id": "storm",
+    "name": "Storm",
+    "domain": "water",
+    "stars": 3,
+    "castTicks": 1,
+    "combat": {
+      "effects": [
+        {
+          "kind": "damage",
+          "amount": 70
+        },
+        {
+          "kind": "status",
+          "status": "tidecaller",
+          "amount": 1,
+          "target": "self",
+          "requiresAttunement": "water"
+        }
+      ]
+    },
+    "rules": "Deal 70 damage. Water attuned: Gain 1 Tidecaller.",
+    "keywords": [
+      "tidecaller",
+      "attunement"
+    ],
+    "notes": [],
+    "upgrade": {
+      "castTicks": 1,
+      "combat": {
+        "effects": [
+          {
+            "kind": "damage",
+            "amount": 70
+          },
+          {
+            "kind": "status",
+            "status": "tidecaller",
+            "amount": 3,
+            "target": "self",
+            "requiresAttunement": "water"
+          }
+        ]
+      },
+      "rules": "Deal 70 damage. Water attuned: Gain 3 Tidecaller.",
+      "keywords": [
+        "tidecaller",
+        "attunement"
+      ],
+      "notes": []
+    }
+  },
+  {
+    "id": "frost-nova",
+    "name": "Frost Nova",
+    "domain": "water",
+    "stars": 3,
+    "castTicks": 2,
+    "combat": {
+      "effects": [
+        {
+          "kind": "status",
+          "status": "slow",
+          "amount": 3,
+          "target": "enemy"
+        },
+        {
+          "kind": "status",
+          "status": "weaken",
+          "amount": 4,
+          "target": "enemy"
+        }
+      ]
+    },
+    "rules": "Apply Slow for 3 ticks. Apply Weaken for 4 ticks.",
+    "keywords": [
+      "slow",
+      "weaken"
+    ],
+    "notes": [],
+    "upgrade": {
+      "castTicks": 2,
+      "combat": {
+        "effects": [
+          {
+            "kind": "status",
+            "status": "slow",
+            "amount": 3,
+            "target": "enemy"
+          },
+          {
+            "kind": "status",
+            "status": "weaken",
+            "amount": 4,
+            "target": "enemy",
+            "bonusDomain": "water",
+            "attunedAmount": 6
+          }
+        ]
+      },
+      "rules": "Apply Slow for 3 ticks. Apply Weaken for 4 ticks. Water attuned: 6 instead.",
+      "keywords": [
+        "slow",
+        "weaken",
+        "attunement"
+      ],
+      "notes": []
+    }
+  },
+  {
+    "id": "riptide",
+    "name": "Riptide",
+    "domain": "water",
+    "stars": 3,
+    "castTicks": 1,
+    "combat": {
+      "effects": [
+        {
+          "kind": "heal",
+          "amount": 80
+        }
+      ]
+    },
+    "rules": "Heal 80.",
+    "keywords": [],
+    "notes": [],
+    "upgrade": {
+      "castTicks": 1,
+      "combat": {
+        "effects": [
+          {
+            "kind": "heal",
+            "amount": 80
+          },
+          {
+            "kind": "status",
+            "status": "tidecaller",
+            "amount": 2,
+            "target": "self",
+            "requiresAttunement": "water"
+          }
+        ]
+      },
+      "rules": "Heal 80. Water attuned: Gain 2 Tidecaller.",
+      "keywords": [
+        "tidecaller",
+        "attunement"
+      ],
+      "notes": []
+    }
+  },
+  {
+    "id": "whirlpool",
+    "name": "Whirlpool",
+    "domain": "water",
+    "stars": 3,
+    "castTicks": 1,
+    "combat": {
+      "effects": [
+        {
+          "kind": "damage",
+          "amount": 50,
+          "channelBonus": 10,
+          "bonusDomain": "water"
+        }
+      ]
+    },
+    "rules": "Deal 50 damage. Water attuned: Channel: +10 damage per adjacent copy (max 3 copies).",
+    "keywords": [
+      "channel",
+      "attunement"
+    ],
+    "notes": [],
+    "upgrade": {
+      "castTicks": 1,
+      "combat": {
+        "effects": [
+          {
+            "kind": "damage",
+            "amount": 50,
+            "channelBonus": 20,
+            "bonusDomain": "water"
+          }
+        ]
+      },
+      "rules": "Deal 50 damage. Water attuned: Channel: +20 damage per adjacent copy (max 3 copies).",
+      "keywords": [
+        "channel",
+        "attunement"
+      ],
+      "notes": []
+    }
+  },
+  {
+    "id": "water-barrier",
+    "name": "Water Barrier",
+    "domain": "water",
+    "stars": 3,
+    "castTicks": 1,
+    "combat": {
+      "effects": [
+        {
+          "kind": "ward",
+          "amount": 80
+        }
+      ]
+    },
+    "rules": "Gain 80 Ward.",
+    "keywords": [
+      "ward"
+    ],
+    "notes": [],
+    "upgrade": {
+      "castTicks": 1,
+      "combat": {
+        "effects": [
+          {
+            "kind": "ward",
+            "amount": 80
+          },
+          {
+            "kind": "status",
+            "status": "tidecaller",
+            "amount": 2,
+            "target": "self",
+            "requiresAttunement": "water"
+          }
+        ]
+      },
+      "rules": "Gain 80 Ward. Water attuned: Gain 2 Tidecaller.",
+      "keywords": [
+        "tidecaller",
         "ward",
         "attunement"
       ],
-      "combat": {
-        "effects": [
-          {
-            "kind": "damage",
-            "amount": 67,
-            "attunedAmount": 168,
-            "bonusDomain": "water"
-          },
-          {
-            "kind": "spend",
-            "status": "tide",
-            "amount": 3,
-            "effects": [
-              {
-                "kind": "ward",
-                "amount": 100
-              }
-            ],
-            "requiresAttunement": "water"
-          }
-        ]
-      },
       "notes": []
     }
   },
   {
-    "id": "echo",
-    "name": "Echo",
+    "id": "ice-block",
+    "name": "Ice Block",
     "domain": "water",
-    "stars": 5,
+    "stars": 4,
     "castTicks": 2,
-    "rules": "Water attuned: Your next spell resolves 3 times.",
-    "keywords": [
-      "repeat",
-      "attunement"
-    ],
-    "notes": [],
     "combat": {
       "effects": [
         {
-          "kind": "repeatNext",
-          "amount": 3,
+          "kind": "status",
+          "status": "guard",
+          "amount": 4,
+          "target": "self",
           "requiresAttunement": "water"
         }
       ]
     },
+    "rules": "Water attuned: Gain Guard for 4 ticks.",
+    "keywords": [
+      "guard",
+      "attunement"
+    ],
+    "notes": [],
     "upgrade": {
-      "castTicks": 2,
-      "rules": "Water attuned: Your next spell resolves 4 times.",
-      "keywords": [
-        "repeat",
-        "attunement"
-      ],
+      "castTicks": 1,
       "combat": {
         "effects": [
           {
-            "kind": "repeatNext",
+            "kind": "status",
+            "status": "guard",
             "amount": 4,
+            "target": "self",
             "requiresAttunement": "water"
           }
         ]
       },
+      "rules": "Water attuned: 1T; otherwise 2T. Water attuned: Gain Guard for 4 ticks.",
+      "keywords": [
+        "guard",
+        "attunement"
+      ],
+      "notes": [],
+      "castDomain": "water",
+      "unattunedCastTicks": 2
+    }
+  },
+  {
+    "id": "tsunami",
+    "name": "Tsunami",
+    "domain": "water",
+    "stars": 4,
+    "castTicks": 2,
+    "combat": {
+      "effects": [
+        {
+          "kind": "damage",
+          "amount": 80,
+          "requiresAttunement": "water"
+        },
+        {
+          "kind": "status",
+          "status": "weaken",
+          "amount": 3,
+          "target": "enemy",
+          "requiresAttunement": "water"
+        }
+      ]
+    },
+    "rules": "Water attuned: Deal 80 damage. Water attuned: Apply Weaken for 3 ticks.",
+    "keywords": [
+      "weaken",
+      "attunement"
+    ],
+    "notes": [],
+    "upgrade": {
+      "castTicks": 2,
+      "combat": {
+        "effects": [
+          {
+            "kind": "damage",
+            "amount": 100,
+            "requiresAttunement": "water"
+          },
+          {
+            "kind": "status",
+            "status": "weaken",
+            "amount": 4,
+            "target": "enemy",
+            "requiresAttunement": "water"
+          }
+        ]
+      },
+      "rules": "Water attuned: Deal 100 damage. Water attuned: Apply Weaken for 4 ticks.",
+      "keywords": [
+        "weaken",
+        "attunement"
+      ],
+      "notes": []
+    }
+  },
+  {
+    "id": "crash",
+    "name": "Crash",
+    "domain": "water",
+    "stars": 4,
+    "castTicks": 3,
+    "combat": {
+      "effects": [
+        {
+          "kind": "damage",
+          "amount": 100,
+          "requiresAttunement": "water"
+        }
+      ]
+    },
+    "rules": "Water attuned: Deal 100 damage.",
+    "keywords": [
+      "attunement"
+    ],
+    "notes": [],
+    "upgrade": {
+      "castTicks": 3,
+      "combat": {
+        "effects": [
+          {
+            "kind": "damage",
+            "amount": 100,
+            "echoMultiplier": 2,
+            "requiresAttunement": "water"
+          }
+        ]
+      },
+      "rules": "Water attuned: Deal 100 damage. Deals double damage when Echoed.",
+      "keywords": [
+        "echo",
+        "attunement"
+      ],
+      "notes": []
+    }
+  },
+  {
+    "id": "ocean-heart",
+    "name": "Ocean Heart",
+    "domain": "water",
+    "stars": 5,
+    "castTicks": 2,
+    "combat": {
+      "effects": [
+        {
+          "kind": "status",
+          "status": "tidecaller",
+          "amount": 5,
+          "target": "self",
+          "requiresAttunement": "water"
+        }
+      ]
+    },
+    "rules": "Water attuned: Gain 5 Tidecaller.",
+    "keywords": [
+      "tidecaller",
+      "attunement"
+    ],
+    "notes": [],
+    "upgrade": {
+      "castTicks": 1,
+      "combat": {
+        "effects": [
+          {
+            "kind": "status",
+            "status": "tidecaller",
+            "amount": 5,
+            "target": "self",
+            "requiresAttunement": "water"
+          }
+        ]
+      },
+      "rules": "Water attuned: 1T; otherwise 2T. Water attuned: Gain 5 Tidecaller.",
+      "keywords": [
+        "tidecaller",
+        "attunement"
+      ],
+      "notes": [],
+      "castDomain": "water",
+      "unattunedCastTicks": 2
+    }
+  },
+  {
+    "id": "tidal-power",
+    "name": "Tidal Power",
+    "domain": "water",
+    "stars": 5,
+    "castTicks": 1,
+    "combat": {
+      "effects": [
+        {
+          "kind": "modifier",
+          "modifier": "nextEcho",
+          "amount": 1,
+          "requiresAttunement": "water"
+        }
+      ]
+    },
+    "rules": "Water attuned: Your next Tidecaller Echo has 100% effectiveness.",
+    "keywords": [
+      "tidecaller",
+      "echo",
+      "attunement"
+    ],
+    "notes": [],
+    "upgrade": {
+      "castTicks": 1,
+      "combat": {
+        "effects": [
+          {
+            "kind": "modifier",
+            "modifier": "nextEcho",
+            "amount": 1.5,
+            "requiresAttunement": "water"
+          }
+        ]
+      },
+      "rules": "Water attuned: Your next Tidecaller Echo has 150% effectiveness.",
+      "keywords": [
+        "tidecaller",
+        "echo",
+        "attunement"
+      ],
       "notes": []
     }
   }

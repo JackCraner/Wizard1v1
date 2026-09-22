@@ -1,85 +1,141 @@
 [
   {
-    "id": "wrath",
-    "name": "Wrath",
+    "id": "thorn-lash",
+    "name": "Thorn Lash",
     "domain": "nature",
     "stars": 1,
     "castTicks": 1,
-    "rules": "Deal 50 damage.",
-    "keywords": [],
-    "notes": [],
     "combat": {
       "effects": [
         {
           "kind": "damage",
-          "amount": 50
+          "amount": 35
         }
       ]
     },
+    "rules": "Deal 35 damage.",
+    "keywords": [],
+    "notes": [],
     "upgrade": {
       "castTicks": 1,
-      "rules": "Deal 70 damage.",
-      "keywords": [],
       "combat": {
         "effects": [
           {
             "kind": "damage",
-            "amount": 70
+            "amount": 45
           }
         ]
       },
+      "rules": "Deal 45 damage.",
+      "keywords": [],
       "notes": []
     }
   },
   {
-    "id": "moonfire",
-    "name": "Moonfire",
+    "id": "healing-seed",
+    "name": "Healing Seed",
     "domain": "nature",
     "stars": 1,
     "castTicks": 1,
-    "rules": "Deal 20 damage. Nature attuned: Apply 4 Poison.",
-    "keywords": [
-      "poison",
-      "attunement"
-    ],
-    "notes": [],
     "combat": {
       "effects": [
         {
-          "kind": "damage",
+          "kind": "heal",
           "amount": 20
-        },
-        {
-          "kind": "status",
-          "status": "poison",
-          "amount": 4,
-          "target": "enemy",
-          "requiresAttunement": "nature"
         }
       ]
     },
+    "rules": "Heal 20.",
+    "keywords": [],
+    "notes": [],
     "upgrade": {
       "castTicks": 1,
-      "rules": "Deal 28 damage. Nature attuned: Apply 6 Poison.",
-      "keywords": [
-        "poison",
-        "attunement"
-      ],
       "combat": {
         "effects": [
           {
-            "kind": "damage",
-            "amount": 28
-          },
-          {
-            "kind": "status",
-            "status": "poison",
-            "amount": 6,
-            "target": "enemy",
-            "requiresAttunement": "nature"
+            "kind": "heal",
+            "amount": 35
           }
         ]
       },
+      "rules": "Heal 35.",
+      "keywords": [],
+      "notes": []
+    }
+  },
+  {
+    "id": "barkskin",
+    "name": "Barkskin",
+    "domain": "nature",
+    "stars": 1,
+    "castTicks": 1,
+    "combat": {
+      "effects": [
+        {
+          "kind": "ward",
+          "amount": 40
+        }
+      ]
+    },
+    "rules": "Gain 40 Ward.",
+    "keywords": [
+      "ward"
+    ],
+    "notes": [],
+    "upgrade": {
+      "castTicks": 1,
+      "combat": {
+        "effects": [
+          {
+            "kind": "ward",
+            "amount": 50
+          }
+        ]
+      },
+      "rules": "Gain 50 Ward.",
+      "keywords": [
+        "ward"
+      ],
+      "notes": []
+    }
+  },
+  {
+    "id": "moonblight",
+    "name": "Moonblight",
+    "domain": "nature",
+    "stars": 1,
+    "castTicks": 1,
+    "combat": {
+      "effects": [
+        {
+          "kind": "status",
+          "status": "poison",
+          "amount": 5,
+          "target": "enemy"
+        }
+      ]
+    },
+    "rules": "Apply Poison for 5 ticks.",
+    "keywords": [
+      "poison"
+    ],
+    "notes": [],
+    "upgrade": {
+      "castTicks": 1,
+      "combat": {
+        "effects": [
+          {
+            "kind": "status",
+            "status": "poison",
+            "amount": 8,
+            "target": "enemy"
+          }
+        ]
+      },
+      "rules": "Apply Poison for 8 ticks.",
+      "keywords": [
+        "poison"
+      ],
       "notes": []
     }
   },
@@ -88,210 +144,330 @@
     "name": "Regrowth",
     "domain": "nature",
     "stars": 1,
-    "castTicks": 1,
-    "rules": "Heal 20. Nature attuned: Gain 4 Regeneration.",
-    "keywords": [
-      "regeneration",
-      "attunement"
-    ],
-    "notes": [],
+    "castTicks": 2,
     "combat": {
       "effects": [
         {
-          "kind": "heal",
-          "amount": 20
-        },
-        {
           "kind": "status",
           "status": "regeneration",
-          "amount": 4,
-          "target": "self",
-          "requiresAttunement": "nature"
+          "amount": 5,
+          "target": "self"
         }
       ]
     },
+    "rules": "Gain Regeneration for 5 ticks.",
+    "keywords": [
+      "regeneration"
+    ],
+    "notes": [],
     "upgrade": {
       "castTicks": 1,
-      "rules": "Heal 28. Nature attuned: Gain 6 Regeneration.",
-      "keywords": [
-        "regeneration",
-        "attunement"
-      ],
       "combat": {
         "effects": [
           {
-            "kind": "heal",
-            "amount": 28
-          },
-          {
             "kind": "status",
             "status": "regeneration",
-            "amount": 6,
-            "target": "self",
-            "requiresAttunement": "nature"
+            "amount": 5,
+            "target": "self"
           }
         ]
       },
+      "rules": "Gain Regeneration for 5 ticks.",
+      "keywords": [
+        "regeneration"
+      ],
       "notes": []
     }
   },
   {
-    "id": "sap",
-    "name": "Sap",
+    "id": "wrath",
+    "name": "Wrath",
     "domain": "nature",
     "stars": 1,
     "castTicks": 1,
-    "rules": "Deal 25 damage. Heal 20.",
-    "keywords": [],
-    "notes": [],
     "combat": {
       "effects": [
         {
           "kind": "damage",
-          "amount": 25
-        },
-        {
-          "kind": "heal",
           "amount": 20
         }
       ]
     },
+    "rules": "Deal 20 damage.",
+    "keywords": [],
+    "notes": [],
     "upgrade": {
       "castTicks": 1,
-      "rules": "Deal 35 damage. Heal 20.",
+      "combat": {
+        "effects": [
+          {
+            "kind": "damage",
+            "amount": 70
+          }
+        ]
+      },
+      "rules": "Deal 70 damage.",
       "keywords": [],
-      "combat": {
-        "effects": [
-          {
-            "kind": "damage",
-            "amount": 35
-          },
-          {
-            "kind": "heal",
-            "amount": 20
-          }
-        ]
-      },
       "notes": []
     }
   },
   {
-    "id": "seed-shot",
-    "name": "Seed Shot",
+    "id": "photosynthesis",
+    "name": "Photosynthesis",
     "domain": "nature",
     "stars": 2,
     "castTicks": 1,
-    "rules": "Deal 45 damage. Nature attuned: +35 damage if the enemy has Poison.",
-    "keywords": [
-      "poison",
-      "attunement"
-    ],
-    "notes": [],
-    "combat": {
-      "effects": [
-        {
-          "kind": "damage",
-          "amount": 45,
-          "condition": "poison",
-          "bonus": 35
-        }
-      ]
-    },
-    "upgrade": {
-      "castTicks": 1,
-      "rules": "Deal 63 damage. Nature attuned: +35 damage if the enemy has Poison.",
-      "keywords": [
-        "poison",
-        "attunement"
-      ],
-      "combat": {
-        "effects": [
-          {
-            "kind": "damage",
-            "amount": 63,
-            "condition": "poison",
-            "bonus": 35
-          }
-        ]
-      },
-      "notes": []
-    }
-  },
-  {
-    "id": "germination",
-    "name": "Germination",
-    "domain": "nature",
-    "stars": 2,
-    "castTicks": 1,
-    "rules": "Nature attuned: Gain Regeneration equal to enemy Poison duration.",
-    "keywords": [
-      "regeneration",
-      "poison",
-      "attunement"
-    ],
-    "notes": [],
     "combat": {
       "effects": [
         {
           "kind": "status",
           "status": "regeneration",
-          "perStatus": "enemy:poison",
-          "amount": 1,
-          "requiresAttunement": "nature"
+          "amount": 3,
+          "target": "self",
+          "channelBonus": 1
         }
       ]
     },
+    "rules": "Gain Regeneration for 3 ticks. Channel: +1 Regeneration per adjacent copy (max 3 copies).",
+    "keywords": [
+      "regeneration",
+      "channel"
+    ],
+    "notes": [],
     "upgrade": {
       "castTicks": 1,
-      "rules": "Nature attuned: Gain Regeneration equal to twice enemy Poison duration.",
-      "keywords": [
-        "regeneration",
-        "poison",
-        "attunement"
-      ],
       "combat": {
         "effects": [
           {
             "kind": "status",
             "status": "regeneration",
-            "perStatus": "enemy:poison",
-            "amount": 2,
+            "amount": 3,
+            "target": "self",
+            "channelBonus": 1
+          },
+          {
+            "kind": "heal",
+            "amount": 20,
             "requiresAttunement": "nature"
           }
         ]
       },
+      "rules": "Gain Regeneration for 3 ticks. Channel: +1 Regeneration per adjacent copy (max 3 copies). Nature attuned: Heal 20.",
+      "keywords": [
+        "regeneration",
+        "channel",
+        "attunement"
+      ],
       "notes": []
     }
   },
   {
-    "id": "nourish",
-    "name": "Nourish",
+    "id": "sporeburst",
+    "name": "Sporeburst",
     "domain": "nature",
     "stars": 2,
     "castTicks": 2,
-    "rules": "Heal 100.",
-    "keywords": [],
-    "notes": [],
     "combat": {
       "effects": [
         {
-          "kind": "heal",
+          "kind": "damage",
+          "amount": 50,
+          "criticalIfDebuffed": true
+        }
+      ]
+    },
+    "rules": "Deal 50 damage. Guaranteed critical hit if the enemy has a debuff.",
+    "keywords": [
+      "critical"
+    ],
+    "notes": [],
+    "upgrade": {
+      "castTicks": 2,
+      "combat": {
+        "effects": [
+          {
+            "kind": "damage",
+            "amount": 80,
+            "criticalIfDebuffed": true
+          }
+        ]
+      },
+      "rules": "Deal 80 damage. Guaranteed critical hit if the enemy has a debuff.",
+      "keywords": [
+        "critical"
+      ],
+      "notes": []
+    }
+  },
+  {
+    "id": "budding-life",
+    "name": "Budding Life",
+    "domain": "nature",
+    "stars": 2,
+    "castTicks": 1,
+    "combat": {
+      "effects": [
+        {
+          "kind": "status",
+          "status": "regeneration",
+          "amount": 5,
+          "target": "self"
+        },
+        {
+          "kind": "status",
+          "status": "regeneration",
+          "amount": 5,
+          "target": "enemy"
+        }
+      ]
+    },
+    "rules": "Gain Regeneration for 5 ticks. Apply Regeneration for 5 ticks.",
+    "keywords": [
+      "regeneration"
+    ],
+    "notes": [],
+    "upgrade": {
+      "castTicks": 1,
+      "combat": {
+        "effects": [
+          {
+            "kind": "status",
+            "status": "regeneration",
+            "amount": 8,
+            "target": "self"
+          },
+          {
+            "kind": "status",
+            "status": "regeneration",
+            "amount": 5,
+            "target": "enemy"
+          }
+        ]
+      },
+      "rules": "Gain Regeneration for 8 ticks. Apply Regeneration for 5 ticks.",
+      "keywords": [
+        "regeneration"
+      ],
+      "notes": []
+    }
+  },
+  {
+    "id": "solar-beam",
+    "name": "Solar Beam",
+    "domain": "nature",
+    "stars": 2,
+    "castTicks": 3,
+    "combat": {
+      "effects": [
+        {
+          "kind": "damage",
           "amount": 100
         }
       ]
     },
+    "rules": "Deal 100 damage.",
+    "keywords": [],
+    "notes": [],
+    "upgrade": {
+      "castTicks": 3,
+      "combat": {
+        "effects": [
+          {
+            "kind": "damage",
+            "amount": 200
+          }
+        ]
+      },
+      "rules": "Deal 200 damage.",
+      "keywords": [],
+      "notes": []
+    }
+  },
+  {
+    "id": "rejuvenation",
+    "name": "Rejuvenation",
+    "domain": "nature",
+    "stars": 2,
+    "castTicks": 2,
+    "combat": {
+      "effects": [
+        {
+          "kind": "heal",
+          "amount": 80
+        }
+      ]
+    },
+    "rules": "Heal 80.",
+    "keywords": [],
+    "notes": [],
     "upgrade": {
       "castTicks": 2,
-      "rules": "Heal 140.",
-      "keywords": [],
       "combat": {
         "effects": [
           {
             "kind": "heal",
-            "amount": 140
+            "amount": 80
+          },
+          {
+            "kind": "cleanse",
+            "amount": 1,
+            "requiresAttunement": "nature"
           }
         ]
       },
+      "rules": "Heal 80. Nature attuned: Cleanse 1 debuff.",
+      "keywords": [
+        "cleanse",
+        "attunement"
+      ],
+      "notes": []
+    }
+  },
+  {
+    "id": "toxic-growth",
+    "name": "Toxic Growth",
+    "domain": "nature",
+    "stars": 2,
+    "castTicks": 1,
+    "combat": {
+      "effects": [
+        {
+          "kind": "damage",
+          "amount": 30
+        },
+        {
+          "kind": "status",
+          "status": "poison",
+          "amount": 5,
+          "target": "enemy"
+        }
+      ]
+    },
+    "rules": "Deal 30 damage. Apply Poison for 5 ticks.",
+    "keywords": [
+      "poison"
+    ],
+    "notes": [],
+    "upgrade": {
+      "castTicks": 1,
+      "combat": {
+        "effects": [
+          {
+            "kind": "damage",
+            "amount": 50
+          },
+          {
+            "kind": "status",
+            "status": "poison",
+            "amount": 5,
+            "target": "enemy"
+          }
+        ]
+      },
+      "rules": "Deal 50 damage. Apply Poison for 5 ticks.",
+      "keywords": [
+        "poison"
+      ],
       "notes": []
     }
   },
@@ -300,144 +476,557 @@
     "name": "Flourish",
     "domain": "nature",
     "stars": 3,
-    "castTicks": 2,
-    "rules": "Nature attuned: Multiply your Regeneration duration by 2.",
-    "keywords": [
-      "regeneration",
-      "attunement"
-    ],
-    "notes": [],
+    "castTicks": 1,
     "combat": {
       "effects": [
         {
           "kind": "multiply",
           "status": "regeneration",
-          "amount": 2,
-          "requiresAttunement": "nature"
+          "amount": 2
         }
       ]
     },
+    "rules": "Double your Regeneration duration.",
+    "keywords": [
+      "regeneration"
+    ],
+    "notes": [],
     "upgrade": {
-      "castTicks": 2,
-      "rules": "Nature attuned: Multiply your Regeneration duration by 3.",
-      "keywords": [
-        "regeneration",
-        "attunement"
-      ],
+      "castTicks": 1,
       "combat": {
         "effects": [
           {
             "kind": "multiply",
             "status": "regeneration",
-            "amount": 3,
+            "amount": 2
+          },
+          {
+            "kind": "modifier",
+            "modifier": "regenerationPower",
+            "amount": 2,
+            "cycleOnly": true,
             "requiresAttunement": "nature"
           }
         ]
       },
+      "rules": "Double your Regeneration duration. Nature attuned: Your Regeneration heals double this Cycle.",
+      "keywords": [
+        "regeneration",
+        "cycle",
+        "attunement"
+      ],
       "notes": []
     }
   },
   {
-    "id": "eclipse",
-    "name": "Eclipse",
+    "id": "starsurge",
+    "name": "Starsurge",
     "domain": "nature",
-    "stars": 4,
+    "stars": 3,
     "castTicks": 2,
-    "rules": "Nature attuned: Consume all enemy Poison. Deal 15 damage per tick consumed.",
-    "keywords": [
-      "poison",
-      "consume",
-      "attunement"
-    ],
-    "notes": [],
     "combat": {
       "effects": [
         {
-          "kind": "consume",
-          "status": "poison",
+          "kind": "damage",
+          "amount": 100,
+          "debuffMultiplier": 0.2,
+          "bonusDomain": "nature"
+        }
+      ]
+    },
+    "rules": "Deal 100 damage. Nature attuned: +20% damage per unique enemy debuff.",
+    "keywords": [
+      "attunement"
+    ],
+    "notes": [],
+    "upgrade": {
+      "castTicks": 1,
+      "combat": {
+        "effects": [
+          {
+            "kind": "damage",
+            "amount": 100,
+            "debuffMultiplier": 0.2,
+            "bonusDomain": "nature"
+          }
+        ]
+      },
+      "rules": "Deal 100 damage. Nature attuned: +20% damage per unique enemy debuff.",
+      "keywords": [
+        "attunement"
+      ],
+      "notes": []
+    }
+  },
+  {
+    "id": "world-root",
+    "name": "World Root",
+    "domain": "nature",
+    "stars": 3,
+    "castTicks": 2,
+    "combat": {
+      "effects": [
+        {
+          "kind": "status",
+          "status": "trap",
+          "amount": 5,
           "target": "enemy",
-          "amount": 15,
           "requiresAttunement": "nature"
         }
       ]
     },
+    "rules": "Nature attuned: Apply Trap for 5 ticks.",
+    "keywords": [
+      "trap",
+      "attunement"
+    ],
+    "notes": [],
     "upgrade": {
       "castTicks": 2,
-      "rules": "Nature attuned: Consume all enemy Poison. Deal 21 damage per tick consumed.",
-      "keywords": [
-        "poison",
-        "consume",
-        "attunement"
-      ],
       "combat": {
         "effects": [
           {
-            "kind": "consume",
-            "status": "poison",
+            "kind": "status",
+            "status": "trap",
+            "amount": 10,
             "target": "enemy",
-            "amount": 21,
             "requiresAttunement": "nature"
           }
         ]
       },
+      "rules": "Nature attuned: Apply Trap for 10 ticks.",
+      "keywords": [
+        "trap",
+        "attunement"
+      ],
       "notes": []
     }
   },
   {
-    "id": "ancient-growth",
-    "name": "Ancient Growth",
+    "id": "starfall",
+    "name": "Starfall",
     "domain": "nature",
-    "stars": 5,
-    "castTicks": 3,
-    "rules": "Nature attuned: Gain 10 Regeneration. Gain 40 Ward. Nature attuned: 100 instead.",
+    "stars": 3,
+    "castTicks": 1,
+    "combat": {
+      "effects": [
+        {
+          "kind": "damage",
+          "amount": 80,
+          "all": true
+        }
+      ]
+    },
+    "rules": "Deal 80 damage to all enemies.",
+    "keywords": [],
+    "notes": [],
+    "upgrade": {
+      "castTicks": 1,
+      "combat": {
+        "effects": [
+          {
+            "kind": "damage",
+            "amount": 120,
+            "all": true
+          }
+        ]
+      },
+      "rules": "Deal 120 damage to all enemies.",
+      "keywords": [],
+      "notes": []
+    }
+  },
+  {
+    "id": "germination",
+    "name": "Germination",
+    "domain": "nature",
+    "stars": 3,
+    "castTicks": 1,
+    "combat": {
+      "effects": [
+        {
+          "kind": "heal",
+          "amount": 70
+        }
+      ]
+    },
+    "rules": "Heal 70.",
+    "keywords": [],
+    "notes": [],
+    "upgrade": {
+      "castTicks": 0,
+      "combat": {
+        "effects": [
+          {
+            "kind": "heal",
+            "amount": 70
+          }
+        ]
+      },
+      "rules": "Nature attuned: Instant; otherwise 1T. Heal 70.",
+      "keywords": [
+        "instant",
+        "attunement"
+      ],
+      "notes": [],
+      "instantDomain": "nature"
+    }
+  },
+  {
+    "id": "bramble-wall",
+    "name": "Bramble Wall",
+    "domain": "nature",
+    "stars": 3,
+    "castTicks": 1,
+    "combat": {
+      "effects": [
+        {
+          "kind": "ward",
+          "amount": 100,
+          "requiresAttunement": "nature"
+        }
+      ]
+    },
+    "rules": "Nature attuned: Gain 100 Ward.",
     "keywords": [
-      "regeneration",
       "ward",
       "attunement"
     ],
     "notes": [],
+    "upgrade": {
+      "castTicks": 1,
+      "combat": {
+        "effects": [
+          {
+            "kind": "ward",
+            "amount": 150,
+            "requiresAttunement": "nature"
+          }
+        ]
+      },
+      "rules": "Nature attuned: Gain 150 Ward.",
+      "keywords": [
+        "ward",
+        "attunement"
+      ],
+      "notes": []
+    }
+  },
+  {
+    "id": "venom-bloom",
+    "name": "Venom Bloom",
+    "domain": "nature",
+    "stars": 4,
+    "castTicks": 1,
+    "combat": {
+      "effects": [
+        {
+          "kind": "modifier",
+          "modifier": "poisonPower",
+          "amount": 1.5,
+          "requiresAttunement": "nature"
+        }
+      ]
+    },
+    "rules": "Nature attuned: Your Poison deals 50% more damage for the rest of combat.",
+    "keywords": [
+      "poison",
+      "attunement"
+    ],
+    "notes": [],
+    "upgrade": {
+      "castTicks": 1,
+      "combat": {
+        "effects": [
+          {
+            "kind": "modifier",
+            "modifier": "poisonPower",
+            "amount": 2,
+            "requiresAttunement": "nature"
+          }
+        ]
+      },
+      "rules": "Nature attuned: Your Poison deals 100% more damage for the rest of combat.",
+      "keywords": [
+        "poison",
+        "attunement"
+      ],
+      "notes": []
+    }
+  },
+  {
+    "id": "celestial-alignment",
+    "name": "Celestial Alignment",
+    "domain": "nature",
+    "stars": 4,
+    "castTicks": 2,
+    "combat": {
+      "effects": [
+        {
+          "kind": "modifier",
+          "modifier": "nextDamage",
+          "amount": 2,
+          "requiresAttunement": "nature"
+        }
+      ]
+    },
+    "rules": "Nature attuned: Your next spell deals double damage.",
+    "keywords": [
+      "attunement"
+    ],
+    "notes": [],
+    "upgrade": {
+      "castTicks": 1,
+      "combat": {
+        "effects": [
+          {
+            "kind": "modifier",
+            "modifier": "nextDamage",
+            "amount": 2,
+            "requiresAttunement": "nature"
+          }
+        ]
+      },
+      "rules": "Nature attuned: 1T; otherwise 2T. Nature attuned: Your next spell deals double damage.",
+      "keywords": [
+        "attunement"
+      ],
+      "notes": [],
+      "castDomain": "nature",
+      "unattunedCastTicks": 2
+    }
+  },
+  {
+    "id": "wild-growth",
+    "name": "Wild Growth",
+    "domain": "nature",
+    "stars": 4,
+    "castTicks": 3,
+    "combat": {
+      "effects": [
+        {
+          "kind": "heal",
+          "amount": 80,
+          "all": true
+        }
+      ]
+    },
+    "rules": "Heal 80 to all allies.",
+    "keywords": [],
+    "notes": [],
+    "upgrade": {
+      "castTicks": 2,
+      "combat": {
+        "effects": [
+          {
+            "kind": "heal",
+            "amount": 80,
+            "all": true
+          }
+        ]
+      },
+      "rules": "Nature attuned: 2T; otherwise 3T. Heal 80 to all allies.",
+      "keywords": [
+        "attunement"
+      ],
+      "notes": [],
+      "castDomain": "nature",
+      "unattunedCastTicks": 3
+    }
+  },
+  {
+    "id": "symbiosis",
+    "name": "Symbiosis",
+    "domain": "nature",
+    "stars": 4,
+    "castTicks": 1,
     "combat": {
       "effects": [
         {
           "kind": "status",
           "status": "regeneration",
-          "amount": 10,
-          "target": "self",
-          "requiresAttunement": "nature"
+          "amount": 5,
+          "target": "self"
         },
         {
-          "kind": "ward",
-          "amount": 40,
-          "attunedAmount": 100,
-          "bonusDomain": "nature"
+          "kind": "status",
+          "status": "poison",
+          "amount": 5,
+          "target": "enemy"
         }
       ]
     },
+    "rules": "Gain Regeneration for 5 ticks. Apply Poison for 5 ticks.",
+    "keywords": [
+      "poison",
+      "regeneration"
+    ],
+    "notes": [],
     "upgrade": {
-      "castTicks": 3,
-      "rules": "Nature attuned: Gain 14 Regeneration. Gain 40 Ward. Nature attuned: 100 instead.",
-      "keywords": [
-        "regeneration",
-        "ward",
-        "attunement"
-      ],
+      "castTicks": 1,
       "combat": {
         "effects": [
           {
             "kind": "status",
             "status": "regeneration",
-            "amount": 14,
-            "target": "self",
-            "requiresAttunement": "nature"
+            "amount": 10,
+            "target": "self"
           },
           {
-            "kind": "ward",
-            "amount": 40,
-            "attunedAmount": 100,
-            "bonusDomain": "nature"
+            "kind": "status",
+            "status": "poison",
+            "amount": 10,
+            "target": "enemy"
           }
         ]
       },
+      "rules": "Gain Regeneration for 10 ticks. Apply Poison for 10 ticks.",
+      "keywords": [
+        "poison",
+        "regeneration"
+      ],
+      "notes": []
+    }
+  },
+  {
+    "id": "transformation-bear",
+    "name": "Transformation: Bear",
+    "domain": "nature",
+    "stars": 5,
+    "castTicks": 2,
+    "combat": {
+      "effects": [
+        {
+          "kind": "status",
+          "status": "resilience",
+          "amount": 8,
+          "target": "self",
+          "requiresAttunement": "nature"
+        }
+      ]
+    },
+    "rules": "Nature attuned: Gain Resilience for 8 ticks.",
+    "keywords": [
+      "resilience",
+      "attunement"
+    ],
+    "notes": [],
+    "upgrade": {
+      "castTicks": 2,
+      "combat": {
+        "effects": [
+          {
+            "kind": "status",
+            "status": "resilience",
+            "amount": 1,
+            "target": "self",
+            "permanent": true,
+            "requiresAttunement": "nature"
+          }
+        ]
+      },
+      "rules": "Nature attuned: Gain Resilience for the rest of combat.",
+      "keywords": [
+        "resilience",
+        "attunement"
+      ],
+      "notes": []
+    }
+  },
+  {
+    "id": "cycle-of-life",
+    "name": "Cycle of Life",
+    "domain": "nature",
+    "stars": 5,
+    "castTicks": 2,
+    "combat": {
+      "effects": [
+        {
+          "kind": "cultivate",
+          "status": "regeneration",
+          "amount": 10,
+          "requiresAttunement": "nature"
+        }
+      ]
+    },
+    "rules": "Nature attuned: Cultivate all Regeneration: remove it and heal its remaining healing immediately.",
+    "keywords": [
+      "regeneration",
+      "cultivate",
+      "attunement"
+    ],
+    "notes": [],
+    "upgrade": {
+      "castTicks": 2,
+      "combat": {
+        "effects": [
+          {
+            "kind": "cultivate",
+            "status": "regeneration",
+            "amount": 10,
+            "requiresAttunement": "nature"
+          },
+          {
+            "kind": "heal",
+            "amount": 100,
+            "requiresAttunement": "nature"
+          }
+        ]
+      },
+      "rules": "Nature attuned: Cultivate all Regeneration: remove it and heal its remaining healing immediately. Nature attuned: Heal 100.",
+      "keywords": [
+        "regeneration",
+        "cultivate",
+        "attunement"
+      ],
+      "notes": []
+    }
+  },
+  {
+    "id": "astral-power",
+    "name": "Astral Power",
+    "domain": "nature",
+    "stars": 5,
+    "castTicks": 1,
+    "combat": {
+      "effects": [
+        {
+          "kind": "damage",
+          "amount": 80,
+          "statusMultiplier": {
+            "status": "enemy:poison",
+            "amount": 0.1
+          },
+          "requiresAttunement": "nature"
+        }
+      ]
+    },
+    "rules": "Nature attuned: Deal 80 damage. +10% damage per Poison on the enemy.",
+    "keywords": [
+      "poison",
+      "attunement"
+    ],
+    "notes": [],
+    "upgrade": {
+      "castTicks": 1,
+      "combat": {
+        "effects": [
+          {
+            "kind": "damage",
+            "amount": 80,
+            "statusMultiplier": {
+              "status": "enemy:poison",
+              "amount": 0.2
+            },
+            "requiresAttunement": "nature"
+          }
+        ]
+      },
+      "rules": "Nature attuned: Deal 80 damage. +20% damage per Poison on the enemy.",
+      "keywords": [
+        "poison",
+        "attunement"
+      ],
       "notes": []
     }
   }

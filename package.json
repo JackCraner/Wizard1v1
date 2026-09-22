@@ -12,7 +12,9 @@
     "android:build": "expo run:android",
     "typecheck": "tsc --noEmit",
     "build": "tsc --noEmit && expo export --platform all",
-    "test": "vitest run"
+    "test": "vitest run",
+    "balance": "node tools/balance-lab/run.cjs",
+    "balance:test": "node --test tools/balance-lab/checks.cjs"
   },
   "dependencies": {
     "expo": "~57.0.24",

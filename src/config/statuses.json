@@ -1,15 +1,15 @@
 {
   "poison": {
     "kind": "dot",
-    "power": 15,
+    "power": 10,
     "unit": "ticks"
   },
   "regeneration": {
     "kind": "hot",
-    "power": 15,
+    "power": 10,
     "unit": "ticks"
   },
-  "tide": {
+  "tidecaller": {
     "kind": "charge",
     "unit": "charges"
   },
@@ -17,9 +17,21 @@
     "kind": "charge",
     "unit": "charges"
   },
+  "combust": {
+    "kind": "charge",
+    "unit": "charges"
+  },
   "slow": {
     "kind": "debuff",
-    "unit": "charges"
+    "unit": "ticks"
+  },
+  "trap": {
+    "kind": "debuff",
+    "unit": "ticks"
+  },
+  "weaken": {
+    "kind": "debuff",
+    "unit": "ticks"
   },
   "frailty": {
     "kind": "debuff",
@@ -27,6 +39,51 @@
   },
   "repetition": {
     "kind": "debuff",
+    "unit": "ticks"
+  },
+  "guard": {
+    "kind": "buff",
+    "unit": "ticks"
+  },
+  "resilience": {
+    "kind": "buff",
+    "unit": "ticks"
+  },
+  "fury": {
+    "kind": "buff",
+    "unit": "ticks"
+  },
+  "poisonPower": {
+    "kind": "buff",
+    "unit": "multiplier"
+  },
+  "regenerationPower": {
+    "kind": "buff",
+    "unit": "multiplier"
+  },
+  "nextDamage": {
+    "kind": "buff",
+    "unit": "multiplier"
+  },
+  "nextEcho": {
+    "kind": "buff",
+    "unit": "multiplier"
+  },
+  "critDamage": {
+    "kind": "buff",
+    "unit": "multiplier"
+  },
+  "curse": {
+    "kind": "debuff",
+    "unit": "stacks",
+    "power": 10
+  },
+  "stun": {
+    "kind": "debuff",
+    "unit": "ticks"
+  },
+  "unholy": {
+    "kind": "buff",
     "unit": "ticks"
   }
 }

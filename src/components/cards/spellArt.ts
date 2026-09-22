@@ -7,6 +7,7 @@ export const SPELL_ART: Record<string, ImageSourcePropType> = {
   'lifebloom': require('../../../assets/nature/Lifebloom.png'),
   'lunar-strike': require('../../../assets/nature/Lunar Strike.png'),
   'moon-blast': require('../../../assets/nature/Moon Blast.png'),
+  'moonblight': require('../../../assets/nature/Moonfire.png'),
   'moonfire': require('../../../assets/nature/Moonfire.png'),
   'photosynthesis': require('../../../assets/nature/Photosynthesis.png'),
   'regrowth': require('../../../assets/nature/Regrowth.png'),

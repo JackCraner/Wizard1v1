@@ -18,14 +18,14 @@
     "name": "Rising Tide",
     "category": "domain",
     "domain": "water",
-    "description": "Water attuned: Every third Water spell grants 2 Tide."
+    "description": "Water attuned: Every third Water spell grants 2 Tidecaller."
   },
   {
     "id": "reservoir",
     "name": "Reservoir",
     "category": "domain",
     "domain": "water",
-    "description": "Water attuned: Start combat with 3 Tide."
+    "description": "Water attuned: Start combat with 3 Tidecaller."
   },
   {
     "id": "inferno",
@@ -53,7 +53,7 @@
     "name": "Steam",
     "category": "hybrid",
     "domain": "fire",
-    "description": "Fire attuned: After Water, a Fire spell gains 2 Heat before resolving."
+    "description": "Fire attuned: After Water, a Fire spell gains 2 Heat after resolving."
   },
   {
     "id": "wildfire",
@@ -74,7 +74,7 @@
     "name": "Blighted Tide",
     "category": "hybrid",
     "domain": "water",
-    "description": "Nature + Water attuned: Spending Tide extends existing enemy Poison by 2 ticks."
+    "description": "Nature + Water attuned: Spending Tidecaller extends existing enemy Poison by 2 ticks."
   },
   {
     "id": "first-strike",

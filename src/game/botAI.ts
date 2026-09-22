@@ -32,14 +32,18 @@ export function scoreBotDeck(deck: SpellId[], strategy: number, xp: number[] = [
                 value += amount + (e.empowered && attuned.includes('fire') && deck.some(x => SPELLS[x].keywords.includes('heat')) ? 40 : 0);
             if (e.kind === 'heal' || e.kind === 'ward')
                 value += amount * .6;
+            if(e.kind==='healFull') value += 120; // One-use recovery, rather than repeatable healing.
             if (e.kind === 'status')
-                value += amount * (e.status === 'poison' ? 12 : e.status === 'regeneration' ? 8 : e.status === 'heat' || e.status === 'tide' ? 15 : 12);
-            if (['consume', 'spend', 'multiply', 'oath', 'repeatNext', 'interrupt'].includes(e.kind))
+                value += amount * (e.status === 'poison' ? 12 : e.status === 'regeneration' ? 8 : e.status === 'heat' || e.status === 'tidecaller' ? 15 : 12);
+            if (e.kind === 'summon') value += (e.currentHealthFraction ? 150 * amount : amount) * .8;
+            if (e.kind === 'removeWard') value += 35;
+            if (['impGuard','impPower','sacrificeImp'].includes(e.kind) && deck.some(id=>cardAt(id).combat?.effects?.some(effect=>effect.kind==='summon'))) value += e.kind==='impPower'?amount*3:50;
+            if (['consume', 'spend', 'multiply', 'oath', 'repeatNext', 'interrupt', 'modifier', 'cultivate'].includes(e.kind))
                 value += 40;
             if (e.kind === 'selfDamage')
                 value -= amount * .4;
         }
-        return sum + value / (c.castTicks ?? 1) + (xp[index] ?? 0) % 3 * 8 + (profile.domains.includes(c.domain) ? 8 : 0);
+        return sum + value / Math.max(1, c.castTicks ?? 1) + (xp[index] ?? 0) % 3 * 8 + (profile.domains.includes(c.domain) ? 8 : 0);
     }, 0);
 }
 export function grantBotAugment(state: BotState, deck: SpellId[], round: number, index: number) {

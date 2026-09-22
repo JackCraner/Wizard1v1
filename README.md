@@ -5,25 +5,25 @@ A mobile spell auto-battler built with Expo, React Native, and TypeScript. Build
 ## The simplified game
 
 - You and seven bots race to 20 trophies. Each win awards trophies equal to the winner’s current level; draws award none.
-- Start at level 1 with 500 Health, an empty hand, and 10 gold. There is no mana or random critical-hit system.
+- Start at level 1 with 500 Health, an empty hand, and 10 gold. There is no mana. Combust grants seeded critical-hit chance.
 - Buy from five spell offers. Price equals the clearly displayed 1–5 star rarity. Drag into your hand to buy, or tap for full rules and purchase controls.
 - Hold a card to read a large preview placed above or beside your finger. Drag owned cards to arrange up to ten spells in casting order.
-- Spells take 1T, 2T, or 3T before modifiers. After the last spell, spend one tick reshuffling and repeat the same order.
+- Spells take 1T, 2T, or 3T before modifiers; Instant upgrades resolve at the start of a tick. After the last spell, spend one tick reshuffling and repeat the same order.
 - Duels end on a knockout or after 40 ticks; higher remaining Health wins at timeout.
 - After rounds 2, 4, 6, and so on, every player gains a level and 100 max Health, then chooses a free permanent augment from three unowned options. The pool contains 32 augments. Identical augments cannot stack.
 - Unspent gold carries over. Each new shop adds 10 gold, and a reroll costs 1 gold before augment modifiers.
 
 ## Domains and card upgrades
 
-All five domains are playable, with ten spells each. Shops remain open to every domain. Your two most numerous domains are attuned. Ties favor the oldest card still held; reordering never changes priority. Buying, merging or trashing can change the counts. Merging preserves the recipient’s age and removes the donor. There are no passive Affinity/Mastery stat bonuses.
+All five domains are playable: 25 Nature, 19 Water, 20 Fire, 10 Holy and 10 Affliction spells. Shops remain open to every domain. Your two most numerous domains are attuned. Ties favor the oldest card still held; reordering never changes priority. Buying, merging or trashing can change the counts. Merging preserves the recipient’s age and removes the donor. There are no passive Affinity/Mastery stat bonuses.
 
-Colored signature keywords require the source deck’s matching attunement: Nature activates Poison and Regeneration; Water activates Tide; Fire activates Heat; Holy activates Oath; Affliction activates Frailty and Curse of Repetition. Incoming enemy debuffs still affect unattuned targets. Ward, Slow, Cleanse and basic damage/healing remain shared.
+Square-bracket effects in the design are explicit domain-attuned requirements in the game. Unmarked effects remain usable off-domain. Upgraded numerical bonuses retain their basic value without attunement. Incoming enemy debuffs still affect unattuned targets.
 
-Early spells retain useful basic effects; late-game spells depend more heavily on attunement. Printed conditions show exactly what changes. Nature uses Poison and Regeneration, each with fixed 15-point ticks and additive duration. Water builds and spends persistent Tide. Fire builds Heat (+4% Fire damage per charge) and spends five on printed Empowered payoffs. Holy uses Ward and three-spell Oaths. Affliction uses Slow, Frailty, Poison and Curse of Repetition.
+Nature uses 10-point Poison/Regeneration ticks, Cultivate and Channel (groups of at most three). Water builds five Tidecaller charges to Echo the next spell at 50% effectiveness. Five Heat make the next non-Instant cast 1T; Combust adds 10% critical chance per charge. Ward does not stack. Guard blocks damage for its duration, Slow adds +1T to new casts during its duration, and interrupts can stop 1T spells and channels. Affliction summons an Imp and uses Curse and Stun. Holy uses timed Oaths, healing conversion, and Fragile spells that leave the rotation after their first completed cast each duel.
 
 Cards start at 0/3 XP. Merge a matching card to add 1 XP; reaching 3 upgrades its printed effects. Drag a shop copy onto a matching owned card to buy and merge it, even when your hand is full. Owned-card merges remain available in inspection. A partially trained donor grants only 1 XP; upgraded cards cannot be donors. Scholar makes the first purchased duplicate each shop grant 2 XP.
 
-Trash removes an owned spell without a refund unless Recycler grants 1 gold. You need at least one spell to enter combat. The spell library includes base and upgraded effects and the shared 18-keyword glossary.
+Trash removes an owned spell without a refund unless Recycler grants 1 gold. You need at least one spell to enter combat. The spell library includes base and upgraded effects and the shared keyword glossary.
 
 ## Augments and scouting
 
@@ -34,6 +34,8 @@ Inspect augments from the shop, combat, or leaderboard. The leaderboard preserve
 See [combat conventions](src/config/COMBAT_RULES.md), [the catalogue](src/config/CARDS.md), and [redesign decisions](docs/simplification-redesign.md). This is an initial balance pass, not a competitively balanced release. Runs live in memory; reload after changing rules.
 
 ## Development
+
+The separate [balance lab](tools/balance-lab/README.md) runs bot simulations and generates offline graph reports: `npm run balance`. Its tools and reports are explicitly excluded from the mobile bundler and add no APK runtime dependency.
 
 ## Run on your Android emulator
 

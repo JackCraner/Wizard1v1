@@ -1,11 +1,844 @@
 [
   {
-    "id": "hex",
-    "name": "Hex",
+    "id": "leech",
+    "name": "Leech",
+    "domain": "affliction",
+    "stars": 1,
+    "castTicks": 2,
+    "rules": "Deal 35 damage. Heal 10.",
+    "keywords": [],
+    "notes": [],
+    "combat": {
+      "effects": [
+        {
+          "kind": "damage",
+          "amount": 35
+        },
+        {
+          "kind": "heal",
+          "amount": 10
+        }
+      ]
+    },
+    "upgrade": {
+      "castTicks": 2,
+      "rules": "Deal 45 damage. Heal 20.",
+      "keywords": [],
+      "notes": [],
+      "combat": {
+        "effects": [
+          {
+            "kind": "damage",
+            "amount": 45
+          },
+          {
+            "kind": "heal",
+            "amount": 20
+          }
+        ]
+      }
+    }
+  },
+  {
+    "id": "agony",
+    "name": "Agony",
     "domain": "affliction",
     "stars": 1,
     "castTicks": 1,
-    "rules": "Deal 20 damage. Apply 1 Slow.",
+    "rules": "Apply Poison for 5 ticks.",
+    "keywords": [
+      "poison"
+    ],
+    "notes": [],
+    "combat": {
+      "effects": [
+        {
+          "kind": "status",
+          "status": "poison",
+          "amount": 5,
+          "target": "enemy"
+        }
+      ]
+    },
+    "upgrade": {
+      "castTicks": 1,
+      "rules": "Apply Poison for 5 ticks. Apply 1 Curse.",
+      "keywords": [
+        "poison",
+        "curse"
+      ],
+      "notes": [],
+      "combat": {
+        "effects": [
+          {
+            "kind": "status",
+            "status": "poison",
+            "amount": 5,
+            "target": "enemy"
+          },
+          {
+            "kind": "status",
+            "status": "curse",
+            "amount": 1,
+            "target": "enemy"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "id": "dark-grab",
+    "name": "Dark Grab",
+    "domain": "affliction",
+    "stars": 1,
+    "castTicks": 3,
+    "rules": "Deal 100 damage.",
+    "keywords": [],
+    "notes": [],
+    "combat": {
+      "effects": [
+        {
+          "kind": "damage",
+          "amount": 100
+        }
+      ]
+    },
+    "upgrade": {
+      "castTicks": 3,
+      "rules": "Deal 100 damage. Apply Slow for 1 tick.",
+      "keywords": [
+        "slow"
+      ],
+      "notes": [],
+      "combat": {
+        "effects": [
+          {
+            "kind": "damage",
+            "amount": 100
+          },
+          {
+            "kind": "status",
+            "status": "slow",
+            "amount": 1,
+            "target": "enemy"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "id": "ritual",
+    "name": "Ritual",
+    "domain": "affliction",
+    "stars": 2,
+    "castTicks": 2,
+    "rules": "Summon an Imp with 50 Health. If alive, add 50 current and max Health.",
+    "keywords": [
+      "summon"
+    ],
+    "notes": [],
+    "combat": {
+      "effects": [
+        {
+          "kind": "summon",
+          "amount": 50
+        }
+      ]
+    },
+    "upgrade": {
+      "castTicks": 2,
+      "rules": "Summon an Imp with 80 Health. If alive, add 80 current and max Health.",
+      "keywords": [
+        "summon"
+      ],
+      "notes": [],
+      "combat": {
+        "effects": [
+          {
+            "kind": "summon",
+            "amount": 80
+          }
+        ]
+      }
+    }
+  },
+  {
+    "id": "eldritch-bolt",
+    "name": "Eldritch Bolt",
+    "domain": "affliction",
+    "stars": 2,
+    "castTicks": 2,
+    "rules": "Deal 80 damage.",
+    "keywords": [],
+    "notes": [],
+    "combat": {
+      "effects": [
+        {
+          "kind": "damage",
+          "amount": 80
+        }
+      ]
+    },
+    "upgrade": {
+      "castTicks": 2,
+      "rules": "Deal 80 damage. Double damage if the enemy has any debuff.",
+      "keywords": [],
+      "notes": [],
+      "combat": {
+        "effects": [
+          {
+            "kind": "damage",
+            "amount": 80,
+            "debuffDamageMultiplier": 2
+          }
+        ]
+      }
+    }
+  },
+  {
+    "id": "malison",
+    "name": "Malison",
+    "domain": "affliction",
+    "stars": 2,
+    "castTicks": 2,
+    "rules": "Deal 50 damage. Apply 2 Curse.",
+    "keywords": [
+      "curse"
+    ],
+    "notes": [],
+    "combat": {
+      "effects": [
+        {
+          "kind": "damage",
+          "amount": 50
+        },
+        {
+          "kind": "status",
+          "status": "curse",
+          "amount": 2,
+          "target": "enemy"
+        }
+      ]
+    },
+    "upgrade": {
+      "castTicks": 2,
+      "rules": "Deal 50 damage. Apply 2 Curse; Affliction attuned: 4 instead.",
+      "keywords": [
+        "curse",
+        "attunement"
+      ],
+      "notes": [],
+      "combat": {
+        "effects": [
+          {
+            "kind": "damage",
+            "amount": 50
+          },
+          {
+            "kind": "status",
+            "status": "curse",
+            "amount": 2,
+            "target": "enemy",
+            "bonusDomain": "affliction",
+            "attunedAmount": 4
+          }
+        ]
+      }
+    }
+  },
+  {
+    "id": "disrupt",
+    "name": "Disrupt",
+    "domain": "affliction",
+    "stars": 2,
+    "castTicks": 1,
+    "rules": "Interrupt the enemy spell, including 1T spells and Channel.",
+    "keywords": [
+      "interrupt",
+      "channel"
+    ],
+    "notes": [],
+    "combat": {
+      "effects": [
+        {
+          "kind": "interrupt"
+        }
+      ]
+    },
+    "upgrade": {
+      "castTicks": 1,
+      "rules": "Interrupt the enemy spell, including 1T spells and Channel. Affliction attuned: Apply Poison for 5 ticks.",
+      "keywords": [
+        "poison",
+        "interrupt",
+        "channel",
+        "attunement"
+      ],
+      "notes": [],
+      "combat": {
+        "effects": [
+          {
+            "kind": "interrupt"
+          },
+          {
+            "kind": "status",
+            "status": "poison",
+            "amount": 5,
+            "target": "enemy",
+            "requiresAttunement": "affliction"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "id": "dual-hex",
+    "name": "Dual Hex",
+    "domain": "affliction",
+    "stars": 2,
+    "castTicks": 2,
+    "rules": "Apply Poison for 2 ticks. Gain Poison for 2 ticks.",
+    "keywords": [
+      "poison"
+    ],
+    "notes": [],
+    "combat": {
+      "effects": [
+        {
+          "kind": "status",
+          "status": "poison",
+          "amount": 2,
+          "target": "enemy"
+        },
+        {
+          "kind": "status",
+          "status": "poison",
+          "amount": 2,
+          "target": "self"
+        }
+      ]
+    },
+    "upgrade": {
+      "castTicks": 1,
+      "rules": "Affliction attuned: 1T; otherwise 2T. Apply Poison for 2 ticks. Gain Poison for 2 ticks.",
+      "keywords": [
+        "poison",
+        "attunement"
+      ],
+      "notes": [],
+      "combat": {
+        "effects": [
+          {
+            "kind": "status",
+            "status": "poison",
+            "amount": 2,
+            "target": "enemy"
+          },
+          {
+            "kind": "status",
+            "status": "poison",
+            "amount": 2,
+            "target": "self"
+          }
+        ]
+      },
+      "castDomain": "affliction",
+      "unattunedCastTicks": 2
+    }
+  },
+  {
+    "id": "blood-pact",
+    "name": "Blood Pact",
+    "domain": "affliction",
+    "stars": 2,
+    "castTicks": 1,
+    "rules": "Affliction attuned: Take 50 damage. Give your living Imp Guard for 2 ticks.",
+    "keywords": [
+      "guard",
+      "attunement"
+    ],
+    "notes": [],
+    "combat": {
+      "effects": [
+        {
+          "kind": "selfDamage",
+          "amount": 50,
+          "requiresAttunement": "affliction"
+        },
+        {
+          "kind": "impGuard",
+          "amount": 2,
+          "requiresAttunement": "affliction"
+        }
+      ]
+    },
+    "upgrade": {
+      "castTicks": 1,
+      "rules": "Affliction attuned: Take 50 damage. Give your living Imp Guard for 4 ticks.",
+      "keywords": [
+        "guard",
+        "attunement"
+      ],
+      "notes": [],
+      "combat": {
+        "effects": [
+          {
+            "kind": "selfDamage",
+            "amount": 50,
+            "requiresAttunement": "affliction"
+          },
+          {
+            "kind": "impGuard",
+            "amount": 4,
+            "requiresAttunement": "affliction"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "id": "dark-communication",
+    "name": "Dark Communication",
+    "domain": "affliction",
+    "stars": 3,
+    "castTicks": 2,
+    "rules": "Affliction attuned: Summon an Imp with 100 Health, or add 100 current and max Health.",
+    "keywords": [
+      "summon",
+      "attunement"
+    ],
+    "notes": [],
+    "combat": {
+      "effects": [
+        {
+          "kind": "summon",
+          "amount": 100,
+          "requiresAttunement": "affliction"
+        }
+      ]
+    },
+    "upgrade": {
+      "castTicks": 2,
+      "rules": "Affliction attuned: Summon an Imp with 150 Health, or add 150 current and max Health.",
+      "keywords": [
+        "summon",
+        "attunement"
+      ],
+      "notes": [],
+      "combat": {
+        "effects": [
+          {
+            "kind": "summon",
+            "amount": 150,
+            "requiresAttunement": "affliction"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "id": "life-drain",
+    "name": "Life Drain",
+    "domain": "affliction",
+    "stars": 3,
+    "castTicks": 1,
+    "rules": "Deal 40 damage. Heal 50. Channel: +10 damage and healing per extra adjacent copy (max 3 copies).",
+    "keywords": [
+      "channel"
+    ],
+    "notes": [],
+    "combat": {
+      "effects": [
+        {
+          "kind": "damage",
+          "amount": 40,
+          "channelBonus": 10
+        },
+        {
+          "kind": "heal",
+          "amount": 50,
+          "channelBonus": 10
+        }
+      ]
+    },
+    "upgrade": {
+      "castTicks": 1,
+      "rules": "Deal 40 damage. Heal 50. Channel: +20 damage and healing per extra adjacent copy (max 3 copies).",
+      "keywords": [
+        "channel"
+      ],
+      "notes": [],
+      "combat": {
+        "effects": [
+          {
+            "kind": "damage",
+            "amount": 40,
+            "channelBonus": 20
+          },
+          {
+            "kind": "heal",
+            "amount": 50,
+            "channelBonus": 20
+          }
+        ]
+      }
+    }
+  },
+  {
+    "id": "corrupt-ward",
+    "name": "Corrupt Ward",
+    "domain": "affliction",
+    "stars": 3,
+    "castTicks": 1,
+    "rules": "Remove all enemy Ward.",
+    "keywords": [
+      "ward"
+    ],
+    "notes": [],
+    "combat": {
+      "effects": [
+        {
+          "kind": "removeWard",
+          "target": "enemy"
+        }
+      ]
+    },
+    "upgrade": {
+      "castTicks": 1,
+      "rules": "Remove all enemy Ward.",
+      "keywords": [
+        "ward"
+      ],
+      "notes": [],
+      "combat": {
+        "effects": [
+          {
+            "kind": "removeWard",
+            "target": "enemy"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "id": "shadow-bolt",
+    "name": "Shadow Bolt",
+    "domain": "affliction",
+    "stars": 3,
+    "castTicks": 1,
+    "rules": "Deal 80 damage. Affliction attuned: +50% damage while your Imp is alive.",
+    "keywords": [
+      "attunement"
+    ],
+    "notes": [],
+    "combat": {
+      "effects": [
+        {
+          "kind": "damage",
+          "amount": 80,
+          "impMultiplier": 1.5,
+          "bonusDomain": "affliction"
+        }
+      ]
+    },
+    "upgrade": {
+      "castTicks": 1,
+      "rules": "Deal 80 damage. Affliction attuned: +100% damage while your Imp is alive.",
+      "keywords": [
+        "attunement"
+      ],
+      "notes": [],
+      "combat": {
+        "effects": [
+          {
+            "kind": "damage",
+            "amount": 80,
+            "impMultiplier": 2,
+            "bonusDomain": "affliction"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "id": "nightmare",
+    "name": "Nightmare",
+    "domain": "affliction",
+    "stars": 3,
+    "castTicks": 2,
+    "rules": "Affliction attuned: Cultivate all enemy Poison, consuming it to deal 10 damage per remaining tick.",
+    "keywords": [
+      "poison",
+      "cultivate",
+      "attunement"
+    ],
+    "notes": [],
+    "combat": {
+      "effects": [
+        {
+          "kind": "consume",
+          "status": "poison",
+          "target": "enemy",
+          "amount": 10,
+          "requiresAttunement": "affliction"
+        }
+      ]
+    },
+    "upgrade": {
+      "castTicks": 2,
+      "rules": "Affliction attuned: Cultivate all enemy Poison, consuming it to deal 15 damage per remaining tick.",
+      "keywords": [
+        "poison",
+        "cultivate",
+        "attunement"
+      ],
+      "notes": [],
+      "combat": {
+        "effects": [
+          {
+            "kind": "consume",
+            "status": "poison",
+            "target": "enemy",
+            "amount": 15,
+            "requiresAttunement": "affliction"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "id": "soulbound",
+    "name": "SoulBound",
+    "domain": "affliction",
+    "stars": 3,
+    "castTicks": 1,
+    "rules": "Apply Stun for 5 ticks. Gain Stun for 5 ticks.",
+    "keywords": [
+      "stun"
+    ],
+    "notes": [],
+    "combat": {
+      "effects": [
+        {
+          "kind": "status",
+          "status": "stun",
+          "amount": 5,
+          "target": "enemy"
+        },
+        {
+          "kind": "status",
+          "status": "stun",
+          "amount": 5,
+          "target": "self"
+        }
+      ]
+    },
+    "upgrade": {
+      "castTicks": 1,
+      "rules": "Apply Stun for 7 ticks. Gain Stun for 7 ticks.",
+      "keywords": [
+        "stun"
+      ],
+      "notes": [],
+      "combat": {
+        "effects": [
+          {
+            "kind": "status",
+            "status": "stun",
+            "amount": 7,
+            "target": "enemy"
+          },
+          {
+            "kind": "status",
+            "status": "stun",
+            "amount": 7,
+            "target": "self"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "id": "damnation",
+    "name": "Damnation",
+    "domain": "affliction",
+    "stars": 3,
+    "castTicks": 1,
+    "rules": "Apply Poison for 8 ticks.",
+    "keywords": [
+      "poison"
+    ],
+    "notes": [],
+    "combat": {
+      "effects": [
+        {
+          "kind": "status",
+          "status": "poison",
+          "amount": 8,
+          "target": "enemy"
+        }
+      ]
+    },
+    "upgrade": {
+      "castTicks": 1,
+      "rules": "Apply Poison for 10 ticks.",
+      "keywords": [
+        "poison"
+      ],
+      "notes": [],
+      "combat": {
+        "effects": [
+          {
+            "kind": "status",
+            "status": "poison",
+            "amount": 10,
+            "target": "enemy"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "id": "blood-offering",
+    "name": "Blood Offering",
+    "domain": "affliction",
+    "stars": 4,
+    "castTicks": 1,
+    "rules": "Affliction attuned: Lose half your current Health. Summon that much Imp Health.",
+    "keywords": [
+      "summon",
+      "attunement"
+    ],
+    "notes": [],
+    "combat": {
+      "effects": [
+        {
+          "kind": "selfDamage",
+          "currentHealthFraction": 0.5,
+          "requiresAttunement": "affliction"
+        },
+        {
+          "kind": "summon",
+          "currentHealthFraction": 0.5,
+          "amount": 1,
+          "requiresAttunement": "affliction"
+        }
+      ]
+    },
+    "upgrade": {
+      "castTicks": 1,
+      "rules": "Affliction attuned: Lose half your current Health. Summon 1.5× that much Imp Health.",
+      "keywords": [
+        "summon",
+        "attunement"
+      ],
+      "notes": [],
+      "combat": {
+        "effects": [
+          {
+            "kind": "selfDamage",
+            "currentHealthFraction": 0.5,
+            "requiresAttunement": "affliction"
+          },
+          {
+            "kind": "summon",
+            "currentHealthFraction": 0.5,
+            "amount": 1.5,
+            "requiresAttunement": "affliction"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "id": "death-mark",
+    "name": "Death Mark",
+    "domain": "affliction",
+    "stars": 4,
+    "castTicks": 1,
+    "rules": "Deal 5 damage per remaining enemy Poison tick.",
+    "keywords": [
+      "poison"
+    ],
+    "notes": [],
+    "combat": {
+      "effects": [
+        {
+          "kind": "damage",
+          "amount": 5,
+          "perStatus": "enemy:poison"
+        }
+      ]
+    },
+    "upgrade": {
+      "castTicks": 1,
+      "rules": "Deal 8 damage per remaining enemy Poison tick.",
+      "keywords": [
+        "poison"
+      ],
+      "notes": [],
+      "combat": {
+        "effects": [
+          {
+            "kind": "damage",
+            "amount": 8,
+            "perStatus": "enemy:poison"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "id": "rupture",
+    "name": "Rupture",
+    "domain": "affliction",
+    "stars": 4,
+    "castTicks": 3,
+    "rules": "Deal 120 damage. Cast in 2T if the enemy is Cursed when casting starts.",
+    "keywords": [
+      "curse"
+    ],
+    "notes": [],
+    "combat": {
+      "effects": [
+        {
+          "kind": "damage",
+          "amount": 120
+        }
+      ]
+    },
+    "upgrade": {
+      "castTicks": 3,
+      "rules": "Deal 120 damage. Cast in 1T if the enemy is Cursed when casting starts.",
+      "keywords": [
+        "curse"
+      ],
+      "notes": [],
+      "combat": {
+        "effects": [
+          {
+            "kind": "damage",
+            "amount": 120
+          }
+        ]
+      },
+      "enemyStatusCast": {
+        "status": "curse",
+        "ticks": 1
+      }
+    },
+    "enemyStatusCast": {
+      "status": "curse",
+      "ticks": 2
+    }
+  },
+  {
+    "id": "devils-bargain",
+    "name": "Devils Bargain",
+    "domain": "affliction",
+    "stars": 4,
+    "castTicks": 1,
+    "rules": "Apply Slow for 5 ticks. Gain Slow for 5 ticks.",
     "keywords": [
       "slow"
     ],
@@ -13,450 +846,117 @@
     "combat": {
       "effects": [
         {
-          "kind": "damage",
-          "amount": 20
+          "kind": "status",
+          "status": "slow",
+          "amount": 5,
+          "target": "enemy"
         },
         {
           "kind": "status",
           "status": "slow",
-          "amount": 1,
-          "target": "enemy"
+          "amount": 5,
+          "target": "self"
         }
       ]
     },
     "upgrade": {
       "castTicks": 1,
-      "rules": "Deal 28 damage. Apply 2 Slow.",
+      "rules": "Apply Slow for 8 ticks. Gain Slow for 8 ticks.",
       "keywords": [
         "slow"
       ],
+      "notes": [],
       "combat": {
         "effects": [
           {
-            "kind": "damage",
-            "amount": 28
+            "kind": "status",
+            "status": "slow",
+            "amount": 8,
+            "target": "enemy"
           },
           {
             "kind": "status",
             "status": "slow",
-            "amount": 2,
-            "target": "enemy"
+            "amount": 8,
+            "target": "self"
           }
         ]
-      },
-      "notes": []
+      }
     }
   },
   {
-    "id": "torment",
-    "name": "Torment",
-    "domain": "affliction",
-    "stars": 1,
-    "castTicks": 1,
-    "rules": "Deal 45 damage.",
-    "keywords": [],
-    "notes": [],
-    "combat": {
-      "effects": [
-        {
-          "kind": "damage",
-          "amount": 45
-        }
-      ]
-    },
-    "upgrade": {
-      "castTicks": 1,
-      "rules": "Deal 63 damage.",
-      "keywords": [],
-      "combat": {
-        "effects": [
-          {
-            "kind": "damage",
-            "amount": 63
-          }
-        ]
-      },
-      "notes": []
-    }
-  },
-  {
-    "id": "poison-needle",
-    "name": "Poison Needle",
-    "domain": "affliction",
-    "stars": 1,
-    "castTicks": 1,
-    "rules": "Deal 20 damage. Nature attuned: Apply 2 Poison.",
-    "keywords": [
-      "poison",
-      "attunement"
-    ],
-    "notes": [],
-    "combat": {
-      "effects": [
-        {
-          "kind": "damage",
-          "amount": 20
-        },
-        {
-          "kind": "status",
-          "status": "poison",
-          "amount": 2,
-          "target": "enemy",
-          "requiresAttunement": "nature"
-        }
-      ]
-    },
-    "upgrade": {
-      "castTicks": 1,
-      "rules": "Deal 28 damage. Nature attuned: Apply 2 Poison.",
-      "keywords": [
-        "poison",
-        "attunement"
-      ],
-      "combat": {
-        "effects": [
-          {
-            "kind": "damage",
-            "amount": 28
-          },
-          {
-            "kind": "status",
-            "status": "poison",
-            "amount": 2,
-            "target": "enemy",
-            "requiresAttunement": "nature"
-          }
-        ]
-      },
-      "notes": []
-    }
-  },
-  {
-    "id": "frailty",
-    "name": "Frailty",
-    "domain": "affliction",
-    "stars": 2,
-    "castTicks": 1,
-    "rules": "Affliction attuned: Apply 4 Frailty.",
-    "keywords": [
-      "frailty",
-      "attunement"
-    ],
-    "notes": [],
-    "combat": {
-      "effects": [
-        {
-          "kind": "status",
-          "status": "frailty",
-          "amount": 4,
-          "target": "enemy",
-          "requiresAttunement": "affliction"
-        }
-      ]
-    },
-    "upgrade": {
-      "castTicks": 1,
-      "rules": "Affliction attuned: Apply 6 Frailty.",
-      "keywords": [
-        "frailty",
-        "attunement"
-      ],
-      "combat": {
-        "effects": [
-          {
-            "kind": "status",
-            "status": "frailty",
-            "amount": 6,
-            "target": "enemy",
-            "requiresAttunement": "affliction"
-          }
-        ]
-      },
-      "notes": []
-    }
-  },
-  {
-    "id": "silence",
-    "name": "Silence",
-    "domain": "affliction",
-    "stars": 2,
-    "castTicks": 2,
-    "rules": "Interrupt the enemy’s current spell. Deal 35 damage.",
-    "keywords": [
-      "interrupt"
-    ],
-    "notes": [],
-    "combat": {
-      "effects": [
-        {
-          "kind": "interrupt"
-        },
-        {
-          "kind": "damage",
-          "amount": 35
-        }
-      ]
-    },
-    "upgrade": {
-      "castTicks": 2,
-      "rules": "Interrupt the enemy’s current spell. Deal 49 damage.",
-      "keywords": [
-        "interrupt"
-      ],
-      "combat": {
-        "effects": [
-          {
-            "kind": "interrupt"
-          },
-          {
-            "kind": "damage",
-            "amount": 49
-          }
-        ]
-      },
-      "notes": []
-    }
-  },
-  {
-    "id": "siphon",
-    "name": "Siphon",
-    "domain": "affliction",
-    "stars": 2,
-    "castTicks": 2,
-    "rules": "Deal 55 damage. Heal 45.",
-    "keywords": [],
-    "notes": [],
-    "combat": {
-      "effects": [
-        {
-          "kind": "damage",
-          "amount": 55
-        },
-        {
-          "kind": "heal",
-          "amount": 45
-        }
-      ]
-    },
-    "upgrade": {
-      "castTicks": 2,
-      "rules": "Deal 77 damage. Heal 45.",
-      "keywords": [],
-      "combat": {
-        "effects": [
-          {
-            "kind": "damage",
-            "amount": 77
-          },
-          {
-            "kind": "heal",
-            "amount": 45
-          }
-        ]
-      },
-      "notes": []
-    }
-  },
-  {
-    "id": "curse-of-repetition",
-    "name": "Curse of Repetition",
-    "domain": "affliction",
-    "stars": 3,
-    "castTicks": 2,
-    "rules": "Affliction attuned: Apply 5 Curse.",
-    "keywords": [
-      "curse",
-      "attunement"
-    ],
-    "notes": [],
-    "combat": {
-      "effects": [
-        {
-          "kind": "status",
-          "status": "repetition",
-          "amount": 5,
-          "target": "enemy",
-          "requiresAttunement": "affliction"
-        }
-      ]
-    },
-    "upgrade": {
-      "castTicks": 2,
-      "rules": "Affliction attuned: Apply 7 Curse.",
-      "keywords": [
-        "curse",
-        "attunement"
-      ],
-      "combat": {
-        "effects": [
-          {
-            "kind": "status",
-            "status": "repetition",
-            "amount": 7,
-            "target": "enemy",
-            "requiresAttunement": "affliction"
-          }
-        ]
-      },
-      "notes": []
-    }
-  },
-  {
-    "id": "unravel",
-    "name": "Unravel",
-    "domain": "affliction",
-    "stars": 3,
-    "castTicks": 2,
-    "rules": "Deal 24 damage. Affliction attuned: 60 instead. Nature attuned: Apply 3 Poison.",
-    "keywords": [
-      "poison",
-      "attunement"
-    ],
-    "notes": [],
-    "combat": {
-      "effects": [
-        {
-          "kind": "damage",
-          "amount": 24,
-          "attunedAmount": 60,
-          "bonusDomain": "affliction"
-        },
-        {
-          "kind": "status",
-          "status": "poison",
-          "amount": 3,
-          "target": "enemy",
-          "requiresAttunement": "nature"
-        }
-      ]
-    },
-    "upgrade": {
-      "castTicks": 2,
-      "rules": "Deal 34 damage. Affliction attuned: 84 instead. Nature attuned: Apply 3 Poison.",
-      "keywords": [
-        "poison",
-        "attunement"
-      ],
-      "combat": {
-        "effects": [
-          {
-            "kind": "damage",
-            "amount": 34,
-            "attunedAmount": 84,
-            "bonusDomain": "affliction"
-          },
-          {
-            "kind": "status",
-            "status": "poison",
-            "amount": 3,
-            "target": "enemy",
-            "requiresAttunement": "nature"
-          }
-        ]
-      },
-      "notes": []
-    }
-  },
-  {
-    "id": "doom",
-    "name": "Doom",
-    "domain": "affliction",
-    "stars": 4,
-    "castTicks": 3,
-    "rules": "Deal 48 damage. Affliction attuned: 120 instead. Nature attuned: +70 damage if the enemy has Poison.",
-    "keywords": [
-      "poison",
-      "attunement"
-    ],
-    "notes": [],
-    "combat": {
-      "effects": [
-        {
-          "kind": "damage",
-          "amount": 48,
-          "condition": "poison",
-          "bonus": 70,
-          "attunedAmount": 120,
-          "bonusDomain": "affliction"
-        }
-      ]
-    },
-    "upgrade": {
-      "castTicks": 3,
-      "rules": "Deal 67 damage. Affliction attuned: 168 instead. Nature attuned: +70 damage if the enemy has Poison.",
-      "keywords": [
-        "poison",
-        "attunement"
-      ],
-      "combat": {
-        "effects": [
-          {
-            "kind": "damage",
-            "amount": 67,
-            "condition": "poison",
-            "bonus": 70,
-            "attunedAmount": 168,
-            "bonusDomain": "affliction"
-          }
-        ]
-      },
-      "notes": []
-    }
-  },
-  {
-    "id": "ruin",
-    "name": "Ruin",
+    "id": "empowered-imp",
+    "name": "Empowered Imp",
     "domain": "affliction",
     "stars": 5,
-    "castTicks": 3,
-    "rules": "Deal 60 damage. Affliction attuned: 150 instead. Affliction attuned: Apply 4 Frailty.",
+    "castTicks": 2,
+    "rules": "Affliction attuned: For this combat, your living Imp deals 30 damage after each spell you complete.",
     "keywords": [
-      "frailty",
       "attunement"
     ],
     "notes": [],
     "combat": {
       "effects": [
         {
-          "kind": "damage",
-          "amount": 60,
-          "attunedAmount": 150,
-          "bonusDomain": "affliction"
-        },
-        {
-          "kind": "status",
-          "status": "frailty",
-          "amount": 4,
-          "target": "enemy",
+          "kind": "impPower",
+          "amount": 30,
           "requiresAttunement": "affliction"
         }
       ]
     },
     "upgrade": {
-      "castTicks": 3,
-      "rules": "Deal 84 damage. Affliction attuned: 210 instead. Affliction attuned: Apply 4 Frailty.",
+      "castTicks": 2,
+      "rules": "Affliction attuned: For this combat, your living Imp deals 50 damage after each spell you complete.",
       "keywords": [
-        "frailty",
         "attunement"
       ],
+      "notes": [],
       "combat": {
         "effects": [
           {
-            "kind": "damage",
-            "amount": 84,
-            "attunedAmount": 210,
-            "bonusDomain": "affliction"
-          },
-          {
-            "kind": "status",
-            "status": "frailty",
-            "amount": 4,
-            "target": "enemy",
+            "kind": "impPower",
+            "amount": 50,
             "requiresAttunement": "affliction"
           }
         ]
-      },
-      "notes": []
+      }
+    }
+  },
+  {
+    "id": "doomsday",
+    "name": "Doomsday",
+    "domain": "affliction",
+    "stars": 5,
+    "castTicks": 1,
+    "rules": "Affliction attuned: Kill your Imp and deal damage equal to its current Health.",
+    "keywords": [
+      "attunement"
+    ],
+    "notes": [],
+    "combat": {
+      "effects": [
+        {
+          "kind": "sacrificeImp",
+          "requiresAttunement": "affliction"
+        }
+      ]
+    },
+    "upgrade": {
+      "castTicks": 1,
+      "rules": "Affliction attuned: Kill your Imp and deal damage equal to its max Health.",
+      "keywords": [
+        "attunement"
+      ],
+      "notes": [],
+      "combat": {
+        "effects": [
+          {
+            "kind": "sacrificeImp",
+            "useMaxHealth": true,
+            "requiresAttunement": "affliction"
+          }
+        ]
+      }
     }
   }
 ]

@@ -1,33 +1,152 @@
 [
   {
-    "id": "ember",
-    "name": "Ember",
+    "id": "spark",
+    "name": "Spark",
     "domain": "fire",
     "stars": 1,
     "castTicks": 1,
-    "rules": "Deal 50 damage.",
-    "keywords": [],
-    "notes": [],
     "combat": {
       "effects": [
         {
           "kind": "damage",
-          "amount": 50
+          "amount": 45
         }
       ]
     },
+    "rules": "Deal 45 damage.",
+    "keywords": [],
+    "notes": [],
     "upgrade": {
       "castTicks": 1,
-      "rules": "Deal 70 damage.",
-      "keywords": [],
       "combat": {
         "effects": [
           {
             "kind": "damage",
-            "amount": 70
+            "amount": 65
           }
         ]
       },
+      "rules": "Deal 65 damage.",
+      "keywords": [],
+      "notes": []
+    }
+  },
+  {
+    "id": "flare",
+    "name": "Flare",
+    "domain": "fire",
+    "stars": 1,
+    "castTicks": 1,
+    "combat": {
+      "effects": [
+        {
+          "kind": "damage",
+          "amount": 55
+        },
+        {
+          "kind": "selfDamage",
+          "amount": 10
+        }
+      ]
+    },
+    "rules": "Deal 55 damage. Take 10 damage.",
+    "keywords": [],
+    "notes": [],
+    "upgrade": {
+      "castTicks": 1,
+      "combat": {
+        "effects": [
+          {
+            "kind": "damage",
+            "amount": 80
+          },
+          {
+            "kind": "selfDamage",
+            "amount": 20
+          }
+        ]
+      },
+      "rules": "Deal 80 damage. Take 20 damage.",
+      "keywords": [],
+      "notes": []
+    }
+  },
+  {
+    "id": "char",
+    "name": "Char",
+    "domain": "fire",
+    "stars": 1,
+    "castTicks": 1,
+    "combat": {
+      "effects": [
+        {
+          "kind": "damage",
+          "amount": 30
+        }
+      ]
+    },
+    "rules": "Deal 30 damage.",
+    "keywords": [],
+    "notes": [],
+    "upgrade": {
+      "castTicks": 1,
+      "combat": {
+        "effects": [
+          {
+            "kind": "damage",
+            "amount": 30,
+            "lowHealthMultiplier": 2,
+            "bonusDomain": "fire"
+          }
+        ]
+      },
+      "rules": "Deal 30 damage. Fire attuned: double damage below 30% Health.",
+      "keywords": [
+        "attunement"
+      ],
+      "notes": []
+    }
+  },
+  {
+    "id": "ember",
+    "name": "Ember",
+    "domain": "fire",
+    "stars": 2,
+    "castTicks": 1,
+    "combat": {
+      "effects": [
+        {
+          "kind": "status",
+          "status": "heat",
+          "amount": 1,
+          "target": "self"
+        }
+      ]
+    },
+    "rules": "Gain 1 Heat.",
+    "keywords": [
+      "heat"
+    ],
+    "notes": [],
+    "upgrade": {
+      "castTicks": 1,
+      "combat": {
+        "effects": [
+          {
+            "kind": "status",
+            "status": "heat",
+            "amount": 1,
+            "target": "self",
+            "bonusDomain": "fire",
+            "attunedAmount": 2
+          }
+        ]
+      },
+      "rules": "Gain 1 Heat. Fire attuned: 2 instead.",
+      "keywords": [
+        "heat",
+        "attunement"
+      ],
       "notes": []
     }
   },
@@ -35,41 +154,258 @@
     "id": "scorch",
     "name": "Scorch",
     "domain": "fire",
-    "stars": 1,
-    "castTicks": 1,
-    "rules": "Deal 30 damage. Fire attuned: Gain 2 Heat.",
-    "keywords": [
-      "heat",
-      "attunement"
-    ],
-    "notes": [],
+    "stars": 2,
+    "castTicks": 2,
     "combat": {
       "effects": [
         {
-          "kind": "damage",
+          "kind": "selfDamage",
           "amount": 30
         },
         {
           "kind": "status",
-          "status": "heat",
+          "status": "combust",
           "amount": 2,
+          "target": "self"
+        }
+      ]
+    },
+    "rules": "Take 30 damage. Gain 2 Combust.",
+    "keywords": [
+      "combust"
+    ],
+    "notes": [],
+    "upgrade": {
+      "castTicks": 2,
+      "combat": {
+        "effects": [
+          {
+            "kind": "selfDamage",
+            "amount": 30
+          },
+          {
+            "kind": "status",
+            "status": "combust",
+            "amount": 2,
+            "target": "self",
+            "bonusDomain": "fire",
+            "attunedAmount": 4
+          }
+        ]
+      },
+      "rules": "Take 30 damage. Gain 2 Combust. Fire attuned: 4 instead.",
+      "keywords": [
+        "combust",
+        "attunement"
+      ],
+      "notes": []
+    }
+  },
+  {
+    "id": "lava-floor",
+    "name": "Lava Floor",
+    "domain": "fire",
+    "stars": 2,
+    "castTicks": 1,
+    "combat": {
+      "effects": [
+        {
+          "kind": "status",
+          "status": "trap",
+          "amount": 3,
+          "target": "enemy"
+        }
+      ]
+    },
+    "rules": "Apply Trap for 3 ticks.",
+    "keywords": [
+      "trap"
+    ],
+    "notes": [],
+    "upgrade": {
+      "castTicks": 1,
+      "combat": {
+        "effects": [
+          {
+            "kind": "status",
+            "status": "trap",
+            "amount": 5,
+            "target": "enemy"
+          }
+        ]
+      },
+      "rules": "Apply Trap for 5 ticks.",
+      "keywords": [
+        "trap"
+      ],
+      "notes": []
+    }
+  },
+  {
+    "id": "heatwave",
+    "name": "Heatwave",
+    "domain": "fire",
+    "stars": 2,
+    "castTicks": 1,
+    "combat": {
+      "effects": [
+        {
+          "kind": "status",
+          "status": "weaken",
+          "amount": 3,
+          "target": "enemy"
+        }
+      ]
+    },
+    "rules": "Apply Weaken for 3 ticks.",
+    "keywords": [
+      "weaken"
+    ],
+    "notes": [],
+    "upgrade": {
+      "castTicks": 1,
+      "combat": {
+        "effects": [
+          {
+            "kind": "status",
+            "status": "weaken",
+            "amount": 3,
+            "target": "enemy",
+            "bonusDomain": "fire",
+            "attunedAmount": 5
+          }
+        ]
+      },
+      "rules": "Apply Weaken for 3 ticks. Fire attuned: 5 instead.",
+      "keywords": [
+        "weaken",
+        "attunement"
+      ],
+      "notes": []
+    }
+  },
+  {
+    "id": "firebolt",
+    "name": "Firebolt",
+    "domain": "fire",
+    "stars": 2,
+    "castTicks": 1,
+    "combat": {
+      "effects": [
+        {
+          "kind": "damage",
+          "amount": 80
+        }
+      ]
+    },
+    "rules": "Deal 80 damage.",
+    "keywords": [],
+    "notes": [],
+    "upgrade": {
+      "castTicks": 0,
+      "combat": {
+        "effects": [
+          {
+            "kind": "damage",
+            "amount": 80
+          }
+        ]
+      },
+      "rules": "Fire attuned: Instant; otherwise 1T. Deal 80 damage.",
+      "keywords": [
+        "instant",
+        "attunement"
+      ],
+      "notes": [],
+      "instantDomain": "fire"
+    }
+  },
+  {
+    "id": "firefury",
+    "name": "Firefury",
+    "domain": "fire",
+    "stars": 2,
+    "castTicks": 1,
+    "combat": {
+      "effects": [
+        {
+          "kind": "status",
+          "status": "fury",
+          "amount": 2,
+          "target": "self"
+        }
+      ]
+    },
+    "rules": "Gain Fury for 2 ticks.",
+    "keywords": [
+      "fury"
+    ],
+    "notes": [],
+    "upgrade": {
+      "castTicks": 1,
+      "combat": {
+        "effects": [
+          {
+            "kind": "status",
+            "status": "fury",
+            "amount": 2,
+            "target": "self",
+            "bonusDomain": "fire",
+            "attunedAmount": 5
+          }
+        ]
+      },
+      "rules": "Gain Fury for 2 ticks. Fire attuned: 5 instead.",
+      "keywords": [
+        "fury",
+        "attunement"
+      ],
+      "notes": []
+    }
+  },
+  {
+    "id": "overheat",
+    "name": "Overheat",
+    "domain": "fire",
+    "stars": 3,
+    "castTicks": 1,
+    "combat": {
+      "effects": [
+        {
+          "kind": "selfDamage",
+          "currentHealthFraction": 0.5,
+          "requiresAttunement": "fire"
+        },
+        {
+          "kind": "status",
+          "status": "combust",
+          "amount": 5,
           "target": "self",
           "requiresAttunement": "fire"
         }
       ]
     },
+    "rules": "Fire attuned: Lose half your current Health. Fire attuned: Gain 5 Combust.",
+    "keywords": [
+      "combust",
+      "attunement"
+    ],
+    "notes": [],
     "upgrade": {
       "castTicks": 1,
-      "rules": "Deal 42 damage. Fire attuned: Gain 2 Heat.",
-      "keywords": [
-        "heat",
-        "attunement"
-      ],
       "combat": {
         "effects": [
           {
-            "kind": "damage",
-            "amount": 42
+            "kind": "selfDamage",
+            "currentHealthFraction": 0.5,
+            "requiresAttunement": "fire"
+          },
+          {
+            "kind": "status",
+            "status": "combust",
+            "amount": 5,
+            "target": "self",
+            "requiresAttunement": "fire"
           },
           {
             "kind": "status",
@@ -80,244 +416,177 @@
           }
         ]
       },
+      "rules": "Fire attuned: Lose half your current Health. Fire attuned: Gain 5 Combust. Fire attuned: Gain 2 Heat.",
+      "keywords": [
+        "heat",
+        "combust",
+        "attunement"
+      ],
       "notes": []
     }
   },
   {
-    "id": "cinder",
-    "name": "Cinder",
+    "id": "flameshield",
+    "name": "Flameshield",
     "domain": "fire",
-    "stars": 1,
-    "castTicks": 1,
-    "rules": "Deal 20 damage. Fire attuned: Gain 3 Heat.",
+    "stars": 3,
+    "castTicks": 2,
+    "combat": {
+      "effects": [
+        {
+          "kind": "ward",
+          "amount": 40
+        }
+      ]
+    },
+    "rules": "Gain 40 Ward.",
     "keywords": [
-      "heat",
-      "attunement"
+      "ward"
     ],
     "notes": [],
+    "upgrade": {
+      "castTicks": 2,
+      "combat": {
+        "effects": [
+          {
+            "kind": "ward",
+            "amount": 80
+          }
+        ]
+      },
+      "rules": "Gain 80 Ward.",
+      "keywords": [
+        "ward"
+      ],
+      "notes": []
+    }
+  },
+  {
+    "id": "emberstorm",
+    "name": "Emberstorm",
+    "domain": "fire",
+    "stars": 3,
+    "castTicks": 1,
     "combat": {
       "effects": [
         {
           "kind": "damage",
-          "amount": 20
-        },
-        {
-          "kind": "status",
-          "status": "heat",
-          "amount": 3,
-          "target": "self",
-          "requiresAttunement": "fire"
+          "amount": 120
         }
       ]
     },
+    "rules": "Deal 120 damage.",
+    "keywords": [],
+    "notes": [],
     "upgrade": {
       "castTicks": 1,
-      "rules": "Deal 28 damage. Fire attuned: Gain 4 Heat.",
-      "keywords": [
-        "heat",
-        "attunement"
-      ],
       "combat": {
         "effects": [
           {
             "kind": "damage",
-            "amount": 28
-          },
-          {
-            "kind": "status",
-            "status": "heat",
-            "amount": 4,
-            "target": "self",
-            "requiresAttunement": "fire"
+            "amount": 120,
+            "all": true
           }
         ]
       },
+      "rules": "Deal 120 damage to all enemies.",
+      "keywords": [],
       "notes": []
     }
   },
   {
-    "id": "from-ash",
-    "name": "From Ash",
+    "id": "immolate",
+    "name": "Immolate",
     "domain": "fire",
-    "stars": 1,
-    "castTicks": 1,
-    "rules": "Take 20 damage. Fire attuned: Gain 2 Heat.",
-    "keywords": [
-      "heat",
-      "attunement"
-    ],
-    "notes": [],
+    "stars": 3,
+    "castTicks": 2,
     "combat": {
       "effects": [
         {
-          "kind": "selfDamage",
-          "amount": 20
+          "kind": "damage",
+          "amount": 80,
+          "requiresAttunement": "fire"
         },
         {
           "kind": "status",
-          "status": "heat",
+          "status": "combust",
           "amount": 2,
           "target": "self",
           "requiresAttunement": "fire"
         }
       ]
     },
+    "rules": "Fire attuned: Deal 80 damage. Fire attuned: Gain 2 Combust.",
+    "keywords": [
+      "combust",
+      "attunement"
+    ],
+    "notes": [],
     "upgrade": {
       "castTicks": 1,
-      "rules": "Take 20 damage. Fire attuned: Gain 3 Heat.",
-      "keywords": [
-        "heat",
-        "attunement"
-      ],
       "combat": {
         "effects": [
           {
-            "kind": "selfDamage",
-            "amount": 20
+            "kind": "damage",
+            "amount": 80,
+            "requiresAttunement": "fire"
           },
           {
             "kind": "status",
-            "status": "heat",
-            "amount": 3,
+            "status": "combust",
+            "amount": 2,
             "target": "self",
             "requiresAttunement": "fire"
           }
         ]
       },
-      "notes": []
-    }
-  },
-  {
-    "id": "fireball",
-    "name": "Fireball",
-    "domain": "fire",
-    "stars": 2,
-    "castTicks": 1,
-    "rules": "Deal 60 damage. Fire attuned — Empowered: 100 damage instead.",
-    "keywords": [
-      "empowered",
-      "attunement"
-    ],
-    "notes": [],
-    "combat": {
-      "effects": [
-        {
-          "kind": "damage",
-          "amount": 60,
-          "empowered": 100
-        }
-      ]
-    },
-    "upgrade": {
-      "castTicks": 1,
-      "rules": "Deal 84 damage. Fire attuned — Empowered: 100 damage instead.",
+      "rules": "Fire attuned: 1T; otherwise 2T. Fire attuned: Deal 80 damage. Fire attuned: Gain 2 Combust.",
       "keywords": [
-        "empowered",
+        "combust",
         "attunement"
       ],
-      "combat": {
-        "effects": [
-          {
-            "kind": "damage",
-            "amount": 84,
-            "empowered": 100
-          }
-        ]
-      },
-      "notes": []
+      "notes": [],
+      "castDomain": "fire",
+      "unattunedCastTicks": 2
     }
   },
   {
-    "id": "firekick",
-    "name": "Firekick",
-    "domain": "fire",
-    "stars": 2,
-    "castTicks": 2,
-    "rules": "Deal 35 damage. Interrupt the enemy’s current spell.",
-    "keywords": [
-      "interrupt"
-    ],
-    "notes": [],
-    "combat": {
-      "effects": [
-        {
-          "kind": "damage",
-          "amount": 35
-        },
-        {
-          "kind": "interrupt"
-        }
-      ]
-    },
-    "upgrade": {
-      "castTicks": 2,
-      "rules": "Deal 49 damage. Interrupt the enemy’s current spell.",
-      "keywords": [
-        "interrupt"
-      ],
-      "combat": {
-        "effects": [
-          {
-            "kind": "damage",
-            "amount": 49
-          },
-          {
-            "kind": "interrupt"
-          }
-        ]
-      },
-      "notes": []
-    }
-  },
-  {
-    "id": "overheat",
-    "name": "Overheat",
+    "id": "flamekick",
+    "name": "Flamekick",
     "domain": "fire",
     "stars": 3,
     "castTicks": 1,
-    "rules": "Take 80 damage. Fire attuned: Gain 5 Heat.",
-    "keywords": [
-      "heat",
-      "attunement"
-    ],
-    "notes": [],
     "combat": {
       "effects": [
         {
-          "kind": "selfDamage",
-          "amount": 80
-        },
-        {
-          "kind": "status",
-          "status": "heat",
-          "amount": 5,
-          "target": "self",
-          "requiresAttunement": "fire"
+          "kind": "damage",
+          "amount": 50
         }
       ]
     },
+    "rules": "Deal 50 damage.",
+    "keywords": [],
+    "notes": [],
     "upgrade": {
       "castTicks": 1,
-      "rules": "Take 80 damage. Fire attuned: Gain 7 Heat.",
-      "keywords": [
-        "heat",
-        "attunement"
-      ],
       "combat": {
         "effects": [
           {
-            "kind": "selfDamage",
-            "amount": 80
+            "kind": "damage",
+            "amount": 50
           },
           {
-            "kind": "status",
-            "status": "heat",
-            "amount": 7,
-            "target": "self",
+            "kind": "interrupt",
             "requiresAttunement": "fire"
           }
         ]
       },
+      "rules": "Deal 50 damage. Fire attuned: Interrupt the enemy spell, including 1T spells and Channel.",
+      "keywords": [
+        "channel",
+        "interrupt",
+        "attunement"
+      ],
       "notes": []
     }
   },
@@ -327,145 +596,250 @@
     "domain": "fire",
     "stars": 4,
     "castTicks": 3,
-    "rules": "Deal 72 damage. Fire attuned: 180 instead. Fire attuned — Empowered: 300 damage instead.",
-    "keywords": [
-      "empowered",
-      "attunement"
-    ],
-    "notes": [],
     "combat": {
       "effects": [
         {
           "kind": "damage",
-          "amount": 72,
-          "empowered": 300,
-          "attunedAmount": 180,
-          "bonusDomain": "fire"
+          "amount": 150
         }
       ]
     },
+    "rules": "Deal 150 damage.",
+    "keywords": [],
+    "notes": [],
     "upgrade": {
       "castTicks": 3,
-      "rules": "Deal 101 damage. Fire attuned: 252 instead. Fire attuned — Empowered: 300 damage instead.",
-      "keywords": [
-        "empowered",
-        "attunement"
-      ],
       "combat": {
         "effects": [
           {
             "kind": "damage",
-            "amount": 101,
-            "empowered": 300,
-            "attunedAmount": 252,
-            "bonusDomain": "fire"
+            "amount": 300
           }
         ]
       },
+      "rules": "Deal 300 damage.",
+      "keywords": [],
       "notes": []
     }
   },
   {
-    "id": "flashfire",
-    "name": "Flashfire",
+    "id": "phoenix-renewal",
+    "name": "Phoenix Renewal",
+    "domain": "fire",
+    "stars": 4,
+    "castTicks": 2,
+    "combat": {
+      "effects": [
+        {
+          "kind": "heal",
+          "amount": 25,
+          "perStatus": "heat",
+          "requiresAttunement": "fire"
+        }
+      ]
+    },
+    "rules": "Fire attuned: Heal 25 per Heat.",
+    "keywords": [
+      "heat",
+      "attunement"
+    ],
+    "notes": [],
+    "upgrade": {
+      "castTicks": 2,
+      "combat": {
+        "effects": [
+          {
+            "kind": "heal",
+            "amount": 35,
+            "perStatus": "heat",
+            "requiresAttunement": "fire"
+          }
+        ]
+      },
+      "rules": "Fire attuned: Heal 35 per Heat.",
+      "keywords": [
+        "heat",
+        "attunement"
+      ],
+      "notes": []
+    }
+  },
+  {
+    "id": "conflagrate",
+    "name": "Conflagrate",
+    "domain": "fire",
+    "stars": 4,
+    "castTicks": 2,
+    "combat": {
+      "effects": [
+        {
+          "kind": "status",
+          "status": "fury",
+          "amount": 5,
+          "target": "self"
+        }
+      ]
+    },
+    "rules": "Gain Fury for 5 ticks.",
+    "keywords": [
+      "fury"
+    ],
+    "notes": [],
+    "upgrade": {
+      "castTicks": 2,
+      "combat": {
+        "effects": [
+          {
+            "kind": "status",
+            "status": "fury",
+            "amount": 5,
+            "target": "self",
+            "bonusDomain": "fire",
+            "attunedAmount": 10
+          }
+        ]
+      },
+      "rules": "Gain Fury for 5 ticks. Fire attuned: 10 instead.",
+      "keywords": [
+        "fury",
+        "attunement"
+      ],
+      "notes": []
+    }
+  },
+  {
+    "id": "blaze",
+    "name": "Blaze",
     "domain": "fire",
     "stars": 4,
     "castTicks": 1,
-    "rules": "Fire attuned: Consume all Heat. Deal 40 damage per charge consumed.",
-    "keywords": [
-      "heat",
-      "consume",
-      "attunement"
-    ],
-    "notes": [],
-    "combat": {
-      "effects": [
-        {
-          "kind": "consume",
-          "status": "heat",
-          "amount": 40,
-          "requiresAttunement": "fire"
-        }
-      ]
-    },
-    "upgrade": {
-      "castTicks": 1,
-      "rules": "Fire attuned: Consume all Heat. Deal 56 damage per charge consumed.",
-      "keywords": [
-        "heat",
-        "consume",
-        "attunement"
-      ],
-      "combat": {
-        "effects": [
-          {
-            "kind": "consume",
-            "status": "heat",
-            "amount": 56,
-            "requiresAttunement": "fire"
-          }
-        ]
-      },
-      "notes": []
-    }
-  },
-  {
-    "id": "inferno",
-    "name": "Inferno",
-    "domain": "fire",
-    "stars": 5,
-    "castTicks": 3,
-    "rules": "Deal 64 damage. Fire attuned: 160 instead. Fire attuned — Empowered: 240 damage instead. Fire attuned: Gain 3 Heat.",
-    "keywords": [
-      "empowered",
-      "heat",
-      "attunement"
-    ],
-    "notes": [],
     "combat": {
       "effects": [
         {
           "kind": "damage",
-          "amount": 64,
-          "empowered": 240,
-          "attunedAmount": 160,
-          "bonusDomain": "fire"
+          "amount": 120
         },
         {
-          "kind": "status",
-          "status": "heat",
-          "amount": 3,
-          "target": "self",
-          "requiresAttunement": "fire"
+          "kind": "selfDamage",
+          "amount": 30
         }
       ]
     },
+    "rules": "Deal 120 damage. Take 30 damage.",
+    "keywords": [],
+    "notes": [],
     "upgrade": {
-      "castTicks": 3,
-      "rules": "Deal 90 damage. Fire attuned: 224 instead. Fire attuned — Empowered: 240 damage instead. Fire attuned: Gain 3 Heat.",
-      "keywords": [
-        "empowered",
-        "heat",
-        "attunement"
-      ],
+      "castTicks": 1,
       "combat": {
         "effects": [
           {
             "kind": "damage",
-            "amount": 90,
-            "empowered": 240,
-            "attunedAmount": 224,
-            "bonusDomain": "fire"
+            "amount": 120,
+            "bonusDomain": "fire",
+            "attunedAmount": 150
           },
           {
-            "kind": "status",
-            "status": "heat",
-            "amount": 3,
-            "target": "self",
+            "kind": "selfDamage",
+            "amount": 30,
+            "bonusDomain": "fire",
+            "attunedAmount": 30
+          }
+        ]
+      },
+      "rules": "Deal 120 damage. Fire attuned: 150 instead. Take 30 damage. Fire attuned: 30 instead.",
+      "keywords": [
+        "attunement"
+      ],
+      "notes": []
+    }
+  },
+  {
+    "id": "eruption",
+    "name": "Eruption",
+    "domain": "fire",
+    "stars": 5,
+    "castTicks": 3,
+    "combat": {
+      "effects": [
+        {
+          "kind": "modifier",
+          "modifier": "critDamage",
+          "amount": 2,
+          "requiresAttunement": "fire"
+        }
+      ]
+    },
+    "rules": "Fire attuned: Your critical hits deal 200% total damage for the rest of combat.",
+    "keywords": [
+      "critical",
+      "attunement"
+    ],
+    "notes": [],
+    "upgrade": {
+      "castTicks": 3,
+      "combat": {
+        "effects": [
+          {
+            "kind": "modifier",
+            "modifier": "critDamage",
+            "amount": 2.5,
             "requiresAttunement": "fire"
           }
         ]
       },
+      "rules": "Fire attuned: Your critical hits deal 250% total damage for the rest of combat.",
+      "keywords": [
+        "critical",
+        "attunement"
+      ],
+      "notes": []
+    }
+  },
+  {
+    "id": "phoenix-guard",
+    "name": "Phoenix Guard",
+    "domain": "fire",
+    "stars": 5,
+    "castTicks": 1,
+    "combat": {
+      "effects": [
+        {
+          "kind": "status",
+          "status": "guard",
+          "amount": 1,
+          "target": "self",
+          "perStatus": "heat",
+          "requiresAttunement": "fire"
+        }
+      ]
+    },
+    "rules": "Fire attuned: Gain Guard for 1 per Heat ticks.",
+    "keywords": [
+      "heat",
+      "guard",
+      "attunement"
+    ],
+    "notes": [],
+    "upgrade": {
+      "castTicks": 1,
+      "combat": {
+        "effects": [
+          {
+            "kind": "status",
+            "status": "guard",
+            "amount": 2,
+            "target": "self",
+            "perStatus": "heat",
+            "requiresAttunement": "fire"
+          }
+        ]
+      },
+      "rules": "Fire attuned: Gain Guard for 2 per Heat ticks.",
+      "keywords": [
+        "heat",
+        "guard",
+        "attunement"
+      ],
       "notes": []
     }
   }

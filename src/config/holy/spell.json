@@ -1,11 +1,11 @@
 [
   {
-    "id": "ward",
-    "name": "Ward",
+    "id": "aegis",
+    "name": "Aegis",
     "domain": "holy",
     "stars": 1,
     "castTicks": 1,
-    "rules": "Gain 60 Ward.",
+    "rules": "Gain 50 Ward.",
     "keywords": [
       "ward"
     ],
@@ -14,32 +14,419 @@
       "effects": [
         {
           "kind": "ward",
-          "amount": 60
+          "amount": 50
         }
       ]
     },
     "upgrade": {
       "castTicks": 1,
-      "rules": "Gain 84 Ward.",
+      "rules": "Gain 75 Ward.",
       "keywords": [
         "ward"
       ],
+      "notes": [],
       "combat": {
         "effects": [
           {
             "kind": "ward",
-            "amount": 84
+            "amount": 75
           }
         ]
-      },
-      "notes": []
+      }
+    }
+  },
+  {
+    "id": "prayer",
+    "name": "Prayer",
+    "domain": "holy",
+    "stars": 1,
+    "castTicks": 1,
+    "rules": "Gain Regeneration for 3 ticks.",
+    "keywords": [
+      "regeneration"
+    ],
+    "notes": [],
+    "combat": {
+      "effects": [
+        {
+          "kind": "status",
+          "status": "regeneration",
+          "amount": 3,
+          "target": "self"
+        }
+      ]
+    },
+    "upgrade": {
+      "castTicks": 1,
+      "rules": "Gain Regeneration for 3 ticks. Holy attuned: Gain Resilience for 1 tick.",
+      "keywords": [
+        "regeneration",
+        "resilience",
+        "attunement"
+      ],
+      "notes": [],
+      "combat": {
+        "effects": [
+          {
+            "kind": "status",
+            "status": "regeneration",
+            "amount": 3,
+            "target": "self"
+          },
+          {
+            "kind": "status",
+            "status": "resilience",
+            "amount": 1,
+            "target": "self",
+            "requiresAttunement": "holy"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "id": "radiant-bolt",
+    "name": "Radiant Bolt",
+    "domain": "holy",
+    "stars": 1,
+    "castTicks": 2,
+    "rules": "Deal 50 damage.",
+    "keywords": [],
+    "notes": [],
+    "combat": {
+      "effects": [
+        {
+          "kind": "damage",
+          "amount": 50
+        }
+      ]
+    },
+    "upgrade": {
+      "castTicks": 2,
+      "rules": "Deal 80 damage.",
+      "keywords": [],
+      "notes": [],
+      "combat": {
+        "effects": [
+          {
+            "kind": "damage",
+            "amount": 80
+          }
+        ]
+      }
+    }
+  },
+  {
+    "id": "sacred-flame",
+    "name": "Sacred Flame",
+    "domain": "holy",
+    "stars": 1,
+    "castTicks": 2,
+    "rules": "Gain 1 Heat. Deal 40 damage.",
+    "keywords": [
+      "heat"
+    ],
+    "notes": [],
+    "combat": {
+      "effects": [
+        {
+          "kind": "status",
+          "status": "heat",
+          "amount": 1,
+          "target": "self"
+        },
+        {
+          "kind": "damage",
+          "amount": 40
+        }
+      ]
+    },
+    "upgrade": {
+      "castTicks": 2,
+      "rules": "Gain 2 Heat. Deal 40 damage.",
+      "keywords": [
+        "heat"
+      ],
+      "notes": [],
+      "combat": {
+        "effects": [
+          {
+            "kind": "status",
+            "status": "heat",
+            "amount": 2,
+            "target": "self"
+          },
+          {
+            "kind": "damage",
+            "amount": 40
+          }
+        ]
+      }
+    }
+  },
+  {
+    "id": "oath-restraint",
+    "name": "Oath: Restraint",
+    "domain": "holy",
+    "stars": 2,
+    "castTicks": 1,
+    "rules": "Holy attuned: Oath: Deal no damage for the next 2 ticks. Reward: Gain Guard for 4 ticks.",
+    "keywords": [
+      "ward",
+      "oath",
+      "guard",
+      "attunement"
+    ],
+    "notes": [],
+    "combat": {
+      "effects": [
+        {
+          "kind": "oath",
+          "oath": {
+            "id": "restraint",
+            "requirement": "dealNone",
+            "reward": "guard",
+            "amount": 4,
+            "remaining": 2
+          },
+          "requiresAttunement": "holy"
+        }
+      ]
+    },
+    "upgrade": {
+      "castTicks": 1,
+      "rules": "Holy attuned: Oath: Deal no damage for the next 2 ticks. Reward: Gain Guard for 6 ticks.",
+      "keywords": [
+        "ward",
+        "oath",
+        "guard",
+        "attunement"
+      ],
+      "notes": [],
+      "combat": {
+        "effects": [
+          {
+            "kind": "oath",
+            "oath": {
+              "id": "restraint",
+              "requirement": "dealNone",
+              "reward": "guard",
+              "amount": 6,
+              "remaining": 2
+            },
+            "requiresAttunement": "holy"
+          }
+        ]
+      }
     }
   },
   {
     "id": "smite",
     "name": "Smite",
     "domain": "holy",
-    "stars": 1,
+    "stars": 2,
+    "castTicks": 2,
+    "rules": "Deal 80 damage.",
+    "keywords": [],
+    "notes": [],
+    "combat": {
+      "effects": [
+        {
+          "kind": "damage",
+          "amount": 80
+        }
+      ]
+    },
+    "upgrade": {
+      "castTicks": 2,
+      "rules": "Deal 100 damage.",
+      "keywords": [],
+      "notes": [],
+      "combat": {
+        "effects": [
+          {
+            "kind": "damage",
+            "amount": 100
+          }
+        ]
+      }
+    }
+  },
+  {
+    "id": "penance",
+    "name": "Penance",
+    "domain": "holy",
+    "stars": 2,
+    "castTicks": 1,
+    "rules": "Deal 60 damage.",
+    "keywords": [],
+    "notes": [],
+    "combat": {
+      "effects": [
+        {
+          "kind": "damage",
+          "amount": 60
+        }
+      ]
+    },
+    "upgrade": {
+      "castTicks": 1,
+      "rules": "Deal 60 damage. Holy attuned: Deal 100 instead while you have Regeneration.",
+      "keywords": [
+        "regeneration",
+        "attunement"
+      ],
+      "notes": [],
+      "combat": {
+        "effects": [
+          {
+            "kind": "damage",
+            "amount": 60,
+            "condition": "regeneration",
+            "bonus": 40,
+            "bonusDomain": "holy"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "id": "forgiveness",
+    "name": "Forgiveness",
+    "domain": "holy",
+    "stars": 2,
+    "castTicks": 2,
+    "rules": "Holy attuned: Cultivate all your Curse; remove it and heal 20 per stack.",
+    "keywords": [
+      "curse",
+      "cultivate",
+      "attunement"
+    ],
+    "notes": [],
+    "combat": {
+      "effects": [
+        {
+          "kind": "cultivate",
+          "status": "curse",
+          "amount": 20,
+          "requiresAttunement": "holy"
+        }
+      ]
+    },
+    "upgrade": {
+      "castTicks": 2,
+      "rules": "Holy attuned: Cultivate all your Curse; remove it and heal 30 per stack.",
+      "keywords": [
+        "curse",
+        "cultivate",
+        "attunement"
+      ],
+      "notes": [],
+      "combat": {
+        "effects": [
+          {
+            "kind": "cultivate",
+            "status": "curse",
+            "amount": 30,
+            "requiresAttunement": "holy"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "id": "sanctify",
+    "name": "Sanctify",
+    "domain": "holy",
+    "stars": 2,
+    "castTicks": 3,
+    "rules": "Heal 100. Gain Regeneration for 5 ticks.",
+    "keywords": [
+      "regeneration"
+    ],
+    "notes": [],
+    "combat": {
+      "effects": [
+        {
+          "kind": "heal",
+          "amount": 100
+        },
+        {
+          "kind": "status",
+          "status": "regeneration",
+          "amount": 5,
+          "target": "self"
+        }
+      ]
+    },
+    "upgrade": {
+      "castTicks": 3,
+      "rules": "Heal 100. Gain Regeneration for 8 ticks.",
+      "keywords": [
+        "regeneration"
+      ],
+      "notes": [],
+      "combat": {
+        "effects": [
+          {
+            "kind": "heal",
+            "amount": 100
+          },
+          {
+            "kind": "status",
+            "status": "regeneration",
+            "amount": 8,
+            "target": "self"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "id": "reckoning",
+    "name": "Reckoning",
+    "domain": "holy",
+    "stars": 2,
+    "castTicks": 2,
+    "rules": "Apply 5 Curse.",
+    "keywords": [
+      "curse"
+    ],
+    "notes": [],
+    "combat": {
+      "effects": [
+        {
+          "kind": "status",
+          "status": "curse",
+          "amount": 5,
+          "target": "enemy"
+        }
+      ]
+    },
+    "upgrade": {
+      "castTicks": 2,
+      "rules": "Apply 8 Curse.",
+      "keywords": [
+        "curse"
+      ],
+      "notes": [],
+      "combat": {
+        "effects": [
+          {
+            "kind": "status",
+            "status": "curse",
+            "amount": 8,
+            "target": "enemy"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "id": "radiant-spear",
+    "name": "Radiant Spear",
+    "domain": "holy",
+    "stars": 2,
     "castTicks": 1,
     "rules": "Deal 50 damage.",
     "keywords": [],
@@ -54,26 +441,295 @@
     },
     "upgrade": {
       "castTicks": 1,
-      "rules": "Deal 70 damage.",
-      "keywords": [],
+      "rules": "Deal 50 damage. Holy attuned: Apply Weaken for 3 ticks.",
+      "keywords": [
+        "weaken",
+        "attunement"
+      ],
+      "notes": [],
       "combat": {
         "effects": [
           {
             "kind": "damage",
-            "amount": 70
+            "amount": 50
+          },
+          {
+            "kind": "status",
+            "status": "weaken",
+            "amount": 3,
+            "target": "enemy",
+            "requiresAttunement": "holy"
           }
         ]
-      },
-      "notes": []
+      }
     }
   },
   {
-    "id": "rebuke",
-    "name": "Rebuke",
+    "id": "oath-eye-for-an-eye",
+    "name": "Oath: Eye for an Eye",
     "domain": "holy",
-    "stars": 1,
+    "stars": 3,
     "castTicks": 1,
-    "rules": "Deal 25 damage. Apply 1 Slow.",
+    "rules": "Holy attuned: Oath: Deal at least 100 damage across the next 2 ticks. Reward: Gain Fury for 6 ticks.",
+    "keywords": [
+      "ward",
+      "oath",
+      "fury",
+      "attunement"
+    ],
+    "notes": [],
+    "combat": {
+      "effects": [
+        {
+          "kind": "oath",
+          "oath": {
+            "id": "eye-for-an-eye",
+            "requirement": "deal100",
+            "reward": "fury",
+            "amount": 6,
+            "remaining": 2
+          },
+          "requiresAttunement": "holy"
+        }
+      ]
+    },
+    "upgrade": {
+      "castTicks": 1,
+      "rules": "Holy attuned: Oath: Deal at least 100 damage across the next 2 ticks. Reward: Gain Fury for 8 ticks.",
+      "keywords": [
+        "ward",
+        "oath",
+        "fury",
+        "attunement"
+      ],
+      "notes": [],
+      "combat": {
+        "effects": [
+          {
+            "kind": "oath",
+            "oath": {
+              "id": "eye-for-an-eye",
+              "requirement": "deal100",
+              "reward": "fury",
+              "amount": 8,
+              "remaining": 2
+            },
+            "requiresAttunement": "holy"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "id": "consecration",
+    "name": "Consecration",
+    "domain": "holy",
+    "stars": 3,
+    "castTicks": 2,
+    "rules": "Deal 80 damage. Holy attuned: If you completed an Oath this cycle, gain 50 Ward.",
+    "keywords": [
+      "ward",
+      "oath",
+      "attunement"
+    ],
+    "notes": [],
+    "combat": {
+      "effects": [
+        {
+          "kind": "damage",
+          "amount": 80
+        },
+        {
+          "kind": "ward",
+          "amount": 50,
+          "onlyIf": "oath",
+          "requiresAttunement": "holy"
+        }
+      ]
+    },
+    "upgrade": {
+      "castTicks": 2,
+      "rules": "Deal 100 damage. Holy attuned: If you completed an Oath this cycle, gain 80 Ward.",
+      "keywords": [
+        "ward",
+        "oath",
+        "attunement"
+      ],
+      "notes": [],
+      "combat": {
+        "effects": [
+          {
+            "kind": "damage",
+            "amount": 100
+          },
+          {
+            "kind": "ward",
+            "amount": 80,
+            "onlyIf": "oath",
+            "requiresAttunement": "holy"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "id": "oath-judgement",
+    "name": "Oath: Judgement",
+    "domain": "holy",
+    "stars": 3,
+    "castTicks": 1,
+    "rules": "Holy attuned: Oath: Take no damage for the next 2 ticks. Reward: Apply Stun for 2 ticks.",
+    "keywords": [
+      "ward",
+      "oath",
+      "stun",
+      "attunement"
+    ],
+    "notes": [],
+    "combat": {
+      "effects": [
+        {
+          "kind": "oath",
+          "oath": {
+            "id": "judgement",
+            "requirement": "takeNone",
+            "reward": "stun",
+            "amount": 2,
+            "remaining": 2
+          },
+          "requiresAttunement": "holy"
+        }
+      ]
+    },
+    "upgrade": {
+      "castTicks": 1,
+      "rules": "Holy attuned: Oath: Take no damage for the next 2 ticks. Reward: Apply Stun for 3 ticks.",
+      "keywords": [
+        "ward",
+        "oath",
+        "stun",
+        "attunement"
+      ],
+      "notes": [],
+      "combat": {
+        "effects": [
+          {
+            "kind": "oath",
+            "oath": {
+              "id": "judgement",
+              "requirement": "takeNone",
+              "reward": "stun",
+              "amount": 3,
+              "remaining": 2
+            },
+            "requiresAttunement": "holy"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "id": "pillar-of-sun",
+    "name": "Pillar of Sun",
+    "domain": "holy",
+    "stars": 3,
+    "castTicks": 2,
+    "rules": "Gain 1 Heat. Gain Regeneration for 4 ticks.",
+    "keywords": [
+      "regeneration",
+      "heat"
+    ],
+    "notes": [],
+    "combat": {
+      "effects": [
+        {
+          "kind": "status",
+          "status": "heat",
+          "amount": 1,
+          "target": "self"
+        },
+        {
+          "kind": "status",
+          "status": "regeneration",
+          "amount": 4,
+          "target": "self"
+        }
+      ]
+    },
+    "upgrade": {
+      "castTicks": 2,
+      "rules": "Gain 1 Heat and Regeneration for 4 ticks. Holy attuned: 3 Heat and 5 Regeneration ticks instead.",
+      "keywords": [
+        "regeneration",
+        "heat",
+        "attunement"
+      ],
+      "notes": [],
+      "combat": {
+        "effects": [
+          {
+            "kind": "status",
+            "status": "heat",
+            "amount": 1,
+            "target": "self",
+            "attunedAmount": 3,
+            "bonusDomain": "holy"
+          },
+          {
+            "kind": "status",
+            "status": "regeneration",
+            "amount": 4,
+            "target": "self",
+            "attunedAmount": 5,
+            "bonusDomain": "holy"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "id": "holy-light",
+    "name": "Holy Light",
+    "domain": "holy",
+    "stars": 3,
+    "castTicks": 0,
+    "rules": "Instant: Heal 80.",
+    "keywords": [
+      "instant"
+    ],
+    "notes": [],
+    "combat": {
+      "effects": [
+        {
+          "kind": "heal",
+          "amount": 80
+        }
+      ]
+    },
+    "upgrade": {
+      "castTicks": 0,
+      "rules": "Instant: Heal 100.",
+      "keywords": [
+        "instant"
+      ],
+      "notes": [],
+      "combat": {
+        "effects": [
+          {
+            "kind": "heal",
+            "amount": 100
+          }
+        ]
+      }
+    }
+  },
+  {
+    "id": "sacred-group",
+    "name": "Sacred Group",
+    "domain": "holy",
+    "stars": 3,
+    "castTicks": 3,
+    "rules": "Deal 60 damage. Apply Slow for 3 ticks.",
     "keywords": [
       "slow"
     ],
@@ -82,316 +738,306 @@
       "effects": [
         {
           "kind": "damage",
-          "amount": 25
+          "amount": 60
         },
         {
           "kind": "status",
           "status": "slow",
-          "amount": 1,
+          "amount": 3,
           "target": "enemy"
         }
       ]
     },
     "upgrade": {
-      "castTicks": 1,
-      "rules": "Deal 35 damage. Apply 1 Slow.",
+      "castTicks": 3,
+      "rules": "Deal 60 damage. Apply Slow for 3 ticks. Holy attuned: 100 damage and 4 Slow ticks instead.",
       "keywords": [
-        "slow"
+        "slow",
+        "attunement"
       ],
+      "notes": [],
       "combat": {
         "effects": [
           {
             "kind": "damage",
-            "amount": 35
+            "amount": 60,
+            "attunedAmount": 100,
+            "bonusDomain": "holy"
           },
           {
             "kind": "status",
             "status": "slow",
-            "amount": 1,
-            "target": "enemy"
+            "amount": 3,
+            "target": "enemy",
+            "attunedAmount": 4,
+            "bonusDomain": "holy"
           }
         ]
-      },
-      "notes": []
+      }
     }
   },
   {
-    "id": "mend",
-    "name": "Mend",
+    "id": "lay-on-hands",
+    "name": "Lay on Hands",
     "domain": "holy",
-    "stars": 1,
-    "castTicks": 1,
-    "rules": "Heal 45.",
-    "keywords": [],
-    "notes": [],
-    "combat": {
-      "effects": [
-        {
-          "kind": "heal",
-          "amount": 45
-        }
-      ]
-    },
-    "upgrade": {
-      "castTicks": 1,
-      "rules": "Heal 63.",
-      "keywords": [],
-      "combat": {
-        "effects": [
-          {
-            "kind": "heal",
-            "amount": 63
-          }
-        ]
-      },
-      "notes": []
-    }
-  },
-  {
-    "id": "oath-of-patience",
-    "name": "Oath of Patience",
-    "domain": "holy",
-    "stars": 2,
-    "castTicks": 1,
-    "rules": "Holy attuned: Oath: complete 3 printed 2T/3T spells to gain 150 Ward.",
+    "stars": 4,
+    "castTicks": 3,
+    "rules": "Holy attuned: Heal to full Health. Fragile: breaks after its first completed cast this duel.",
     "keywords": [
-      "oath",
-      "ward",
+      "fragile",
       "attunement"
     ],
     "notes": [],
     "combat": {
       "effects": [
         {
-          "kind": "oath",
-          "oath": {
-            "id": "patience",
-            "remaining": 3,
-            "requirement": "slow",
-            "reward": "ward",
-            "amount": 150
-          },
+          "kind": "healFull",
           "requiresAttunement": "holy"
-        }
-      ]
-    },
-    "upgrade": {
-      "castTicks": 1,
-      "rules": "Holy attuned: Oath: complete 3 printed 2T/3T spells to gain 210 Ward.",
-      "keywords": [
-        "oath",
-        "ward",
-        "attunement"
-      ],
-      "combat": {
-        "effects": [
-          {
-            "kind": "oath",
-            "oath": {
-              "id": "patience",
-              "remaining": 3,
-              "requirement": "slow",
-              "reward": "ward",
-              "amount": 210
-            },
-            "requiresAttunement": "holy"
-          }
-        ]
-      },
-      "notes": []
-    }
-  },
-  {
-    "id": "oath-of-mercy",
-    "name": "Oath of Mercy",
-    "domain": "holy",
-    "stars": 2,
-    "castTicks": 1,
-    "rules": "Holy attuned: Oath: complete 3 spells with no direct damage to heal 150.",
-    "keywords": [
-      "oath",
-      "attunement"
-    ],
-    "notes": [],
-    "combat": {
-      "effects": [
-        {
-          "kind": "oath",
-          "oath": {
-            "id": "mercy",
-            "remaining": 3,
-            "requirement": "peaceful",
-            "reward": "heal",
-            "amount": 150
-          },
-          "requiresAttunement": "holy"
-        }
-      ]
-    },
-    "upgrade": {
-      "castTicks": 1,
-      "rules": "Holy attuned: Oath: complete 3 spells with no direct damage to heal 210.",
-      "keywords": [
-        "oath",
-        "attunement"
-      ],
-      "combat": {
-        "effects": [
-          {
-            "kind": "oath",
-            "oath": {
-              "id": "mercy",
-              "remaining": 3,
-              "requirement": "peaceful",
-              "reward": "heal",
-              "amount": 210
-            },
-            "requiresAttunement": "holy"
-          }
-        ]
-      },
-      "notes": []
-    }
-  },
-  {
-    "id": "cleanse",
-    "name": "Cleanse",
-    "domain": "holy",
-    "stars": 2,
-    "castTicks": 1,
-    "rules": "Cleanse all negative effects. Heal 20.",
-    "keywords": [
-      "cleanse"
-    ],
-    "notes": [],
-    "combat": {
-      "effects": [
-        {
-          "kind": "cleanse"
         },
         {
-          "kind": "heal",
-          "amount": 20
-        }
-      ]
-    },
-    "upgrade": {
-      "castTicks": 1,
-      "rules": "Cleanse all negative effects. Heal 28.",
-      "keywords": [
-        "cleanse"
-      ],
-      "combat": {
-        "effects": [
-          {
-            "kind": "cleanse"
-          },
-          {
-            "kind": "heal",
-            "amount": 28
-          }
-        ]
-      },
-      "notes": []
-    }
-  },
-  {
-    "id": "judgment",
-    "name": "Judgment",
-    "domain": "holy",
-    "stars": 3,
-    "castTicks": 2,
-    "rules": "Deal 32 damage. Holy attuned: 80 instead. Holy attuned: +70 damage if you completed an Oath this Cycle.",
-    "keywords": [
-      "cycle",
-      "oath",
-      "attunement"
-    ],
-    "notes": [],
-    "combat": {
-      "effects": [
-        {
-          "kind": "damage",
-          "amount": 32,
-          "condition": "oath",
-          "bonus": 70,
-          "attunedAmount": 80,
-          "bonusDomain": "holy"
+          "kind": "fragile",
+          "requiresAttunement": "holy"
         }
       ]
     },
     "upgrade": {
       "castTicks": 2,
-      "rules": "Deal 45 damage. Holy attuned: 112 instead. Holy attuned: +70 damage if you completed an Oath this Cycle.",
+      "rules": "Holy attuned: Heal to full Health in 2T. Fragile. Otherwise: 3T, no effect.",
       "keywords": [
-        "cycle",
-        "oath",
+        "fragile",
         "attunement"
       ],
+      "notes": [],
       "combat": {
         "effects": [
           {
-            "kind": "damage",
-            "amount": 45,
-            "condition": "oath",
-            "bonus": 70,
-            "attunedAmount": 112,
-            "bonusDomain": "holy"
+            "kind": "healFull",
+            "requiresAttunement": "holy"
+          },
+          {
+            "kind": "fragile",
+            "requiresAttunement": "holy"
           }
         ]
       },
-      "notes": []
+      "castDomain": "holy",
+      "unattunedCastTicks": 3
     }
   },
   {
-    "id": "bulwark",
-    "name": "Bulwark",
+    "id": "oath-meditation",
+    "name": "Oath: Meditation",
+    "domain": "holy",
+    "stars": 4,
+    "castTicks": 1,
+    "rules": "Holy attuned: Gain Stun for 5 ticks. Oath: Complete those 5 stunned ticks. Reward: Deal 300 damage.",
+    "keywords": [
+      "ward",
+      "oath",
+      "stun",
+      "attunement"
+    ],
+    "notes": [],
+    "combat": {
+      "effects": [
+        {
+          "kind": "status",
+          "status": "stun",
+          "amount": 5,
+          "target": "self",
+          "requiresAttunement": "holy"
+        },
+        {
+          "kind": "oath",
+          "oath": {
+            "id": "meditation",
+            "requirement": "meditate",
+            "reward": "damage",
+            "amount": 300,
+            "remaining": 5
+          },
+          "requiresAttunement": "holy"
+        }
+      ]
+    },
+    "upgrade": {
+      "castTicks": 1,
+      "rules": "Holy attuned: Gain Stun for 5 ticks. Oath: Complete those 5 stunned ticks. Reward: Deal 400 damage.",
+      "keywords": [
+        "ward",
+        "oath",
+        "stun",
+        "attunement"
+      ],
+      "notes": [],
+      "combat": {
+        "effects": [
+          {
+            "kind": "status",
+            "status": "stun",
+            "amount": 5,
+            "target": "self",
+            "requiresAttunement": "holy"
+          },
+          {
+            "kind": "oath",
+            "oath": {
+              "id": "meditation",
+              "requirement": "meditate",
+              "reward": "damage",
+              "amount": 400,
+              "remaining": 5
+            },
+            "requiresAttunement": "holy"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "id": "redemption",
+    "name": "Redemption",
     "domain": "holy",
     "stars": 4,
     "castTicks": 3,
-    "rules": "Gain 72 Ward. Holy attuned: 180 instead.",
+    "rules": "Gain Resilience for half your remaining Regeneration ticks, rounded down.",
     "keywords": [
-      "ward",
-      "attunement"
+      "regeneration",
+      "resilience"
     ],
     "notes": [],
     "combat": {
       "effects": [
         {
-          "kind": "ward",
-          "amount": 72,
-          "attunedAmount": 180,
-          "bonusDomain": "holy"
+          "kind": "status",
+          "status": "resilience",
+          "amount": 0.5,
+          "target": "self",
+          "perStatus": "regeneration",
+          "roundDown": true
         }
       ]
     },
     "upgrade": {
-      "castTicks": 3,
-      "rules": "Gain 101 Ward. Holy attuned: 252 instead.",
+      "castTicks": 2,
+      "rules": "Holy attuned: 2T; otherwise 3T. Gain Resilience for half your remaining Regeneration ticks, rounded down.",
       "keywords": [
-        "ward",
+        "regeneration",
+        "resilience",
         "attunement"
       ],
+      "notes": [],
       "combat": {
         "effects": [
           {
-            "kind": "ward",
-            "amount": 101,
-            "attunedAmount": 252,
-            "bonusDomain": "holy"
+            "kind": "status",
+            "status": "resilience",
+            "amount": 0.5,
+            "target": "self",
+            "perStatus": "regeneration",
+            "roundDown": true
           }
         ]
       },
-      "notes": []
+      "castDomain": "holy",
+      "unattunedCastTicks": 3
     }
   },
   {
-    "id": "radiant-dawn",
-    "name": "Radiant Dawn",
+    "id": "divine-hands",
+    "name": "Divine Hands",
+    "domain": "holy",
+    "stars": 4,
+    "castTicks": 2,
+    "rules": "Holy attuned: Heal 15 per remaining Regeneration tick.",
+    "keywords": [
+      "regeneration",
+      "attunement"
+    ],
+    "notes": [],
+    "combat": {
+      "effects": [
+        {
+          "kind": "heal",
+          "amount": 15,
+          "perStatus": "regeneration",
+          "requiresAttunement": "holy"
+        }
+      ]
+    },
+    "upgrade": {
+      "castTicks": 2,
+      "rules": "Holy attuned: Heal 20 per remaining Regeneration tick.",
+      "keywords": [
+        "regeneration",
+        "attunement"
+      ],
+      "notes": [],
+      "combat": {
+        "effects": [
+          {
+            "kind": "heal",
+            "amount": 20,
+            "perStatus": "regeneration",
+            "requiresAttunement": "holy"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "id": "turn-unholy",
+    "name": "Turn Unholy",
+    "domain": "holy",
+    "stars": 5,
+    "castTicks": 2,
+    "rules": "Holy attuned: For 5 ticks, your healing becomes damage to the enemy instead, including Regeneration.",
+    "keywords": [
+      "regeneration",
+      "attunement"
+    ],
+    "notes": [],
+    "combat": {
+      "effects": [
+        {
+          "kind": "status",
+          "status": "unholy",
+          "amount": 5,
+          "target": "self",
+          "requiresAttunement": "holy"
+        }
+      ]
+    },
+    "upgrade": {
+      "castTicks": 1,
+      "rules": "Holy attuned: 1T cast. For 5 ticks, your healing becomes damage to the enemy, including Regeneration. Otherwise: 2T, no effect.",
+      "keywords": [
+        "regeneration",
+        "attunement"
+      ],
+      "notes": [],
+      "combat": {
+        "effects": [
+          {
+            "kind": "status",
+            "status": "unholy",
+            "amount": 5,
+            "target": "self",
+            "requiresAttunement": "holy"
+          }
+        ]
+      },
+      "castDomain": "holy",
+      "unattunedCastTicks": 2
+    }
+  },
+  {
+    "id": "divine-intervention",
+    "name": "Divine Intervention",
     "domain": "holy",
     "stars": 5,
     "castTicks": 3,
-    "rules": "Deal 40 damage. Holy attuned: 100 instead. Heal 40. Holy attuned: 100 instead. Gain 32 Ward. Holy attuned: 80 instead.",
+    "rules": "Holy attuned: Gain 300 Ward.",
     "keywords": [
       "ward",
       "attunement"
@@ -400,55 +1046,29 @@
     "combat": {
       "effects": [
         {
-          "kind": "damage",
-          "amount": 40,
-          "attunedAmount": 100,
-          "bonusDomain": "holy"
-        },
-        {
-          "kind": "heal",
-          "amount": 40,
-          "attunedAmount": 100,
-          "bonusDomain": "holy"
-        },
-        {
           "kind": "ward",
-          "amount": 32,
-          "attunedAmount": 80,
-          "bonusDomain": "holy"
+          "amount": 300,
+          "requiresAttunement": "holy"
         }
       ]
     },
     "upgrade": {
       "castTicks": 3,
-      "rules": "Deal 56 damage. Holy attuned: 140 instead. Heal 40. Holy attuned: 100 instead. Gain 32 Ward. Holy attuned: 80 instead.",
+      "rules": "Holy attuned: Gain 400 Ward.",
       "keywords": [
         "ward",
         "attunement"
       ],
+      "notes": [],
       "combat": {
         "effects": [
           {
-            "kind": "damage",
-            "amount": 56,
-            "attunedAmount": 140,
-            "bonusDomain": "holy"
-          },
-          {
-            "kind": "heal",
-            "amount": 40,
-            "attunedAmount": 100,
-            "bonusDomain": "holy"
-          },
-          {
             "kind": "ward",
-            "amount": 32,
-            "attunedAmount": 80,
-            "bonusDomain": "holy"
+            "amount": 400,
+            "requiresAttunement": "holy"
           }
         ]
-      },
-      "notes": []
+      }
     }
   }
 ]

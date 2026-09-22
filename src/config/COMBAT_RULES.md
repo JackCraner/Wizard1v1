@@ -1,35 +1,43 @@
-# Simplified combat conventions
+# Combat conventions
 
 ## Tick order
 
-1. Both fighters trigger active Poison (15 damage) and Regeneration (15 healing), then lose one duration. Healing is capped. Periodic damage is applied together; check knockouts.
-2. Spend a reshuffle tick, or start the next spell. Printed cast times are 1–3T. Slow is consumed at start and adds up to two ticks. Augment reductions have a 1T minimum.
-3. Capture the replay's tick-start snapshot. Advance ongoing casts one tick.
-4. Resolve every completed spell. Healing and Ward apply before queued simultaneous damage. Interrupt cancels only an unfinished enemy spell, advances its position, and breaks its Oath. Already completed spells both resolve.
-5. Apply all queued damage, including health costs, then check knockouts. Second Wind triggers once only if damage leaves its owner alive at or below 30% Health; it cannot revive.
-6. Decrement previously active Frailty and Curse durations. New applications keep their full duration. Save the completed snapshot.
+1. Start both fighters' next casts unless reshuffling or Stunned. Apply duration-based Slow, casting modifiers, then spend five Heat for an exact 1T non-Instant cast. Reserve five Tidecaller for an Echo when available.
+2. Resolve Instant spells before everything else. Apply their damage together and check knockouts. Each fighter starts at most one card per tick.
+3. Apply Poison (10 damage) and Regeneration (10 healing), then decrease their duration. Apply damage and check knockouts.
+4. Capture the tick-start replay snapshot. Finish a reshuffle tick, or advance ordinary casts, unless Stunned. Resolve interrupts first: even finishing 1T spells can be canceled; simultaneous interrupts cancel each other. Interrupt also skips the remainder of a Channel group, capped at three adjacent copies.
+5. Resolve ordinary completions and their Echoes. Healing, Guard and Ward protect against queued simultaneous damage. Apply queued damage, then check knockouts.
+6. Decrease durations that were already present at tick start. Save the completed snapshot.
 
-After the last spell, the deck pauses for one full tick and restarts in the same order. A Cycle includes that reshuffle. Statuses keep ticking. At 40 ticks, higher Health wins; equal Health is a draw. The engine never rolls random critical hits.
+After the final card, spend one full tick reshuffling and restart the same order. Reckless Loop explicitly skips that wait for a 25-Health cost. At 40 ticks, higher remaining Health wins; ties are draws.
 
-## Shared effects
+## Effects
 
-- Poison and Regeneration use fixed potency and additive durations, never potency multiplied by remaining duration.
-- Tide and Heat are persistent charges. Slow is also a charge, consumed on the next cast start.
-- Ward is a numeric, nondecaying shield. Health costs bypass Ward and Frailty.
-- Frailty increases incoming enemy damage by 20%. Curse of Repetition costs 25 Health when successive completed spells share a domain, including across cycles.
-- Cleanse removes Poison, Slow, Frailty and Curse, preserving positive effects.
-- Poison-condition and per-status values use the shared state immediately before simultaneous spell resolution. Consume removes the target's actual remaining resource when its effect resolves.
-- Each Heat grants +4% Fire direct damage. An eligible printed Fire payoff spends five Heat once when it completes, then uses its printed Empowered damage. Its damage uses Heat before spending. Generic Empowered effects use printed Empowered damage where supplied; otherwise +50% direct damage, healing and Ward. Status-only spells gain no numeric benefit.
-- Repeat resolves effects again but does not advance deck position or Oath/augment counters. Echo/Tide/Echo Chamber choose the largest repeat count, not a product; Rapid Casting may add one half-power repeat. Resource spends still require sufficient charges. Consume cannot spend the same resource twice.
-- Oaths test the next three completed spells, not their repeats. Patience requires printed 2T or 3T; Mercy requires no direct damage effect. A failed condition, interruption or replacement breaks/replaces the Oath. Judgment checks completion earlier in the same Cycle.
-- Attune to the two domains with the most held cards, breaking ties by oldest surviving acquisition age. Reordering preserves age; purchased copies get a new age; merging keeps the recipient’s age and removes the donor. Combat snapshots freeze this selection. There are no passive domain-count multipliers.
-- Signature production and consumption require source attunement: Nature → Poison/Regeneration, Water → Tide, Fire → Heat, Holy → Oath, Affliction → Frailty/Curse. Incoming debuffs still apply without the victim being attuned. Augment keyword production follows the same gate. Ward, Slow and generic Empowered remain shared. Printed Fire Empowered amounts require Fire attunement; otherwise generic Empowered still gives +50%.
-- Early resource generators also provide a basic 20 damage/heal (28 upgraded). Rank 3–5 direct damage/heal/Ward without a full keyword gate use 40% of the former printed amount off-domain (rounded), with full power as an explicit attuned bonus. Pure keyword payoffs can have no off-domain effect. Card JSON is authoritative. Applicable augment multipliers multiply; rounded integer amounts are stored in events.
+- Ward does not add: keep the higher of current Ward and the new shield. Damage consumes Ward.
+- Guard prevents damage during its duration. Resilience halves damage; Frailty adds 20% incoming damage. Explicit Health loss costs bypass protection.
+- Slow adds exactly +1T to each non-Instant cast started during its duration, without changing casts already underway.
+- Trap deals 10 damage on each completed spell, once regardless of Echoes. Fury adds 10% outgoing damage; Weaken reduces outgoing damage by 20%.
+- Tidecaller: at five, the next started spell consumes five and receives a 50% Echo. Echo effects round to integers, do not recurse, and share the original critical roll. Tidal Power modifies the next Echo. Interrupted spells lose reserved charges.
+- Heat: at five, the next non-Instant spell consumes five and has exactly 1T cast time. It no longer boosts damage or triggers Empowered.
+- Combust: +10 percentage points of critical chance per persistent charge, capped at 100%. Seeded rolls make replays deterministic. Critical spells deal 150% damage by default; Eruption can set 200% or 250%.
+- Generic Empowered remains +50% direct damage, healing and Ward. Critical damage is separate.
+- Poison/Regeneration durations add. Venom Bloom modifies Poison potency; Flourish modifies Regeneration healing until next Cycle. Cultivate consumes the specified over-time effect for its printed payoff: Cycle of Life heals remaining Regeneration, while Nightmare damages from remaining enemy Poison.
+- Oaths track the next full ticks and resolve rewards after normal combat. A new Oath replaces the old one; interruption and reshuffling do not cancel it. See the Holy notes for condition and reward timing.
+- Fragile removes an individual copy from rotation after its first completed cast this duel, preserving its purchased copy and XP for the next duel. Empty rotations stop casting.
+- Two attuned domains are selected by held-card count, then oldest surviving card. Only explicit printed requirements gate effects. Buying/merging/trashing can change priority; reordering cannot. Cast speed requirements have explicit unattuned fallbacks.
 
-## Permanent rewards
+## Progression and permanent rewards
 
-Players start at level 1 with 500 base Health. After each even round, Next grants every player one level and +100 max Health, and opens a three-choice free reward. Rounds 1–2 use level 1, 3–4 level 2, and so on. Every duel starts at full current max Health. Wins award trophies equal to the combat level; losses and draws award none. The tournament ends when one or more players reach at least 20 trophies after all duels in a round resolve. Every bot also selects one unowned augment. Choosing the human reward advances to the next shop, awards income and resets shop-limited counters. No shop, combat or second Next command is allowed during selection. Stale revisions and invalid/repeated choices are rejected without consuming the reward. A finished tournament ends before additional rewards.
+Start at level 1 with 500 base Health. After every two completed rounds, every player gains a level, +100 max Health and one free permanent augment. Each duel starts at full current max Health. Wins grant trophies equal to the combat level; losses/draws give none. Resolve every duel in the round before awarding the crown to all players at or above 20 trophies.
 
-Thirty-two augments replace items. Economy effects apply in the shop, not to replay frames. Scholar grants bonus XP to the first purchased duplicate per shop (owned-donor merges stay +1). Recycler refunds only explicit trash, not donor consumption. Deep Pockets applies immediately when the reward choice enters a new shop. Specialist/Wanderer alter domain weights after rank is rolled. All domains stay eligible.
+The human chooses from three unowned augments; bots receive the same cadence. Selection locks other actions. Scholar grants bonus XP to the first purchased duplicate per shop; owned-card merges stay +1. Recycler refunds explicit trash only. Glass Cannon subtracts 125 max Health and adds 30% outgoing damage. Second Wind triggers once only while alive at or below 30% Health.
 
-Combat-only memories reset each duel. Once-per-combat Second Wind, every-N-spell counters and cycle counters never leak between rounds. Glass Cannon subtracts 125 max Health (375 at level 1, 475 at level 2) and adds 30% damage, including Poison. Self-damage does not receive damage bonuses. Replay snapshots copy augments, counters, status durations and card XP.
+See [overhaul decisions](../../docs/Spell_Overhaul_Notes.md) for defaults on incomplete entries, and [all spells and augments](../../docs/Spell_and_Augment_Reference.md) for editable values.
+
+## Affliction companions and control
+
+See [Affliction overhaul notes](../../docs/Affliction_Overhaul_Notes.md) for Imp interception, Curse, Stun, conditional Rupture timing, sacrifice and provisional values. The current reference contains 109 spells, including 22 Affliction spells.
+
+## Holy and Fragile
+
+See [Holy overhaul notes](../../docs/Holy_Overhaul_Notes.md) for timed Oaths, healing conversion, Fragile rotation, and chosen interpretations.

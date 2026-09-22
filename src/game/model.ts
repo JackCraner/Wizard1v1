@@ -5,14 +5,30 @@ export interface Effect {
     requiresAttunement?: Domain;
     attunedAmount?: number;
     bonusDomain?: Domain;
-    kind: 'damage' | 'heal' | 'ward' | 'selfDamage' | 'status' | 'interrupt' | 'cleanse' | 'consume' | 'multiply' | 'spend' | 'oath' | 'repeatNext';
+    kind: 'damage' | 'heal' | 'ward' | 'selfDamage' | 'status' | 'interrupt' | 'cleanse' | 'consume' | 'multiply' | 'spend' | 'oath' | 'repeatNext' | 'modifier' | 'cultivate' | 'summon' | 'impGuard' | 'impPower' | 'sacrificeImp' | 'removeWard' | 'healFull' | 'fragile';
+    onlyIf?: 'oath';
+    roundDown?: boolean;
+    impMultiplier?: number;
+    debuffDamageMultiplier?: number;
+    useMaxHealth?: boolean;
     amount?: number;
+    all?: boolean;
+    channelBonus?: number;
+    criticalIfDebuffed?: boolean;
+    debuffMultiplier?: number;
+    statusMultiplier?: {status:string; amount:number};
+    lowHealthMultiplier?: number;
+    currentHealthFraction?: number;
+    echoMultiplier?: number;
+    permanent?: boolean;
+    modifier?: 'poisonPower' | 'regenerationPower' | 'nextDamage' | 'nextEcho' | 'critDamage';
+    cycleOnly?: boolean;
     status?: string;
     target?: 'self' | 'enemy';
     empowered?: number;
     perStatus?: string;
     perChannel?: boolean;
-    condition?: 'poison' | 'oath' | 'previousFire' | 'previousWater';
+    condition?: 'poison' | 'oath' | 'previousFire' | 'previousWater' | 'regeneration';
     bonus?: number;
     effects?: Effect[];
     repeats?: number;
@@ -21,9 +37,11 @@ export interface Effect {
 export interface Oath {
     id: string;
     remaining: number;
-    requirement: 'slow' | 'peaceful';
-    reward: 'ward' | 'heal';
+    requirement: 'dealNone' | 'deal100' | 'takeNone' | 'meditate';
+    reward: 'guard' | 'fury' | 'stun' | 'damage';
     amount: number;
+    startedTick?: number;
+    progress?: number;
 }
 export interface Spell extends CardDefinition {
     price: number;
@@ -33,6 +51,13 @@ export interface Stats {
     health: number;
 }
 export interface CombatMemory {
+    impDamage?: number;
+    poisonPower?: number;
+    regenerationPower?: number;
+    nextDamage?: number;
+    nextEcho?: number;
+    critDamage?: number;
+    permanentResilience?: boolean;
     casts: number;
     water: number;
     fast: number;
@@ -49,6 +74,9 @@ export interface CombatMemory {
     previousSelfDamage?: boolean;
 }
 export interface Fighter {
+    broken?: number[];
+    statusSources?: Record<string, 'self' | 'enemy'>;
+    imp?: { health: number; maxHealth: number; guard: number };
     level: number;
     attuned: Domain[];
     name: string;
@@ -70,6 +98,8 @@ export interface Fighter {
         index: number;
         remaining: number;
         totalTicks: number;
+        echoPower?: number;
+        instant?: boolean;
     } | null;
 }
 export interface CastEvent {

@@ -17,9 +17,9 @@ describe('catalogue shop authority',()=>{
  });
 
  it('limits loadouts, validates reorder and isolates returned state',async()=>{
-  const g=new LocalGameGateway();let s=await g.start();const internal=(g as unknown as {session:{shop:string[];spells:string[];spellXp:number[]}}).session;internal.shop=['seed-shot'];internal.spells=Array(10).fill('seed-shot');internal.spellXp=Array(10).fill(0);
-  await expect(g.execute(s.id,s.revision,{type:'buy',spell:'seed-shot'})).rejects.toThrow('full');
-  s=await g.execute(s.id,s.revision,{type:'move',from:9,to:0});expect(s.spells[0]).toBe('seed-shot');
+  const g=new LocalGameGateway();let s=await g.start();const internal=(g as unknown as {session:{shop:string[];spells:string[];spellXp:number[]}}).session;internal.shop=['thorn-lash'];internal.spells=Array(10).fill('thorn-lash');internal.spellXp=Array(10).fill(0);
+  await expect(g.execute(s.id,s.revision,{type:'buy',spell:'thorn-lash'})).rejects.toThrow('full');
+  s=await g.execute(s.id,s.revision,{type:'move',from:9,to:0});expect(s.spells[0]).toBe('thorn-lash');
   await expect(g.execute(s.id,s.revision,{type:'move',from:0,to:10})).rejects.toThrow('Invalid');
   s.augments.push("glass-cannon");s=await g.execute(s.id,s.revision,{type:'fight'});expect(s.battle!.frames[0].player.maxHealth).toBe(500);
  });
@@ -34,6 +34,6 @@ it('mixes domains deterministically and starts with no spells',async()=>{
   expect(offers).toHaveLength(RULES.shopSlots);
   expect(new Set(offers).size).toBe(RULES.shopSlots);
   expect(offersFor(1,roll).shop).toEqual(offers);
-  expect(new Set(offersFor(1,roll,['ember','splash']).shop.map(id=>SPELLS[id].domain)).size).toBe(5);
+  expect(new Set(offersFor(1,roll,['spark','current']).shop.map(id=>SPELLS[id].domain)).size).toBe(5);
  }
 });

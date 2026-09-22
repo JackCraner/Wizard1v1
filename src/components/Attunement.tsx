@@ -23,7 +23,7 @@ export function AttunementPanel({ spells, ages }: { spells: string[]; ages?: num
                 <View accessibilityViewIsModal style={{ width: '100%', maxWidth: 460, maxHeight: '100%', backgroundColor: '#17242c', padding: 18, borderRadius: 12, gap: 12 }}>
                     <Text accessibilityRole="header" style={{ color: '#fff0d2', fontSize: 22 }}>Domain attunement</Text>
                     <Text style={{ color: '#d0ddd9', fontSize: 14, lineHeight: 21 }}>
-                        Your two most numerous domains activate their colored keywords. Ties favor the oldest card still held. Reordering never changes this priority. Other spells retain their basic effects.
+                        Your two most numerous domains activate effects marked as requiring attunement. Ties favor the oldest card still held. Reordering never changes this priority. Other spells retain their basic effects.
                     </Text>
                     <ScrollView contentContainerStyle={{ gap: 8 }}>
                         {ranks.map((r, i) => <Text key={r.domain} style={{ color: DOMAIN_COLORS[r.domain], fontSize: 15 }}>
@@ -40,7 +40,7 @@ export function AttunementPanel({ spells, ages }: { spells: string[]; ages?: num
 }
 
 export function AttunementNote({ card, domains }: { card: CardDefinition; domains: readonly Domain[] }) {
-    const required = requiredDomains(card.combat?.effects ?? []);
+    const required = [...new Set([...requiredDomains(card.combat?.effects ?? []), ...(card.instantDomain ? [card.instantDomain] : []), ...(card.castDomain ? [card.castDomain] : [])])];
     if (!required.length) return null;
     return <View style={{ gap: 3 }}>
         <Text style={{ color: '#a8bbb6', fontSize: 10 }}>WITH YOUR CURRENT DECK</Text>

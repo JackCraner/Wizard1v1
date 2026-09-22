@@ -1,2 +1,2 @@
 import {expect,it} from 'vitest';import {fighter,simulate} from './engine';import {castAt,castsAt} from './combatTimeline';
-it('reads completed casts only and hides future ticks',()=>{const b=simulate(fighter('A',['nourish']),fighter('B',['splash']));expect(castAt(b,1,'player',1)).toBeNull();expect(castAt(b,2,'player',2)?.spell).toBe('nourish');expect(castAt(b,2,'player',1)).toBeNull();expect(castsAt(b,0,'player',3)).toEqual([]);});
+it('reads completed casts only and hides future ticks',()=>{const b=simulate(fighter('A',['regrowth']),fighter('B',['current']));expect(castAt(b,1,'player',1)).toBeNull();expect(castAt(b,2,'player',2)?.spell).toBe('regrowth');expect(castAt(b,2,'player',1)).toBeNull();expect(castsAt(b,0,'player',3)).toEqual([]);});

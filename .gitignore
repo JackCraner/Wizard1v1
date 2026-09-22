@@ -6,3 +6,4 @@ ios/
 *.local
 *.tsbuildinfo
 .idea/
+tools/balance-lab/reports/

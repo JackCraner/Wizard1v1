@@ -5,7 +5,7 @@ import { useMemo } from 'react';
 import { presentedCombatFrame, continuousCombatFrame, PLAYBACK_CONFIG } from '../game/playback';
 import { CombatDeck } from './CombatDeck';
 import { CastBar } from './CastBar';
-import { DamageNumbers, EffectBar } from './CombatFeedback';
+import { DamageNumbers, EffectBar, ImpCompanion } from './CombatFeedback';
 import { CombatTimeline } from './CombatTimeline';
 import { combatArt, OrnateMeter } from './CombatAssets';
 import { Image, Pressable, ScrollView, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
@@ -23,6 +23,7 @@ function Mage({ fighter, opponent, compact, finished, tick, speed, playing, high
     <View style={{position:'absolute',top:44,width:'100%',gap:1}}><OrnateMeter value={fighter.health} max={fighter.maxHealth} /></View>
     <View style={{position:'absolute',top:82,bottom:24,width:'100%',overflow:'hidden'}}><Image source={combatArt.pose} accessible={false} resizeMode="contain" style={{position:'absolute',width:'180%',height:'117%',left:'-40%',top:'-9%',transform:[{scaleX:opponent?-1:1}],opacity:fighter.health>0?1:.4}} /></View>
     <View style={{position:'absolute',top:82,bottom:24,width:opponent?(compact?65:90):(compact?40:65),...(opponent?{left:'100%' as const}:{right:'100%' as const}),zIndex:10}}><EffectBar fighter={fighter} compact={compact} group="buff" highlight={highlights} onInspect={onInspect} /></View>
+    <ImpCompanion fighter={fighter} onInspect={onInspect}/>
     <CastBar fighter={fighter} compact={compact} finished={finished} tick={tick} speed={speed} playing={playing} />
   </View>;
 }
@@ -68,5 +69,4 @@ const s = StyleSheet.create({
   ring: { position: 'absolute', bottom: '-20%', left: '5%', width: '90%', height: '70%', borderWidth: 2, borderColor: '#39495a', borderRadius: 300 }, innerRing: { position: 'absolute', bottom: '-7%', left: '20%', width: '60%', height: '45%', borderWidth: 1, borderColor: '#425469', borderRadius: 300 }, arenaRune: { position: 'absolute', left: '45%', bottom: '5%', color: '#405168', fontSize: 60 }, mage: { position: 'absolute', alignItems: 'center' }, mageName: { color: '#b7c7d2', fontSize: 9 }, miniTrack: { height: 5, width: '60%', backgroundColor: '#293640', marginTop: 3, overflow: 'hidden', borderRadius: 2 }, platform: { width: '100%', height: 10, borderWidth: 1, borderRadius: 30, backgroundColor: '#344352' }, beatNotice: { position: 'absolute', left: '32%', right: '32%', top: 0, alignItems: 'center' }, event: { backgroundColor: '#140e0caa', padding: 4, borderRadius: 4, color: '#d9c8a6', fontSize: 10, textAlign: 'center' },
   error: { color: '#ffb7a7', fontSize: 11 },
 });
-
 

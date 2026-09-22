@@ -6,10 +6,10 @@ import type { Session } from './model';
 it('trashes exactly the selected copy without refund, preserving the other cards and freeing domains',async()=>{
  const g=new LocalGameGateway();await g.start();
  const state=(g as unknown as {session:Session}).session;
- state.spells=['wrath','ember','wrath'];
+ state.spells=['wrath','spark','wrath'];
  let s=await g.execute(state.id,state.revision,{type:'trash',index:1});
  expect(s.spells).toEqual(['wrath','wrath']);expect(s.gold).toBe(10);expect(s.revision).toBe(1);
- expect(canAddSpell(s.spells,'splash')).toBe(true);
+ expect(canAddSpell(s.spells,'current')).toBe(true);
  s=await g.execute(s.id,s.revision,{type:'trash',index:0});expect(s.spells).toEqual(['wrath']);
  s=await g.execute(s.id,s.revision,{type:'trash',index:0});expect(s.spells).toEqual([]);
  await expect(g.execute(s.id,s.revision,{type:'fight'})).rejects.toThrow('Equip a spell');

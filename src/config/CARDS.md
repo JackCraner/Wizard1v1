@@ -1,78 +1,137 @@
 # Spell catalogue
 
-Gold price equals stars. All cards are playable. Every card upgrades at 3 XP; exact upgrade rules live in its domain JSON. Colored domain conditions require one of your two attunements.
+109 playable spells. Gold equals stars. See [the full reference](../../docs/Spell_and_Augment_Reference.md) for upgrades and all augments.
 
-## nature
+## Nature
 
-| Spell | Stars | Cast | Effect |
+| Spell | Stars | Cast | Base effect |
 | --- | --- | --- | --- |
-| Wrath | 1 | 1T | Deal 50 damage. |
-| Moonfire | 1 | 1T | Deal 20 damage. Nature attuned: Apply 4 Poison. |
-| Regrowth | 1 | 1T | Heal 20. Nature attuned: Gain 4 Regeneration. |
-| Sap | 1 | 1T | Deal 25 damage. Heal 20. |
-| Seed Shot | 2 | 1T | Deal 45 damage. Nature attuned: +35 damage if the enemy has Poison. |
-| Germination | 2 | 1T | Nature attuned: Gain Regeneration equal to enemy Poison duration. |
-| Nourish | 2 | 2T | Heal 100. |
-| Flourish | 3 | 2T | Nature attuned: Multiply your Regeneration duration by 2. |
-| Eclipse | 4 | 2T | Nature attuned: Consume all enemy Poison. Deal 15 damage per tick consumed. |
-| Ancient Growth | 5 | 3T | Nature attuned: Gain 10 Regeneration. Gain 40 Ward. Nature attuned: 100 instead. |
+| Thorn Lash | 1 | 1T | Deal 35 damage. |
+| Healing Seed | 1 | 1T | Heal 20. |
+| Barkskin | 1 | 1T | Gain 40 Ward. |
+| Moonblight | 1 | 1T | Apply Poison for 5 ticks. |
+| Regrowth | 1 | 2T | Gain Regeneration for 5 ticks. |
+| Wrath | 1 | 1T | Deal 20 damage. |
+| Photosynthesis | 2 | 1T | Gain Regeneration for 3 ticks. Channel: +1 Regeneration per adjacent copy (max 3 copies). |
+| Sporeburst | 2 | 2T | Deal 50 damage. Guaranteed critical hit if the enemy has a debuff. |
+| Budding Life | 2 | 1T | Gain Regeneration for 5 ticks. Apply Regeneration for 5 ticks. |
+| Solar Beam | 2 | 3T | Deal 100 damage. |
+| Rejuvenation | 2 | 2T | Heal 80. |
+| Toxic Growth | 2 | 1T | Deal 30 damage. Apply Poison for 5 ticks. |
+| Flourish | 3 | 1T | Double your Regeneration duration. |
+| Starsurge | 3 | 2T | Deal 100 damage. Nature attuned: +20% damage per unique enemy debuff. |
+| World Root | 3 | 2T | Nature attuned: Apply Trap for 5 ticks. |
+| Starfall | 3 | 1T | Deal 80 damage to all enemies. |
+| Germination | 3 | 1T | Heal 70. |
+| Bramble Wall | 3 | 1T | Nature attuned: Gain 100 Ward. |
+| Venom Bloom | 4 | 1T | Nature attuned: Your Poison deals 50% more damage for the rest of combat. |
+| Celestial Alignment | 4 | 2T | Nature attuned: Your next spell deals double damage. |
+| Wild Growth | 4 | 3T | Heal 80 to all allies. |
+| Symbiosis | 4 | 1T | Gain Regeneration for 5 ticks. Apply Poison for 5 ticks. |
+| Transformation: Bear | 5 | 2T | Nature attuned: Gain Resilience for 8 ticks. |
+| Cycle of Life | 5 | 2T | Nature attuned: Cultivate all Regeneration: remove it and heal its remaining healing immediately. |
+| Astral Power | 5 | 1T | Nature attuned: Deal 80 damage. +10% damage per Poison on the enemy. |
 
-## water
+## Water
 
-| Spell | Stars | Cast | Effect |
+| Spell | Stars | Cast | Base effect |
 | --- | --- | --- | --- |
-| Splash | 1 | 1T | Deal 20 damage. Water attuned: Gain 1 Tide. |
-| Undertow | 1 | 1T | Deal 30 damage. Water attuned: Gain 1 Tide. |
-| Brine | 1 | 1T | Deal 45 damage. |
-| Riptide | 2 | 1T | Water attuned: Spend 2 Tide: Heal 100. |
-| Whirlpool | 2 | 1T | Water attuned: Deal 20 damage per Tide. |
-| Ice Lance | 2 | 1T | Deal 35 damage. Apply 1 Slow. |
-| Tidal Burst | 3 | 2T | Deal 24 damage. Water attuned: 60 instead. Water attuned: Spend 2 Tide: resolve this spell 2 times. |
-| Frostbolt | 3 | 2T | Deal 32 damage. Water attuned: 80 instead. Interrupt the enemy’s current spell. |
-| Tidal Wave | 4 | 3T | Deal 48 damage. Water attuned: 120 instead. Water attuned: Spend 3 Tide: Gain 100 Ward. |
-| Echo | 5 | 2T | Water attuned: Your next spell resolves 3 times. |
+| Jet | 1 | 1T | Deal 45 damage. |
+| Brine | 1 | 3T | Deal 80 damage. |
+| Current | 1 | 1T | Gain 1 Tidecaller. |
+| Healing Surge | 1 | 2T | Heal 40. |
+| Frostbolt | 2 | 1T | Deal 10 damage. Apply Slow for 3 ticks. |
+| Foamguard | 2 | 2T | Gain Guard for 1 ticks. |
+| Deep Water | 2 | 1T | Deal 60 damage. |
+| Deluge | 2 | 1T | Water attuned: Gain 2 Tidecaller. |
+| Downpour | 3 | 2T | Deal 60 damage. |
+| Storm | 3 | 1T | Deal 70 damage. Water attuned: Gain 1 Tidecaller. |
+| Frost Nova | 3 | 2T | Apply Slow for 3 ticks. Apply Weaken for 4 ticks. |
+| Riptide | 3 | 1T | Heal 80. |
+| Whirlpool | 3 | 1T | Deal 50 damage. Water attuned: Channel: +10 damage per adjacent copy (max 3 copies). |
+| Water Barrier | 3 | 1T | Gain 80 Ward. |
+| Ice Block | 4 | 2T | Water attuned: Gain Guard for 4 ticks. |
+| Tsunami | 4 | 2T | Water attuned: Deal 80 damage. Water attuned: Apply Weaken for 3 ticks. |
+| Crash | 4 | 3T | Water attuned: Deal 100 damage. |
+| Ocean Heart | 5 | 2T | Water attuned: Gain 5 Tidecaller. |
+| Tidal Power | 5 | 1T | Water attuned: Your next Tidecaller Echo has 100% effectiveness. |
 
-## fire
+## Fire
 
-| Spell | Stars | Cast | Effect |
+| Spell | Stars | Cast | Base effect |
 | --- | --- | --- | --- |
-| Ember | 1 | 1T | Deal 50 damage. |
-| Scorch | 1 | 1T | Deal 30 damage. Fire attuned: Gain 2 Heat. |
-| Cinder | 1 | 1T | Deal 20 damage. Fire attuned: Gain 3 Heat. |
-| From Ash | 1 | 1T | Take 20 damage. Fire attuned: Gain 2 Heat. |
-| Fireball | 2 | 1T | Deal 60 damage. Fire attuned — Empowered: 100 damage instead. |
-| Firekick | 2 | 2T | Deal 35 damage. Interrupt the enemy’s current spell. |
-| Overheat | 3 | 1T | Take 80 damage. Fire attuned: Gain 5 Heat. |
-| Pyroblast | 4 | 3T | Deal 72 damage. Fire attuned: 180 instead. Fire attuned — Empowered: 300 damage instead. |
-| Flashfire | 4 | 1T | Fire attuned: Consume all Heat. Deal 40 damage per charge consumed. |
-| Inferno | 5 | 3T | Deal 64 damage. Fire attuned: 160 instead. Fire attuned — Empowered: 240 damage instead. Fire attuned: Gain 3 Heat. |
+| Spark | 1 | 1T | Deal 45 damage. |
+| Flare | 1 | 1T | Deal 55 damage. Take 10 damage. |
+| Char | 1 | 1T | Deal 30 damage. |
+| Ember | 2 | 1T | Gain 1 Heat. |
+| Scorch | 2 | 2T | Take 30 damage. Gain 2 Combust. |
+| Lava Floor | 2 | 1T | Apply Trap for 3 ticks. |
+| Heatwave | 2 | 1T | Apply Weaken for 3 ticks. |
+| Firebolt | 2 | 1T | Deal 80 damage. |
+| Firefury | 2 | 1T | Gain Fury for 2 ticks. |
+| Overheat | 3 | 1T | Fire attuned: Lose half your current Health. Fire attuned: Gain 5 Combust. |
+| Flameshield | 3 | 2T | Gain 40 Ward. |
+| Emberstorm | 3 | 1T | Deal 120 damage. |
+| Immolate | 3 | 2T | Fire attuned: Deal 80 damage. Fire attuned: Gain 2 Combust. |
+| Flamekick | 3 | 1T | Deal 50 damage. |
+| Pyroblast | 4 | 3T | Deal 150 damage. |
+| Phoenix Renewal | 4 | 2T | Fire attuned: Heal 25 per Heat. |
+| Conflagrate | 4 | 2T | Gain Fury for 5 ticks. |
+| Blaze | 4 | 1T | Deal 120 damage. Take 30 damage. |
+| Eruption | 5 | 3T | Fire attuned: Your critical hits deal 200% total damage for the rest of combat. |
+| Phoenix Guard | 5 | 1T | Fire attuned: Gain Guard for 1 per Heat ticks. |
 
-## holy
+## Holy
 
-| Spell | Stars | Cast | Effect |
+| Spell | Stars | Cast | Base effect |
 | --- | --- | --- | --- |
-| Ward | 1 | 1T | Gain 60 Ward. |
-| Smite | 1 | 1T | Deal 50 damage. |
-| Rebuke | 1 | 1T | Deal 25 damage. Apply 1 Slow. |
-| Mend | 1 | 1T | Heal 45. |
-| Oath of Patience | 2 | 1T | Holy attuned: Oath: complete 3 printed 2T/3T spells to gain 150 Ward. |
-| Oath of Mercy | 2 | 1T | Holy attuned: Oath: complete 3 spells with no direct damage to heal 150. |
-| Cleanse | 2 | 1T | Cleanse all negative effects. Heal 20. |
-| Judgment | 3 | 2T | Deal 32 damage. Holy attuned: 80 instead. Holy attuned: +70 damage if you completed an Oath this Cycle. |
-| Bulwark | 4 | 3T | Gain 72 Ward. Holy attuned: 180 instead. |
-| Radiant Dawn | 5 | 3T | Deal 40 damage. Holy attuned: 100 instead. Heal 40. Holy attuned: 100 instead. Gain 32 Ward. Holy attuned: 80 instead. |
+| Aegis | 1 | 1T | Gain 50 Ward. |
+| Prayer | 1 | 1T | Gain Regeneration for 3 ticks. |
+| Radiant Bolt | 1 | 2T | Deal 50 damage. |
+| Sacred Flame | 1 | 2T | Gain 1 Heat. Deal 40 damage. |
+| Oath: Restraint | 2 | 1T | Holy attuned: Oath: Deal no damage for the next 2 ticks. Reward: Gain Guard for 4 ticks. |
+| Smite | 2 | 2T | Deal 80 damage. |
+| Penance | 2 | 1T | Deal 60 damage. |
+| Forgiveness | 2 | 2T | Holy attuned: Cultivate all your Curse; remove it and heal 20 per stack. |
+| Sanctify | 2 | 3T | Heal 100. Gain Regeneration for 5 ticks. |
+| Reckoning | 2 | 2T | Apply 5 Curse. |
+| Radiant Spear | 2 | 1T | Deal 50 damage. |
+| Oath: Eye for an Eye | 3 | 1T | Holy attuned: Oath: Deal at least 100 damage across the next 2 ticks. Reward: Gain Fury for 6 ticks. |
+| Consecration | 3 | 2T | Deal 80 damage. Holy attuned: If you completed an Oath this cycle, gain 50 Ward. |
+| Oath: Judgement | 3 | 1T | Holy attuned: Oath: Take no damage for the next 2 ticks. Reward: Apply Stun for 2 ticks. |
+| Pillar of Sun | 3 | 2T | Gain 1 Heat. Gain Regeneration for 4 ticks. |
+| Holy Light | 3 | Instant | Instant: Heal 80. |
+| Sacred Group | 3 | 3T | Deal 60 damage. Apply Slow for 3 ticks. |
+| Lay on Hands | 4 | 3T | Holy attuned: Heal to full Health. Fragile: breaks after its first completed cast this duel. |
+| Oath: Meditation | 4 | 1T | Holy attuned: Gain Stun for 5 ticks. Oath: Complete those 5 stunned ticks. Reward: Deal 300 damage. |
+| Redemption | 4 | 3T | Gain Resilience for half your remaining Regeneration ticks, rounded down. |
+| Divine Hands | 4 | 2T | Holy attuned: Heal 15 per remaining Regeneration tick. |
+| Turn Unholy | 5 | 2T | Holy attuned: For 5 ticks, your healing becomes damage to the enemy instead, including Regeneration. |
+| Divine Intervention | 5 | 3T | Holy attuned: Gain 300 Ward. |
 
-## affliction
+## Affliction
 
-| Spell | Stars | Cast | Effect |
+| Spell | Stars | Cast | Base effect |
 | --- | --- | --- | --- |
-| Hex | 1 | 1T | Deal 20 damage. Apply 1 Slow. |
-| Torment | 1 | 1T | Deal 45 damage. |
-| Poison Needle | 1 | 1T | Deal 20 damage. Nature attuned: Apply 2 Poison. |
-| Frailty | 2 | 1T | Affliction attuned: Apply 4 Frailty. |
-| Silence | 2 | 2T | Interrupt the enemy’s current spell. Deal 35 damage. |
-| Siphon | 2 | 2T | Deal 55 damage. Heal 45. |
-| Curse of Repetition | 3 | 2T | Affliction attuned: Apply 5 Curse. |
-| Unravel | 3 | 2T | Deal 24 damage. Affliction attuned: 60 instead. Nature attuned: Apply 3 Poison. |
-| Doom | 4 | 3T | Deal 48 damage. Affliction attuned: 120 instead. Nature attuned: +70 damage if the enemy has Poison. |
-| Ruin | 5 | 3T | Deal 60 damage. Affliction attuned: 150 instead. Affliction attuned: Apply 4 Frailty. |
+| Leech | 1 | 2T | Deal 35 damage. Heal 10. |
+| Agony | 1 | 1T | Apply Poison for 5 ticks. |
+| Dark Grab | 1 | 3T | Deal 100 damage. |
+| Ritual | 2 | 2T | Summon an Imp with 50 Health. If alive, add 50 current and max Health. |
+| Eldritch Bolt | 2 | 2T | Deal 80 damage. |
+| Malison | 2 | 2T | Deal 50 damage. Apply 2 Curse. |
+| Disrupt | 2 | 1T | Interrupt the enemy spell, including 1T spells and Channel. |
+| Dual Hex | 2 | 2T | Apply Poison for 2 ticks. Gain Poison for 2 ticks. |
+| Blood Pact | 2 | 1T | Affliction attuned: Take 50 damage. Give your living Imp Guard for 2 ticks. |
+| Dark Communication | 3 | 2T | Affliction attuned: Summon an Imp with 100 Health, or add 100 current and max Health. |
+| Life Drain | 3 | 1T | Deal 40 damage. Heal 50. Channel: +10 damage and healing per extra adjacent copy (max 3 copies). |
+| Corrupt Ward | 3 | 1T | Remove all enemy Ward. |
+| Shadow Bolt | 3 | 1T | Deal 80 damage. Affliction attuned: +50% damage while your Imp is alive. |
+| Nightmare | 3 | 2T | Affliction attuned: Cultivate all enemy Poison, consuming it to deal 10 damage per remaining tick. |
+| SoulBound | 3 | 1T | Apply Stun for 5 ticks. Gain Stun for 5 ticks. |
+| Damnation | 3 | 1T | Apply Poison for 8 ticks. |
+| Blood Offering | 4 | 1T | Affliction attuned: Lose half your current Health. Summon that much Imp Health. |
+| Death Mark | 4 | 1T | Deal 5 damage per remaining enemy Poison tick. |
+| Rupture | 4 | 3T | Deal 120 damage. Cast in 2T if the enemy is Cursed when casting starts. |
+| Devils Bargain | 4 | 1T | Apply Slow for 5 ticks. Gain Slow for 5 ticks. |
+| Empowered Imp | 5 | 2T | Affliction attuned: For this combat, your living Imp deals 30 damage after each spell you complete. |
+| Doomsday | 5 | 1T | Affliction attuned: Kill your Imp and deal damage equal to its current Health. |

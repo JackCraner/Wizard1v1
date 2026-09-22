@@ -6,33 +6,47 @@ import { KEYWORDS } from '../config/catalogue';
 import statuses from '../config/statuses.json';
 import type { CombatFrame, Fighter } from '../game/model';
 
-const icons:Record<string,string>={poison:'☠',regeneration:'✚',tide:'≈',heat:'♨',slow:'⌛',frailty:'◇',repetition:'↻'};
+const icons:Record<string,string>={unholy:'☀',curse:'☽',stun:'⏸',poison:'☠',regeneration:'✚',tidecaller:'≈',guard:'◇',resilience:'⬡',trap:'⚠',weaken:'↓',combust:'✹',fury:'↑',heat:'♨',slow:'⌛',frailty:'◇',repetition:'↻'};
 const keyword=(id:string)=>KEYWORDS[id==='repetition'?'curse':id];
 const unit=(id:string)=>(statuses as Record<string,{unit:string}>)[id]?.unit??'ticks';
 export function EffectBar({fighter,compact,group,highlight=[],onInspect}:{fighter:Fighter;compact:boolean;group:'buff'|'debuff';highlight?:string[];onInspect?:()=>void}) {
  const [selected,setSelected]=useState<string|null>(null);
  const bad=group==='debuff';const color=bad?'#ff9388':'#a6e4a1';
- const items=Object.entries(fighter.statuses).filter(([id,n])=>{const kind=(statuses as Record<string,{kind:string}>)[id]?.kind;return n>0&&(kind==='dot'||kind==='debuff')===bad;});
+ const displayed:Record<string,number>={...fighter.statuses,...Object.fromEntries(['poisonPower','regenerationPower','nextDamage','nextEcho','critDamage'].filter(id=>((fighter.memory as unknown as Record<string,number>)[id]??0)>1||(id==='nextEcho'&&fighter.memory.nextEcho!==undefined)).map(id=>[id,(fighter.memory as unknown as Record<string,number>)[id]])),...(fighter.memory.permanentResilience?{resilience:1}:{})};
+ const items=Object.entries(displayed).filter(([id,n])=>{const kind=(statuses as Record<string,{kind:string}>)[id]?.kind;return n>0&&(kind==='dot'||kind==='debuff')===bad;});
  const oath=fighter.oath;
- const oathLabel=oath?'Oath of '+oath.id[0].toUpperCase()+oath.id.slice(1):'';
- const oathProgress=oath?.remaining===undefined?'Until reshuffle':oath.remaining+' spells left';
- const info=selected==='oath'&&oath?{name:oathLabel,description:KEYWORDS.oath.description+' '+(oath.requirement==='slow'?'Complete three spells with a printed cast time of at least 2T.':'Complete three spells without direct damage.')}:selected&&fighter.statuses[selected]?keyword(selected):null;
+ const oathLabel=oath?'Oath of '+oath.id.split('-').map(word=>word[0].toUpperCase()+word.slice(1)).join(' '):'';
+ const oathProgress=oath?.remaining===undefined?'Until reshuffle':oath.remaining+' ticks left'+(oath.requirement==='deal100'?' · '+(oath.progress??0)+'/100 damage':'');
+ const info=selected==='oath'&&oath?{name:oathLabel,description:KEYWORDS.oath.description+' '+({dealNone:'Deal no damage.',deal100:'Deal at least 100 damage across the window.',takeNone:'Take no damage.',meditate:'Complete five stunned ticks.'}[oath.requirement])+' Reward: '+oath.amount+' '+oath.reward+(oath.reward==='damage'?'':' ticks')+'.'}:selected&&displayed[selected]?keyword(selected):null;
  return <View style={{flex:bad?1:undefined,flexShrink:1,maxHeight:'100%',borderWidth:1,borderColor:bad?'#8a4540':'#436e4e',borderRadius:4,backgroundColor:bad?'#301514dc':'#12271de8',padding:2}}>
    {group==='buff'&&fighter.shield>0&&<Text accessibilityLabel={`${fighter.shield} Ward`} style={{color:'#b9dcff',fontSize:10,textAlign:'center'}}>⬡ {fighter.shield} Ward</Text>}
    {!bad&&oath&&<Pressable accessibilityRole="button" accessibilityLabel={oathLabel+'. '+oathProgress+'. Inspect Oath.'} onPress={()=>{onInspect?.();setSelected('oath');}} style={{padding:3,borderWidth:1,borderColor:'#d6b766',backgroundColor:'#362e17',borderRadius:3}}><Text numberOfLines={1} adjustsFontSizeToFit style={{color:'#ffe3a1',fontSize:8,textAlign:'center'}}>{oathLabel}</Text><Text style={{color:'#f0ddb6',fontSize:7,textAlign:'center'}}>{oathProgress}</Text></Pressable>}
    <Text style={{color,fontSize:7,fontWeight:'800',textAlign:'center'}}>{bad?'− DEBUFFS':'+ BUFFS'}</Text>
    <ScrollView style={{flexGrow:0,flexShrink:1}} nestedScrollEnabled showsVerticalScrollIndicator={false} contentContainerStyle={{flexDirection:bad?'row':'column',flexWrap:bad?'wrap':'nowrap',gap:2,alignItems:bad?'center':'stretch',justifyContent:bad?'center':'flex-start'}}>
      {!items.length&&<Text style={{color:'#aaa08c',fontSize:8,textAlign:'center'}}>None</Text>}
-     {items.map(([id,count])=><Pressable key={id} accessibilityRole="button" accessibilityLabel={`${bad?'Debuff':'Buff'}: ${keyword(id)?.name??id}, ${count+' '+unit(id)}. Tap for details.`} onPress={()=>{onInspect?.();setSelected(id);}} style={{flexDirection:'row',alignItems:'center',gap:2,borderWidth:1,borderColor:highlight.includes(id)?'#fff0a2':bad?'#9d5750':'#619069',borderRadius:3,backgroundColor:highlight.includes(id)?'#625025':'#10150fee',minHeight:bad?18:24,paddingHorizontal:2}}>
+     {items.map(([id,count])=><Pressable key={id} accessibilityRole="button" accessibilityLabel={`${bad?'Debuff':'Buff'}: ${keyword(id)?.name??id}, ${id==='resilience'&&fighter.memory.permanentResilience?'rest of combat':count+' '+unit(id)}. Tap for details.`} onPress={()=>{onInspect?.();setSelected(id);}} style={{flexDirection:'row',alignItems:'center',gap:2,borderWidth:1,borderColor:highlight.includes(id)?'#fff0a2':bad?'#9d5750':'#619069',borderRadius:3,backgroundColor:highlight.includes(id)?'#625025':'#10150fee',minHeight:bad?18:24,paddingHorizontal:2}}>
        {STATUS_ART[id]?<Image accessible={false} source={STATUS_ART[id]} resizeMode="cover" style={{width:bad?16:20,height:bad?16:20,borderRadius:2}}/>:<Text style={{color,fontSize:13}}>{icons[id]??'✧'}</Text>}
        {!bad&&<Text numberOfLines={1} adjustsFontSizeToFit style={{flex:1,color:KEYWORD_DOMAINS[id]?DOMAIN_COLORS[KEYWORD_DOMAINS[id]]:'#ddedda',fontSize:8}}>{keyword(id)?.name??id}</Text>}
-       <Text style={{color:'#fff',fontSize:10,fontWeight:'900'}}>{count+(unit(id)==='ticks'?'T':'')}</Text>
+       <Text style={{color:'#fff',fontSize:10,fontWeight:'900'}}>{id==='resilience'&&fighter.memory.permanentResilience?'∞':count+(unit(id)==='ticks'?'T':unit(id)==='multiplier'?'×':'')}</Text>
      </Pressable>)}
    </ScrollView>
-   <Modal visible={!!info} transparent animationType="fade" onRequestClose={()=>setSelected(null)}><View style={{flex:1,alignItems:'center',justifyContent:'center',backgroundColor:'#0009',padding:24}}><View accessibilityViewIsModal style={{width:'100%',maxWidth:330,padding:16,gap:10,backgroundColor:'#191710',borderColor:color,borderWidth:1,borderRadius:6}}><Text style={{color,fontWeight:'800'}}>{bad?'− Debuff':'+ Buff'} · {info?.name} · {selected==='oath'?oathProgress:`${selected?fighter.statuses[selected]:0} ${selected?unit(selected):""}`}</Text><Text style={{color:'#eee0ca'}}>{info?.description}</Text><Pressable accessibilityRole="button" onPress={()=>setSelected(null)} style={{padding:10,borderWidth:1,borderColor:color}}><Text style={{color,textAlign:'center'}}>Close</Text></Pressable></View></View></Modal>
+   <Modal visible={!!info} transparent animationType="fade" onRequestClose={()=>setSelected(null)}><View style={{flex:1,alignItems:'center',justifyContent:'center',backgroundColor:'#0009',padding:24}}><View accessibilityViewIsModal style={{width:'100%',maxWidth:330,padding:16,gap:10,backgroundColor:'#191710',borderColor:color,borderWidth:1,borderRadius:6}}><Text style={{color,fontWeight:'800'}}>{bad?'− Debuff':'+ Buff'} · {info?.name} · {selected==='oath'?oathProgress:`${selected?displayed[selected]:0} ${selected?unit(selected):""}`}</Text><Text style={{color:'#eee0ca'}}>{info?.description}</Text><Pressable accessibilityRole="button" onPress={()=>setSelected(null)} style={{padding:10,borderWidth:1,borderColor:color}}><Text style={{color,textAlign:'center'}}>Close</Text></Pressable></View></View></Modal>
  </View>;
 }
 type Hit={side:'player'|'bot';amount:number;critical:boolean;healing:boolean;key:string;delay:number};
+export function ImpCompanion({fighter,onInspect}:{fighter:Fighter;onInspect:()=>void}) {
+ const [open,setOpen]=useState(false);const imp=fighter.imp;
+ if(!imp)return null;
+ const alive=imp.health>0;
+ return <>
+  <Pressable accessibilityRole="button" accessibilityLabel={`${fighter.name==='You'?'Your':fighter.name+"'s"} Imp: ${imp.health} of ${imp.maxHealth} Health${imp.guard>0?`, Guard ${imp.guard} ticks`:''}. ${fighter.memory.impDamage??0} damage per completed spell. Inspect Imp.`} onPress={()=>{onInspect();setOpen(true);}} style={{position:'absolute',bottom:34,alignSelf:'center',width:104,padding:4,borderRadius:8,borderWidth:1,borderColor:imp.guard?'#9be3ff':'#be85e9',backgroundColor:'#20132feb',alignItems:'center',zIndex:23,opacity:alive?1:.65}}>
+   <View style={{flexDirection:'row',alignItems:'center',gap:4}}><Text style={{fontSize:26}}>👿</Text><View><Text style={{color:'#e3baff',fontSize:10,fontWeight:'800'}}>IMP{imp.guard>0?' ◇':''}</Text><Text style={{color:'#fff',fontSize:10}}>{alive?`${imp.health}/${imp.maxHealth}`:'Defeated'}</Text></View></View>
+   <View style={{height:4,width:'100%',backgroundColor:'#402549',borderRadius:2}}><View style={{height:4,width:`${Math.max(0,Math.min(100,100*imp.health/imp.maxHealth))}%`,backgroundColor:imp.guard?'#9be3ff':'#ba78ec',borderRadius:2}}/></View>
+   {alive&&<Text style={{fontSize:8,color:'#ead3fa',marginTop:2}}>{imp.guard>0?`Guard · ${imp.guard}T`:(fighter.memory.impDamage?`${fighter.memory.impDamage} / spell`:'Protecting you')}</Text>}
+  </Pressable>
+  <Modal visible={open} transparent onRequestClose={()=>setOpen(false)} animationType="fade"><View style={{flex:1,backgroundColor:'#000a',alignItems:'center',justifyContent:'center',padding:20}}><View accessibilityViewIsModal style={{maxWidth:340,padding:18,gap:12,backgroundColor:'#20132f',borderWidth:1,borderColor:'#be85e9',borderRadius:10}}><Text style={{fontSize:20,color:'#e3baff',fontWeight:'800'}}>👿 Imp · {imp.health}/{imp.maxHealth} Health</Text><Text style={{color:'#fff'}}>{KEYWORDS.summon.description}</Text><Text style={{color:'#d5c5e7'}}>Guard: {imp.guard} ticks. Attack: {fighter.memory.impDamage??0} damage per completed spell. Summoning after defeat creates a fresh Imp.</Text><Pressable accessibilityRole="button" onPress={()=>setOpen(false)} style={{padding:10,borderWidth:1,borderColor:'#be85e9'}}><Text style={{color:'#fff',textAlign:'center'}}>Close Imp details</Text></Pressable></View></View></Modal>
+ </>;
+}
 function FloatingHit({hit,index,onDone}:{hit:Hit;index:number;onDone:(key:string)=>void}) {
  const progress=useRef(new Animated.Value(0)).current;
  useEffect(()=>{const anim=Animated.timing(progress,{toValue:1,duration:1450,delay:hit.delay,useNativeDriver:true});anim.start(({finished})=>{if(finished)onDone(hit.key);});return()=>anim.stop();},[]);

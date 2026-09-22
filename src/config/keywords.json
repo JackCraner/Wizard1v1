@@ -2,63 +2,55 @@
   "poison": {
     "name": "Poison",
     "aliases": [],
-    "description": "Nature attunement required to gain or apply this keyword. Duration. Take 15 damage at the start of each tick, then lose 1 duration. Adding Poison extends its duration.",
+    "description": "Debuff duration. Take 10 damage at the start of each tick after Instant spells, then lose 1 duration. New applications add duration.",
     "related": []
   },
   "regeneration": {
     "name": "Regeneration",
     "aliases": [],
-    "description": "Nature attunement required to gain or apply this keyword. Duration. Heal 15 at the start of each tick, then lose 1 duration. Adding Regeneration extends its duration.",
+    "description": "Buff duration. Heal 10 at the start of each tick after Instant spells, then lose 1 duration. New applications add duration.",
     "related": []
   },
   "ward": {
     "name": "Ward",
     "aliases": [],
-    "description": "Shield. Absorbs incoming damage before Health. Does not decay.",
+    "description": "Absorbs damage before Health. Does not stack: gaining Ward keeps the higher of your current Ward and the new amount. Does not decay.",
     "related": []
   },
   "interrupt": {
     "name": "Interrupt",
     "aliases": [],
-    "description": "Cancel an enemy spell that is still casting. That position is skipped; their sequence continues next tick.",
+    "description": "Cancels the current enemy spell, even a 1T spell finishing this tick. Also skips the remaining copies in its current Channel group (up to 3). Simultaneous interrupts cancel each other.",
     "related": []
   },
   "empowered": {
     "name": "Empowered",
     "aliases": [],
-    "description": "An enhanced spell. Fire spends 5 Heat on an eligible payoff for its printed Empowered effect. Spells without a printed Empowered damage value gain 50% direct damage, healing and Ward.",
-    "related": [
-      "heat"
-    ]
-  },
-  "tide": {
-    "name": "Tide",
-    "aliases": [],
-    "description": "Water attunement required to gain or apply this keyword. Charge. Water generates Tide and spends it on printed effects. Tide persists until spent.",
+    "description": "An enhanced spell: +50% direct damage, healing and Ward. This is separate from critical hits and does not consume Heat.",
     "related": []
   },
   "heat": {
     "name": "Heat",
     "aliases": [],
-    "description": "Fire attunement required to gain or apply this keyword. Charge. Each Heat adds 4% Fire damage. Eligible Empowered Fire payoffs spend 5 Heat. Heat does not decay.",
+    "description": "Counter. Starting your next non-Instant spell with at least 5 Heat consumes 5 and makes its cast time exactly 1T, including through Slow. Extra charges remain.",
     "related": []
   },
   "oath": {
     "name": "Oath",
     "aliases": [],
-    "description": "Holy attunement required to gain or apply this keyword. A condition on your next 3 spells. Complete all 3 to earn the reward. An interrupt or failed condition breaks it. A new Oath replaces an older one.",
+    "description": "A timed condition beginning on the next full tick. Complete it to receive its printed reward. Damage conditions count Health damage after protection; dealing damage includes Poison and your Imp. Only one Oath can be active: a new one replaces the previous one. Reshuffling or interruption does not cancel it.",
     "related": []
   },
   "slow": {
     "name": "Slow",
     "aliases": [],
-    "description": "Charge. The next spell you begin takes one extra tick per Slow, capped at +2T. Consumed on spell start.",
+    "description": "Debuff duration. Each non-Instant spell started while Slow is active takes +1T. Slow is not consumed on cast; loses 1 duration each following tick. Existing casts are unchanged.",
     "related": []
   },
   "cleanse": {
     "name": "Cleanse",
     "aliases": [],
-    "description": "Remove Poison, Slow, Frailty and Curse from yourself.",
+    "description": "Remove the printed number of unique debuffs from yourself, or all if unspecified. Priority: Poison, Slow, Trap, Weaken, Frailty, Repetition, Curse, Stun.",
     "related": []
   },
   "repeat": {
@@ -76,7 +68,7 @@
   "channel": {
     "name": "Channel",
     "aliases": [],
-    "description": "Gain power for adjacent copies of the same spell in your ordered hand.",
+    "description": "Adjacent matching copies form a Channel. Each additional copy adds the printed bonus, capped at 3 copies (two bonuses). Interrupt cancels the rest of that channel group.",
     "related": []
   },
   "unique": {
@@ -100,7 +92,7 @@
   "curse": {
     "name": "Curse",
     "aliases": [],
-    "description": "Affliction attunement required to gain or apply this keyword. Duration. Completing the same domain twice in succession costs 25 Health. Loses 1 duration at the end of each following tick.",
+    "description": "Debuff counter. Take 10 damage per stack when your next cycle begins, after reshuffling. Stacks persist until cleansed.",
     "related": []
   },
   "attunement": {
@@ -108,7 +100,160 @@
     "aliases": [
       "attuned"
     ],
-    "description": "Your two most numerous domains are attuned. Ties favor the oldest card still held; cast order does not matter. Only attuned domains activate their colored signature keywords and attuned spell bonuses.",
+    "description": "Your two most numerous domains are attuned. Ties favor the oldest card still held. Only effects explicitly marked with a domain attunement requirement need that domain; unmarked effects remain usable.",
+    "related": []
+  },
+  "instant": {
+    "name": "Instant",
+    "aliases": [],
+    "description": "Resolves before other effects that tick, including over-time effects and ordinary spells. Simultaneous Instant spells resolve together.",
+    "related": []
+  },
+  "trap": {
+    "name": "Trap",
+    "aliases": [],
+    "description": "Debuff duration. Each completed spell deals 10 damage to its caster. Echoes do not count as additional casts. Loses 1 duration each following tick.",
+    "related": []
+  },
+  "weaken": {
+    "name": "Weaken",
+    "aliases": [],
+    "description": "Debuff duration. Deal 20% less damage. Loses 1 duration each following tick.",
+    "related": []
+  },
+  "guard": {
+    "name": "Guard",
+    "aliases": [],
+    "description": "Buff duration. Prevents all damage, including periodic and self-inflicted damage, while active. Explicit Health loss costs bypass it. Loses 1 duration each following tick.",
+    "related": []
+  },
+  "resilience": {
+    "name": "Resilience",
+    "aliases": [],
+    "description": "Buff duration. Take 50% less damage. Loses 1 duration each following tick unless granted for the rest of combat. Explicit Health costs bypass it.",
+    "related": []
+  },
+  "tidecaller": {
+    "name": "Tidecaller",
+    "aliases": [],
+    "description": "Counter. At 5 charges, starting the next spell consumes 5 and gives it one Echo at 50% effectiveness. Extra charges remain. Interrupted spells lose their reserved Echo.",
+    "related": [
+      "echo"
+    ]
+  },
+  "echo": {
+    "name": "Echo",
+    "aliases": [],
+    "description": "Resolve the spell’s effects again at the stated effectiveness (normally 50%). Echoes do not trigger another Echo or another cast. Whole-number amounts round to the nearest integer.",
+    "related": []
+  },
+  "combust": {
+    "name": "Combust",
+    "aliases": [],
+    "description": "Counter. Each charge adds 10 percentage points of critical-hit chance, capped at 100%. Charges persist. Critical rolls are seeded for repeatable replays.",
+    "related": [
+      "critical"
+    ]
+  },
+  "critical": {
+    "name": "Critical",
+    "aliases": [],
+    "description": "A critical spell deals 150% damage by default. Eruption can change this to 200% or 250%. Echoes share the original spell’s critical result.",
+    "related": []
+  },
+  "fury": {
+    "name": "Fury",
+    "aliases": [],
+    "description": "Buff duration. Deal 10% more damage. Loses 1 duration each following tick.",
+    "related": []
+  },
+  "cultivate": {
+    "name": "Cultivate",
+    "aliases": [],
+    "description": "Consume the specified over-time effect to resolve the printed payoff immediately.",
+    "related": [
+      "poison",
+      "regeneration"
+    ]
+  },
+  "poisonPower": {
+    "name": "Venom Bloom",
+    "aliases": [],
+    "description": "Your Poison damage multiplier for this combat. Recasting keeps the strongest multiplier, without stacking.",
+    "related": [
+      "poison"
+    ]
+  },
+  "regenerationPower": {
+    "name": "Flourish",
+    "aliases": [],
+    "description": "Your Regeneration healing multiplier until the next Cycle begins.",
+    "related": [
+      "regeneration"
+    ]
+  },
+  "nextDamage": {
+    "name": "Astral Alignment",
+    "aliases": [],
+    "description": "Your next completed spell’s direct damage multiplier. Consumed even if that spell deals no damage.",
+    "related": []
+  },
+  "nextEcho": {
+    "name": "Tidal Power",
+    "aliases": [],
+    "description": "Effectiveness of your next Tidecaller Echo. Consumed when five Tidecaller charges are reserved at cast start.",
+    "related": [
+      "tidecaller"
+    ]
+  },
+  "critDamage": {
+    "name": "Eruption",
+    "aliases": [],
+    "description": "Your critical-hit damage multiplier for this combat. Recasting keeps the strongest multiplier.",
+    "related": [
+      "critical"
+    ]
+  },
+  "apply": {
+    "name": "Apply",
+    "aliases": [],
+    "description": "Put the named effect on the enemy. Applying Regeneration heals the enemy.",
+    "related": []
+  },
+  "gain": {
+    "name": "Gain",
+    "aliases": [],
+    "description": "Put the named effect on yourself.",
+    "related": []
+  },
+  "stun": {
+    "name": "Stun",
+    "aliases": [],
+    "description": "Pauses casting and rotation, including reshuffling, for its duration. Over-time effects and other durations still tick.",
+    "related": []
+  },
+  "summon": {
+    "name": "Summon",
+    "aliases": [],
+    "description": "Summon an Imp with the printed Health. If alive, add that amount to its current and maximum Health. It absorbs enemy spell damage before you, with overflow reaching you. Empowered Imp unlocks an attack after each spell its owner completes.",
+    "related": []
+  },
+  "doom": {
+    "name": "Doom",
+    "aliases": [],
+    "description": "Debuff counter reserved for a future spell. Its trigger and damage are not defined yet; no current spell applies it.",
+    "related": []
+  },
+  "fragile": {
+    "name": "Fragile",
+    "aliases": [],
+    "description": "After its first completed cast, this copy breaks and leaves the rotation for the rest of the duel. It returns next duel. Interrupting it does not break it. Echoes on that first cast still resolve.",
+    "related": []
+  },
+  "unholy": {
+    "name": "Unholy",
+    "aliases": [],
+    "description": "Your healing becomes damage to the enemy for the duration, including Regeneration. Printed healing converts even at full Health; heal-to-full converts only missing Health. Enemy healing stays unchanged.",
     "related": []
   }
 }

@@ -10,7 +10,10 @@ import rawKeywords from './keywords.json';
 export type Domain = 'nature' | 'water' | 'fire' | 'holy' | 'affliction';
 export interface CardDefinition {
   xp?: number; upgraded?: boolean;
-  upgrade?: { castTicks:number|null;  rules:string; keywords:string[]; combat?:{effects?:Effect[];blockedReason?:string}; notes?:string[] };
+  enemyStatusCast?: {status:string;ticks:number};
+  instantDomain?: Domain;
+  castDomain?: Domain; unattunedCastTicks?:number;
+  upgrade?: { enemyStatusCast?:{status:string;ticks:number}; instantDomain?:Domain; castDomain?:Domain; unattunedCastTicks?:number; castTicks:number|null;  rules:string; keywords:string[]; combat?:{effects?:Effect[];blockedReason?:string}; notes?:string[] };
   id: string; name: string; domain: Domain; stars: number; castTicks: number | null;
   combat?: { effects?: Effect[]; blockedReason?: string };
   rules: string; keywords: string[]; notes: string[];

@@ -23,7 +23,7 @@ it('matches configured rank frequencies without catalogue-size or domain bias',(
 it('preserves rank odds while allowing off-domain pivots',()=>{
   // Every domain remains eligible after buying spells.
   const counts=[0,0,0,0,0];
-  for(let roll=0;roll<3000;roll++)for(const id of offersFor(10,roll,['wrath','splash']).shop){
+  for(let roll=0;roll<3000;roll++)for(const id of offersFor(10,roll,['wrath','current']).shop){
     counts[SPELLS[id].stars-1]++;
   }
   expect(counts[4]).toBeGreaterThan(0);

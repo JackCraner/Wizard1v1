@@ -9,8 +9,9 @@ export const DOMAIN_INK: Record<Domain, string> = {
     nature: '#286721', water: '#075b83', fire: '#a52b20', holy: '#765000', affliction: '#713592',
 };
 export const KEYWORD_DOMAINS: Record<string, Domain> = {
-    poison: 'nature', regeneration: 'nature', heat: 'fire', tide: 'water',
-    oath: 'holy', frailty: 'affliction', curse: 'affliction', repetition: 'affliction',
+    poison: 'nature', regeneration: 'nature', heat: 'fire',
+    tidecaller: 'water', combust:'fire', fury:'fire', resilience:'nature',
+    oath: 'holy', unholy:'holy', frailty: 'affliction', curse: 'affliction', repetition: 'affliction', summon:'affliction', stun:'affliction', doom:'affliction',
 };
 export function cardAges(deck: readonly string[], ages: readonly number[] = []): number[] {
     return deck.map((_, i) => ages[i] ?? i);
@@ -32,10 +33,7 @@ export const attunedDomains = (deck: readonly string[], ages: readonly number[] 
     attunementRanking(deck, ages).slice(0, settings.maxDomains).map(r => r.domain);
 
 export function effectDomain(effect: Effect): Domain | undefined {
-    if (effect.requiresAttunement) return effect.requiresAttunement;
-    if (['status', 'consume', 'multiply', 'spend'].includes(effect.kind)) return KEYWORD_DOMAINS[effect.status ?? ''];
-    if (effect.kind === 'oath') return 'holy';
-    return undefined;
+    return effect.requiresAttunement;
 }
 export function effectEnabled(effect: Effect, domains: readonly Domain[]) {
     const required = effectDomain(effect);
@@ -51,8 +49,7 @@ export function requiredDomains(effects: readonly Effect[]): Domain[] {
         if (effect.empowered !== undefined) required.add('fire');
         if (effect.condition === 'poison') required.add('nature');
         if (effect.condition === 'oath') required.add('holy');
-        const statusDomain = KEYWORD_DOMAINS[effect.perStatus?.replace('enemy:', '') ?? ''];
-        if (statusDomain) required.add(statusDomain);
+
         requiredDomains(effect.effects ?? []).forEach(d => required.add(d));
     }
     return [...required];
