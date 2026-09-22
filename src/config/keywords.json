@@ -1,347 +1,112 @@
 {
-  "dot": {
-    "name": "DoT",
-    "aliases": [
-      "DoTs"
-    ],
-    "description": "Damage over time. Deals damage before normal spells and loses one stack afterward. Reapplication adds duration. Most DoTs deal fixed damage; Burn also scales with remaining stacks.",
-    "related": []
-  },
-  "hot": {
-    "name": "HoT",
-    "aliases": [
-      "HoTs"
-    ],
-    "description": "Heals during the HoT phase, then loses 1 stack. Reapplying adds stacks. Most HoTs heal a fixed amount; Lifebloom heals per remaining stack.",
-    "related": []
-  },
-  "instant": {
-    "name": "Instant",
+  "poison": {
+    "name": "Poison",
     "aliases": [],
-    "description": "Resolves at tick start, before damage over time and duration countdowns. Your next spell waits until the next tick.",
+    "description": "Duration. Take 15 damage at the start of each tick, then lose 1 duration. Adding Poison extends its duration.",
     "related": []
   },
-  "crit": {
-    "name": "Crit",
-    "aliases": [
-      "crits"
-    ],
-    "description": "A critical hit deals 150% of normal damage.",
-    "related": []
-  },
-  "channel": {
-    "name": "Channel",
-    "aliases": [
-      "channel"
-    ],
-    "description": "X is the number of identical Channel cards in a consecutive group in your hand. Each copy casts separately at its listed time and mana cost. Groups do not wrap across the ends of the hand.",
-    "related": []
-  },
-  "unique": {
-    "name": "Unique",
+  "regeneration": {
+    "name": "Regeneration",
     "aliases": [],
-    "description": "Only one copy of this spell may be in your deck, across base and upgraded versions. Shop copies can still be consumed directly for upgrade XP.",
+    "description": "Duration. Heal 15 at the start of each tick, then lose 1 duration. Adding Regeneration extends its duration.",
     "related": []
   },
-  "moonfire": {
-    "name": "Moonfire",
+  "ward": {
+    "name": "Ward",
     "aliases": [],
-    "description": "A DoT that deals 10 damage per tick.",
+    "description": "Shield. Absorbs incoming damage before Health. Does not decay.",
+    "related": []
+  },
+  "interrupt": {
+    "name": "Interrupt",
+    "aliases": [],
+    "description": "Cancel an enemy spell that is still casting. That position is skipped; their sequence continues next tick.",
+    "related": []
+  },
+  "empowered": {
+    "name": "Empowered",
+    "aliases": [],
+    "description": "An enhanced spell. Fire spends 5 Heat on an eligible payoff for its printed Empowered effect. Spells without a printed Empowered damage value gain 50% direct damage, healing and Ward.",
     "related": [
-      "dot"
-    ]
-  },
-  "sunfire": {
-    "name": "Sunfire",
-    "aliases": [],
-    "description": "A DoT that deals 20 damage per tick.",
-    "related": [
-      "dot"
-    ]
-  },
-  "lifebloom": {
-    "name": "Lifebloom",
-    "aliases": [],
-    "description": "Heals 10 health per remaining stack each tick, then loses 1 stack. At 5 stacks, heals 50; next tick at 4 stacks, heals 40. Reapplying adds stacks.",
-    "related": [
-      "hot"
-    ]
-  },
-  "growth": {
-    "name": "Growth",
-    "aliases": [],
-    "description": "A HoT that heals 10 health per tick.",
-    "related": [
-      "hot"
-    ]
-  },
-  "slowness": {
-    "name": "Slowness",
-    "aliases": [],
-    "description": "Adds one tick to the next started spell, then is consumed. Additional stacks extend the window to use it, not the extra cast time.",
-    "related": []
-  },
-  "starfall": {
-    "name": "Starfall",
-    "aliases": [],
-    "description": "A DoT that deals 50 damage per tick.",
-    "related": [
-      "dot"
-    ]
-  },
-  "star-empowerment": {
-    "name": "Star Empowerment",
-    "aliases": [],
-    "description": "Increases DoT damage by 20%.",
-    "related": [
-      "dot"
-    ]
-  },
-  "trap": {
-    "name": "Trap",
-    "aliases": [],
-    "description": "Take 10 damage each time you begin casting a spell while active, including Instant spells. Skips and continued casting do not trigger it. Loses 1 stack each tick.",
-    "related": []
-  },
-  "overgrowth": {
-    "name": "Overgrowth",
-    "aliases": [],
-    "description": "Your Growth heals 30 health per tick instead of 10 while active. Does not change Lifebloom or the opponent’s Growth. Loses 1 stack each tick.",
-    "related": [
-      "growth"
+      "heat"
     ]
   },
   "tide": {
     "name": "Tide",
     "aliases": [],
-    "description": "Grants a 20% chance to trigger Tidecaller. A double cast consumes up to 5 Tide stacks. Maelstrom prevents countdown, but not consumption.",
-    "related": [
-      "tidecaller"
-    ]
-  },
-  "tidecaller": {
-    "name": "Tidecaller",
-    "aliases": [],
-    "description": "While Tide is active, an eligible spell has a flat 20% chance to resolve twice. Pay its casting cost once. A trigger consumes up to 5 Tide stacks after its effects.",
+    "description": "Charge. Water generates Tide and spends it on printed effects. Tide persists until spent.",
     "related": []
   },
-  "steal": {
-    "name": "Steal",
+  "heat": {
+    "name": "Heat",
     "aliases": [],
-    "description": "Take mana from the opponent and gain it yourself.",
-    "related": []
-  },
-  "rain": {
-    "name": "Rain",
-    "aliases": [],
-    "description": "Increases Water spell damage by 20%.",
-    "related": []
-  },
-  "veil": {
-    "name": "Veil",
-    "aliases": [],
-    "description": "Take 50% less damage. Restore 5 mana each time an opposing spell hits you; periodic damage does not grant mana.",
-    "related": []
-  },
-  "cleanse": {
-    "name": "Cleanse",
-    "aliases": [],
-    "description": "Remove one randomly chosen DoT or debuff from yourself, including all its remaining stacks.",
-    "related": []
-  },
-  "guard": {
-    "name": "Guard",
-    "aliases": [],
-    "description": "Immune to direct, self, and periodic damage while active. Hits do not consume stacks. Explicit health costs still apply.",
-    "related": []
-  },
-  "hotstreak": {
-    "name": "Hotstreak",
-    "aliases": [],
-    "description": "Each stack grants 10% crit chance (up to 100%) and loses 1 stack per tick. Crossing from below 5 to at least 5 stacks grants 3 Combust. Hotstreak is not consumed.",
-    "related": [
-      "crit",
-      "combust"
-    ]
-  },
-  "combust": {
-    "name": "Combust",
-    "aliases": [],
-    "description": "While active, spells take at most 1 tick; Instant stays Instant. Each completed spell deals 5 damage to you. Each stack adds 1 tick of duration.",
-    "related": []
-  },
-  "burn": {
-    "name": "Burn",
-    "aliases": [],
-    "description": "Deal 10 damage per remaining Burn stack each tick, then remove 1 stack. For example, 5 stacks deal 50, then 40, 30, 20 and 10 damage.",
-    "related": [
-      "dot"
-    ]
-  },
-  "eruption": {
-    "name": "Eruption",
-    "aliases": [],
-    "description": "Your DoTs can critically hit using your crit chance at the start of each tick.",
-    "related": [
-      "dot",
-      "crit"
-    ]
-  },
-  "overheat": {
-    "name": "Overheat",
-    "aliases": [],
-    "description": "While active, your critical hits deal 200% of normal damage instead of 150%. Each stack adds 1 tick of duration.",
-    "related": [
-      "crit"
-    ]
-  },
-  "interrupt": {
-    "name": "Interrupt",
-    "aliases": [],
-    "description": "Stop the current cast or channel and skip that card. Mana already spent is not refunded. Completed casts are unaffected.",
-    "related": []
-  },
-  "fury": {
-    "name": "Fury",
-    "aliases": [],
-    "description": "Increases damage by 10%.",
-    "related": []
-  },
-  "phoenix": {
-    "name": "Phoenix",
-    "aliases": [],
-    "description": "On death while active, revive with half maximum health and mana. Each stack adds 1 tick of duration. Rebirth does not consume the remaining duration.",
-    "related": []
-  },
-  "celestial-alignment": {
-    "name": "Celestial Alignment",
-    "aliases": [],
-    "description": "Your next started spell deals double direct damage. Consumed when casting starts; the bonus lasts through that cast. Does not boost later DoT ticks. Unused stacks count down each tick.",
-    "related": []
-  },
-  "greater-alignment": {
-    "name": "Greater Alignment",
-    "aliases": [],
-    "description": "Your next started spell deals triple direct damage. Consumed when casting starts; the bonus lasts through that cast. Does not boost later DoT ticks. Unused stacks count down each tick.",
-    "related": []
-  },
-  "cloud-heart": {
-    "name": "Cloud Heart",
-    "aliases": [
-      "Greater Cloud Heart"
-    ],
-    "description": "Receive 40% more healing while active (60% for Greater Cloud Heart). Lasts 25 ticks; includes healing over time.",
-    "related": [
-      "hot"
-    ]
-  },
-  "greater-cloud-heart": {
-    "name": "Greater Cloud Heart",
-    "aliases": [],
-    "description": "Receive 60% more healing while active, including healing over time. Lasts 25 ticks.",
-    "related": [
-      "hot"
-    ]
-  },
-  "ward": {
-    "name": "Ward",
-    "aliases": [],
-    "description": "A damage shield. Each point absorbs 1 damage before Health is lost, then is consumed. Ward adds together and does not count down; it resets each combat. Guard prevents damage without spending Ward.",
-    "related": []
-  },
-  "cycle": {
-    "name": "Cycle",
-    "aliases": [
-      "Cycles"
-    ],
-    "description": "One pass through your ordered spell deck, ending after its Reshuffle. Once-per-Cycle equipment refreshes for the next pass. Skipped and interrupted cards still advance the deck.",
-    "related": []
-  },
-  "restoration": {
-    "name": "Restoration",
-    "aliases": [],
-    "description": "Increases healing you do by the stated percentage, including healing over time. Does not increase Mana restoration. Healing received bonuses are separate.",
-    "related": [
-      "hot"
-    ]
-  },
-  "spell-power": {
-    "name": "Spell Power",
-    "aliases": [],
-    "description": "Percentage increase to spell damage. Generic item spell-damage bonuses affect direct damage and DoTs; direct-only and DoT-only bonuses apply only to their stated damage type.",
-    "related": []
-  },
-  "consecration": {
-    "name": "Consecration",
-    "aliases": [],
-    "description": "Persistent enemy stacks. Every 5 are consumed to add +1 Penance tick to their next reshuffle, without a cap. Cleanse removes only unconverted stacks.",
-    "related": [
-      "penance"
-    ]
-  },
-  "penance": {
-    "name": "Penance",
-    "aliases": [],
-    "description": "Extra reshuffle ticks. Damage, healing and timed effects continue normally. Penance gained during a reshuffle waits for the next one.",
+    "description": "Charge. Each Heat adds 4% Fire damage. Eligible Empowered Fire payoffs spend 5 Heat. Heat does not decay.",
     "related": []
   },
   "oath": {
     "name": "Oath",
     "aliases": [],
-    "description": "One active Oath. Meet its condition for a reward; a new Oath replaces it. Its own cast is excluded. Repeated triggers count as one completed card.",
+    "description": "A condition on your next 3 spells. Complete all 3 to earn the reward. An interrupt or failed condition breaks it. A new Oath replaces an older one.",
     "related": []
   },
-  "retribution": {
-    "name": "Retribution",
+  "slow": {
+    "name": "Slow",
     "aliases": [],
-    "description": "After an opposing direct spell damages your Health, retaliate for 15 damage, at most once per tick. DoTs, absorbed hits and retaliation do not trigger it.",
+    "description": "Charge. The next spell you begin takes one extra tick per Slow, capped at +2T. Consumed on spell start.",
     "related": []
   },
-  "templars-oath": {
-    "name": "Templar's Oath",
+  "cleanse": {
+    "name": "Cleanse",
     "aliases": [],
-    "description": "A timed stance: take 20% less damage and deal 10% less direct spell damage. Does not replace a condition-based Oath.",
+    "description": "Remove Poison, Slow, Frailty and Curse from yourself.",
     "related": []
   },
-  "sanctuary": {
-    "name": "Sanctuary",
+  "repeat": {
+    "name": "Repeat",
     "aliases": [],
-    "description": "Take 40% less damage and receive 25% more healing while active.",
+    "description": "Resolve a spell’s effects again without advancing the sequence. A repeat does not count as another spell for Oaths or augment counters.",
     "related": []
   },
-  "holy-ground": {
-    "name": "Holy Ground",
+  "consume": {
+    "name": "Consume",
     "aliases": [],
-    "description": "Heal 15 each tick. Apply 1 Consecration whenever the opponent starts a new spell while active.",
-    "related": [
-      "hot",
-      "consecration"
-    ]
+    "description": "Remove the named duration or charges and use the amount removed for the payoff.",
+    "related": []
   },
-  "citadel": {
-    "name": "Citadel",
+  "channel": {
+    "name": "Channel",
     "aliases": [],
-    "description": "Take 30% less damage. Each opposing direct spell hit that damages your Health applies 1 Consecration to its caster.",
-    "related": [
-      "consecration"
-    ]
+    "description": "Gain power for adjacent copies of the same spell in your ordered hand.",
+    "related": []
   },
-  "next-instant": {
-    "name": "Next Instant",
+  "unique": {
+    "name": "Unique",
     "aliases": [],
-    "description": "The next spell started during this window becomes Instant. Consumed when casting starts; unused duration counts down each tick. Slowness can still add a tick.",
-    "related": [
-      "instant",
-      "slowness"
-    ]
+    "description": "Only one copy may be held. Matching shop copies can still upgrade it.",
+    "related": []
   },
-  "tidal-echo": {
-    "name": "Tidal Echo",
+  "cycle": {
+    "name": "Cycle",
     "aliases": [],
-    "description": "Gives the next started spell Tidecaller. Consumed when casting starts; unused duration counts down each tick. Requires active Tide to trigger a repeat.",
-    "related": [
-      "tidecaller",
-      "tide"
-    ]
+    "description": "One pass through your sequence, followed by one reshuffle tick.",
+    "related": []
+  },
+  "frailty": {
+    "name": "Frailty",
+    "aliases": [],
+    "description": "Duration. Take 20% more incoming enemy damage. Loses 1 duration at the end of each following tick.",
+    "related": []
+  },
+  "curse": {
+    "name": "Curse",
+    "aliases": [],
+    "description": "Duration. Completing the same domain twice in succession costs 25 Health. Loses 1 duration at the end of each following tick.",
+    "related": []
+  },
+  "affinity": {
+    "name": "Affinity",
+    "aliases": [],
+    "description": "At 3 cards in a domain, its direct damage, healing and Ward gain 10% power. At 5 cards, Mastery increases this to 20%. At most two Masteries fit a 10-card deck.",
+    "related": []
   }
 }

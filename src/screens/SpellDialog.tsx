@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { Modal, Platform, Pressable, ScrollView, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
 import { KeywordBoxes, RulesText, SpellCard } from '../components/cards/SpellCard';
 import { spellVisual } from '../components/cards/spellVisual';
-import { castLabel, manaLabel } from '../config/catalogue';
+import { castLabel } from '../config/catalogue';
 import { channelPower, RULES, SPELLS, spellAddReason } from '../game/engine';
 import type { Command, Session, SpellId } from '../game/model';
 import { canMerge, cardAt, UPGRADE_XP } from '../game/upgrades';
@@ -68,7 +68,6 @@ export function SpellDialog({ selection, session, busy, error, act, onClose, onS
           {showArt && <View style={s.art}><View style={{ width: artHeight * 2 / 3, height: artHeight }}><SpellCard {...card} shop={shop} /></View><Text style={[s.caption, { color: accent }]}>{card.upgraded ? '✦ Upgraded spell' : '✦ ' + card.domain[0].toUpperCase() + card.domain.slice(1) + ' magic'}</Text></View>}
           <ScrollView style={s.scroll} contentContainerStyle={s.details}>
             <View style={s.stats}>
-              <View style={s.stat}><Text style={s.statValue}>{manaLabel(card.mana)}</Text><Text style={s.caption}>Mana cost</Text></View>
               <View style={s.stat}><Text style={s.statValue}>{castLabel(card.castTicks)}</Text><Text style={s.caption}>Cast time</Text></View>
               <View style={s.stat}><Text style={[s.statValue, { color: '#efd088' }]}>{shop ? price : `${xp}/${UPGRADE_XP}`}</Text><Text style={s.caption}>{shop ? 'Gold' : 'Upgrade XP'}</Text></View>
             </View>
@@ -77,14 +76,14 @@ export function SpellDialog({ selection, session, busy, error, act, onClose, onS
             <View style={s.upgrade}>
               <View style={s.row}><Text style={s.sectionTitle}>{card.upgraded ? '✦ Fully upgraded' : 'Upgrade'}</Text><Text style={s.caption}>{xp}/{UPGRADE_XP} XP</Text></View>
               <View accessible accessibilityRole="progressbar" accessibilityLabel="Spell upgrade progress" accessibilityValue={{ min: 0, max: UPGRADE_XP, now: xp }} style={s.progress}>{Array.from({ length: UPGRADE_XP }, (_, i) => <View key={i} style={[s.segment, i < xp && { backgroundColor: accent }]} />)}</View>
-              {!card.upgraded && <Text style={s.caption}>Merge {UPGRADE_XP - xp} matching {UPGRADE_XP - xp === 1 ? 'copy' : 'copies'} to upgrade. Each copy adds 1 XP.</Text>}
-              {!card.upgraded && card.upgrade && <><Text style={s.upgradeLabel}>AT {UPGRADE_XP} XP · {manaLabel(card.upgrade.mana)} mana · {castLabel(card.upgrade.castTicks)}</Text><RulesText rules={card.upgrade.rules} keywords={card.upgrade.keywords} fontSize={14} color="#e9d6ad" /></>}
+              {!card.upgraded && <Text style={s.caption}>Merge {UPGRADE_XP - xp} matching {UPGRADE_XP - xp === 1 ? 'copy' : 'copies'} to upgrade. Each copy adds 1 XP.{session.augments.includes("scholar")&&!session.bonusMergeUsed?" Scholar: your next purchased duplicate adds 2 XP.":""}</Text>}
+              {!card.upgraded && card.upgrade && <><Text style={s.upgradeLabel}>AT {UPGRADE_XP} XP · {castLabel(card.upgrade.castTicks)}</Text><RulesText rules={card.upgrade.rules} keywords={card.upgrade.keywords} fontSize={14} color="#e9d6ad" /></>}
             </View>
             {card.keywords.length > 0 && <><Pressable accessibilityRole="button" accessibilityState={{ expanded: showKeywords }} onPress={() => setShowKeywords(!showKeywords)} style={s.keywordToggle}><Text style={s.sectionTitle}>Keyword guide</Text><Text style={s.caption}>{showKeywords ? 'Hide −' : 'Show +'}</Text></Pressable>{showKeywords && <KeywordBoxes keywords={card.keywords} />}</>}
             {session.spells.some((owned, i) => shop ? owned === id && (session.spellXp?.[i] ?? 0) < UPGRADE_XP : canMerge(session.spells, session.spellXp ?? [], i, selection.index)) && <View style={{ gap: 8 }}>
               <Text style={s.eyebrow}>{shop ? 'OR UPGRADE AN OWNED COPY' : 'MERGE MATCHING COPIES'}</Text>
               {session.spells.map((owned, i) => (shop ? owned === id && (session.spellXp?.[i] ?? 0) < UPGRADE_XP : canMerge(session.spells, session.spellXp ?? [], i, selection.index)) ?
-                <Button key={i} label={shop ? `Buy & merge · Slot ${i + 1} → ${(session.spellXp?.[i] ?? 0) + 1}/3 XP · ${price} gold` : `Consume slot ${i + 1} (${session.spellXp?.[i] ?? 0} XP) · Gain 1 XP`}
+                <Button key={i} label={shop ? `Buy & merge · Slot ${i + 1} → ${Math.min(3,(session.spellXp?.[i] ?? 0) + (session.augments.includes("scholar")&&!session.bonusMergeUsed?2:1))}/3 XP · ${price} gold` : `Consume slot ${i + 1} (${session.spellXp?.[i] ?? 0} XP) · Gain 1 XP`}
                   disabled={busy || (shop && session.gold < price)} onPress={() => finish(shop ? { type: 'buy', spell: id, target: i, shopSlot: selection.shopSlot } : { type: 'merge', from: i, to: selection.index })} /> : null)}
             </View>}
           </ScrollView>
@@ -97,7 +96,7 @@ export function SpellDialog({ selection, session, busy, error, act, onClose, onS
             <Button primary label={`Buy ${card.name} · ${price} gold`} disabled={busy || !!purchaseReason} onPress={() => finish({ type: 'buy', spell: id, shopSlot: selection.shopSlot })} />
           </> : <>
             <View style={s.row}><Text accessibilityLiveRegion="polite" style={s.caption}>Casting position {selection.index + 1} of {session.spells.length}</Text><Pressable accessibilityRole="button" accessibilityLabel="Trash spell" disabled={busy} onPress={() => setConfirmTrash(!confirmTrash)} style={s.trash}><Text style={{ color: '#dca69b', fontSize: 13 }}>Trash spell</Text></Pressable></View>
-            {confirmTrash ? <View style={{ gap: 8 }}><Text style={s.warning}>Remove {card.name} from your hand? No gold is refunded.</Text><View style={s.row}><View style={{ flex: 1 }}><Button label="Keep spell" onPress={() => setConfirmTrash(false)} /></View><View style={{ flex: 1 }}><Button danger label="Remove spell" disabled={busy} onPress={() => finish({ type: 'trash', index: selection.index })} /></View></View></View>
+            {confirmTrash ? <View style={{ gap: 8 }}><Text style={s.warning}>Remove {card.name} from your hand? {session.augments.includes("recycler")?"You receive 1 gold.":"No gold is refunded."}</Text><View style={s.row}><View style={{ flex: 1 }}><Button label="Keep spell" onPress={() => setConfirmTrash(false)} /></View><View style={{ flex: 1 }}><Button danger label="Remove spell" disabled={busy} onPress={() => finish({ type: 'trash', index: selection.index })} /></View></View></View>
               : <View style={s.row}><View style={{ flex: 1 }}><Button label="← Cast earlier" disabled={busy || selection.index === 0} onPress={() => move(selection.index - 1)} /></View><View style={{ flex: 1 }}><Button label="Cast later →" disabled={busy || selection.index === session.spells.length - 1} onPress={() => move(selection.index + 1)} /></View></View>}
           </>}
         </View>

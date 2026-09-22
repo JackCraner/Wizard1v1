@@ -1,115 +1,78 @@
 # Spell catalogue
 
-Gold cost equals stars. TBD means the source did not specify a value. A deck may contain at most two domains. See COMBAT_RULES.md for active rules and outstanding decisions.
+Gold price equals stars. All cards are playable. Every card upgrades at 3 XP; exact upgrade rules live in its domain JSON.
 
-## Nature
+## nature
 
-| Spell | Stars / gold | Mana | Cast | Rules |
-| --- | --- | --- | --- | --- |
-| Seed Shot | 1 | 5 | 2T | Deal 70 damage. |
-| Moonfire | 1 | 5 | 1T | Apply 5 Moonfire. |
-| Photosynthesis | 1 | 0 | 3T | Restore 15 mana. |
-| Wrath | 1 | 0 | 1T | Deal 20 damage. |
-| Regrowth | 1 | 5 | 1T | Heal 30 health. |
-| Sap | 1 | 2 | 2T | Deal 20 damage. Restore 5 mana. |
-| Lunar Strike | 2 | 5 | 2T | Deal 50 damage. Crit if Moonfire is active. |
-| Sunfire | 2 | 8 | 1T | Apply 5 Sunfire. |
-| Lifebloom | 2 | 10 | 2T | Gain 4 Lifebloom. |
-| Germination | 2 | 5 | 1T | Restore mana equal to the number of DoTs applied. |
-| Mend | 2 | 3 | 1T | Gain 5 Growth. |
-| Root Bind | 2 | 3 | 1T | Deal 30 damage. Apply 1 Slowness. |
-| Starsurge | 3 | 3 | Instant | Instant. Deal 80 damage. Crit if Moonfire and Sunfire are active. |
-| Moon Blast | 3 | 5 | 1T | Deal 50 damage. Apply 3 Moonfire. |
-| Flourish | 3 | 5 | 2T | Unique. Double all HoT durations. |
-| Spore Drain | 3 | 3 | 1T | Channel. Deal 10 × X damage. Gain X Growth. |
-| Rejuvenation | 3 | 7 | Instant | Instant. Heal 50 health. |
-| Renew | 3 | 8 | 1T | Heal 50 health. Gain 5 Growth and apply 5 Growth. |
-| Starfall | 4 | 5 | 1T | Apply X Starfall. Gain 1 Star Empowerment. |
-| Celestial Alignment | 4 | TBD | TBD | Unique. Your next spell deals double damage. |
-| Nettle Trap | 4 | 10 | 1T | Apply 5 Trap. |
-| Greenfire | 4 | 8 | 2T | Deal 100 damage. Apply 5 Sunfire. |
-| Astral Power | 4 | 0 | 1T | Restore 10 mana. Deal 100 damage. |
-| Eclipse | 5 | 10 | 1T | Immediately deal all remaining DoT damage. |
-| Wild Growth | 5 | 0 | 2T | Gain 5 Growth and 25 Overgrowth. Growth now heals 3 health per tick. |
+| Spell | Stars | Cast | Effect |
+| --- | --- | --- | --- |
+| Wrath | 1 | 1T | Deal 50 damage. |
+| Moonfire | 1 | 1T | Apply 4 Poison. |
+| Regrowth | 1 | 1T | Gain 4 Regeneration. |
+| Sap | 1 | 1T | Deal 25 damage. Heal 20. |
+| Seed Shot | 2 | 1T | Deal 45 damage. Deal +35 if the enemy has Poison. |
+| Germination | 2 | 1T | Gain Regeneration equal to enemy Poison duration. |
+| Nourish | 2 | 2T | Heal 100. |
+| Flourish | 3 | 2T | Multiply your Regeneration duration by 2. |
+| Eclipse | 4 | 2T | Consume all enemy Poison. Deal 15 damage per tick consumed. |
+| Ancient Growth | 5 | 3T | Gain 10 Regeneration. Gain 100 Ward. |
 
-## Water
+## water
 
-| Spell | Stars / gold | Mana | Cast | Rules |
-| --- | --- | --- | --- | --- |
-| Splash | 1 | 0 | 1T | Restore 5 mana. |
-| Brine | 1 | 2 | 2T | Deal 50 damage. |
-| Mist | 1 | 5 | Instant | Instant. Deal 20 damage. |
-| Tidal | 1 | TBD | 1T | Gain 3 Tide. |
-| Healing Surge | 1 | 3 | 1T | Heal 15 health. |
-| Undertow | 2 | 10 | 1T | Channel. Deal X damage. Gain X Tide. |
-| Aqua Steal | 2 | 5 | 2T | Steal 10 mana. |
-| Tidal Burst | 2 | 5 | 2T | Tidecaller. Deal 80 damage. |
-| Frostbolt | 2 | 3 | 1T | Apply 2 Slowness. |
-| Storm | 2 | 5 | 2T | Gain 5 Rain. |
-| Mistveil | 2 | 0 | 1T | Gain 3 Veil. |
-| Riptide | 3 | 5 | 1T | Tidecaller. Heal 100 health. |
-| Tidal Echo | 3 | 10 | 1T | Your next spell gains Tidecaller. |
-| Deepwater | 3 | 5 | 3T | Both players restore 15 mana. Gain 5 Tide. |
-| Cleanse | 3 | 5 | 1T | Cleanse 1 random debuff. |
-| Whirlpool | 3 | 10 | 1T | Tidecaller. Deal 10 damage per Tide. |
-| Flood Fury | 3 | 20 | Instant | Instant. Deal 100 damage. |
-| Downpour | 4 | 15 | 2T | Gain 15 Rain. |
-| Tidal Guard | 4 | 5 | 1T | Tidecaller. Gain 2 Guard. |
-| Tsunami | 4 | Half | 2T | Spend half your mana. Deal that much damage. |
-| Rainborn | 4 | TBD | 2T | Rain also heals 2 health per tick. |
-| Water Heart | 4 | 0 | 1T | Gain 5 Tide. Restore 5 mana. Heal 10 health. |
-| Maelstrom | 5 | 10 | 3T | Your Tide no longer expires. |
-| Monsoon | 5 | 0 | 1T | Rain grants 5 mana. |
-| Cloud Heart | 5 | TBD | 1T | Increase healing by 40%. |
+| Spell | Stars | Cast | Effect |
+| --- | --- | --- | --- |
+| Splash | 1 | 1T | Gain 1 Tide. |
+| Undertow | 1 | 1T | Deal 30 damage. Gain 1 Tide. |
+| Brine | 1 | 1T | Deal 45 damage. |
+| Riptide | 2 | 1T | Spend 2 Tide: Heal 100. |
+| Whirlpool | 2 | 1T | Deal 20 damage per Tide. |
+| Ice Lance | 2 | 1T | Deal 35 damage. Apply 1 Slow. |
+| Tidal Burst | 3 | 2T | Deal 60 damage. Spend 2 Tide: cast this spell 2 times. |
+| Frostbolt | 3 | 2T | Deal 80 damage. Interrupt the enemy’s current spell. |
+| Tidal Wave | 4 | 3T | Deal 120 damage. Spend 3 Tide: Gain 100 Ward. |
+| Echo | 5 | 2T | Your next spell repeats 3 times in total. |
 
-## Fire
+## fire
 
-| Spell | Stars / gold | Mana | Cast | Rules |
-| --- | --- | --- | --- | --- |
-| Ember | 1 | 5 | 1T | Deal 60 damage. |
-| Scorch | 1 | 5 | 1T | Deal 30 damage. Gain 1 Hotstreak. |
-| From Ash | 1 | 0 | Instant | Instant. Take 20 damage. Restore 5 mana. |
-| Cinder | 1 | 0 | 2T | Gain 2 Hotstreak. |
-| Sear | 2 | 8 | 3T | Apply 3 Burn. |
-| Fire Bolt | 2 | 8 | 1T | Deal 80 damage. |
-| Heatwave | 2 | 8 | 1T | Gain 2 Hotstreak. Deal 50 damage to both players. |
-| Eruption | 2 | 10 | 2T | Gain 8 Eruption. |
-| Lava Floor | 2 | 5 | 2T | Apply 3 Trap. |
-| Overheat | 3 | 10 | 1T | Lose half your current health. Gain 15 Overheat and 5 Hotstreak. |
-| Emberstorm | 3 | 0 | 4T | Deal 120 damage. |
-| Lava Drain | 3 | 0 | 2T | Restore 15 mana. |
-| Flamewave | 3 | 8 | 3T | Apply 5 Burn. |
-| Firekick | 3 | 5 | 2T | Interrupt the opponent's current cast or channel. |
-| Pyroblast | 4 | 10 | 5T | Deal 200 damage. |
-| Flame Fury | 4 | 8 | 1T | Gain 2 Hotstreak and 5 Fury. |
-| Immolate | 4 | 15 | 3T | Channel. Apply 2 Burn to yourself. Deal 30 × X damage. |
-| Flameshield | 4 | 15 | 2T | Gain 1 Guard. |
-| Conflagrate | 5 | 15 | 1T | Deal 20 damage. Your next spell is Instant. |
-| Flashfire | 5 | 20 | 1T | Consume all Burn. Gain 1 Hotstreak and 1 Fury per Burn consumed. |
-| Phoenix | 5 | 15 | 2T | Gain 5 Phoenix. While active, revive on death with half maximum health and mana. |
+| Spell | Stars | Cast | Effect |
+| --- | --- | --- | --- |
+| Ember | 1 | 1T | Deal 50 damage. |
+| Scorch | 1 | 1T | Deal 30 damage. Gain 2 Heat. |
+| Cinder | 1 | 1T | Gain 3 Heat. |
+| From Ash | 1 | 1T | Take 20 damage. Gain 2 Heat. |
+| Fireball | 2 | 1T | Deal 60 damage. Empowered: deal 100 instead. |
+| Firekick | 2 | 2T | Deal 35 damage. Interrupt the enemy’s current spell. |
+| Overheat | 3 | 1T | Take 80 damage. Gain 5 Heat. |
+| Pyroblast | 4 | 3T | Deal 180 damage. Empowered: deal 300 instead. |
+| Flashfire | 4 | 1T | Consume all Heat. Deal 40 damage per charge consumed. |
+| Inferno | 5 | 3T | Deal 160 damage. Empowered: deal 240 instead. Gain 3 Heat. |
 
-## Pending mechanics
+## holy
 
-- **Lifebloom:** Define X in 10 × X healing.
-- **Germination:** Specify whether DoTs means active types, remaining stacks, or all applications.
-- **Flourish:** Define Unique and whose HoTs are extended.
-- **Renew:** Specify who receives the second Growth application.
-- **Starfall:** Define X.
-- **Celestial Alignment:** Provide mana cost, cast time, and Unique restriction.
-- **Nettle Trap:** Define Trap trigger timing and whose spells count.
-- **Eclipse:** Specify whether remaining DoTs are consumed.
-- **Wild Growth:** Define Overgrowth and confirm the change to 3 healing.
-- **Tidal:** Provide mana cost.
-- **Mistveil:** Specify whose spells take the penalty and who gains mana.
-- **Tsunami:** Specify current/max mana and rounding.
-- **Rainborn:** Provide mana cost.
-- **Maelstrom:** Tide not expiring conflicts with the new universal countdown rule.
-- **Monsoon:** Specify when Rain grants mana.
-- **Cloud Heart:** Provide mana cost, duration, and healing recipient.
-- **Sear:** Define Burn damage.
-- **Eruption:** Define critical chance for DoTs.
-- **Lava Floor:** Define Trap trigger timing.
-- **Flamewave:** Define Burn damage.
-- **Firekick:** Specify interrupted-spell queue advancement and mana refunds.
-- **Immolate:** Define Burn damage per tick.
-- **Flashfire:** Define whose Burn is consumed.
+| Spell | Stars | Cast | Effect |
+| --- | --- | --- | --- |
+| Ward | 1 | 1T | Gain 60 Ward. |
+| Smite | 1 | 1T | Deal 50 damage. |
+| Rebuke | 1 | 1T | Deal 25 damage. Apply 1 Slow. |
+| Mend | 1 | 1T | Heal 45. |
+| Oath of Patience | 2 | 1T | Oath: if your next 3 spells have a printed cast time of 2T or 3T, gain 150 Ward. |
+| Oath of Mercy | 2 | 1T | Oath: if your next 3 spells deal no direct damage, heal 150. |
+| Cleanse | 2 | 1T | Cleanse all negative effects. Heal 20. |
+| Judgment | 3 | 2T | Deal 80 damage. Deal +70 if you completed an Oath this Cycle. |
+| Bulwark | 4 | 3T | Gain 180 Ward. |
+| Radiant Dawn | 5 | 3T | Deal 100 damage. Heal 100. Gain 80 Ward. |
+
+## affliction
+
+| Spell | Stars | Cast | Effect |
+| --- | --- | --- | --- |
+| Hex | 1 | 1T | Apply 1 Slow. |
+| Torment | 1 | 1T | Deal 45 damage. |
+| Poison Needle | 1 | 1T | Deal 20 damage. Apply 2 Poison. |
+| Frailty | 2 | 1T | Apply 4 Frailty. |
+| Silence | 2 | 2T | Interrupt the enemy’s current spell. Deal 35 damage. |
+| Siphon | 2 | 2T | Deal 55 damage. Heal 45. |
+| Curse of Repetition | 3 | 2T | Apply 5 Curse. |
+| Unravel | 3 | 2T | Deal 60 damage. Apply 3 Poison. |
+| Doom | 4 | 3T | Deal 120 damage. Deal +70 if the enemy has Poison. |
+| Ruin | 5 | 3T | Deal 150 damage. Apply 4 Frailty. |

@@ -1,160 +1,32 @@
 {
-  "moonfire": {
+  "poison": {
     "kind": "dot",
-    "power": 10,
-    "domain": "nature"
+    "power": 15,
+    "unit": "ticks"
   },
-  "sunfire": {
-    "kind": "dot",
-    "power": 20,
-    "domain": "nature"
-  },
-  "growth": {
+  "regeneration": {
     "kind": "hot",
-    "power": 10
-  },
-  "starfall": {
-    "kind": "dot",
-    "power": 50,
-    "domain": "nature"
-  },
-  "rain": {
-    "kind": "buff",
-    "power": 20
+    "power": 15,
+    "unit": "ticks"
   },
   "tide": {
-    "kind": "buff",
-    "power": 20,
-    "consumeOnTrigger": 5
+    "kind": "charge",
+    "unit": "charges"
   },
-  "slowness": {
+  "heat": {
+    "kind": "charge",
+    "unit": "charges"
+  },
+  "slow": {
     "kind": "debuff",
-    "power": 1
+    "unit": "charges"
   },
-  "next-instant": {
-    "kind": "buff"
-  },
-  "tidal-echo": {
-    "kind": "buff"
-  },
-  "fury": {
-    "kind": "buff",
-    "power": 10
-  },
-  "star-empowerment": {
-    "kind": "buff",
-    "power": 20
-  },
-  "guard": {
-    "kind": "buff"
-  },
-  "phoenix": {
-    "kind": "buff"
-  },
-  "overheat": {
-    "kind": "buff",
-    "critMultiplier": 2
-  },
-  "hotstreak": {
-    "kind": "buff",
-    "critChancePerStack": 0.1,
-    "threshold": 5,
-    "combustDuration": 3
-  },
-  "combust": {
-    "kind": "buff",
-    "maxCastTicks": 1,
-    "selfDamage": 5,
-    "domain": "fire"
-  },
-  "lifebloom": {
-    "kind": "hot",
-    "power": 10,
-    "perStack": true
-  },
-  "trap": {
+  "frailty": {
     "kind": "debuff",
-    "power": 10
+    "unit": "ticks"
   },
-  "overgrowth": {
-    "kind": "buff",
-    "power": 30
-  },
-  "celestial-alignment": {
-    "kind": "buff",
-    "power": 2
-  },
-  "greater-alignment": {
-    "kind": "buff",
-    "power": 3
-  },
-  "veil": {
-    "kind": "buff",
-    "damageReduction": 0.5,
-    "manaPerSpell": 5
-  },
-  "burn": {
-    "kind": "dot",
-    "domain": "fire",
-    "power": 10,
-    "perStack": true
-  },
-  "eruption": {
-    "kind": "buff"
-  },
-  "cloud-heart": {
-    "kind": "buff",
-    "power": 40
-  },
-  "greater-cloud-heart": {
-    "kind": "buff",
-    "power": 60
-  },
-  "consecration": {
+  "repetition": {
     "kind": "debuff",
-    "domain": "holy",
-    "persistent": true
-  },
-  "retribution": {
-    "kind": "buff",
-    "domain": "holy",
-    "trigger": "direct_spell_damage_taken",
-    "retaliationDamage": 15,
-    "maxTriggersPerTick": 1
-  },
-  "templars-oath": {
-    "kind": "buff",
-    "domain": "holy",
-    "incomingDamageMultiplier": 0.8,
-    "directDamageMultiplier": 0.9
-  },
-  "sanctuary": {
-    "kind": "buff",
-    "domain": "holy",
-    "incomingDamageMultiplier": 0.6,
-    "healingReceivedMultiplier": 1.25
-  },
-  "holy-ground": {
-    "kind": "hot",
-    "domain": "holy",
-    "healPerTick": 15,
-    "onOpponentSpellStart": {
-      "type": "apply_status",
-      "target": "opponent",
-      "status": "consecration",
-      "stacks": 1
-    },
-    "power": 15
-  },
-  "citadel": {
-    "kind": "buff",
-    "domain": "holy",
-    "incomingDamageMultiplier": 0.7,
-    "onDirectSpellDamageTaken": {
-      "type": "apply_status",
-      "target": "opponent",
-      "status": "consecration",
-      "stacks": 1
-    }
+    "unit": "ticks"
   }
 }

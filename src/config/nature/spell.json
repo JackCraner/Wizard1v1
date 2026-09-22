@@ -1,32 +1,30 @@
 [
   {
-    "id": "seed-shot",
-    "name": "Seed Shot",
+    "id": "wrath",
+    "name": "Wrath",
     "domain": "nature",
     "stars": 1,
-    "castTicks": 2,
-    "mana": 5,
-    "rules": "Deal 70 damage.",
+    "castTicks": 1,
+    "rules": "Deal 50 damage.",
     "keywords": [],
     "notes": [],
     "combat": {
       "effects": [
         {
           "kind": "damage",
-          "amount": 70
+          "amount": 50
         }
       ]
     },
     "upgrade": {
-      "castTicks": 2,
-      "mana": 5,
-      "rules": "Deal 95 damage.",
+      "castTicks": 1,
+      "rules": "Deal 70 damage.",
       "keywords": [],
       "combat": {
         "effects": [
           {
             "kind": "damage",
-            "amount": 95
+            "amount": 70
           }
         ]
       },
@@ -39,104 +37,34 @@
     "domain": "nature",
     "stars": 1,
     "castTicks": 1,
-    "mana": 5,
-    "rules": "Apply 5 Moonfire.",
+    "rules": "Apply 4 Poison.",
     "keywords": [
-      "moonfire"
+      "poison"
     ],
     "notes": [],
     "combat": {
       "effects": [
         {
           "kind": "status",
-          "status": "moonfire",
-          "amount": 5,
+          "status": "poison",
+          "amount": 4,
           "target": "enemy"
         }
       ]
     },
     "upgrade": {
       "castTicks": 1,
-      "mana": 5,
-      "rules": "Apply 8 Moonfire.",
+      "rules": "Apply 6 Poison.",
       "keywords": [
-        "moonfire"
+        "poison"
       ],
       "combat": {
         "effects": [
           {
             "kind": "status",
-            "status": "moonfire",
-            "amount": 8,
+            "status": "poison",
+            "amount": 6,
             "target": "enemy"
-          }
-        ]
-      },
-      "notes": []
-    }
-  },
-  {
-    "id": "photosynthesis",
-    "name": "Photosynthesis",
-    "domain": "nature",
-    "stars": 1,
-    "castTicks": 2,
-    "mana": 0,
-    "rules": "Restore 15 mana.",
-    "keywords": [],
-    "notes": [],
-    "combat": {
-      "effects": [
-        {
-          "kind": "mana",
-          "amount": 15
-        }
-      ]
-    },
-    "upgrade": {
-      "castTicks": 2,
-      "mana": 0,
-      "rules": "Restore 22 mana.",
-      "keywords": [],
-      "combat": {
-        "effects": [
-          {
-            "kind": "mana",
-            "amount": 22
-          }
-        ]
-      },
-      "notes": []
-    }
-  },
-  {
-    "id": "wrath",
-    "name": "Wrath",
-    "domain": "nature",
-    "stars": 1,
-    "castTicks": 1,
-    "mana": 0,
-    "rules": "Deal 20 damage.",
-    "keywords": [],
-    "notes": [],
-    "combat": {
-      "effects": [
-        {
-          "kind": "damage",
-          "amount": 20
-        }
-      ]
-    },
-    "upgrade": {
-      "castTicks": 1,
-      "mana": 0,
-      "rules": "Deal 30 damage.",
-      "keywords": [],
-      "combat": {
-        "effects": [
-          {
-            "kind": "damage",
-            "amount": 30
           }
         ]
       },
@@ -149,28 +77,34 @@
     "domain": "nature",
     "stars": 1,
     "castTicks": 1,
-    "mana": 5,
-    "rules": "Heal 30 health.",
-    "keywords": [],
+    "rules": "Gain 4 Regeneration.",
+    "keywords": [
+      "regeneration"
+    ],
     "notes": [],
     "combat": {
       "effects": [
         {
-          "kind": "heal",
-          "amount": 30
+          "kind": "status",
+          "status": "regeneration",
+          "amount": 4,
+          "target": "self"
         }
       ]
     },
     "upgrade": {
       "castTicks": 1,
-      "mana": 5,
-      "rules": "Heal 45 health.",
-      "keywords": [],
+      "rules": "Gain 6 Regeneration.",
+      "keywords": [
+        "regeneration"
+      ],
       "combat": {
         "effects": [
           {
-            "kind": "heal",
-            "amount": 45
+            "kind": "status",
+            "status": "regeneration",
+            "amount": 6,
+            "target": "self"
           }
         ]
       },
@@ -182,129 +116,35 @@
     "name": "Sap",
     "domain": "nature",
     "stars": 1,
-    "castTicks": 2,
-    "mana": 2,
-    "rules": "Deal 20 damage. Restore 5 mana.",
+    "castTicks": 1,
+    "rules": "Deal 25 damage. Heal 20.",
     "keywords": [],
     "notes": [],
     "combat": {
       "effects": [
         {
           "kind": "damage",
-          "amount": 20
+          "amount": 25
         },
         {
-          "kind": "mana",
-          "amount": 5
-        }
-      ]
-    },
-    "upgrade": {
-      "castTicks": 2,
-      "mana": 2,
-      "rules": "Deal 30 damage. Restore 8 mana.",
-      "keywords": [],
-      "combat": {
-        "effects": [
-          {
-            "kind": "damage",
-            "amount": 30
-          },
-          {
-            "kind": "mana",
-            "amount": 8
-          }
-        ]
-      },
-      "notes": []
-    }
-  },
-  {
-    "id": "lunar-strike",
-    "name": "Lunar Strike",
-    "domain": "nature",
-    "stars": 2,
-    "castTicks": 2,
-    "mana": 5,
-    "rules": "Deal 50 damage. Crit if Moonfire is active.",
-    "keywords": [
-      "crit",
-      "moonfire"
-    ],
-    "notes": [
-      "Critical condition checks effects on the opponent."
-    ],
-    "combat": {
-      "effects": [
-        {
-          "kind": "damage",
-          "amount": 50,
-          "critWhen": [
-            "moonfire"
-          ]
-        }
-      ]
-    },
-    "upgrade": {
-      "castTicks": 2,
-      "mana": 5,
-      "rules": "Deal 75 damage. Crit if Moonfire are active on the target.",
-      "keywords": [
-        "crit",
-        "moonfire"
-      ],
-      "combat": {
-        "effects": [
-          {
-            "kind": "damage",
-            "amount": 75,
-            "critWhen": [
-              "moonfire"
-            ]
-          }
-        ]
-      },
-      "notes": [
-        "Critical condition checks effects on the opponent."
-      ]
-    }
-  },
-  {
-    "id": "sunfire",
-    "name": "Sunfire",
-    "domain": "nature",
-    "stars": 2,
-    "castTicks": 1,
-    "mana": 8,
-    "rules": "Apply 5 Sunfire.",
-    "keywords": [
-      "sunfire"
-    ],
-    "notes": [],
-    "combat": {
-      "effects": [
-        {
-          "kind": "status",
-          "status": "sunfire",
-          "amount": 5,
-          "target": "enemy"
+          "kind": "heal",
+          "amount": 20
         }
       ]
     },
     "upgrade": {
       "castTicks": 1,
-      "mana": 8,
-      "rules": "Apply 7 Sunfire.",
-      "keywords": [
-        "sunfire"
-      ],
+      "rules": "Deal 35 damage. Heal 20.",
+      "keywords": [],
       "combat": {
         "effects": [
           {
-            "kind": "status",
-            "status": "sunfire",
-            "amount": 7,
-            "target": "enemy"
+            "kind": "damage",
+            "amount": 35
+          },
+          {
+            "kind": "heal",
+            "amount": 20
           }
         ]
       },
@@ -312,41 +152,39 @@
     }
   },
   {
-    "id": "lifebloom",
-    "name": "Lifebloom",
+    "id": "seed-shot",
+    "name": "Seed Shot",
     "domain": "nature",
     "stars": 2,
-    "castTicks": 2,
-    "mana": 10,
-    "rules": "Gain 4 Lifebloom. Heals 10 per remaining stack each tick.",
+    "castTicks": 1,
+    "rules": "Deal 45 damage. Deal +35 if the enemy has Poison.",
     "keywords": [
-      "lifebloom"
+      "poison"
     ],
     "notes": [],
     "combat": {
       "effects": [
         {
-          "kind": "status",
-          "status": "lifebloom",
-          "amount": 4,
-          "target": "self"
+          "kind": "damage",
+          "amount": 45,
+          "condition": "poison",
+          "bonus": 35
         }
       ]
     },
     "upgrade": {
-      "castTicks": 2,
-      "mana": 7,
-      "rules": "Gain 4 Lifebloom. Heals 10 per remaining stack each tick.",
+      "castTicks": 1,
+      "rules": "Deal 63 damage. Deal +35 if the enemy has Poison.",
       "keywords": [
-        "lifebloom"
+        "poison"
       ],
       "combat": {
         "effects": [
           {
-            "kind": "status",
-            "status": "lifebloom",
-            "amount": 4,
-            "target": "self"
+            "kind": "damage",
+            "amount": 63,
+            "condition": "poison",
+            "bonus": 35
           }
         ]
       },
@@ -359,34 +197,36 @@
     "domain": "nature",
     "stars": 2,
     "castTicks": 1,
-    "mana": 5,
-    "rules": "Restore 1 mana per remaining DoT stack on the opponent.",
+    "rules": "Gain Regeneration equal to enemy Poison duration.",
     "keywords": [
-      "dot"
+      "regeneration",
+      "poison"
     ],
     "notes": [],
     "combat": {
       "effects": [
         {
-          "kind": "manaPerDotStack",
-          "amount": 1,
-          "target": "enemy"
+          "kind": "status",
+          "status": "regeneration",
+          "perStatus": "enemy:poison",
+          "amount": 1
         }
       ]
     },
     "upgrade": {
       "castTicks": 1,
-      "mana": 2,
-      "rules": "Restore 1 mana per remaining DoT stack on the opponent.",
+      "rules": "Gain Regeneration equal to twice enemy Poison duration.",
       "keywords": [
-        "dot"
+        "regeneration",
+        "poison"
       ],
       "combat": {
         "effects": [
           {
-            "kind": "manaPerDotStack",
-            "amount": 1,
-            "target": "enemy"
+            "kind": "status",
+            "status": "regeneration",
+            "perStatus": "enemy:poison",
+            "amount": 2
           }
         ]
       },
@@ -394,197 +234,31 @@
     }
   },
   {
-    "id": "mend",
-    "name": "Mend",
+    "id": "nourish",
+    "name": "Nourish",
     "domain": "nature",
     "stars": 2,
-    "castTicks": 1,
-    "mana": 3,
-    "rules": "Gain 5 Growth.",
-    "keywords": [
-      "growth"
-    ],
+    "castTicks": 2,
+    "rules": "Heal 100.",
+    "keywords": [],
     "notes": [],
     "combat": {
       "effects": [
         {
-          "kind": "status",
-          "status": "growth",
-          "amount": 5,
-          "target": "self"
+          "kind": "heal",
+          "amount": 100
         }
       ]
     },
     "upgrade": {
-      "castTicks": 1,
-      "mana": 3,
-      "rules": "Gain 8 Growth.",
-      "keywords": [
-        "growth"
-      ],
+      "castTicks": 2,
+      "rules": "Heal 140.",
+      "keywords": [],
       "combat": {
         "effects": [
           {
-            "kind": "status",
-            "status": "growth",
-            "amount": 8,
-            "target": "self"
-          }
-        ]
-      },
-      "notes": []
-    }
-  },
-  {
-    "id": "root-bind",
-    "name": "Root Bind",
-    "domain": "nature",
-    "stars": 2,
-    "castTicks": 1,
-    "mana": 3,
-    "rules": "Deal 30 damage. Apply 2 Slowness.",
-    "keywords": [
-      "slowness"
-    ],
-    "notes": [],
-    "combat": {
-      "effects": [
-        {
-          "kind": "damage",
-          "amount": 30
-        },
-        {
-          "kind": "status",
-          "status": "slowness",
-          "amount": 2,
-          "target": "enemy"
-        }
-      ]
-    },
-    "upgrade": {
-      "castTicks": 1,
-      "mana": 3,
-      "rules": "Deal 45 damage. Apply 3 Slowness.",
-      "keywords": [
-        "slowness"
-      ],
-      "combat": {
-        "effects": [
-          {
-            "kind": "damage",
-            "amount": 45
-          },
-          {
-            "kind": "status",
-            "status": "slowness",
-            "amount": 3,
-            "target": "enemy"
-          }
-        ]
-      },
-      "notes": []
-    }
-  },
-  {
-    "id": "starsurge",
-    "name": "Starsurge",
-    "domain": "nature",
-    "stars": 3,
-    "castTicks": 0,
-    "mana": 8,
-    "rules": "Instant. Deal 65 damage. Crit if Moonfire and Sunfire are active on the target.",
-    "keywords": [
-      "instant",
-      "crit",
-      "moonfire",
-      "sunfire"
-    ],
-    "notes": [
-      "Critical condition checks effects on the opponent."
-    ],
-    "combat": {
-      "effects": [
-        {
-          "kind": "damage",
-          "amount": 65,
-          "critWhen": [
-            "moonfire",
-            "sunfire"
-          ]
-        }
-      ]
-    },
-    "upgrade": {
-      "castTicks": 0,
-      "mana": 8,
-      "rules": "Instant. Deal 90 damage. Crit if Moonfire and Sunfire are active on the target.",
-      "keywords": [
-        "instant",
-        "crit",
-        "moonfire",
-        "sunfire"
-      ],
-      "combat": {
-        "effects": [
-          {
-            "kind": "damage",
-            "amount": 90,
-            "critWhen": [
-              "moonfire",
-              "sunfire"
-            ]
-          }
-        ]
-      },
-      "notes": [
-        "Critical condition checks effects on the opponent."
-      ]
-    }
-  },
-  {
-    "id": "moon-blast",
-    "name": "Moon Blast",
-    "domain": "nature",
-    "stars": 3,
-    "castTicks": 1,
-    "mana": 5,
-    "rules": "Deal 50 damage. Apply 3 Moonfire.",
-    "keywords": [
-      "moonfire"
-    ],
-    "notes": [],
-    "combat": {
-      "effects": [
-        {
-          "kind": "damage",
-          "amount": 50
-        },
-        {
-          "kind": "status",
-          "status": "moonfire",
-          "amount": 3,
-          "target": "enemy"
-        }
-      ]
-    },
-    "upgrade": {
-      "castTicks": 1,
-      "mana": 5,
-      "rules": "Deal 65 damage. Apply 5 Moonfire.",
-      "keywords": [
-        "moonfire"
-      ],
-      "combat": {
-        "effects": [
-          {
-            "kind": "damage",
-            "amount": 65
-          },
-          {
-            "kind": "status",
-            "status": "moonfire",
-            "amount": 5,
-            "target": "enemy"
+            "kind": "heal",
+            "amount": 140
           }
         ]
       },
@@ -597,402 +271,32 @@
     "domain": "nature",
     "stars": 3,
     "castTicks": 2,
-    "mana": 5,
-    "rules": "Unique. Double your remaining HoT stacks.",
+    "rules": "Multiply your Regeneration duration by 2.",
     "keywords": [
-      "unique",
-      "hot"
+      "regeneration"
     ],
     "notes": [],
     "combat": {
       "effects": [
         {
-          "kind": "multiplyHotStacks",
-          "amount": 2,
-          "target": "self"
+          "kind": "multiply",
+          "status": "regeneration",
+          "amount": 2
         }
       ]
     },
     "upgrade": {
       "castTicks": 2,
-      "mana": 2,
-      "rules": "Unique. Double your remaining HoT stacks.",
+      "rules": "Multiply your Regeneration duration by 3.",
       "keywords": [
-        "unique",
-        "hot"
+        "regeneration"
       ],
       "combat": {
         "effects": [
           {
-            "kind": "multiplyHotStacks",
-            "amount": 2,
-            "target": "self"
-          }
-        ]
-      },
-      "notes": []
-    }
-  },
-  {
-    "id": "spore-drain",
-    "name": "Spore Drain",
-    "domain": "nature",
-    "stars": 3,
-    "castTicks": 1,
-    "mana": 3,
-    "rules": "Channel. Deal 10 × X damage. Gain X Growth.",
-    "keywords": [
-      "channel",
-      "growth"
-    ],
-    "notes": [],
-    "combat": {
-      "effects": [
-        {
-          "kind": "damage",
-          "amount": 10,
-          "perChannel": true
-        },
-        {
-          "kind": "status",
-          "status": "growth",
-          "amount": 1,
-          "perChannel": true
-        }
-      ]
-    },
-    "upgrade": {
-      "castTicks": 1,
-      "mana": 3,
-      "rules": "Channel. Deal 15 × X damage. Gain 2 × X Growth.",
-      "keywords": [
-        "channel",
-        "growth"
-      ],
-      "combat": {
-        "effects": [
-          {
-            "kind": "damage",
-            "amount": 15,
-            "perChannel": true
-          },
-          {
-            "kind": "status",
-            "status": "growth",
-            "amount": 2,
-            "perChannel": true
-          }
-        ]
-      },
-      "notes": []
-    }
-  },
-  {
-    "id": "rejuvenation",
-    "name": "Rejuvenation",
-    "domain": "nature",
-    "stars": 3,
-    "castTicks": 0,
-    "mana": 7,
-    "rules": "Instant. Heal 50 health.",
-    "keywords": [
-      "instant"
-    ],
-    "notes": [],
-    "combat": {
-      "effects": [
-        {
-          "kind": "heal",
-          "amount": 50
-        }
-      ]
-    },
-    "upgrade": {
-      "castTicks": 0,
-      "mana": 7,
-      "rules": "Instant. Heal 75 health.",
-      "keywords": [
-        "instant"
-      ],
-      "combat": {
-        "effects": [
-          {
-            "kind": "heal",
-            "amount": 75
-          }
-        ]
-      },
-      "notes": []
-    }
-  },
-  {
-    "id": "renew",
-    "name": "Renew",
-    "domain": "nature",
-    "stars": 3,
-    "castTicks": 1,
-    "mana": 8,
-    "rules": "Heal 50 health. Gain 5 Growth and apply 5 Growth.",
-    "keywords": [
-      "growth"
-    ],
-    "notes": [],
-    "combat": {
-      "effects": [
-        {
-          "kind": "heal",
-          "amount": 50
-        },
-        {
-          "kind": "status",
-          "status": "growth",
-          "amount": 5,
-          "target": "self"
-        },
-        {
-          "kind": "status",
-          "status": "growth",
-          "amount": 5,
-          "target": "enemy"
-        }
-      ]
-    },
-    "upgrade": {
-      "castTicks": 1,
-      "mana": 5,
-      "rules": "Heal 50 health. Gain 5 Growth and apply 5 Growth.",
-      "keywords": [
-        "growth"
-      ],
-      "combat": {
-        "effects": [
-          {
-            "kind": "heal",
-            "amount": 50
-          },
-          {
-            "kind": "status",
-            "status": "growth",
-            "amount": 5,
-            "target": "self"
-          },
-          {
-            "kind": "status",
-            "status": "growth",
-            "amount": 5,
-            "target": "enemy"
-          }
-        ]
-      },
-      "notes": []
-    }
-  },
-  {
-    "id": "starfall",
-    "name": "Starfall",
-    "domain": "nature",
-    "stars": 4,
-    "castTicks": 1,
-    "mana": 5,
-    "rules": "Apply X Starfall. Gain 1 Star Empowerment.",
-    "keywords": [
-      "starfall",
-      "star-empowerment"
-    ],
-    "notes": [
-      "Define X. Confirm Star Empowerment's recipient and stack duration."
-    ],
-    "combat": {
-      "blockedReason": "Define X."
-    },
-    "upgrade": {
-      "castTicks": 1,
-      "mana": 2,
-      "rules": "Apply X Starfall. Gain 1 Star Empowerment.",
-      "keywords": [
-        "starfall",
-        "star-empowerment"
-      ],
-      "combat": {
-        "blockedReason": "Define X."
-      },
-      "notes": [
-        "Define X. Confirm Star Empowerment's recipient and stack duration."
-      ]
-    }
-  },
-  {
-    "id": "celestial-alignment",
-    "name": "Celestial Alignment",
-    "domain": "nature",
-    "stars": 4,
-    "castTicks": 1,
-    "mana": 0,
-    "rules": "Unique. Your next spell deals double damage.",
-    "keywords": [
-      "unique",
-      "celestial-alignment"
-    ],
-    "notes": [],
-    "combat": {
-      "effects": [
-        {
-          "kind": "status",
-          "status": "celestial-alignment",
-          "amount": 2,
-          "target": "self"
-        }
-      ]
-    },
-    "upgrade": {
-      "castTicks": 1,
-      "mana": 0,
-      "rules": "Unique. Your next spell deals triple damage.",
-      "keywords": [
-        "unique",
-        "greater-alignment"
-      ],
-      "combat": {
-        "effects": [
-          {
-            "kind": "status",
-            "status": "greater-alignment",
-            "amount": 2,
-            "target": "self"
-          }
-        ]
-      },
-      "notes": []
-    }
-  },
-  {
-    "id": "nettle-trap",
-    "name": "Nettle Trap",
-    "domain": "nature",
-    "stars": 4,
-    "castTicks": 1,
-    "mana": 10,
-    "rules": "Apply 5 Trap.",
-    "keywords": [
-      "trap"
-    ],
-    "notes": [],
-    "combat": {
-      "effects": [
-        {
-          "kind": "status",
-          "status": "trap",
-          "amount": 5,
-          "target": "enemy"
-        }
-      ]
-    },
-    "upgrade": {
-      "castTicks": 1,
-      "mana": 7,
-      "rules": "Apply 5 Trap.",
-      "keywords": [
-        "trap"
-      ],
-      "combat": {
-        "effects": [
-          {
-            "kind": "status",
-            "status": "trap",
-            "amount": 5,
-            "target": "enemy"
-          }
-        ]
-      },
-      "notes": []
-    }
-  },
-  {
-    "id": "greenfire",
-    "name": "Greenfire",
-    "domain": "nature",
-    "stars": 4,
-    "castTicks": 2,
-    "mana": 8,
-    "rules": "Deal 100 damage. Apply 5 Sunfire.",
-    "keywords": [
-      "sunfire"
-    ],
-    "notes": [],
-    "combat": {
-      "effects": [
-        {
-          "kind": "damage",
-          "amount": 100
-        },
-        {
-          "kind": "status",
-          "status": "sunfire",
-          "amount": 5,
-          "target": "enemy"
-        }
-      ]
-    },
-    "upgrade": {
-      "castTicks": 2,
-      "mana": 8,
-      "rules": "Deal 130 damage. Apply 7 Sunfire.",
-      "keywords": [
-        "sunfire"
-      ],
-      "combat": {
-        "effects": [
-          {
-            "kind": "damage",
-            "amount": 130
-          },
-          {
-            "kind": "status",
-            "status": "sunfire",
-            "amount": 7,
-            "target": "enemy"
-          }
-        ]
-      },
-      "notes": []
-    }
-  },
-  {
-    "id": "astral-power",
-    "name": "Astral Power",
-    "domain": "nature",
-    "stars": 4,
-    "castTicks": 1,
-    "mana": 6,
-    "rules": "Restore 10 mana. Deal 65 damage.",
-    "keywords": [],
-    "notes": [],
-    "combat": {
-      "effects": [
-        {
-          "kind": "mana",
-          "amount": 10
-        },
-        {
-          "kind": "damage",
-          "amount": 65
-        }
-      ]
-    },
-    "upgrade": {
-      "castTicks": 1,
-      "mana": 6,
-      "rules": "Restore 15 mana. Deal 85 damage.",
-      "keywords": [],
-      "combat": {
-        "effects": [
-          {
-            "kind": "mana",
-            "amount": 15
-          },
-          {
-            "kind": "damage",
-            "amount": 85
+            "kind": "multiply",
+            "status": "regeneration",
+            "amount": 3
           }
         ]
       },
@@ -1003,36 +307,38 @@
     "id": "eclipse",
     "name": "Eclipse",
     "domain": "nature",
-    "stars": 5,
-    "castTicks": 1,
-    "mana": 10,
-    "rules": "Consume all DoTs on the opponent. Deal their remaining damage immediately.",
+    "stars": 4,
+    "castTicks": 2,
+    "rules": "Consume all enemy Poison. Deal 15 damage per tick consumed.",
     "keywords": [
-      "dot"
+      "poison",
+      "consume"
     ],
     "notes": [],
     "combat": {
       "effects": [
         {
-          "kind": "consumeDots",
-          "amount": 1,
-          "target": "enemy"
+          "kind": "consume",
+          "status": "poison",
+          "target": "enemy",
+          "amount": 15
         }
       ]
     },
     "upgrade": {
-      "castTicks": 1,
-      "mana": 7,
-      "rules": "Consume all DoTs on the opponent. Deal their remaining damage immediately.",
+      "castTicks": 2,
+      "rules": "Consume all enemy Poison. Deal 21 damage per tick consumed.",
       "keywords": [
-        "dot"
+        "poison",
+        "consume"
       ],
       "combat": {
         "effects": [
           {
-            "kind": "consumeDots",
-            "amount": 1,
-            "target": "enemy"
+            "kind": "consume",
+            "status": "poison",
+            "target": "enemy",
+            "amount": 21
           }
         ]
       },
@@ -1040,55 +346,49 @@
     }
   },
   {
-    "id": "wild-growth",
-    "name": "Wild Growth",
+    "id": "ancient-growth",
+    "name": "Ancient Growth",
     "domain": "nature",
     "stars": 5,
-    "castTicks": 2,
-    "mana": 0,
-    "rules": "Gain 5 Growth and 25 Overgrowth. Your Growth heals 30 health per tick.",
+    "castTicks": 3,
+    "rules": "Gain 10 Regeneration. Gain 100 Ward.",
     "keywords": [
-      "growth",
-      "overgrowth"
+      "regeneration",
+      "ward"
     ],
     "notes": [],
     "combat": {
       "effects": [
         {
           "kind": "status",
-          "status": "growth",
-          "amount": 5,
+          "status": "regeneration",
+          "amount": 10,
           "target": "self"
         },
         {
-          "kind": "status",
-          "status": "overgrowth",
-          "amount": 25,
-          "target": "self"
+          "kind": "ward",
+          "amount": 100
         }
       ]
     },
     "upgrade": {
-      "castTicks": 1,
-      "mana": 0,
-      "rules": "Gain 5 Growth and 25 Overgrowth. Your Growth heals 30 health per tick.",
+      "castTicks": 3,
+      "rules": "Gain 14 Regeneration. Gain 100 Ward.",
       "keywords": [
-        "growth",
-        "overgrowth"
+        "regeneration",
+        "ward"
       ],
       "combat": {
         "effects": [
           {
             "kind": "status",
-            "status": "growth",
-            "amount": 5,
+            "status": "regeneration",
+            "amount": 14,
             "target": "self"
           },
           {
-            "kind": "status",
-            "status": "overgrowth",
-            "amount": 25,
-            "target": "self"
+            "kind": "ward",
+            "amount": 100
           }
         ]
       },

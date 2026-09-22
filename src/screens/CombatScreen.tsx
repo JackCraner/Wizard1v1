@@ -1,5 +1,5 @@
 import {CombatProcs} from './CombatProcs';
-import {ItemInventoryView} from '../components/ItemInventory';
+import {AugmentInventory} from '../components/AugmentInventory';
 import { useMemo } from 'react';
 import { presentedCombatFrame, continuousCombatFrame, PLAYBACK_CONFIG } from '../game/playback';
 import { CombatDeck } from './CombatDeck';
@@ -11,7 +11,6 @@ import { Image, Pressable, ScrollView, StyleSheet, Text, useWindowDimensions, Vi
 import { SafeAreaView } from 'react-native-safe-area-context';
 import type { useGame } from '../useGame';
 import type { Fighter, Session } from '../game/model';
-import { EQUIPMENT } from '../game/shop';
 
 function Control({ label, onPress, selected, disabled }: { label: string; onPress: () => void; selected?: boolean; disabled?: boolean }) {
   return <Pressable accessibilityRole="button" accessibilityState={{ selected, disabled }} disabled={disabled} onPress={onPress} style={[s.control, selected && s.selected, disabled && { opacity: .4 }]}><Text style={s.text}>{label}</Text></Pressable>;
@@ -20,7 +19,7 @@ function Mage({ fighter, opponent, compact, finished, tick, speed, playing, high
   return <View style={[s.mage, opponent ? { right: '18%', top: 0 } : { left: '13%', bottom: 0 }, { width: compact ? 112 : 190, height: '100%' }]}>
     <View style={{position:'absolute',top:0,height:32,width:compact?150:210,zIndex:20}}><EffectBar fighter={fighter} compact={compact} group="debuff" highlight={highlights} onInspect={onInspect} /></View>
     <Text numberOfLines={1} style={[s.mageName,{position:'absolute',top:33}]}>{opponent ? fighter.name : 'You'} · Cycle {fighter.cycle??1}</Text>
-    <View style={{position:'absolute',top:44,width:'100%',gap:1}}><OrnateMeter value={fighter.health} max={fighter.maxHealth} /><OrnateMeter value={fighter.mana} max={fighter.maxMana} mana /></View>
+    <View style={{position:'absolute',top:44,width:'100%',gap:1}}><OrnateMeter value={fighter.health} max={fighter.maxHealth} /></View>
     <View style={{position:'absolute',top:82,bottom:24,width:'100%',overflow:'hidden'}}><Image source={combatArt.pose} accessible={false} resizeMode="contain" style={{position:'absolute',width:'180%',height:'117%',left:'-40%',top:'-9%',transform:[{scaleX:opponent?-1:1}],opacity:fighter.health>0?1:.4}} /></View>
     <View style={{position:'absolute',top:82,bottom:24,width:opponent?(compact?65:90):(compact?40:65),...(opponent?{left:'100%' as const}:{right:'100%' as const}),zIndex:10}}><EffectBar fighter={fighter} compact={compact} group="buff" highlight={highlights} onInspect={onInspect} /></View>
     <CastBar fighter={fighter} compact={compact} finished={finished} tick={tick} speed={speed} playing={playing} />
@@ -44,11 +43,11 @@ export function CombatScreen({ game }: { game: ReturnType<typeof useGame> }) {
         <View style={s.leftField}>
           <View style={s.arena}>
             
-            <Mage fighter={current.player} compact={compact} finished={finished} tick={frame} speed={speed} playing={castingBeatPlaying} highlights={(current.notices??[]).filter(n=>n.side==='player').map(n=>n.status)} onInspect={()=>game.setPaused(true)} /><Mage fighter={current.bot} opponent compact={compact} finished={finished} tick={frame} speed={speed} playing={castingBeatPlaying} highlights={(current.notices??[]).filter(n=>n.side==='bot').map(n=>n.status)} onInspect={()=>game.setPaused(true)} />{(['player','bot'] as const).map(side=><View key={side} accessibilityLabel={side==='player'?'Your items':'Opponent items'} style={{position:'absolute',...(side==='player'?{left:3}:{right:3}),top:82,bottom:24,width:compact?64:84,gap:4,zIndex:26}}><Text style={s.label}>ITEMS</Text><ScrollView style={{flex:1}} contentContainerStyle={{padding:3}} showsVerticalScrollIndicator={false}><ItemInventoryView inventory={current[side].equipment} size={compact?26:34} showAll onInspect={()=>{const wasPaused=game.paused;game.setPaused(true);return()=>game.setPaused(wasPaused);}}/></ScrollView></View>)} <DamageNumbers frame={current} /><CombatProcs key={session.round} frame={current} speed={speed} playing={game.active&&!game.paused} compact={compact} />
+            <Mage fighter={current.player} compact={compact} finished={finished} tick={frame} speed={speed} playing={castingBeatPlaying} highlights={(current.notices??[]).filter(n=>n.side==='player').map(n=>n.status)} onInspect={()=>game.setPaused(true)} /><Mage fighter={current.bot} opponent compact={compact} finished={finished} tick={frame} speed={speed} playing={castingBeatPlaying} highlights={(current.notices??[]).filter(n=>n.side==='bot').map(n=>n.status)} onInspect={()=>game.setPaused(true)} />{(['player','bot'] as const).map(side=><View key={side} accessibilityLabel={side==='player'?'Your augments':'Opponent augments'} style={{position:'absolute',...(side==='player'?{left:3}:{right:3}),top:82,bottom:24,width:compact?64:84,gap:4,zIndex:26}}><Text style={s.label}>AUGMENTS</Text><ScrollView style={{flex:1}} contentContainerStyle={{padding:3}} showsVerticalScrollIndicator={false}><AugmentInventory augments={current[side].augments} compact onInspect={()=>game.setPaused(true)}/></ScrollView></View>)}<DamageNumbers frame={current} /><CombatProcs key={session.round} frame={current} speed={speed} playing={game.active&&!game.paused} compact={compact} />
             {(['player','bot'] as const).map(side=><View key={side} style={{position:'absolute',...(side==='player'?{left:'33%' as const}:{right:'33%' as const}),top:36,bottom:0,width:compact?96:140,zIndex:25}}><CombatDeck fighter={current[side]} side={side} frame={current} compact={compact} speed={speed} finished={finished} onInspect={()=>{const wasPaused=game.paused;game.setPaused(true);return()=>game.setPaused(wasPaused);}} /></View>)}
             <View style={s.beatNotice}><Text numberOfLines={2} style={s.event}>{finished ? { victory: 'Victory', defeat: 'Defeat', draw: 'Draw' }[battle.outcome] : frame === 0 ? 'Spells locked · Duel begins' : current.notices?.length?[...new Set(current.notices.map(n=>`${n.side==='player'?'You':'Foe'} · ${n.text}`))].join('\n'):current.messages.join('\n')}</Text></View>
           </View>
-          {finished&&<View style={{alignItems:'center'}}><Control label="Return to shop →" disabled={busy} selected onPress={()=>act({type:'next'})} /></View>}
+          {finished&&<View style={{alignItems:'center'}}><Control label={session.round%2===0?"Choose augment →":"Return to shop →"} disabled={busy} selected onPress={()=>act({type:'next'})} /></View>}
         </View>
 
       </View>

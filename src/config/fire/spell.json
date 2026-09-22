@@ -5,28 +5,26 @@
     "domain": "fire",
     "stars": 1,
     "castTicks": 1,
-    "mana": 5,
-    "rules": "Deal 60 damage.",
+    "rules": "Deal 50 damage.",
     "keywords": [],
     "notes": [],
     "combat": {
       "effects": [
         {
           "kind": "damage",
-          "amount": 60
+          "amount": 50
         }
       ]
     },
     "upgrade": {
       "castTicks": 1,
-      "mana": 5,
-      "rules": "Deal 80 damage.",
+      "rules": "Deal 70 damage.",
       "keywords": [],
       "combat": {
         "effects": [
           {
             "kind": "damage",
-            "amount": 80
+            "amount": 70
           }
         ]
       },
@@ -39,10 +37,9 @@
     "domain": "fire",
     "stars": 1,
     "castTicks": 1,
-    "mana": 5,
-    "rules": "Deal 30 damage. Gain 2 Hotstreak.",
+    "rules": "Deal 30 damage. Gain 2 Heat.",
     "keywords": [
-      "hotstreak"
+      "heat"
     ],
     "notes": [],
     "combat": {
@@ -53,74 +50,29 @@
         },
         {
           "kind": "status",
-          "status": "hotstreak",
-          "amount": 2
+          "status": "heat",
+          "amount": 2,
+          "target": "self"
         }
       ]
     },
     "upgrade": {
       "castTicks": 1,
-      "mana": 5,
-      "rules": "Deal 40 damage. Gain 3 Hotstreak.",
+      "rules": "Deal 42 damage. Gain 2 Heat.",
       "keywords": [
-        "hotstreak"
+        "heat"
       ],
       "combat": {
         "effects": [
           {
             "kind": "damage",
-            "amount": 40
+            "amount": 42
           },
           {
             "kind": "status",
-            "status": "hotstreak",
-            "amount": 3
-          }
-        ]
-      },
-      "notes": []
-    }
-  },
-  {
-    "id": "from-ash",
-    "name": "From Ash",
-    "domain": "fire",
-    "stars": 1,
-    "castTicks": 0,
-    "mana": 0,
-    "rules": "Instant. Take 20 damage. Restore 5 mana.",
-    "keywords": [
-      "instant"
-    ],
-    "notes": [],
-    "combat": {
-      "effects": [
-        {
-          "kind": "selfDamage",
-          "amount": 20
-        },
-        {
-          "kind": "mana",
-          "amount": 5
-        }
-      ]
-    },
-    "upgrade": {
-      "castTicks": 0,
-      "mana": 0,
-      "rules": "Instant. Take 15 damage. Restore 8 mana.",
-      "keywords": [
-        "instant"
-      ],
-      "combat": {
-        "effects": [
-          {
-            "kind": "selfDamage",
-            "amount": 15
-          },
-          {
-            "kind": "mana",
-            "amount": 8
+            "status": "heat",
+            "amount": 2,
+            "target": "self"
           }
         ]
       },
@@ -132,200 +84,34 @@
     "name": "Cinder",
     "domain": "fire",
     "stars": 1,
-    "castTicks": 2,
-    "mana": 0,
-    "rules": "Gain 4 Hotstreak.",
+    "castTicks": 1,
+    "rules": "Gain 3 Heat.",
     "keywords": [
-      "hotstreak"
+      "heat"
     ],
     "notes": [],
     "combat": {
       "effects": [
         {
           "kind": "status",
-          "status": "hotstreak",
-          "amount": 4
-        }
-      ]
-    },
-    "upgrade": {
-      "castTicks": 1,
-      "mana": 0,
-      "rules": "Gain 5 Hotstreak.",
-      "keywords": [
-        "hotstreak"
-      ],
-      "combat": {
-        "effects": [
-          {
-            "kind": "status",
-            "status": "hotstreak",
-            "amount": 5
-          }
-        ]
-      },
-      "notes": []
-    }
-  },
-  {
-    "id": "sear",
-    "name": "Sear",
-    "domain": "fire",
-    "stars": 2,
-    "castTicks": 3,
-    "mana": 8,
-    "rules": "Apply 3 Burn.",
-    "keywords": [
-      "burn"
-    ],
-    "notes": [],
-    "combat": {
-      "effects": [
-        {
-          "kind": "status",
-          "status": "burn",
+          "status": "heat",
           "amount": 3,
-          "target": "enemy"
-        }
-      ]
-    },
-    "upgrade": {
-      "castTicks": 3,
-      "mana": 5,
-      "rules": "Apply 3 Burn.",
-      "keywords": [
-        "burn"
-      ],
-      "combat": {
-        "effects": [
-          {
-            "kind": "status",
-            "status": "burn",
-            "amount": 3,
-            "target": "enemy"
-          }
-        ]
-      },
-      "notes": []
-    }
-  },
-  {
-    "id": "fire-bolt",
-    "name": "Fire Bolt",
-    "domain": "fire",
-    "stars": 2,
-    "castTicks": 1,
-    "mana": 10,
-    "rules": "Deal 80 damage.",
-    "keywords": [],
-    "notes": [],
-    "combat": {
-      "effects": [
-        {
-          "kind": "damage",
-          "amount": 80
-        }
-      ]
-    },
-    "upgrade": {
-      "castTicks": 1,
-      "mana": 10,
-      "rules": "Deal 110 damage.",
-      "keywords": [],
-      "combat": {
-        "effects": [
-          {
-            "kind": "damage",
-            "amount": 110
-          }
-        ]
-      },
-      "notes": []
-    }
-  },
-  {
-    "id": "heatwave",
-    "name": "Heatwave",
-    "domain": "fire",
-    "stars": 2,
-    "castTicks": 1,
-    "mana": 8,
-    "rules": "Gain 2 Hotstreak. Deal 50 damage to both players.",
-    "keywords": [
-      "hotstreak"
-    ],
-    "notes": [],
-    "combat": {
-      "effects": [
-        {
-          "kind": "status",
-          "status": "hotstreak",
-          "amount": 2
-        },
-        {
-          "kind": "bothDamage",
-          "amount": 50
-        }
-      ]
-    },
-    "upgrade": {
-      "castTicks": 1,
-      "mana": 8,
-      "rules": "Gain 3 Hotstreak. Deal 65 damage to both players.",
-      "keywords": [
-        "hotstreak"
-      ],
-      "combat": {
-        "effects": [
-          {
-            "kind": "status",
-            "status": "hotstreak",
-            "amount": 3
-          },
-          {
-            "kind": "bothDamage",
-            "amount": 65
-          }
-        ]
-      },
-      "notes": []
-    }
-  },
-  {
-    "id": "eruption",
-    "name": "Eruption",
-    "domain": "fire",
-    "stars": 2,
-    "castTicks": 2,
-    "mana": 10,
-    "rules": "Gain 8 Eruption.",
-    "keywords": [
-      "eruption"
-    ],
-    "notes": [],
-    "combat": {
-      "effects": [
-        {
-          "kind": "status",
-          "status": "eruption",
-          "amount": 8,
           "target": "self"
         }
       ]
     },
     "upgrade": {
-      "castTicks": 2,
-      "mana": 7,
-      "rules": "Gain 8 Eruption.",
+      "castTicks": 1,
+      "rules": "Gain 4 Heat.",
       "keywords": [
-        "eruption"
+        "heat"
       ],
       "combat": {
         "effects": [
           {
             "kind": "status",
-            "status": "eruption",
-            "amount": 8,
+            "status": "heat",
+            "amount": 4,
             "target": "self"
           }
         ]
@@ -334,41 +120,127 @@
     }
   },
   {
-    "id": "lava-floor",
-    "name": "Lava Floor",
+    "id": "from-ash",
+    "name": "From Ash",
     "domain": "fire",
-    "stars": 2,
-    "castTicks": 2,
-    "mana": 5,
-    "rules": "Apply 3 Trap.",
+    "stars": 1,
+    "castTicks": 1,
+    "rules": "Take 20 damage. Gain 2 Heat.",
     "keywords": [
-      "trap"
+      "heat"
     ],
     "notes": [],
     "combat": {
       "effects": [
         {
+          "kind": "selfDamage",
+          "amount": 20
+        },
+        {
           "kind": "status",
-          "status": "trap",
-          "amount": 3,
-          "target": "enemy"
+          "status": "heat",
+          "amount": 2,
+          "target": "self"
+        }
+      ]
+    },
+    "upgrade": {
+      "castTicks": 1,
+      "rules": "Take 20 damage. Gain 3 Heat.",
+      "keywords": [
+        "heat"
+      ],
+      "combat": {
+        "effects": [
+          {
+            "kind": "selfDamage",
+            "amount": 20
+          },
+          {
+            "kind": "status",
+            "status": "heat",
+            "amount": 3,
+            "target": "self"
+          }
+        ]
+      },
+      "notes": []
+    }
+  },
+  {
+    "id": "fireball",
+    "name": "Fireball",
+    "domain": "fire",
+    "stars": 2,
+    "castTicks": 1,
+    "rules": "Deal 60 damage. Empowered: deal 100 instead.",
+    "keywords": [
+      "empowered"
+    ],
+    "notes": [],
+    "combat": {
+      "effects": [
+        {
+          "kind": "damage",
+          "amount": 60,
+          "empowered": 100
+        }
+      ]
+    },
+    "upgrade": {
+      "castTicks": 1,
+      "rules": "Deal 84 damage. Empowered: deal 100 instead.",
+      "keywords": [
+        "empowered"
+      ],
+      "combat": {
+        "effects": [
+          {
+            "kind": "damage",
+            "amount": 84,
+            "empowered": 100
+          }
+        ]
+      },
+      "notes": []
+    }
+  },
+  {
+    "id": "firekick",
+    "name": "Firekick",
+    "domain": "fire",
+    "stars": 2,
+    "castTicks": 2,
+    "rules": "Deal 35 damage. Interrupt the enemy’s current spell.",
+    "keywords": [
+      "interrupt"
+    ],
+    "notes": [],
+    "combat": {
+      "effects": [
+        {
+          "kind": "damage",
+          "amount": 35
+        },
+        {
+          "kind": "interrupt"
         }
       ]
     },
     "upgrade": {
       "castTicks": 2,
-      "mana": 2,
-      "rules": "Apply 3 Trap.",
+      "rules": "Deal 49 damage. Interrupt the enemy’s current spell.",
       "keywords": [
-        "trap"
+        "interrupt"
       ],
       "combat": {
         "effects": [
           {
-            "kind": "status",
-            "status": "trap",
-            "amount": 3,
-            "target": "enemy"
+            "kind": "damage",
+            "amount": 49
+          },
+          {
+            "kind": "interrupt"
           }
         ]
       },
@@ -381,206 +253,42 @@
     "domain": "fire",
     "stars": 3,
     "castTicks": 1,
-    "mana": 10,
-    "rules": "Lose half your current health. Gain 15 Overheat and 5 Hotstreak.",
+    "rules": "Take 80 damage. Gain 5 Heat.",
     "keywords": [
-      "overheat",
-      "hotstreak"
+      "heat"
     ],
-    "notes": [
-      "Half-current-health loss rounds down; an odd total leaves the extra health point."
-    ],
+    "notes": [],
     "combat": {
       "effects": [
         {
-          "kind": "loseCurrentHealth",
-          "amount": 0.5
+          "kind": "selfDamage",
+          "amount": 80
         },
         {
           "kind": "status",
-          "status": "overheat",
-          "amount": 15
-        },
-        {
-          "kind": "status",
-          "status": "hotstreak",
-          "amount": 5
+          "status": "heat",
+          "amount": 5,
+          "target": "self"
         }
       ]
     },
     "upgrade": {
       "castTicks": 1,
-      "mana": 6,
-      "rules": "Lose half your current health. Gain 20 Overheat. Gain 6 Hotstreak.",
+      "rules": "Take 80 damage. Gain 7 Heat.",
       "keywords": [
-        "overheat",
-        "hotstreak"
+        "heat"
       ],
       "combat": {
         "effects": [
           {
-            "kind": "loseCurrentHealth",
-            "amount": 0.5
+            "kind": "selfDamage",
+            "amount": 80
           },
           {
             "kind": "status",
-            "status": "overheat",
-            "amount": 20
-          },
-          {
-            "kind": "status",
-            "status": "hotstreak",
-            "amount": 6
-          }
-        ]
-      },
-      "notes": [
-        "Half-current-health loss rounds down; an odd total leaves the extra health point."
-      ]
-    }
-  },
-  {
-    "id": "emberstorm",
-    "name": "Emberstorm",
-    "domain": "fire",
-    "stars": 3,
-    "castTicks": 4,
-    "mana": 0,
-    "rules": "Deal 120 damage.",
-    "keywords": [],
-    "notes": [],
-    "combat": {
-      "effects": [
-        {
-          "kind": "damage",
-          "amount": 120
-        }
-      ]
-    },
-    "upgrade": {
-      "castTicks": 3,
-      "mana": 0,
-      "rules": "Deal 150 damage.",
-      "keywords": [],
-      "combat": {
-        "effects": [
-          {
-            "kind": "damage",
-            "amount": 150
-          }
-        ]
-      },
-      "notes": []
-    }
-  },
-  {
-    "id": "lava-drain",
-    "name": "Lava Drain",
-    "domain": "fire",
-    "stars": 3,
-    "castTicks": 2,
-    "mana": 0,
-    "rules": "Restore 15 mana.",
-    "keywords": [],
-    "notes": [],
-    "combat": {
-      "effects": [
-        {
-          "kind": "mana",
-          "amount": 15
-        }
-      ]
-    },
-    "upgrade": {
-      "castTicks": 2,
-      "mana": 0,
-      "rules": "Restore 24 mana.",
-      "keywords": [],
-      "combat": {
-        "effects": [
-          {
-            "kind": "mana",
-            "amount": 24
-          }
-        ]
-      },
-      "notes": []
-    }
-  },
-  {
-    "id": "flamewave",
-    "name": "Flamewave",
-    "domain": "fire",
-    "stars": 3,
-    "castTicks": 3,
-    "mana": 8,
-    "rules": "Apply 5 Burn.",
-    "keywords": [
-      "burn"
-    ],
-    "notes": [],
-    "combat": {
-      "effects": [
-        {
-          "kind": "status",
-          "status": "burn",
-          "amount": 5,
-          "target": "enemy"
-        }
-      ]
-    },
-    "upgrade": {
-      "castTicks": 3,
-      "mana": 5,
-      "rules": "Apply 5 Burn.",
-      "keywords": [
-        "burn"
-      ],
-      "combat": {
-        "effects": [
-          {
-            "kind": "status",
-            "status": "burn",
-            "amount": 5,
-            "target": "enemy"
-          }
-        ]
-      },
-      "notes": []
-    }
-  },
-  {
-    "id": "firekick",
-    "name": "Firekick",
-    "domain": "fire",
-    "stars": 3,
-    "castTicks": 2,
-    "mana": 5,
-    "rules": "Interrupt the opponent’s current cast. Skip that spell without refunding mana.",
-    "keywords": [
-      "interrupt",
-      "channel"
-    ],
-    "notes": [],
-    "combat": {
-      "effects": [
-        {
-          "kind": "interrupt"
-        }
-      ]
-    },
-    "upgrade": {
-      "castTicks": 2,
-      "mana": 2,
-      "rules": "Interrupt the opponent’s current cast. Skip that spell without refunding mana.",
-      "keywords": [
-        "interrupt",
-        "channel"
-      ],
-      "combat": {
-        "effects": [
-          {
-            "kind": "interrupt"
+            "status": "heat",
+            "amount": 7,
+            "target": "self"
           }
         ]
       },
@@ -592,225 +300,33 @@
     "name": "Pyroblast",
     "domain": "fire",
     "stars": 4,
-    "castTicks": 5,
-    "mana": 10,
-    "rules": "Deal 200 damage.",
-    "keywords": [],
-    "notes": [],
-    "combat": {
-      "effects": [
-        {
-          "kind": "damage",
-          "amount": 200
-        }
-      ]
-    },
-    "upgrade": {
-      "castTicks": 4,
-      "mana": 10,
-      "rules": "Deal 250 damage.",
-      "keywords": [],
-      "combat": {
-        "effects": [
-          {
-            "kind": "damage",
-            "amount": 250
-          }
-        ]
-      },
-      "notes": []
-    }
-  },
-  {
-    "id": "flame-fury",
-    "name": "Flame Fury",
-    "domain": "fire",
-    "stars": 4,
-    "castTicks": 1,
-    "mana": 8,
-    "rules": "Gain 3 Hotstreak. Gain 6 Fury.",
-    "keywords": [
-      "hotstreak",
-      "fury"
-    ],
-    "notes": [],
-    "combat": {
-      "effects": [
-        {
-          "kind": "status",
-          "status": "hotstreak",
-          "amount": 3
-        },
-        {
-          "kind": "status",
-          "status": "fury",
-          "amount": 6
-        }
-      ]
-    },
-    "upgrade": {
-      "castTicks": 1,
-      "mana": 8,
-      "rules": "Gain 4 Hotstreak. Gain 9 Fury.",
-      "keywords": [
-        "hotstreak",
-        "fury"
-      ],
-      "combat": {
-        "effects": [
-          {
-            "kind": "status",
-            "status": "hotstreak",
-            "amount": 4
-          },
-          {
-            "kind": "status",
-            "status": "fury",
-            "amount": 9
-          }
-        ]
-      },
-      "notes": []
-    }
-  },
-  {
-    "id": "immolate",
-    "name": "Immolate",
-    "domain": "fire",
-    "stars": 4,
     "castTicks": 3,
-    "mana": 15,
-    "rules": "Channel. Apply 2 Burn to yourself. Deal 30 × X damage.",
+    "rules": "Deal 180 damage. Empowered: deal 300 instead.",
     "keywords": [
-      "channel",
-      "burn"
+      "empowered"
     ],
     "notes": [],
     "combat": {
       "effects": [
         {
-          "kind": "status",
-          "status": "burn",
-          "target": "self",
-          "amount": 2
-        },
-        {
           "kind": "damage",
-          "amount": 30,
-          "perChannel": true
+          "amount": 180,
+          "empowered": 300
         }
       ]
     },
     "upgrade": {
       "castTicks": 3,
-      "mana": 15,
-      "rules": "Channel. Apply 2 Burn to yourself. Deal 30 × X damage.",
+      "rules": "Deal 252 damage. Empowered: deal 300 instead.",
       "keywords": [
-        "channel",
-        "burn"
-      ],
-      "combat": {
-        "effects": [
-          {
-            "kind": "status",
-            "status": "burn",
-            "target": "self",
-            "amount": 2
-          },
-          {
-            "kind": "damage",
-            "amount": 45,
-            "perChannel": true
-          }
-        ]
-      },
-      "notes": []
-    }
-  },
-  {
-    "id": "flameshield",
-    "name": "Flameshield",
-    "domain": "fire",
-    "stars": 4,
-    "castTicks": 2,
-    "mana": 15,
-    "rules": "Gain 2 Guard.",
-    "keywords": [
-      "guard"
-    ],
-    "notes": [],
-    "combat": {
-      "effects": [
-        {
-          "kind": "status",
-          "status": "guard",
-          "amount": 2
-        }
-      ]
-    },
-    "upgrade": {
-      "castTicks": 1,
-      "mana": 15,
-      "rules": "Gain 3 Guard.",
-      "keywords": [
-        "guard"
-      ],
-      "combat": {
-        "effects": [
-          {
-            "kind": "status",
-            "status": "guard",
-            "amount": 3
-          }
-        ]
-      },
-      "notes": []
-    }
-  },
-  {
-    "id": "conflagrate",
-    "name": "Conflagrate",
-    "domain": "fire",
-    "stars": 5,
-    "castTicks": 1,
-    "mana": 15,
-    "rules": "Deal 20 damage. Your next spell is Instant.",
-    "keywords": [
-      "instant"
-    ],
-    "notes": [],
-    "combat": {
-      "effects": [
-        {
-          "kind": "damage",
-          "amount": 20
-        },
-        {
-          "kind": "status",
-          "status": "next-instant",
-          "amount": 1,
-          "target": "self"
-        }
-      ]
-    },
-    "upgrade": {
-      "castTicks": 1,
-      "mana": 10,
-      "rules": "Deal 45 damage. Gain 1 undefined.",
-      "keywords": [
-        "instant"
+        "empowered"
       ],
       "combat": {
         "effects": [
           {
             "kind": "damage",
-            "amount": 45
-          },
-          {
-            "kind": "status",
-            "status": "next-instant",
-            "amount": 1,
-            "target": "self"
+            "amount": 252,
+            "empowered": 300
           }
         ]
       },
@@ -821,38 +337,36 @@
     "id": "flashfire",
     "name": "Flashfire",
     "domain": "fire",
-    "stars": 5,
+    "stars": 4,
     "castTicks": 1,
-    "mana": 20,
-    "rules": "Consume all Burn on both players. Gain 1 Hotstreak and 1 Fury per stack consumed.",
+    "rules": "Consume all Heat. Deal 40 damage per charge consumed.",
     "keywords": [
-      "burn",
-      "hotstreak",
-      "fury"
+      "heat",
+      "consume"
     ],
     "notes": [],
     "combat": {
       "effects": [
         {
-          "kind": "consumeBurn",
-          "amount": 1
+          "kind": "consume",
+          "status": "heat",
+          "amount": 40
         }
       ]
     },
     "upgrade": {
       "castTicks": 1,
-      "mana": 17,
-      "rules": "Consume all Burn on both players. Gain 1 Hotstreak and 1 Fury per stack consumed.",
+      "rules": "Consume all Heat. Deal 56 damage per charge consumed.",
       "keywords": [
-        "burn",
-        "hotstreak",
-        "fury"
+        "heat",
+        "consume"
       ],
       "combat": {
         "effects": [
           {
-            "kind": "consumeBurn",
-            "amount": 1
+            "kind": "consume",
+            "status": "heat",
+            "amount": 56
           }
         ]
       },
@@ -860,39 +374,51 @@
     }
   },
   {
-    "id": "phoenix",
-    "name": "Phoenix",
+    "id": "inferno",
+    "name": "Inferno",
     "domain": "fire",
     "stars": 5,
-    "castTicks": 2,
-    "mana": 15,
-    "rules": "Gain 5 Phoenix. While active, revive on death with half maximum health and mana.",
+    "castTicks": 3,
+    "rules": "Deal 160 damage. Empowered: deal 240 instead. Gain 3 Heat.",
     "keywords": [
-      "phoenix"
+      "empowered",
+      "heat"
     ],
     "notes": [],
     "combat": {
       "effects": [
         {
+          "kind": "damage",
+          "amount": 160,
+          "empowered": 240
+        },
+        {
           "kind": "status",
-          "status": "phoenix",
-          "amount": 5
+          "status": "heat",
+          "amount": 3,
+          "target": "self"
         }
       ]
     },
     "upgrade": {
-      "castTicks": 2,
-      "mana": 15,
-      "rules": "Gain 8 Phoenix.",
+      "castTicks": 3,
+      "rules": "Deal 224 damage. Empowered: deal 240 instead. Gain 3 Heat.",
       "keywords": [
-        "phoenix"
+        "empowered",
+        "heat"
       ],
       "combat": {
         "effects": [
           {
+            "kind": "damage",
+            "amount": 224,
+            "empowered": 240
+          },
+          {
             "kind": "status",
-            "status": "phoenix",
-            "amount": 8
+            "status": "heat",
+            "amount": 3,
+            "target": "self"
           }
         ]
       },

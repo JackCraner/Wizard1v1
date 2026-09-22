@@ -1,0 +1,226 @@
+[
+  {
+    "id": "wild-garden",
+    "name": "Wild Garden",
+    "category": "domain",
+    "domain": "nature",
+    "description": "Poison you apply lasts 2 extra ticks."
+  },
+  {
+    "id": "verdant-cycle",
+    "name": "Verdant Cycle",
+    "category": "domain",
+    "domain": "nature",
+    "description": "At each Cycle start, gain 3 Regeneration."
+  },
+  {
+    "id": "rising-tide",
+    "name": "Rising Tide",
+    "category": "domain",
+    "domain": "water",
+    "description": "Every third Water spell grants 2 Tide."
+  },
+  {
+    "id": "reservoir",
+    "name": "Reservoir",
+    "category": "domain",
+    "domain": "water",
+    "description": "Start combat with 3 Tide."
+  },
+  {
+    "id": "inferno",
+    "name": "Inferno",
+    "category": "domain",
+    "domain": "fire",
+    "description": "Spending 5 Heat makes your next Fire spell 1T faster."
+  },
+  {
+    "id": "sacred-rhythm",
+    "name": "Sacred Rhythm",
+    "category": "domain",
+    "domain": "holy",
+    "description": "Completing an Oath Empowers your next Holy spell."
+  },
+  {
+    "id": "venomous-hex",
+    "name": "Venomous Hex",
+    "category": "domain",
+    "domain": "affliction",
+    "description": "Applying Slow also applies 2 Poison."
+  },
+  {
+    "id": "steam",
+    "name": "Steam",
+    "category": "hybrid",
+    "domain": "fire",
+    "description": "After Water, a Fire spell gains 2 Heat before resolving."
+  },
+  {
+    "id": "wildfire",
+    "name": "Wildfire",
+    "category": "hybrid",
+    "domain": "nature",
+    "description": "Applying Poison while you have Heat also deals 20 damage."
+  },
+  {
+    "id": "purifying-rain",
+    "name": "Purifying Rain",
+    "category": "hybrid",
+    "domain": "water",
+    "description": "After Holy, a Water spell grants 45 Ward."
+  },
+  {
+    "id": "blighted-tide",
+    "name": "Blighted Tide",
+    "category": "hybrid",
+    "domain": "water",
+    "description": "Spending Tide extends existing enemy Poison by 2 ticks."
+  },
+  {
+    "id": "first-strike",
+    "name": "First Strike",
+    "category": "sequence",
+    "domain": null,
+    "description": "Your first spell each Cycle deals 50% more direct damage."
+  },
+  {
+    "id": "finisher",
+    "name": "Finisher",
+    "category": "sequence",
+    "domain": null,
+    "description": "Your final spell each Cycle is Empowered."
+  },
+  {
+    "id": "echo-chamber",
+    "name": "Echo Chamber",
+    "category": "sequence",
+    "domain": null,
+    "description": "Every fourth completed spell resolves twice."
+  },
+  {
+    "id": "alternation",
+    "name": "Alternation",
+    "category": "sequence",
+    "domain": null,
+    "description": "Changing domains gives the next spell 20% more damage, healing and Ward."
+  },
+  {
+    "id": "crescendo",
+    "name": "Crescendo",
+    "category": "sequence",
+    "domain": null,
+    "description": "Each preceding spell this Cycle adds 5% direct damage."
+  },
+  {
+    "id": "opening-ward",
+    "name": "Opening Ward",
+    "category": "sequence",
+    "domain": null,
+    "description": "Your first spell each Cycle grants 50 Ward."
+  },
+  {
+    "id": "heavy-hitter",
+    "name": "Heavy Hitter",
+    "category": "casting",
+    "domain": null,
+    "description": "Printed 3T spells deal 40% more direct damage."
+  },
+  {
+    "id": "rapid-casting",
+    "name": "Rapid Casting",
+    "category": "casting",
+    "domain": null,
+    "description": "Every third printed 1T spell repeats at half power."
+  },
+  {
+    "id": "patience",
+    "name": "Patience",
+    "category": "casting",
+    "domain": null,
+    "description": "Completing a printed 3T spell grants 80 Ward."
+  },
+  {
+    "id": "momentum",
+    "name": "Momentum",
+    "category": "casting",
+    "domain": null,
+    "description": "Three consecutive printed 1T spells make your next 2T+ spell 1T faster."
+  },
+  {
+    "id": "glass-cannon",
+    "name": "Glass Cannon",
+    "category": "risk",
+    "domain": null,
+    "description": "Deal 30% more damage. Maximum Health is reduced to 375."
+  },
+  {
+    "id": "blood-magic",
+    "name": "Blood Magic",
+    "category": "risk",
+    "domain": null,
+    "description": "Self-damage adds 50 direct damage to your next completed spell."
+  },
+  {
+    "id": "last-stand",
+    "name": "Last Stand",
+    "category": "risk",
+    "domain": null,
+    "description": "Below 30% Health, spells start 1T faster (minimum 1T)."
+  },
+  {
+    "id": "reckless-loop",
+    "name": "Reckless Loop",
+    "category": "risk",
+    "domain": null,
+    "description": "Skip the reshuffle tick. Lose 25 Health at each new Cycle."
+  },
+  {
+    "id": "second-wind",
+    "name": "Second Wind",
+    "category": "risk",
+    "domain": null,
+    "description": "Once per combat, reaching 30% Health restores 120 Health."
+  },
+  {
+    "id": "specialist",
+    "name": "Specialist",
+    "category": "economy",
+    "domain": null,
+    "description": "Your most common domain has triple shop weight."
+  },
+  {
+    "id": "wanderer",
+    "name": "Wanderer",
+    "category": "economy",
+    "domain": null,
+    "description": "Domains absent from your deck have triple shop weight."
+  },
+  {
+    "id": "recycler",
+    "name": "Recycler",
+    "category": "economy",
+    "domain": null,
+    "description": "Trashing a spell refunds 1 gold."
+  },
+  {
+    "id": "scholar",
+    "name": "Scholar",
+    "category": "economy",
+    "domain": null,
+    "description": "Your first purchased duplicate each shop grants 2 XP instead of 1."
+  },
+  {
+    "id": "scavenger",
+    "name": "Scavenger",
+    "category": "economy",
+    "domain": null,
+    "description": "Your first reroll each shop is free."
+  },
+  {
+    "id": "deep-pockets",
+    "name": "Deep Pockets",
+    "category": "economy",
+    "domain": null,
+    "description": "Receive 4 extra gold whenever you enter a new shop."
+  }
+]

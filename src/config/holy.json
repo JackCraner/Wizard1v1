@@ -1,8 +1,0 @@
-{
-  "consecrationPerPenance": 5,
-  "notes": [
-    "Penance is uncapped. Holy upgrades cost 20% less mana; each upgraded cost is a literal editable value in <domain>/spell.json.",
-    "Oaths that forbid direct damage fail on actual enemy Health damage from a spell, not DoTs, retaliation or absorbed damage.",
-    "Oaths reward at reshuffle start, after simultaneous spell damage. New Penance during a reshuffle waits for the next one."
-  ]
-}

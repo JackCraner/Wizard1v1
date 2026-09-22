@@ -1,6 +1,6 @@
 import { Text, View } from 'react-native';
 import { RulesText, SpellCard } from '../components/cards/SpellCard';
-import { castLabel, explainedKeywords, manaLabel } from '../config/catalogue';
+import { castLabel, explainedKeywords } from '../config/catalogue';
 import { cardAt } from '../game/upgrades';
 import type { SpellId } from '../game/model';
 
@@ -16,7 +16,7 @@ export function ShopSpellPreview({ id, xp = 0, shop, width, height }: {
       <View style={{ width: artWidth, gap: 10 }}><View style={{ width: artWidth, height: artWidth * 1.5 }}><SpellCard {...card} shop={shop} compact /></View><Text style={{ color: '#c6bf9f', fontSize: 11 }}>{card.domain.toUpperCase()}</Text><Text style={{ color: '#edce87', fontSize: 12 }}>{shop ? `${card.stars} gold` : `${xp}/3 XP`}</Text></View>
       <View style={{ flex: 1, gap: 8, overflow: 'hidden' }}>
         <Text style={{ color: '#f6e9c9', fontSize: 18, fontWeight: '700' }}>{card.name}</Text>
-        <Text style={{ color: '#b4d3ca', fontSize: 12 }}>{manaLabel(card.mana)} mana · {castLabel(card.castTicks)}</Text>
+        <Text style={{ color: '#b4d3ca', fontSize: 12 }}>{castLabel(card.castTicks)}</Text>
         <RulesText rules={card.rules} keywords={card.keywords} fontSize={14} color="#f0e8d5" />
         {keywords.slice(0, 2).map(keyword => <Text key={keyword.id} numberOfLines={4} style={{ color: '#adc2b5', fontSize: 11, lineHeight: 15 }}><Text style={{ color: '#e2d19e', fontWeight: '700' }}>{keyword.name} · </Text>{keyword.description}</Text>)}
       </View>

@@ -1,15 +1,13 @@
-import { EQUIPMENT } from './equipment';
-export {EQUIPMENT,equipmentModifiers,rerollCost} from './equipment';
 import { shopRankOdds } from '../config/shopOdds';
 import { canOfferSpell, RULES, PLAYABLE_SPELLS, SPELLS } from './engine';
-import itemShop from '../config/itemShop.json';
+export { rerollCost } from './augments';
 import type { SpellId } from './model';
 
 const spells = PLAYABLE_SPELLS;
-const items=Object.keys(EQUIPMENT);
+
 
 // Deterministic local offers; a future server can replace this with seeded generation.
-export function offersFor(round: number, rerolls: number, deck: SpellId[] = []) {
+export function offersFor(round: number, rerolls: number, deck: SpellId[] = [], augments: string[] = []) {
   const eligible = spells.filter(id => canOfferSpell(deck, id));
 
   let seed=(round*73856093 ^ rerolls*19349663)>>>0;
@@ -26,26 +24,15 @@ export function offersFor(round: number, rerolls: number, deck: SpellId[] = []) 
     const rank=ranks.find(entry=>{roll-=entry.weight;return roll<0;}) ?? ranks[ranks.length-1];
     const domains=[...new Set(rank.pool.map(id=>SPELLS[id].domain))];
     const fresh=domains.filter(domain=>!usedDomains.has(domain));
-    const choices=fresh.length?fresh:domains;
-    const domain=choices[Math.floor(random()*choices.length)];usedDomains.add(domain);
+    const choices=augments.includes('specialist')||augments.includes('wanderer')?domains:fresh.length?fresh:domains;
+    const counts=Object.fromEntries(domains.map(d=>[d,deck.filter(id=>SPELLS[id].domain===d).length]));
+    const most=domains.slice().sort((a,b)=>counts[b]-counts[a])[0];
+    const weighted=choices.flatMap(d=>Array(augments.includes('specialist')&&d===most&&counts[d]>0||augments.includes('wanderer')&&!counts[d]?3:1).fill(d));
+    const domain=weighted[Math.floor(random()*weighted.length)];usedDomains.add(domain);
     const pool=rank.pool.filter(id=>SPELLS[id].domain===domain);
     const unseen=pool.filter(id=>!shop.includes(id));
     const candidates=unseen.length?unseen:pool;
     shop.push(candidates[Math.floor(random()*candidates.length)]);
   }
-  return {
-    shop,
-    equipmentShop: Array.from({length:itemShop.offers},()=>{
-      let roll=random()*odds.reduce((a,b)=>a+b,0);let stars=odds.findIndex(weight=>(roll-=weight)<0)+1;if(!stars)stars=5;
-      const pool=items.filter(id=>EQUIPMENT[id].stars===stars);
-      const domains=[...new Set(deck.map(id=>SPELLS[id].domain))];
-      const affinities=[...new Set(pool.map(id=>EQUIPMENT[id].affinity))];
-      const matching=affinities.filter(a=>a!=='neutral'&&domains.includes(a as any));
-      const other=affinities.filter(a=>a!=='neutral'&&!matching.includes(a));
-      const weights=itemShop.affinityWeights;
-      const weighted=affinities.map(a=>({a,w:a==='neutral'?weights.neutral:matching.includes(a)?weights.matching/matching.length:(weights.other+(matching.length?0:weights.matching))/other.length}));
-      let affinityRoll=random()*weighted.reduce((n,x)=>n+x.w,0);const affinity=(weighted.find(x=>(affinityRoll-=x.w)<0)??weighted[weighted.length-1]).a;
-      const candidates=pool.filter(id=>EQUIPMENT[id].affinity===affinity);return candidates[Math.floor(random()*candidates.length)];
-    }),
-  };
+  return { shop };
 }

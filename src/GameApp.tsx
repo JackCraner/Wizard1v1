@@ -1,3 +1,4 @@
+import {AugmentChoice} from './screens/AugmentChoice';
 import { DifficultyPicker } from './screens/DifficultyPicker';
 import { TournamentResult } from './screens/TournamentResult';
 import { CardLibrary } from './screens/CardLibrary';
@@ -41,6 +42,8 @@ export function GameApp({ gateway }: { gateway: GameGateway }) {
     </SafeAreaView>;
   }
 
+  if(game.screen==='game'&&game.session?.phase==='augment')return <AugmentChoice session={game.session} busy={game.busy} error={game.error} act={game.act}/>;
+
   if (game.screen === 'game' && game.session?.phase === 'shop') {
     return <ShopScreen key={game.session.id} session={game.session} busy={game.busy} act={game.act}
       onLibrary={() => setLibrary(true)} error={game.error} onMenu={() => game.setScreen('menu')} />;
@@ -69,8 +72,8 @@ export function GameApp({ gateway }: { gateway: GameGateway }) {
             {[
               ['01 / Shop', 'Start with an empty hand and 10 gold. Buy spells for up to ten slots. Duplicate spells are allowed. Unspent gold carries over, and each new round adds 10 gold.'],
               ['02 / Arrange', 'Use the arrows to arrange your spells. Both fighters cast simultaneously from first slot to last, then repeat. Once combat begins, the order is locked.'],
-              ['03 / Battle', 'Every duel starts at 500 health and 100 mana. Mana does not regenerate. Unaffordable spells are skipped; Wrath is free. Healing and shields resolve before damage.'],
-              ['04 / Repeat', 'Bring the opponent to zero health to win. Combat ends after 50 ticks: the lower health total loses; equal health is a draw. Return to the shop to refine your spell order.'],
+              ['03 / Battle', 'Every duel starts at 500 health. Spells take 1–3 ticks to cast. Your deck repeats after a one-tick reshuffle. Healing and Ward resolve before simultaneous damage.'],
+              ['04 / Repeat', 'Bring the opponent to zero health to win. Combat ends after 40 ticks: the lower health total loses; equal health is a draw. Choose a permanent augment after every second round, then refine your spell order in the shop.'],
             ].map(([title, body]) => <Panel key={title}><Heading>{title}</Heading><Body>{body}</Body></Panel>)}
             <Button title="Enter practice grounds" disabled={game.busy} onPress={()=>setChoosingDifficulty(true)} />
             <Body>Runs are kept in memory. Reloading or restarting the app starts fresh.</Body>

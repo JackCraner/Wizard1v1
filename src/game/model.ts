@@ -1,27 +1,183 @@
-import type { ItemEffect } from './equipment';
 import type { CardDefinition, Domain } from '../config/catalogue';
-// IDs come from editable JSON and are validated against the catalogue at runtime.
 export type SpellId = string;
-export type Difficulty = 'easy'|'normal'|'hard'|'nightmare';
-export interface Effect { kind: 'damage'|'loseCurrentHealth'|'selfDamage'|'bothDamage'|'heal'|'mana'|'bothMana'|'status'|'stealMana'|'cleanse'|'manaPerDotStack'|'multiplyHotStacks'|'consumeDots'|'enhance'|'interrupt'|'consumeBurn'|'castingStatus'|'cleanseAll'|'healPerCleanse'|'healthConditional'|'oath'; cap?:number; threshold?:number; onSuccess?:Effect[]; onFailure?:Effect[]; oath?:Oath; amount?: number; status?: string; target?: 'self'|'enemy'; critWhen?: string[]; perChannel?: boolean; perStatus?: string; perManaSpent?:boolean }
-export interface Spell extends CardDefinition { price: number; description: string }
-export interface Stats { health: number; mana: number }
-export interface EquipmentModifier { health?: number; mana?: number; equipmentId?:string; stacks?:number }
-export interface Oath { id:string; remaining?:number; requirement:"nonInstant"|"noDamage"|"noSkip"; rewards:Effect[] }
-export interface Fighter { oath?:Oath; penanceQueued?:number; penanceActive?:number; gearState?:ItemRuntimeState; cycle?:number; enhancements?:Record<string,number>; statusSources?:Record<string,'player'|'bot'>; spellXp?: number[]; instantThisTick?: SpellId; equipment?:ItemInventory; name: string; health: number; mana: number; shield: number; maxHealth: number; maxMana: number; spells: SpellId[]; statuses: Record<string,number>; cursor: number; reshuffleRemaining?: number; casting: { spell: SpellId; index: number; remaining: number; totalTicks?: number; damageMultiplier?:number; mana: number; tidecaller: boolean } | null }
-export interface CastEvent { xp?: number; side: 'player'|'bot'; spell: SpellId; index: number; status: 'cast'|'skipped'; mana: number; critical: boolean; repeats?: number; critMultiplier?: number; details?: string[] }
-export interface DamageEvent { domain?: Domain; side: 'player'|'bot'; amount: number; critical: boolean; kind: 'hit'|'dot'|'cost' }
-export interface HealingEvent { side: 'player'|'bot'; amount:number; kind: 'heal'|'hot' }
-export interface CombatNotice { side: 'player'|'bot'; status: string; text: string }
-export interface ManaEvent { side: 'player'|'bot'; amount: number; kind: 'cost'|'effect'|'rebirth' }
-export interface CombatFrame { tickStart?: CombatFrame; presentationPhase?: 'start'|'resolve'; manaEvents?: ManaEvent[]; notices?: CombatNotice[]; healingEvents?: HealingEvent[]; damageEvents?: DamageEvent[]; tick: number; player: Fighter; bot: Fighter; messages: string[]; events: CastEvent[] }
-export interface Battle { frames: CombatFrame[]; outcome: 'victory'|'defeat'|'draw'; endReason: 'timeout'|'knockout' }
-export interface LobbyPlayer { deckXp?:number[]; lastCombatXp?:number[]; id:string; name:string; human:boolean; wins:number; losses:number; draws:number; deck:SpellId[]; lastCombatDeck:SpellId[]; lastCombatRound:number|null }
-export interface Lobby { players:LobbyPlayer[]; winsToWin:number; finished:boolean; winnerIds:string[] }
-export interface Session { spellXp?:number[]; difficulty:Difficulty; lobby:Lobby; id: string; revision: number; round: number; gold: number; spells: SpellId[]; shop: (SpellId|null)[]; rerolls: number; equipmentShop: (EquipmentId|null)[]; equipment: ItemInventory; phase: 'shop'|'result'; wins: number; losses: number; battle: Battle|null }
-export type Command = { type: 'reroll' } | { type:'buyEquipment';item:EquipmentId;shopSlot?:number } | { type:'buy';spell:SpellId;shopSlot?:number; target?:number } | {type:'merge';from:number;to:number} | { type:'trash';index:number } | { type:'move';from:number;to:number } | { type:'fight' } | { type:'next' };
-export interface GameGateway { start(difficulty?:Difficulty):Promise<Session>; execute(sessionId:string,expectedRevision:number,command:Command):Promise<Session> }
-export type ItemInventory = Record<EquipmentId,number>;
-export interface ItemRuntimeState { started:number; slowStarted:number; completed:number; domains:Record<string,number>; used:Record<string,number> }
-export type EquipmentId = string;
-export interface Equipment { id:EquipmentId;name:string;price:number;description:string;symbol:string;stars:number;affinity:string;effects:ItemEffect[] }
+export type Difficulty = 'easy' | 'normal' | 'hard' | 'nightmare';
+export interface Effect {
+    kind: 'damage' | 'heal' | 'ward' | 'selfDamage' | 'status' | 'interrupt' | 'cleanse' | 'consume' | 'multiply' | 'spend' | 'oath' | 'repeatNext';
+    amount?: number;
+    status?: string;
+    target?: 'self' | 'enemy';
+    empowered?: number;
+    perStatus?: string;
+    perChannel?: boolean;
+    condition?: 'poison' | 'oath' | 'previousFire' | 'previousWater';
+    bonus?: number;
+    effects?: Effect[];
+    repeats?: number;
+    oath?: Oath;
+}
+export interface Oath {
+    id: string;
+    remaining: number;
+    requirement: 'slow' | 'peaceful';
+    reward: 'ward' | 'heal';
+    amount: number;
+}
+export interface Spell extends CardDefinition {
+    price: number;
+    description: string;
+}
+export interface Stats {
+    health: number;
+}
+export interface CombatMemory {
+    casts: number;
+    water: number;
+    fast: number;
+    fastStreak: number;
+    cycleCasts: number;
+    previousDomain?: Domain;
+    oathCompleted?: boolean;
+    nextFireFaster?: boolean;
+    nextHolyEmpowered?: boolean;
+    nextBonus?: number;
+    nextRepeats?: number;
+    nextFaster?: boolean;
+    nextPoison?: number;
+    previousSelfDamage?: boolean;
+}
+export interface Fighter {
+    name: string;
+    health: number;
+    maxHealth: number;
+    shield: number;
+    spells: SpellId[];
+    spellXp?: number[];
+    augments: string[];
+    statuses: Record<string, number>;
+    cursor: number;
+    cycle: number;
+    reshuffleRemaining: number;
+    oath?: Oath;
+    memory: CombatMemory;
+    casting: {
+        spell: SpellId;
+        index: number;
+        remaining: number;
+        totalTicks: number;
+    } | null;
+}
+export interface CastEvent {
+    xp?: number;
+    side: 'player' | 'bot';
+    spell: SpellId;
+    index: number;
+    status: 'cast' | 'skipped';
+    critical: boolean;
+    repeats?: number;
+    critMultiplier?: number;
+    details?: string[];
+}
+export interface DamageEvent {
+    domain?: Domain;
+    side: 'player' | 'bot';
+    amount: number;
+    critical: boolean;
+    kind: 'hit' | 'dot' | 'cost';
+}
+export interface HealingEvent {
+    side: 'player' | 'bot';
+    amount: number;
+    kind: 'heal' | 'hot';
+}
+export interface CombatNotice {
+    side: 'player' | 'bot';
+    status: string;
+    text: string;
+}
+export interface CombatFrame {
+    tickStart?: CombatFrame;
+    presentationPhase?: 'start' | 'resolve';
+    notices?: CombatNotice[];
+    healingEvents?: HealingEvent[];
+    damageEvents?: DamageEvent[];
+    tick: number;
+    player: Fighter;
+    bot: Fighter;
+    messages: string[];
+    events: CastEvent[];
+}
+export interface Battle {
+    frames: CombatFrame[];
+    outcome: 'victory' | 'defeat' | 'draw';
+    endReason: 'timeout' | 'knockout';
+}
+export interface LobbyPlayer {
+    deckXp?: number[];
+    lastCombatXp?: number[];
+    augments: string[];
+    lastCombatAugments: string[];
+    id: string;
+    name: string;
+    human: boolean;
+    wins: number;
+    losses: number;
+    draws: number;
+    deck: SpellId[];
+    lastCombatDeck: SpellId[];
+    lastCombatRound: number | null;
+}
+export interface Lobby {
+    players: LobbyPlayer[];
+    winsToWin: number;
+    finished: boolean;
+    winnerIds: string[];
+}
+export interface Session {
+    bonusMergeUsed?: boolean;
+    spellXp?: number[];
+    difficulty: Difficulty;
+    lobby: Lobby;
+    id: string;
+    revision: number;
+    round: number;
+    gold: number;
+    spells: SpellId[];
+    shop: (SpellId | null)[];
+    rerolls: number;
+    augments: string[];
+    augmentOffers: string[];
+    phase: 'shop' | 'result' | 'augment';
+    wins: number;
+    losses: number;
+    battle: Battle | null;
+}
+export type Command = {
+    type: 'reroll';
+} | {
+    type: 'chooseAugment';
+    augment: string;
+} | {
+    type: 'buy';
+    spell: SpellId;
+    shopSlot?: number;
+    target?: number;
+} | {
+    type: 'merge';
+    from: number;
+    to: number;
+} | {
+    type: 'trash';
+    index: number;
+} | {
+    type: 'move';
+    from: number;
+    to: number;
+} | {
+    type: 'fight';
+} | {
+    type: 'next';
+};
+export interface GameGateway {
+    start(difficulty?: Difficulty): Promise<Session>;
+    execute(sessionId: string, expectedRevision: number, command: Command): Promise<Session>;
+}

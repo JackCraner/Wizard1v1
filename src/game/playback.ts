@@ -20,7 +20,6 @@ export function presentedCombatFrame(battle:Battle,frame:number,beat:CombatBeat)
  return {...completed,presentationPhase:'resolve',events:completed.events.slice(start?.events.length??0),
   damageEvents:completed.damageEvents?.slice(start?.damageEvents?.length??0),
   healingEvents:completed.healingEvents?.slice(start?.healingEvents?.length??0),
-  manaEvents:completed.manaEvents?.slice(start?.manaEvents?.length??0),
   notices:completed.notices?.slice(start?.notices?.length??0)};
 }
 
@@ -34,6 +33,5 @@ export function continuousCombatFrame(battle:Battle,frame:number):CombatFrame {
   messages:[...resolved.messages,...start.messages],
   damageEvents:[...(resolved.damageEvents??[]),...(start.damageEvents??[])],
   healingEvents:[...(resolved.healingEvents??[]),...(start.healingEvents??[])],
-  manaEvents:[...(resolved.manaEvents??[]),...(start.manaEvents??[])],
   notices:[...(resolved.notices??[]),...(start.notices??[])]};
 }

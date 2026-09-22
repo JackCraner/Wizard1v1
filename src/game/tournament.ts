@@ -2,13 +2,12 @@ import { deckXp } from './upgrades';
 import { prepareBot, botFighter, type BotStates } from './botAI';
 import settings from '../config/tournament.json';
 import { fighter, RULES, simulate } from './engine';
-import { equipmentModifiers } from './shop';
 import type { Lobby, Session, SpellId } from './model';
 
 export function createLobby():Lobby {
  return {winsToWin:settings.winsToWin,finished:false,winnerIds:[],players:[
-  {id:'player',name:'You',human:true,wins:0,losses:0,draws:0,deck:[],lastCombatDeck:[],lastCombatRound:null},
-  ...settings.botNames.map((name,i)=>({id:`bot-${i+1}`,name,human:false,wins:0,losses:0,draws:0,deck:[] as SpellId[],lastCombatDeck:[] as SpellId[],lastCombatRound:null})),
+  {id:'player',name:'You',human:true,augments:[],lastCombatAugments:[],wins:0,losses:0,draws:0,deck:[],lastCombatDeck:[],lastCombatRound:null},
+  ...settings.botNames.map((name,i)=>({id:`bot-${i+1}`,name,human:false,augments:[] as string[],lastCombatAugments:[] as string[],wins:0,losses:0,draws:0,deck:[] as SpellId[],lastCombatDeck:[] as SpellId[],lastCombatRound:null})),
  ]};
 }
 
@@ -25,13 +24,14 @@ export function resolveLobbyRound(session:Session,botStates:BotStates) {
  if(lobby.finished)throw new Error('This game is complete. Start a new game.');
  for(const [i,p] of lobby.players.entries()) {
   p.deck=p.human?[...session.spells]:prepareBot(botStates[p.id],p.deck,session.round,i,session.difficulty);
+  p.augments=p.human?[...session.augments]:[...botStates[p.id].augments];p.lastCombatAugments=[...p.augments];
   p.deckXp=p.human?deckXp(p.deck,session.spellXp):deckXp(p.deck,botStates[p.id].spellXp);
   p.lastCombatXp=[...p.deckXp];p.lastCombatDeck=[...p.deck];p.lastCombatRound=session.round;
  }
  for(const [aId,bId] of roundPairings(lobby.players.map(p=>p.id),session.round)) {
   let a=lobby.players.find(p=>p.id===aId)!,b=lobby.players.find(p=>p.id===bId)!;
   if(b.human)[a,b]=[b,a];
-  const battle=simulate(a.human?fighter(a.name,a.deck,equipmentModifiers(session.equipment),session.spellXp):botFighter(a.name,a.deck,botStates[a.id]),b.human?fighter(b.name,b.deck,equipmentModifiers(session.equipment),session.spellXp):botFighter(b.name,b.deck,botStates[b.id]),RULES.seed+session.round*101+lobby.players.indexOf(a)*17);
+  const battle=simulate(a.human?fighter(a.name,a.deck,session.augments,session.spellXp):botFighter(a.name,a.deck,botStates[a.id]),b.human?fighter(b.name,b.deck,session.augments,session.spellXp):botFighter(b.name,b.deck,botStates[b.id]),RULES.seed+session.round*101+lobby.players.indexOf(a)*17);
   if(battle.outcome==='draw'){a.draws++;b.draws++;}
   else {const winner=battle.outcome==='victory'?a:b,loser=winner===a?b:a;winner.wins++;loser.losses++;}
   if(a.human)session.battle=battle;

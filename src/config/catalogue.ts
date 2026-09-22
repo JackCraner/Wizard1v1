@@ -8,20 +8,18 @@ const rawCards = [...natureCards, ...waterCards, ...fireCards, ...holyCards, ...
 import rawKeywords from './keywords.json';
 
 export type Domain = 'nature' | 'water' | 'fire' | 'holy' | 'affliction';
-export type ManaCost = number | 'half' | null;
 export interface CardDefinition {
   xp?: number; upgraded?: boolean;
-  upgrade?: { castTicks:number|null; mana:ManaCost; rules:string; keywords:string[]; combat?:{effects?:Effect[];blockedReason?:string}; notes:string[] };
+  upgrade?: { castTicks:number|null;  rules:string; keywords:string[]; combat?:{effects?:Effect[];blockedReason?:string}; notes?:string[] };
   id: string; name: string; domain: Domain; stars: number; castTicks: number | null;
   combat?: { effects?: Effect[]; blockedReason?: string };
-  mana: ManaCost; rules: string; keywords: string[]; notes: string[];
+  rules: string; keywords: string[]; notes: string[];
 }
 export interface Keyword { name: string; aliases: string[]; description: string; related: string[] }
 export const KEYWORDS: Record<string, Keyword> = rawKeywords;
 export const CARDS: readonly CardDefinition[] = rawCards as CardDefinition[];
 export const CARD_BY_ID = Object.fromEntries(CARDS.map(card => [card.id, card])) as Record<string, CardDefinition>;
 export const goldCost = (card: Pick<CardDefinition, 'stars'>) => card.stars;
-export const manaLabel = (mana: ManaCost) => mana === null ? 'TBD' : mana === 'half' ? '½' : String(mana);
 export const castLabel = (ticks: number | null) => ticks === null ? 'TBD' : ticks === 0 ? 'Instant' : `${ticks}T`;
 export function explainedKeywords(ids: readonly string[]) {
   const found = new Set<string>();

@@ -42,6 +42,8 @@ it('can lose the tournament to a bot and awards no wins for bot draws',async()=>
  const g=new LocalGameGateway();const initial=await g.start(),state=internal(g);
  state.spells=['splash'];
  for(const bot of state.lobby.players.slice(1)){bot.deck=Array(10).fill('ember');bot.wins=7;}
+ // Freeze shopping to make the six bot-versus-bot combatants identical.
+ for(const b of Object.values((g as unknown as {bots:Record<string,{lastPreparedRound:number}>}).bots))b.lastPreparedRound=1;
  const s=await g.execute(initial.id,initial.revision,{type:'fight'});
  expect(s.lobby.finished).toBe(true);expect(s.lobby.winnerIds).toEqual(['bot-7']);expect(s.losses).toBe(1);
  expect(s.lobby.players.filter(p=>p.draws===1)).toHaveLength(6);

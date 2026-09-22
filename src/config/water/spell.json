@@ -5,28 +5,82 @@
     "domain": "water",
     "stars": 1,
     "castTicks": 1,
-    "mana": 0,
-    "rules": "Restore 5 mana.",
-    "keywords": [],
+    "rules": "Gain 1 Tide.",
+    "keywords": [
+      "tide"
+    ],
     "notes": [],
     "combat": {
       "effects": [
         {
-          "kind": "mana",
-          "amount": 5
+          "kind": "status",
+          "status": "tide",
+          "amount": 1,
+          "target": "self"
         }
       ]
     },
     "upgrade": {
       "castTicks": 1,
-      "mana": 0,
-      "rules": "Restore 8 mana.",
-      "keywords": [],
+      "rules": "Gain 2 Tide.",
+      "keywords": [
+        "tide"
+      ],
       "combat": {
         "effects": [
           {
-            "kind": "mana",
-            "amount": 8
+            "kind": "status",
+            "status": "tide",
+            "amount": 2,
+            "target": "self"
+          }
+        ]
+      },
+      "notes": []
+    }
+  },
+  {
+    "id": "undertow",
+    "name": "Undertow",
+    "domain": "water",
+    "stars": 1,
+    "castTicks": 1,
+    "rules": "Deal 30 damage. Gain 1 Tide.",
+    "keywords": [
+      "tide"
+    ],
+    "notes": [],
+    "combat": {
+      "effects": [
+        {
+          "kind": "damage",
+          "amount": 30
+        },
+        {
+          "kind": "status",
+          "status": "tide",
+          "amount": 1,
+          "target": "self"
+        }
+      ]
+    },
+    "upgrade": {
+      "castTicks": 1,
+      "rules": "Deal 42 damage. Gain 1 Tide.",
+      "keywords": [
+        "tide"
+      ],
+      "combat": {
+        "effects": [
+          {
+            "kind": "damage",
+            "amount": 42
+          },
+          {
+            "kind": "status",
+            "status": "tide",
+            "amount": 1,
+            "target": "self"
           }
         ]
       },
@@ -38,391 +92,27 @@
     "name": "Brine",
     "domain": "water",
     "stars": 1,
-    "castTicks": 2,
-    "mana": 2,
-    "rules": "Deal 50 damage.",
+    "castTicks": 1,
+    "rules": "Deal 45 damage.",
     "keywords": [],
     "notes": [],
     "combat": {
       "effects": [
         {
           "kind": "damage",
-          "amount": 50
+          "amount": 45
         }
       ]
     },
     "upgrade": {
-      "castTicks": 2,
-      "mana": 2,
-      "rules": "Deal 75 damage.",
+      "castTicks": 1,
+      "rules": "Deal 63 damage.",
       "keywords": [],
       "combat": {
         "effects": [
           {
             "kind": "damage",
-            "amount": 75
-          }
-        ]
-      },
-      "notes": []
-    }
-  },
-  {
-    "id": "mist",
-    "name": "Mist",
-    "domain": "water",
-    "stars": 1,
-    "castTicks": 0,
-    "mana": 5,
-    "rules": "Instant. Deal 20 damage.",
-    "keywords": [
-      "instant"
-    ],
-    "notes": [],
-    "combat": {
-      "effects": [
-        {
-          "kind": "damage",
-          "amount": 20
-        }
-      ]
-    },
-    "upgrade": {
-      "castTicks": 0,
-      "mana": 3,
-      "rules": "Instant. Deal 30 damage.",
-      "keywords": [
-        "instant"
-      ],
-      "combat": {
-        "effects": [
-          {
-            "kind": "damage",
-            "amount": 30
-          }
-        ]
-      },
-      "notes": []
-    }
-  },
-  {
-    "id": "tidal",
-    "name": "Tidal",
-    "domain": "water",
-    "stars": 1,
-    "castTicks": 1,
-    "mana": null,
-    "rules": "Gain 3 Tide.",
-    "keywords": [
-      "tide"
-    ],
-    "notes": [
-      "Mana cost was not provided."
-    ],
-    "combat": {
-      "blockedReason": "Provide mana cost."
-    },
-    "upgrade": {
-      "castTicks": 0,
-      "mana": null,
-      "rules": "Gain 3 Tide.",
-      "keywords": [
-        "tide",
-        "instant"
-      ],
-      "combat": {
-        "blockedReason": "Provide mana cost."
-      },
-      "notes": [
-        "Mana cost was not provided."
-      ]
-    }
-  },
-  {
-    "id": "healing-surge",
-    "name": "Healing Surge",
-    "domain": "water",
-    "stars": 1,
-    "castTicks": 1,
-    "mana": 3,
-    "rules": "Heal 25 health.",
-    "keywords": [],
-    "notes": [],
-    "combat": {
-      "effects": [
-        {
-          "kind": "heal",
-          "amount": 25
-        }
-      ]
-    },
-    "upgrade": {
-      "castTicks": 1,
-      "mana": 3,
-      "rules": "Heal 40 health.",
-      "keywords": [],
-      "combat": {
-        "effects": [
-          {
-            "kind": "heal",
-            "amount": 40
-          }
-        ]
-      },
-      "notes": []
-    }
-  },
-  {
-    "id": "undertow",
-    "name": "Undertow",
-    "domain": "water",
-    "stars": 2,
-    "castTicks": 1,
-    "mana": 6,
-    "rules": "Channel. Deal 8 × X damage. Gain X Tide.",
-    "keywords": [
-      "channel",
-      "tide"
-    ],
-    "notes": [],
-    "combat": {
-      "effects": [
-        {
-          "kind": "damage",
-          "amount": 8,
-          "perChannel": true
-        },
-        {
-          "kind": "status",
-          "status": "tide",
-          "amount": 1,
-          "perChannel": true
-        }
-      ]
-    },
-    "upgrade": {
-      "castTicks": 1,
-      "mana": 6,
-      "rules": "Channel. Deal 12 × X damage. Gain 2 × X Tide.",
-      "keywords": [
-        "channel",
-        "tide"
-      ],
-      "combat": {
-        "effects": [
-          {
-            "kind": "damage",
-            "amount": 12,
-            "perChannel": true
-          },
-          {
-            "kind": "status",
-            "status": "tide",
-            "amount": 2,
-            "perChannel": true
-          }
-        ]
-      },
-      "notes": []
-    }
-  },
-  {
-    "id": "aqua-steal",
-    "name": "Aqua Steal",
-    "domain": "water",
-    "stars": 2,
-    "castTicks": 2,
-    "mana": 5,
-    "rules": "Steal 10 mana.",
-    "keywords": [
-      "steal"
-    ],
-    "notes": [],
-    "combat": {
-      "effects": [
-        {
-          "kind": "stealMana",
-          "amount": 10
-        }
-      ]
-    },
-    "upgrade": {
-      "castTicks": 2,
-      "mana": 5,
-      "rules": "Steal 15 mana.",
-      "keywords": [
-        "steal"
-      ],
-      "combat": {
-        "effects": [
-          {
-            "kind": "stealMana",
-            "amount": 15
-          }
-        ]
-      },
-      "notes": []
-    }
-  },
-  {
-    "id": "tidal-burst",
-    "name": "Tidal Burst",
-    "domain": "water",
-    "stars": 2,
-    "castTicks": 2,
-    "mana": 5,
-    "rules": "Tidecaller. Deal 80 damage.",
-    "keywords": [
-      "tidecaller"
-    ],
-    "notes": [],
-    "combat": {
-      "effects": [
-        {
-          "kind": "damage",
-          "amount": 80
-        }
-      ]
-    },
-    "upgrade": {
-      "castTicks": 2,
-      "mana": 5,
-      "rules": "Tidecaller. Deal 110 damage.",
-      "keywords": [
-        "tidecaller"
-      ],
-      "combat": {
-        "effects": [
-          {
-            "kind": "damage",
-            "amount": 110
-          }
-        ]
-      },
-      "notes": []
-    }
-  },
-  {
-    "id": "frostbolt",
-    "name": "Frostbolt",
-    "domain": "water",
-    "stars": 2,
-    "castTicks": 1,
-    "mana": 3,
-    "rules": "Apply 2 Slowness.",
-    "keywords": [
-      "slowness"
-    ],
-    "notes": [],
-    "combat": {
-      "effects": [
-        {
-          "kind": "status",
-          "status": "slowness",
-          "amount": 2,
-          "target": "enemy"
-        }
-      ]
-    },
-    "upgrade": {
-      "castTicks": 1,
-      "mana": 2,
-      "rules": "Apply 3 Slowness.",
-      "keywords": [
-        "slowness"
-      ],
-      "combat": {
-        "effects": [
-          {
-            "kind": "status",
-            "status": "slowness",
-            "amount": 3,
-            "target": "enemy"
-          }
-        ]
-      },
-      "notes": []
-    }
-  },
-  {
-    "id": "storm",
-    "name": "Storm",
-    "domain": "water",
-    "stars": 2,
-    "castTicks": 2,
-    "mana": 5,
-    "rules": "Gain 5 Rain.",
-    "keywords": [
-      "rain"
-    ],
-    "notes": [],
-    "combat": {
-      "effects": [
-        {
-          "kind": "status",
-          "status": "rain",
-          "amount": 5,
-          "target": "self"
-        }
-      ]
-    },
-    "upgrade": {
-      "castTicks": 1,
-      "mana": 5,
-      "rules": "Gain 7 Rain.",
-      "keywords": [
-        "rain"
-      ],
-      "combat": {
-        "effects": [
-          {
-            "kind": "status",
-            "status": "rain",
-            "amount": 7,
-            "target": "self"
-          }
-        ]
-      },
-      "notes": []
-    }
-  },
-  {
-    "id": "mistveil",
-    "name": "Mistveil",
-    "domain": "water",
-    "stars": 2,
-    "castTicks": 1,
-    "mana": 0,
-    "rules": "Gain 3 Veil.",
-    "keywords": [
-      "veil"
-    ],
-    "notes": [],
-    "combat": {
-      "effects": [
-        {
-          "kind": "status",
-          "status": "veil",
-          "amount": 3,
-          "target": "self"
-        }
-      ]
-    },
-    "upgrade": {
-      "castTicks": 0,
-      "mana": 0,
-      "rules": "Gain 3 Veil.",
-      "keywords": [
-        "veil",
-        "instant"
-      ],
-      "combat": {
-        "effects": [
-          {
-            "kind": "status",
-            "status": "veil",
-            "amount": 3,
-            "target": "self"
+            "amount": 63
           }
         ]
       },
@@ -433,90 +123,9 @@
     "id": "riptide",
     "name": "Riptide",
     "domain": "water",
-    "stars": 3,
+    "stars": 2,
     "castTicks": 1,
-    "mana": 8,
-    "rules": "Tidecaller. Heal 65 health.",
-    "keywords": [
-      "tidecaller"
-    ],
-    "notes": [],
-    "combat": {
-      "effects": [
-        {
-          "kind": "heal",
-          "amount": 65
-        }
-      ]
-    },
-    "upgrade": {
-      "castTicks": 1,
-      "mana": 8,
-      "rules": "Tidecaller. Heal 90 health.",
-      "keywords": [
-        "tidecaller"
-      ],
-      "combat": {
-        "effects": [
-          {
-            "kind": "heal",
-            "amount": 90
-          }
-        ]
-      },
-      "notes": []
-    }
-  },
-  {
-    "id": "tidal-echo",
-    "name": "Tidal Echo",
-    "domain": "water",
-    "stars": 3,
-    "castTicks": 1,
-    "mana": 6,
-    "rules": "Tidecaller. Gain 2 undefined.",
-    "keywords": [
-      "tidecaller"
-    ],
-    "notes": [],
-    "combat": {
-      "effects": [
-        {
-          "kind": "status",
-          "status": "tidal-echo",
-          "amount": 2,
-          "target": "self"
-        }
-      ]
-    },
-    "upgrade": {
-      "castTicks": 1,
-      "mana": 3,
-      "rules": "Tidecaller. Gain 3 undefined.",
-      "keywords": [
-        "tidecaller"
-      ],
-      "combat": {
-        "effects": [
-          {
-            "kind": "status",
-            "status": "tidal-echo",
-            "amount": 3,
-            "target": "self"
-          }
-        ]
-      },
-      "notes": []
-    }
-  },
-  {
-    "id": "deepwater",
-    "name": "Deepwater",
-    "domain": "water",
-    "stars": 3,
-    "castTicks": 2,
-    "mana": 5,
-    "rules": "Both players restore 20 mana. Gain 6 Tide.",
+    "rules": "Spend 2 Tide: Heal 100.",
     "keywords": [
       "tide"
     ],
@@ -524,72 +133,36 @@
     "combat": {
       "effects": [
         {
-          "kind": "bothMana",
-          "amount": 20
-        },
-        {
-          "kind": "status",
+          "kind": "spend",
           "status": "tide",
-          "amount": 6,
-          "target": "self"
+          "amount": 2,
+          "effects": [
+            {
+              "kind": "heal",
+              "amount": 100
+            }
+          ]
         }
       ]
     },
     "upgrade": {
-      "castTicks": 2,
-      "mana": 5,
-      "rules": "Both players restore 25 mana. Gain 9 Tide.",
+      "castTicks": 1,
+      "rules": "Spend 2 Tide: Heal 150.",
       "keywords": [
         "tide"
       ],
       "combat": {
         "effects": [
           {
-            "kind": "bothMana",
-            "amount": 25
-          },
-          {
-            "kind": "status",
+            "kind": "spend",
             "status": "tide",
-            "amount": 9,
-            "target": "self"
-          }
-        ]
-      },
-      "notes": []
-    }
-  },
-  {
-    "id": "cleanse",
-    "name": "Cleanse",
-    "domain": "water",
-    "stars": 3,
-    "castTicks": 1,
-    "mana": 5,
-    "rules": "Cleanse 1 random debuff.",
-    "keywords": [
-      "cleanse"
-    ],
-    "notes": [],
-    "combat": {
-      "effects": [
-        {
-          "kind": "cleanse"
-        }
-      ]
-    },
-    "upgrade": {
-      "castTicks": 0,
-      "mana": 3,
-      "rules": "Instant. Cleanse 1 random debuff.",
-      "keywords": [
-        "cleanse",
-        "instant"
-      ],
-      "combat": {
-        "effects": [
-          {
-            "kind": "cleanse"
+            "amount": 2,
+            "effects": [
+              {
+                "kind": "heal",
+                "amount": 150
+              }
+            ]
           }
         ]
       },
@@ -600,300 +173,132 @@
     "id": "whirlpool",
     "name": "Whirlpool",
     "domain": "water",
-    "stars": 3,
+    "stars": 2,
     "castTicks": 1,
-    "mana": 10,
-    "rules": "Tidecaller. Deal 10 damage per Tide.",
+    "rules": "Deal 20 damage per Tide.",
     "keywords": [
-      "tidecaller",
       "tide"
     ],
-    "notes": [
-      "Damage uses your current remaining Tide stacks."
-    ],
+    "notes": [],
     "combat": {
       "effects": [
         {
           "kind": "damage",
-          "amount": 10,
+          "amount": 20,
           "perStatus": "tide"
         }
       ]
     },
     "upgrade": {
       "castTicks": 1,
-      "mana": 10,
-      "rules": "Tidecaller. Deal 15 damage per Tide.",
+      "rules": "Deal 28 damage per Tide.",
       "keywords": [
-        "tidecaller",
         "tide"
       ],
       "combat": {
         "effects": [
           {
             "kind": "damage",
-            "amount": 15,
+            "amount": 28,
             "perStatus": "tide"
           }
         ]
       },
-      "notes": [
-        "Damage uses your current remaining Tide stacks."
-      ]
+      "notes": []
     }
   },
   {
-    "id": "flood-fury",
-    "name": "Flood Fury",
+    "id": "ice-lance",
+    "name": "Ice Lance",
+    "domain": "water",
+    "stars": 2,
+    "castTicks": 1,
+    "rules": "Deal 35 damage. Apply 1 Slow.",
+    "keywords": [
+      "slow"
+    ],
+    "notes": [],
+    "combat": {
+      "effects": [
+        {
+          "kind": "damage",
+          "amount": 35
+        },
+        {
+          "kind": "status",
+          "status": "slow",
+          "amount": 1,
+          "target": "enemy"
+        }
+      ]
+    },
+    "upgrade": {
+      "castTicks": 1,
+      "rules": "Deal 49 damage. Apply 1 Slow.",
+      "keywords": [
+        "slow"
+      ],
+      "combat": {
+        "effects": [
+          {
+            "kind": "damage",
+            "amount": 49
+          },
+          {
+            "kind": "status",
+            "status": "slow",
+            "amount": 1,
+            "target": "enemy"
+          }
+        ]
+      },
+      "notes": []
+    }
+  },
+  {
+    "id": "tidal-burst",
+    "name": "Tidal Burst",
     "domain": "water",
     "stars": 3,
-    "castTicks": 0,
-    "mana": 20,
-    "rules": "Instant. Deal 100 damage.",
+    "castTicks": 2,
+    "rules": "Deal 60 damage. Spend 2 Tide: cast this spell 2 times.",
     "keywords": [
-      "instant"
+      "tide",
+      "repeat"
     ],
     "notes": [],
     "combat": {
       "effects": [
         {
           "kind": "damage",
-          "amount": 100
-        }
-      ]
-    },
-    "upgrade": {
-      "castTicks": 0,
-      "mana": 16,
-      "rules": "Instant. Deal 130 damage.",
-      "keywords": [
-        "instant"
-      ],
-      "combat": {
-        "effects": [
-          {
-            "kind": "damage",
-            "amount": 130
-          }
-        ]
-      },
-      "notes": []
-    }
-  },
-  {
-    "id": "downpour",
-    "name": "Downpour",
-    "domain": "water",
-    "stars": 4,
-    "castTicks": 2,
-    "mana": 10,
-    "rules": "Gain 15 Rain.",
-    "keywords": [
-      "rain"
-    ],
-    "notes": [],
-    "combat": {
-      "effects": [
+          "amount": 60
+        },
         {
-          "kind": "status",
-          "status": "rain",
-          "amount": 15,
-          "target": "self"
-        }
-      ]
-    },
-    "upgrade": {
-      "castTicks": 1,
-      "mana": 10,
-      "rules": "Gain 15 Rain.",
-      "keywords": [
-        "rain"
-      ],
-      "combat": {
-        "effects": [
-          {
-            "kind": "status",
-            "status": "rain",
-            "amount": 15,
-            "target": "self"
-          }
-        ]
-      },
-      "notes": []
-    }
-  },
-  {
-    "id": "tidal-guard",
-    "name": "Tidal Guard",
-    "domain": "water",
-    "stars": 4,
-    "castTicks": 1,
-    "mana": 5,
-    "rules": "Tidecaller. Gain 2 Guard.",
-    "keywords": [
-      "tidecaller",
-      "guard"
-    ],
-    "notes": [],
-    "combat": {
-      "effects": [
-        {
-          "kind": "status",
-          "status": "guard",
-          "amount": 2
-        }
-      ]
-    },
-    "upgrade": {
-      "castTicks": 1,
-      "mana": 5,
-      "rules": "Tidecaller. Gain 3 Guard.",
-      "keywords": [
-        "tidecaller",
-        "guard"
-      ],
-      "combat": {
-        "effects": [
-          {
-            "kind": "status",
-            "status": "guard",
-            "amount": 3
-          }
-        ]
-      },
-      "notes": []
-    }
-  },
-  {
-    "id": "tsunami",
-    "name": "Tsunami",
-    "domain": "water",
-    "stars": 4,
-    "castTicks": 2,
-    "mana": "half",
-    "rules": "Spend half your current mana, rounded down. Deal that much damage.",
-    "keywords": [],
-    "notes": [],
-    "combat": {
-      "effects": [
-        {
-          "kind": "damage",
-          "amount": 1,
-          "perManaSpent": true
-        }
-      ]
-    },
-    "upgrade": {
-      "castTicks": 1,
-      "mana": "half",
-      "rules": "Spend half your current mana, rounded down. Deal that much damage.",
-      "keywords": [],
-      "combat": {
-        "effects": [
-          {
-            "kind": "damage",
-            "amount": 1,
-            "perManaSpent": true
-          }
-        ]
-      },
-      "notes": []
-    }
-  },
-  {
-    "id": "rainborn",
-    "name": "Rainborn",
-    "domain": "water",
-    "stars": 4,
-    "castTicks": 2,
-    "mana": 15,
-    "rules": "For this combat, Rain also heals you for 20 each tick.",
-    "keywords": [
-      "rain",
-      "hot"
-    ],
-    "notes": [],
-    "combat": {
-      "effects": [
-        {
-          "kind": "enhance",
-          "status": "rainborn",
-          "amount": 20
-        }
-      ]
-    },
-    "upgrade": {
-      "castTicks": 1,
-      "mana": 15,
-      "rules": "For this combat, Rain also heals you for 20 each tick.",
-      "keywords": [
-        "rain",
-        "hot"
-      ],
-      "combat": {
-        "effects": [
-          {
-            "kind": "enhance",
-            "status": "rainborn",
-            "amount": 20
-          }
-        ]
-      },
-      "notes": []
-    }
-  },
-  {
-    "id": "water-heart",
-    "name": "Water Heart",
-    "domain": "water",
-    "stars": 4,
-    "castTicks": 1,
-    "mana": 0,
-    "rules": "Gain 5 Tide. Restore 5 mana. Heal 10 health.",
-    "keywords": [
-      "tide"
-    ],
-    "notes": [],
-    "combat": {
-      "effects": [
-        {
-          "kind": "status",
+          "kind": "spend",
           "status": "tide",
-          "amount": 5,
-          "target": "self"
-        },
-        {
-          "kind": "mana",
-          "amount": 5
-        },
-        {
-          "kind": "heal",
-          "amount": 10
+          "amount": 2,
+          "repeats": 2
         }
       ]
     },
     "upgrade": {
-      "castTicks": 1,
-      "mana": 0,
-      "rules": "Gain 7 Tide. Restore 8 mana. Heal 20 health.",
+      "castTicks": 2,
+      "rules": "Deal 84 damage. Spend 2 Tide: cast this spell 2 times.",
       "keywords": [
-        "tide"
+        "tide",
+        "repeat"
       ],
       "combat": {
         "effects": [
           {
-            "kind": "status",
+            "kind": "damage",
+            "amount": 84
+          },
+          {
+            "kind": "spend",
             "status": "tide",
-            "amount": 7,
-            "target": "self"
-          },
-          {
-            "kind": "mana",
-            "amount": 8
-          },
-          {
-            "kind": "heal",
-            "amount": 20
+            "amount": 2,
+            "repeats": 2
           }
         ]
       },
@@ -901,39 +306,101 @@
     }
   },
   {
-    "id": "maelstrom",
-    "name": "Maelstrom",
+    "id": "frostbolt",
+    "name": "Frostbolt",
     "domain": "water",
-    "stars": 5,
-    "castTicks": 3,
-    "mana": 10,
-    "rules": "For this combat, Tide no longer counts down. Tidecaller still consumes Tide.",
+    "stars": 3,
+    "castTicks": 2,
+    "rules": "Deal 80 damage. Interrupt the enemy’s current spell.",
     "keywords": [
-      "tide"
+      "interrupt"
     ],
     "notes": [],
     "combat": {
       "effects": [
         {
-          "kind": "enhance",
-          "status": "maelstrom",
-          "amount": 1
+          "kind": "damage",
+          "amount": 80
+        },
+        {
+          "kind": "interrupt"
+        }
+      ]
+    },
+    "upgrade": {
+      "castTicks": 2,
+      "rules": "Deal 112 damage. Interrupt the enemy’s current spell.",
+      "keywords": [
+        "interrupt"
+      ],
+      "combat": {
+        "effects": [
+          {
+            "kind": "damage",
+            "amount": 112
+          },
+          {
+            "kind": "interrupt"
+          }
+        ]
+      },
+      "notes": []
+    }
+  },
+  {
+    "id": "tidal-wave",
+    "name": "Tidal Wave",
+    "domain": "water",
+    "stars": 4,
+    "castTicks": 3,
+    "rules": "Deal 120 damage. Spend 3 Tide: Gain 100 Ward.",
+    "keywords": [
+      "tide",
+      "ward"
+    ],
+    "notes": [],
+    "combat": {
+      "effects": [
+        {
+          "kind": "damage",
+          "amount": 120
+        },
+        {
+          "kind": "spend",
+          "status": "tide",
+          "amount": 3,
+          "effects": [
+            {
+              "kind": "ward",
+              "amount": 100
+            }
+          ]
         }
       ]
     },
     "upgrade": {
       "castTicks": 3,
-      "mana": 7,
-      "rules": "For this combat, Tide no longer counts down. Tidecaller still consumes Tide.",
+      "rules": "Deal 168 damage. Spend 3 Tide: Gain 100 Ward.",
       "keywords": [
-        "tide"
+        "tide",
+        "ward"
       ],
       "combat": {
         "effects": [
           {
-            "kind": "enhance",
-            "status": "maelstrom",
-            "amount": 1
+            "kind": "damage",
+            "amount": 168
+          },
+          {
+            "kind": "spend",
+            "status": "tide",
+            "amount": 3,
+            "effects": [
+              {
+                "kind": "ward",
+                "amount": 100
+              }
+            ]
           }
         ]
       },
@@ -941,83 +408,35 @@
     }
   },
   {
-    "id": "monsoon",
-    "name": "Monsoon",
+    "id": "echo",
+    "name": "Echo",
     "domain": "water",
     "stars": 5,
-    "castTicks": 1,
-    "mana": 0,
-    "rules": "For this combat, Rain also restores 5 mana each tick.",
+    "castTicks": 2,
+    "rules": "Your next spell repeats 3 times in total.",
     "keywords": [
-      "rain"
+      "repeat"
     ],
     "notes": [],
     "combat": {
       "effects": [
         {
-          "kind": "enhance",
-          "status": "monsoon",
-          "amount": 5
+          "kind": "repeatNext",
+          "amount": 3
         }
       ]
     },
     "upgrade": {
-      "castTicks": 0,
-      "mana": 0,
-      "rules": "For this combat, Rain also restores 5 mana each tick.",
+      "castTicks": 2,
+      "rules": "Your next spell repeats 4 times in total.",
       "keywords": [
-        "rain",
-        "instant"
+        "repeat"
       ],
       "combat": {
         "effects": [
           {
-            "kind": "enhance",
-            "status": "monsoon",
-            "amount": 5
-          }
-        ]
-      },
-      "notes": []
-    }
-  },
-  {
-    "id": "cloud-heart",
-    "name": "Cloud Heart",
-    "domain": "water",
-    "stars": 5,
-    "castTicks": 1,
-    "mana": 10,
-    "rules": "Gain 25 Cloud Heart. Receive 40% more healing.",
-    "keywords": [
-      "cloud-heart"
-    ],
-    "notes": [],
-    "combat": {
-      "effects": [
-        {
-          "kind": "status",
-          "status": "cloud-heart",
-          "amount": 25,
-          "target": "self"
-        }
-      ]
-    },
-    "upgrade": {
-      "castTicks": 0,
-      "mana": 10,
-      "rules": "Gain 25 Greater Cloud Heart. Receive 60% more healing.",
-      "keywords": [
-        "instant",
-        "cloud-heart"
-      ],
-      "combat": {
-        "effects": [
-          {
-            "kind": "status",
-            "status": "greater-cloud-heart",
-            "amount": 25,
-            "target": "self"
+            "kind": "repeatNext",
+            "amount": 4
           }
         ]
       },

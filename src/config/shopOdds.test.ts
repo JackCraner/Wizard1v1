@@ -20,11 +20,11 @@ it('matches configured rank frequencies without catalogue-size or domain bias',(
     });
   }
 });
-it('preserves rank odds and the two-domain limit with playable Nature finishers',()=>{
-  // Eclipse and Wild Growth make rank five available to Nature/Water decks.
+it('preserves rank odds while allowing off-domain pivots',()=>{
+  // Every domain remains eligible after buying spells.
   const counts=[0,0,0,0,0];
   for(let roll=0;roll<3000;roll++)for(const id of offersFor(10,roll,['wrath','splash']).shop){
-    expect(['nature','water']).toContain(SPELLS[id].domain);counts[SPELLS[id].stars-1]++;
+    counts[SPELLS[id].stars-1]++;
   }
   expect(counts[4]).toBeGreaterThan(0);
   shopRankOdds(10).forEach((weight,i)=>expect(Math.abs(counts[i]/(3000*RULES.shopSlots)-weight/100)).toBeLessThan(.02));
