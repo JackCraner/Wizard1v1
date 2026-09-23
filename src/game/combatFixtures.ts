@@ -4,6 +4,8 @@ import {LocalGameGateway} from '../services/localGateway';
 
 /** Development-only, reproducible full-sequence previews through the normal game UI. */
 export const COMBAT_FIXTURES={
+ 'mixed-heat':{player:['ember','spark','spark','aegis','brine','leech'],bot:['photosynthesis']},
+ heat:{player:['spark','spark','spark','spark','spark','pyroblast'],bot:['photosynthesis']},
  branches:{player:['healing-seed','backdraft','healing-seed','radiance','spark','whirlpool'],bot:['ritual','soul-tithe','leech','empowered-imp','radiance','blood-pact']},
  chains:{player:['healing-seed','backdraft','cinder','flashover','flare','whirlpool'],bot:['ritual','soul-tithe','leech','empowered-imp','radiance','blood-pact']},
  ward:{player:['transformation-bear','judicator','aegis','blessing','flameshield','ember'],bot:['briarheart','toxic-growth','moonblight','riptide','undercurrent','maelstrom']},

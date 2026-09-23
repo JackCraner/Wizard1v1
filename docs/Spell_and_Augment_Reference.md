@@ -78,13 +78,13 @@ Generated from the shipping JSON catalogue. Edit the source configuration, then 
 | ★ | Searing Touch | 1T | Deal 30 damage. Apply 1 Trap. | 1T | Deal 45 damage. Apply 2 Trap. |
 | ★★ | Ember | 1T | Deal 25 damage. Gain 1 additional Heat. | 1T | Deal 40 damage. Gain 1 additional Heat. [Fire Attuned: Gain 2 additional Heat instead.] |
 | ★★ | Scorch | 1T | Lose 30 Health. Your next Heat activation does not consume Heat. | 1T | Lose 20 Health. Your next Heat activation does not consume Heat. [Fire Attuned: Gain 1 Heat.] |
-| ★★ | Lava Floor | 1T | Apply 2 Trap. | 1T | Apply 3 Trap. [Fire Attuned: Deal 30 damage.] |
-| ★★ | Heatwave | 1T | Deal 50 damage. Your next Fire spell this Cycle deals 30 more direct damage. | 1T | Deal 65 damage. Your next Fire spell this Cycle deals 45 more direct damage. |
+| ★★ | Lava Floor | 2T | Apply 2 Trap. | 2T | Apply 3 Trap. [Fire Attuned: Deal 30 damage.] |
+| ★★ | Heatwave | 2T | Deal 50 damage. Your next Fire spell this Cycle deals 30 more direct damage. | 2T | Deal 65 damage. Your next Fire spell this Cycle deals 45 more direct damage. |
 | ★★ | Firebolt | 1T | Deal 75 damage. If this spell consumes Heat, deal 95 instead. | 1T | Deal 90 damage. If this spell consumes Heat, deal 115 instead. [Fire Attuned: Instant when it does not consume Heat.] |
 | ★★ | Firefury | 1T | Deal 45 damage. If your previous spell consumed Heat, this spell is Instant. | 1T | Deal 65 damage. If your previous spell consumed Heat, this spell is Instant. [Fire Attuned: gain 1 Heat after it resolves.] |
 | ★★★ | Overheat | 1T | Lose 25% of your current Health. Gain 2 Heat. | 1T | Lose 25% of your current Health. Gain 2 Heat. [Fire Attuned: Your next Heat activation does not consume Heat.] |
 | ★★★ | Flameshield | 2T | Gain 100 Ward. Trigger — Heat Consume: Gain 70 Ward. | 2T | Gain 130 Ward. Trigger — Heat Consume: Gain 90 Ward. |
-| ★★★ | Emberstorm | 1T | Deal 105 damage. If you are below 50% Health, deal 125 instead. | 1T | Deal 135 damage. If you are below 50% Health, deal 165 instead. [Fire Attuned: gain 1 Heat after the bonus damage resolves.] |
+| ★★★ | Emberstorm | 2T | Deal 105 damage. If you are below 50% Health, deal 125 instead. | 2T | Deal 135 damage. If you are below 50% Health, deal 165 instead. [Fire Attuned: gain 1 Heat after the bonus damage resolves.] |
 | ★★★ | Immolate | 2T | Deal 100 damage. If this spell consumes Heat, apply 2 Trap. | 2T | Deal 120 damage. If this spell consumes Heat, apply 3 Trap. [Fire Attuned: 1T if it consumes Heat.] |
 | ★★★ | Flamekick | 1T | Deal 55 damage. [Fire Attuned: Interrupt.] | 1T | Deal 75 damage. [Fire Attuned: Interrupt and apply 1 Trap.] |
 | ★★★ | Backdraft | 1T | Deal 80 damage. Trigger — Heal: Deal 12 damage. | 1T | Deal 100 damage. Trigger — Heal: Deal 18 damage. [Fire Attuned: Trigger deals 22 instead.] |
@@ -93,8 +93,8 @@ Generated from the shipping JSON catalogue. Edit the source configuration, then 
 | ★★★★ | Phoenix Renewal | 2T | Heal 120. Trigger — Self-Damage: Heal 20. | 2T | Heal 150. Trigger — Self-Damage: Heal 30. [Fire Attuned: Trigger heals 40 instead.] |
 | ★★★★ | Conflagrate | 2T | Deal 100 damage. Awaken: after you consume Heat twice. Awakened: Deal 200 damage instead. | 2T | Deal 120 damage. Awaken: after you consume Heat twice. Awakened: Deal 260 damage instead. [Fire Attuned: Awaken after your first Heat consumption instead.] |
 | ★★★★ | Blaze | 1T | Deal 160 damage. Take 30 self-damage. | 1T | Deal 200 damage. Take 30 self-damage. [Fire Attuned: Critical while below 40% Health.] |
-| ★★★★★ | Eruption | 2T | Deal 100 damage. For the rest of combat, Heat-Empowered spells are guaranteed Critical. [Fire Attuned: those Criticals deal 200% total damage.] | 1T | Deal 130 damage. For the rest of combat, Heat-Empowered spells are guaranteed Critical. [Fire Attuned: those Criticals deal 250% total damage.] |
-| ★★★★★ | Phoenix Guard | 1T | Gain 2 Guard and 2 Heat. Fragile. | 1T | Gain 3 Guard and 3 Heat. Fragile. [Fire Attuned: Heal 100 before this card breaks.] |
+| ★★★★★ | Eruption | 3T | Deal 100 damage. For the rest of combat, Heat-Empowered spells are guaranteed Critical. [Fire Attuned: those Criticals deal 200% total damage.] | 3T | Deal 130 damage. For the rest of combat, Heat-Empowered spells are guaranteed Critical. [Fire Attuned: those Criticals deal 250% total damage.] |
+| ★★★★★ | Phoenix Guard | 3T | Gain 2 Guard and 2 Heat. Fragile. | 3T | Gain 3 Guard and 3 Heat. Fragile. [Fire Attuned: Heal 100 before this card breaks.] |
 | ★★★★★ | Living Flame | 2T | Deal 120 damage. For the rest of combat, your first non-Instant Fire spell each Cycle becomes 1T and Empowered without consuming Heat. | 1T | Deal 150 damage. For the rest of combat, your first non-Instant Fire spell each Cycle becomes 1T and Empowered without consuming Heat. [Fire Attuned: after that free Empowered spell completes, gain 2 Heat.] |
 
 ## Affliction

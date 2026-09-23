@@ -52,7 +52,7 @@ describe('armed event chains',()=>{
  it('Tide and Heat consumption emit events, free activations do not',()=>{
   const a=armed(wounded(['undercurrent','jet']),0);a.cursor=1;a.statuses.tide=3;
   expect(triggers(simulate(a,idle()).frames[1]).map(n=>n.index)).toEqual([0]);
-  const b=armed(wounded(['cinder','spark']),0);b.cursor=1;b.statuses.heat=3;b.memory.rules={freeHeat:1};
+  const b=armed(wounded(['cinder','spark']),0);b.cursor=1;b.statuses.heat=5;b.memory.rules={freeHeat:1};
   expect(triggers(simulate(b,idle()).frames[1])).toHaveLength(0);
   b.memory.rules={};expect(triggers(simulate(b,idle()).frames[1]).map(n=>n.index)).toEqual([0]);
  });
@@ -110,9 +110,9 @@ describe('revised conditional and permanent spells',()=>{
   const c=wounded(['ripple']);c.statuses.tide=3;expect(simulate(c,idle()).frames[1].healingEvents?.map(e=>e.amount)).toEqual([30]);
  });
  it('Living Flame gives only the first non-Instant Fire spell a free activation per Cycle',()=>{
-  const a=wounded(['holy-light','spark','pyroblast']);a.memory.rules={livingFlame:1,livingFlameHeat:2};a.statuses.heat=3;
+  const a=wounded(['holy-light','spark','pyroblast']);a.memory.rules={livingFlame:1,livingFlameHeat:2};a.statuses.heat=5;
   const r=simulate(a,idle());expect(r.frames[2].notices?.find(n=>n.status==='heat')?.text).toBe('FREE · EMPOWERED');
-  expect(r.frames[2].player.statuses.heat).toBe(6);expect(r.frames[3].player.memory.heatConsumed).toBe(1);
+  expect(r.frames[2].player.statuses.heat).toBe(8);expect(r.frames[3].player.memory.heatConsumed).toBe(1);
  });
  it('Maelstrom reserves one free Echo on the first cast without spending Tide',()=>{
   const a=wounded(['holy-light','jet']);a.memory.rules={cycleEcho:.75};a.statuses.tide=3;
@@ -121,13 +121,13 @@ describe('revised conditional and permanent spells',()=>{
  });
  it('Firebolt chooses conditional Instant before casting; Firefury uses previous Heat consumption',()=>{
   const a=fighter('A',['firebolt'],[],[3]);expect(simulate(a,idle()).frames[1].events[0].details).toContain('Instant');
-  a.statuses.heat=3;expect(simulate(a,idle()).frames[1].events[0].details).not.toContain('Instant');
-  const b=fighter('A',['spark','firefury']);b.statuses.heat=3;expect(simulate(b,idle()).frames[2].events[0].details).toContain('Instant');
+  a.statuses.heat=5;expect(simulate(a,idle()).frames[1].events[0].details).not.toContain('Instant');
+  const b=fighter('A',['spark','firefury']);b.statuses.heat=5;expect(simulate(b,idle()).frames[2].events[0].details).toContain('Instant');
  });
  it('Heatwave only buffs the next Fire spell and its bonus expires at the Cycle boundary',()=>{
   const a=fighter('A',['heatwave','radiant-bolt','spark']);const r=simulate(a,idle());
-  expect(r.frames[4].damageEvents?.find(e=>e.side==='bot')?.amount).toBe(85);
-  const b=fighter('A',['heatwave']);expect(simulate(b,idle()).frames[3].damageEvents?.find(e=>e.side==='bot')?.amount).toBe(50);
+  expect(r.frames[5].damageEvents?.find(e=>e.side==='bot')?.amount).toBe(85);
+  const b=fighter('A',['heatwave']);expect(simulate(b,idle()).frames[5].damageEvents?.find(e=>e.side==='bot')?.amount).toBe(50);
  });
  it('cast-start Ward conditions survive later changes to Ward',()=>{
   const a=fighter('A',['sacred-group']);a.shield=1;const r=simulate(a,fighter('B',['spark','pyroblast']));

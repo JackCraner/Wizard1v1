@@ -32,7 +32,7 @@
   "heat": {
     "name": "Heat",
     "aliases": [],
-    "description": "Completing a Fire spell grants 1 Heat. At 3 Heat, your next non-Instant Fire spell consumes 3, becomes 1T and Empowered. Slow then adds 1T if present.",
+    "description": "Completing a Fire spell grants 1 Heat. At 5 Heat, your next non-Instant spell of any domain consumes 5, becomes 1T and Empowered. Slow then adds 1T if present.",
     "related": []
   },
   "oath": {

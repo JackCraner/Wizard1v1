@@ -1,3 +1,4 @@
+import settings from '../config/rules.json';
 import { cardAt } from './upgrades';
 import { activeSpellIndices } from './rotation';
 import type { Fighter } from './model';
@@ -12,7 +13,7 @@ export function combatCard(f:Fighter,index:number){
 export function resourcePredictions(f:Fighter){
  const active=activeSpellIndices(f),current=f.casting?.index;
  const order=[...active.filter(i=>i>=f.cursor&&i!==current),...active.filter(i=>i<f.cursor)];
- const heat=order.find(i=>{const c=cardAt(f.spells[i],f.spellXp?.[i]);return c.domain==='fire'&&!(c.castTicks===0&&(!c.instantDomain||f.attuned.includes(c.instantDomain)));});
+ const heat=order.find(i=>{const c=cardAt(f.spells[i],f.spellXp?.[i]);return !(c.castTicks===0&&(!c.instantDomain||f.attuned.includes(c.instantDomain)));});
  const tide=order.find(i=>{const c=cardAt(f.spells[i],f.spellXp?.[i]);return !(c.castTicks===0&&(!c.instantDomain||f.attuned.includes(c.instantDomain)));});
- return {heat:(f.statuses.heat??0)>=3?heat:undefined,tide:(f.statuses.tide??0)>=(f.memory.rules?.tideThreshold??3)?tide:undefined};
+ return {heat:(f.statuses.heat??0)>=settings.heatThreshold?heat:undefined,tide:(f.statuses.tide??0)>=(f.memory.rules?.tideThreshold??3)?tide:undefined};
 }

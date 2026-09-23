@@ -14,7 +14,7 @@ Six active spells maximum in combat. During shopping, extra spells may be purcha
 
 ## Counters, protection and scaling
 
-- Fire completions grant 1 Heat. The next non-Instant Fire start consumes 3 Heat, becomes 1T and Empowered. Excess remains. Slow adds 1T after acceleration. Free Heat activation does not count as consumption for Awaken or Heat-consumed Triggers.
+- Fire completions grant 1 Heat. The next non-Instant spell of any domain consumes 5 Heat, becomes 1T and Empowered. Excess remains. Slow adds 1T after acceleration. Free Heat activation does not count as consumption for Awaken or Heat-consumed Triggers.
 - Water completions grant 1 Tide. The next non-Instant spell consumes 3 Tide and reserves one 50% Echo. Echo does not count as another cast or generate automatic Heat/Tide. Interrupted casts lose reserved resources.
 - Empowered grants +50% direct damage, direct healing and Ward. It does not multiply Trigger payloads, counters, durations or percentage rules.
 - Critical defaults to 150% direct damage and follows printed conditions. No Potency or random critical rolls.
@@ -50,3 +50,5 @@ Full values: [spell and augment reference](Spell_and_Augment_Reference.md).
 ## Playback feedback
 
 Trigger darts follow causal parents: siblings travel concurrently, later hops wait for their parent, and separate chains run together. Each chain fits one playback tick. Faint trails retain earlier hops. Self/Cycle activations use an exclamation hop; damage numbers and darts pause with playback. See [development previews](Development.md#browser-validation).
+
+All cards show rising embers and sparks that grow denser, brighter and faster across five Heat levels, with a restrained edge glow. The next eligible card pulses more strongly at five Heat. Empowered adds a brief ignition burst and white-hot corners. The animation follows playback speed and pause; reduced motion keeps a static glow.

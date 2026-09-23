@@ -410,7 +410,7 @@
     "name": "Lava Floor",
     "domain": "fire",
     "stars": 2,
-    "castTicks": 1,
+    "castTicks": 2,
     "combat": {
       "effects": [
         {
@@ -428,7 +428,7 @@
     ],
     "notes": [],
     "upgrade": {
-      "castTicks": 1,
+      "castTicks": 2,
       "combat": {
         "effects": [
           {
@@ -457,7 +457,7 @@
     "name": "Heatwave",
     "domain": "fire",
     "stars": 2,
-    "castTicks": 1,
+    "castTicks": 2,
     "combat": {
       "effects": [
         {
@@ -477,7 +477,7 @@
     ],
     "notes": [],
     "upgrade": {
-      "castTicks": 1,
+      "castTicks": 2,
       "combat": {
         "effects": [
           {
@@ -715,7 +715,7 @@
     "name": "Emberstorm",
     "domain": "fire",
     "stars": 3,
-    "castTicks": 1,
+    "castTicks": 2,
     "combat": {
       "effects": [
         {
@@ -730,7 +730,7 @@
     "keywords": [],
     "notes": [],
     "upgrade": {
-      "castTicks": 1,
+      "castTicks": 2,
       "combat": {
         "effects": [
           {
@@ -1180,7 +1180,7 @@
     "name": "Eruption",
     "domain": "fire",
     "stars": 5,
-    "castTicks": 2,
+    "castTicks": 3,
     "combat": {
       "effects": [
         {
@@ -1208,7 +1208,7 @@
     ],
     "notes": [],
     "upgrade": {
-      "castTicks": 1,
+      "castTicks": 3,
       "combat": {
         "effects": [
           {
@@ -1242,7 +1242,7 @@
     "name": "Phoenix Guard",
     "domain": "fire",
     "stars": 5,
-    "castTicks": 1,
+    "castTicks": 3,
     "combat": {
       "effects": [
         {
@@ -1271,7 +1271,7 @@
     ],
     "notes": [],
     "upgrade": {
-      "castTicks": 1,
+      "castTicks": 3,
       "combat": {
         "effects": [
           {

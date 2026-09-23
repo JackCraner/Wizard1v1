@@ -22,6 +22,9 @@ export const combatColors = {
  cardSurface: '#14212a', brokenSurface: '#53262b', armed: '#e6ffb0', activated: '#baffef',
 } as const;
 
+// Ember → orange → hot gold → Empowered flare.
+export const heatColors = ['#ac3829', '#db542e', '#ff7c29', '#ffa436', '#ffd15b', '#fff0a3'] as const;
+
 // Bright colors on dark UI; ink colors on parchment cards; soft colors on icons.
 export const DOMAIN_COLORS: Record<Domain, string> = {
  nature: '#81cf68', water: '#64c9ef', fire: '#ff7864', holy: '#edc565', affliction: '#bf8feb',
