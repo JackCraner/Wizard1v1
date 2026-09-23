@@ -50,6 +50,8 @@ Full values: [spell and augment reference](Spell_and_Augment_Reference.md).
 
 ## Playback feedback
 
+Local multiplayer uses the same combat and progression rules. Both humans lock their hands with **Ready** before the host resolves the round. With an odd total player count, one player rests each round; rest rounds award no trophies. Ready can be cancelled until the other human is ready. Each player controls their own playback speed and may return to shopping independently, but the next round waits for both players again.
+
 Trigger darts follow causal parents: siblings travel concurrently, later hops wait for their parent, and separate chains run together. Each chain fits one playback tick. Faint trails retain earlier hops. Self/Cycle activations use an exclamation hop; damage numbers and darts pause with playback. See [development previews](Development.md#browser-validation).
 
 All cards show rising embers and sparks that grow denser, brighter and faster across five Heat levels, with a restrained edge glow. The next eligible card pulses more strongly at five Heat. Empowered adds a brief ignition burst and white-hot corners. The animation follows playback speed and pause; reduced motion keeps a static glow.

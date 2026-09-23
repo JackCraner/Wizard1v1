@@ -5,6 +5,7 @@ import {
   Pressable, StyleSheet, Text, useWindowDimensions, View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { FullscreenButton } from '../components/FullscreenButton';
 
 const background = require('../../assets/MainBackground.png');
 const serif = typography.serif;
@@ -63,9 +64,10 @@ function useAtmosphere() {
   return { flickers, embers, drift, animate: active && !reduced };
 }
 
-export function MainMenu({ hasRun, busy, round, error, onNewGame, onContinue, onLibrary }: {
+export function MainMenu({ hasRun, busy, round, error, onNewGame, onContinue, onLibrary, onMultiplayer, multiplayer = false }: {
   hasRun: boolean; busy: boolean; round?: number; error?: string;
   onLibrary: () => void; onNewGame: () => void; onContinue: () => void;
+  onMultiplayer?: () => void; multiplayer?: boolean;
 }) {
   const { width, height, fontScale } = useWindowDimensions();
   const [bounds, setBounds] = useState({ width, height });
@@ -114,15 +116,16 @@ export function MainMenu({ hasRun, busy, round, error, onNewGame, onContinue, on
           <View pointerEvents="none" style={styles.cornerTop} />
           <View pointerEvents="none" style={styles.cornerBottom} />
           {!compact && <View style={styles.ornament} accessible={false}><Text style={styles.star}>✧</Text><View style={styles.rule} /></View>}
-          <Text accessibilityRole="header" style={[styles.title, compact && { fontSize: 28, lineHeight: 34 }]}>WIZARD{'\n'}<Text style={styles.titleAccent}>1V1</Text></Text>
+          <Text accessibilityRole="header" style={[styles.title, compact && { fontSize: 28, lineHeight: 34 }]}>WIZARD{compact ? ' ' : '\n'}<Text style={styles.titleAccent}>1V1</Text></Text>
           {!compact && <Text style={styles.subtitle}>YOUR NEXT DUEL AWAITS</Text>}
           <View style={[styles.options, compact && { marginTop: 10 }]}>
-            <Pressable accessibilityRole="button" accessibilityLabel="New game" accessibilityState={{ disabled: busy }}
+            {onMultiplayer && <Pressable accessibilityRole="button" accessibilityLabel={multiplayer ? 'Local room' : 'Multiplayer'} disabled={busy} onPress={onMultiplayer} style={[styles.button, styles.newGame, compact && { minHeight: 44, paddingVertical: 8 }]}><Text style={styles.continueText}>{multiplayer ? 'Local room' : 'Multiplayer'}</Text><Text style={styles.buttonOrnament}>Local</Text></Pressable>}
+            {!multiplayer && <Pressable accessibilityRole="button" accessibilityLabel="New game" accessibilityState={{ disabled: busy }}
               disabled={busy} onPress={onNewGame}
               style={({ pressed }) => [styles.button, compact && { minHeight: 44, paddingVertical: 8 }, styles.newGame, pressed && styles.pressed, busy && styles.disabled]}>
               <Text style={styles.newGameText}>{busy ? 'Preparing…' : 'New game'}</Text>
               <Text style={styles.buttonOrnament} accessible={false}>✦</Text>
-            </Pressable>
+            </Pressable>}
             <Pressable accessibilityRole="button" accessibilityLabel="Continue" accessibilityHint={hasRun ? `Resume round ${round}` : 'Start a new game to unlock Continue'}
               accessibilityState={{ disabled: !hasRun || busy }} disabled={!hasRun || busy} onPress={onContinue}
               style={({ pressed }) => [styles.button, compact && { minHeight: 44, paddingVertical: 8 }, styles.continue, pressed && styles.pressed, (!hasRun || busy) && styles.disabled]}>
@@ -130,8 +133,11 @@ export function MainMenu({ hasRun, busy, round, error, onNewGame, onContinue, on
               <Text style={styles.continueArrow} accessible={false}>›</Text>
             </Pressable>
           </View>
-          <Pressable accessibilityRole="button" accessibilityLabel="Spell library" onPress={onLibrary} style={{ paddingTop: compact ? 8 : 14 }}><Text style={{ color: '#d6be91', fontSize: 13 }}>Spell library →</Text></Pressable>
-          <Text style={[styles.note, compact && { marginTop: 8 }]}>{hasRun ? `Resume your journey · Round ${round}` : 'Your journey begins with a single spell.'}</Text>
+          <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 8, marginTop: compact ? 8 : 14 }}>
+            <Pressable accessibilityRole="button" accessibilityLabel="Spell library" onPress={onLibrary} style={{ minHeight: 44, justifyContent: 'center' }}><Text style={{ color: '#d6be91', fontSize: 13 }}>Spell library →</Text></Pressable>
+            <FullscreenButton />
+          </View>
+          {!compact && <Text style={styles.note}>{hasRun ? `Resume your journey · Round ${round}` : 'Your journey begins with a single spell.'}</Text>}
           {!!error && <Text accessibilityRole="alert" style={styles.error}>{error}</Text>}
         </View>
       </View>

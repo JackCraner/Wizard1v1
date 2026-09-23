@@ -9,6 +9,7 @@ A mobile spell auto-battler built with Expo, React Native and TypeScript. Buy an
 - The two most common domains are attuned, with ties decided by the oldest surviving card. Only explicit attuned clauses require them.
 - Start at 500 Health. Every two rounds, everyone gains a level, 100 max Health and an augment choice. Each win awards trophies equal to your level; first to 20 wins.
 - Triggers arm after their first completed cast and can chain. Duels last up to 30 ticks, with one reshuffle tick between cycles. There is no mana.
+- **Multiplayer → Local:** an installed Android app hosts two humans and 0–6 bots on Wi-Fi or its own hotspot. Guests scan the Wi-Fi code, then the game code to play in a browser. Keep the host app open. See the [local multiplayer guide](docs/Development.md#local-multiplayer).
 
 ## Run and verify
 

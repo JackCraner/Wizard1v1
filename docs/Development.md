@@ -31,6 +31,8 @@ If package-manager commands are unavailable but Node and dependencies exist, use
 
 ## Browser validation
 
+Supported browsers show **Full screen** in the main menu and Local lobby. Tap it to hide browser controls; **Exit full screen** restores them. Fullscreen persists between game screens, and the button follows browser-initiated exits. Native apps and browsers without fullscreen support omit the control.
+
 Use 832 × 384 CSS pixels as the established S24 Ultra landscape reference; this is a logical viewport, not the panel's physical resolution. Check a wider viewport when changing responsive layout. Verify readable inspection dialogs, long-hold previews away from the finger, drag/drop, full-hand warnings and disabled battle entry above the slot limit.
 
 Development builds support `?combat-lab=mixed-heat`, `heat`, `branches`, `chains`, `ward`, `signals`, `fire`, `water`, `nature` and `holy`. Open a separate tab and start a new game for a reproducible combat preview. Production builds use the regular gateway. Preserve the user's active run and close temporary tabs afterward.
@@ -41,7 +43,34 @@ For combat visuals, check pause/resume, 0.5× and normal speed, independent conc
 
 Runs are currently in memory; refreshing loses them. Reload after changing the ruleset. Keep combat snapshots JSON-compatible and avoid browser-only globals or native UI imports inside game logic. Use the shared snapshot clone helper rather than requiring browser crypto or structuredClone.
 
-The asynchronous injected GameGateway enables a future remote authority, but the local adapter is not a security boundary. A remote version still needs authentication, persistence, runtime validation, reconnect behavior and ruleset versioning.
+The asynchronous injected `GameGateway` supports solo play and subscribed multiplayer snapshots. The solo adapter remains in-process. Multiplayer commands pass through an authenticated room authority; public internet hosting still needs TLS, account authentication, durable rooms and operational rate limiting.
+
+## Local multiplayer
+
+**Host:** install the Android APK, open **Multiplayer → Local**, then choose **Create hotspot & host** or **Host on existing Wi-Fi**. Grant the Wi-Fi permission when prompted. Hotspot mode creates an Android local-only network with no internet. Existing Wi-Fi works only when the router allows devices to communicate with each other (guest-network/client isolation prevents it).
+
+**Guest:** scan the host's first QR code to join its Wi-Fi and accept the phone's connection prompt. Stay connected even if the phone reports no internet. Then scan the second QR code and open it in a browser; it joins automatically. If already on the same Wi-Fi, scan only the game code. A standard Wi-Fi QR cannot also launch a game URL, so these are deliberately two separate scans. The full link and hotspot credentials are shown for manual entry. On a host with several local interfaces, select the address belonging to the shared network before scanning the game code.
+
+The room has two human seats and 0–6 Normal bots. Only the host can change the bot count, before starting. Both players shop independently and select **Ready**; ready hands are locked, with a cancel option until the other player is ready. Each battle is calculated once and mirrored for the opponent. Odd player totals rotate a rest round with no trophies. Augment choices and round progression follow solo rules.
+
+Keep the host app in the foreground; its screen stays awake while hosting. A browser refresh rejoins the same seat using a tab-scoped key. Temporary Wi-Fi loss displays reconnect status and preserves the authoritative session while the host remains running. Leaving during a game closes the room for both players. Host-process termination loses the room; there is no host migration or save/resume yet. Internet play is not enabled by the Local option.
+
+### Architecture and builds
+
+- `src/multiplayer/roomAuthority.ts`: serialized, authoritative commands, revision checks, private per-player snapshots, ready barriers, seeded bots and tournament results. It has no React, network or Android dependencies and reuses the solo purchase/reward rules.
+- `protocol.ts`: versioned request/reply schema and runtime command validation. Per-seat tokens authorize mutations; invitation tokens do not authorize host controls. Request IDs deduplicate retries. Opponents see only decks from completed rounds.
+- `client.ts`: `RoomTransport` plus an HTTP implementation and a subscribed `GameGateway`. Polls transfer battle data only when a player's revision changes. A future online service can reuse the authority and replace transport/identity/storage without changing the game screens.
+- `hosting.ts` and Android `LocalMultiplayerModule.kt`: hotspot lifecycle, bundled static HTTP hosting and request transport to the host's JS authority. The server accepts local-network clients, bounds requests, rejects cross-origin API writes, serves only packaged assets and stops when the host closes the room.
+
+Gradle's `exportLocalWeb` task exports the browser build into generated `android/app/src/main/assets/local-web/` before Android builds. These generated files are ignored by Git. The APK includes its web client and assets, so guests require neither Expo nor an internet connection. Expo Go cannot provide the custom host module; use an installed native build.
+
+For two-browser development on a computer:
+
+1. Run `npm run local:web` (or `node node_modules/expo/bin/cli export --platform web --output-dir android/app/src/main/assets/local-web`).
+2. Run `npm run local:serve` (or `node tools/local-multiplayer/serve.cjs`). The server listens on port 8787 and prints a private host link and guest invitation. `LOCAL_MULTIPLAYER_PORT` overrides the port.
+3. Open the host link, select **Host local game**, and open the guest link in a separate tab/device. Host bot controls and both clients use the same authority/protocol as Android. Re-export and restart after source changes; this standalone test server does not hot-reload.
+
+Validation covers two browser clients and Kotlin compilation. A physical Android host plus a second phone is required to validate OEM hotspot behaviour, camera QR scanning, network permission prompts and device backgrounding. The current Android target is SDK 36; upgrading to SDK 37 must include Android 17's local-network runtime permission.
 
 ### Build an APK with Gradle on Windows
 
@@ -71,4 +100,3 @@ npm run android
 If LAN connections are unavailable, use `npm run android -- --localhost`. On systems where localhost resolves only to IPv6, use `node --dns-result-order=ipv4first node_modules/expo/bin/cli start --android --localhost`. Expo sets up ADB forwarding for the emulator. If an old server is already using port 8081, stop it before starting another.
 
 Official references: [Expo CLI](https://docs.expo.dev/more/expo-cli/) and [Android emulator setup](https://docs.expo.dev/workflow/android-studio-emulator/).
-

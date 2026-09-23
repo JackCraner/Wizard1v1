@@ -239,6 +239,7 @@ export interface Lobby {
     winnerIds: string[];
 }
 export interface Session {
+    multiplayer?: { ready: boolean; waitingFor: string[]; bye: boolean };
     seed: number;
     level: number;
     trophies: number;
@@ -293,6 +294,8 @@ export type Command = {
     type: 'next';
 };
 export interface GameGateway {
+    subscribe?(listener: (session: Session) => void): () => void;
+    cancelReady?(): Promise<Session>;
     start(difficulty?: Difficulty, seed?: number): Promise<Session>;
     execute(sessionId: string, expectedRevision: number, command: Command): Promise<Session>;
 }

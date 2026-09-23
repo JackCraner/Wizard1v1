@@ -5,7 +5,7 @@ import { CardLibrary } from './screens/CardLibrary';
 import { useEffect, useRef, useState } from 'react';
 import { Pressable, ScrollView, Text, useWindowDimensions, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import type { GameGateway } from './game/model';
+import type { GameGateway, Session } from './game/model';
 import { useGame } from './useGame';
 import { useOrientation } from './useOrientation';
 import { Body, Button, Eyebrow, Heading, Panel, styles as s, Title } from './ui';
@@ -13,13 +13,13 @@ import { ShopScreen } from './screens/ShopScreen';
 import { CombatScreen } from './screens/CombatScreen';
 import { MainMenu } from './screens/MainMenu';
 
-export function GameApp({ gateway }: { gateway: GameGateway }) {
-  const game = useGame(gateway);
+export function GameApp({ gateway, initialSession, onMultiplayer, multiplayer = false, visible = true }: { gateway: GameGateway; initialSession?: Session; onMultiplayer?: () => void; multiplayer?: boolean; visible?: boolean }) {
+  const game = useGame(gateway, initialSession);
   const [choosingDifficulty,setChoosingDifficulty]=useState(false);
   const [library, setLibrary] = useState(false);
   const scroll = useRef<ScrollView>(null);
   const { width, height } = useWindowDimensions();
-  const orientationError = useOrientation(game.screen === 'game' || library);
+  const orientationError = useOrientation(multiplayer || game.screen === 'game' || library, visible);
 
 
   useEffect(() => { scroll.current?.scrollTo({ y: 0, animated: false }); }, [game.screen, game.session?.phase]);
@@ -31,7 +31,7 @@ export function GameApp({ gateway }: { gateway: GameGateway }) {
   // The menu is intentionally outside the scrolling gameplay layout.
   if (game.screen === 'menu') {
     return <MainMenu hasRun={!!game.session} busy={game.busy} round={game.session?.round}
-      onLibrary={() => setLibrary(true)} error={game.error} onNewGame={()=>setChoosingDifficulty(true)} onContinue={() => game.setScreen('game')} />;
+      onMultiplayer={onMultiplayer} multiplayer={multiplayer} onLibrary={() => setLibrary(true)} error={game.error} onNewGame={()=>multiplayer ? onMultiplayer?.() : setChoosingDifficulty(true)} onContinue={() => game.setScreen('game')} />;
   }
 
   if (game.screen === 'game' && width < height) {
@@ -44,12 +44,22 @@ export function GameApp({ gateway }: { gateway: GameGateway }) {
 
   if(game.screen==='game'&&game.session?.phase==='augment')return <AugmentChoice session={game.session} busy={game.busy} error={game.error} act={game.act}/>;
 
+  if (game.screen === 'game' && game.session?.multiplayer?.ready) return <SafeAreaView style={[s.safe, { justifyContent: 'center', padding: 24, gap: 14 }]}>
+    <Title>Ready for round {game.session.round}</Title><Body>Waiting for {game.session.multiplayer.waitingFor.join(' and ') || 'the other player'}. Your hand is locked.</Body>
+    <Button title="Cancel ready" onPress={game.cancelReady} disabled={game.busy} /><Button secondary title="Local room" onPress={() => onMultiplayer?.()} />
+    {!!game.error && <Body>{game.error}</Body>}
+  </SafeAreaView>;
+
   if (game.screen === 'game' && game.session?.phase === 'shop') {
     return <ShopScreen key={game.session.id} session={game.session} busy={game.busy} act={game.act}
       onLibrary={() => setLibrary(true)} error={game.error} onMenu={() => game.setScreen('menu')} />;
   }
 
-  if(game.screen==='game'&&game.finished&&game.session?.lobby.finished)return <TournamentResult key={game.session.id} session={game.session} onNewGame={()=>setChoosingDifficulty(true)} onMenu={()=>game.setScreen('menu')} busy={game.busy} error={game.error} />;
+  if(game.screen==='game'&&(game.finished||game.session?.multiplayer?.bye)&&game.session?.lobby.finished)return <TournamentResult key={game.session.id} session={game.session} onNewGame={()=>multiplayer ? onMultiplayer?.() : setChoosingDifficulty(true)} onMenu={()=>game.setScreen('menu')} busy={game.busy} error={game.error} />;
+
+  if (game.screen === 'game' && game.session?.multiplayer?.bye) return <SafeAreaView style={[s.safe, { justifyContent: 'center', padding: 24, gap: 14 }]}>
+    <Title>Rest round</Title><Body>An odd number of players means one player rests each round. No trophies are awarded for resting.</Body><Button title="Return to shop" onPress={() => game.act({ type: 'next' })} disabled={game.busy} />
+  </SafeAreaView>;
 
   if (game.screen === 'game' && game.session?.battle) return <CombatScreen game={game} />;
 
@@ -90,4 +100,3 @@ export function GameApp({ gateway }: { gateway: GameGateway }) {
     </SafeAreaView>
   );
 }
-

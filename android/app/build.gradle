@@ -4,6 +4,16 @@ apply plugin: "com.facebook.react"
 
 def projectRoot = rootDir.getAbsoluteFile().getParentFile().getAbsolutePath()
 
+// The phone serves this self-contained client to browsers on its LAN/hotspot.
+def exportLocalWeb = tasks.register('exportLocalWeb', Exec) {
+    workingDir projectRoot
+    commandLine 'node', 'node_modules/expo/bin/cli', 'export', '--platform', 'web', '--output-dir', 'android/app/src/main/assets/local-web'
+    inputs.files(fileTree("${projectRoot}/src"), fileTree("${projectRoot}/assets"))
+    inputs.files("${projectRoot}/App.tsx", "${projectRoot}/index.ts", "${projectRoot}/app.json", "${projectRoot}/package.json", "${projectRoot}/pnpm-lock.yaml")
+    outputs.dir("${projectRoot}/android/app/src/main/assets/local-web")
+}
+tasks.named('preBuild').configure { dependsOn(exportLocalWeb) }
+
 /**
  * This is the configuration block to customize your React Native Android app.
  * By default you don't need to apply any configuration, just uncomment the lines you need.

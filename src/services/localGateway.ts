@@ -10,8 +10,16 @@ import type { Command, Difficulty, GameGateway, Session } from '../game/model';
 // IDs are local-only; a remote adapter receives its IDs from the server.
 let nextSessionId = 0;
 export class LocalGameGateway implements GameGateway {
+    constructor(private readonly sharedRoom = false) {}
     private bots: BotStates = {};
     private session: Session | null = null;
+    get revision() { return this.session?.revision; }
+    // Authority-side only: network clients never receive this adapter.
+    restore(session: Session) { this.session = cloneSnapshot(session); }
+    snapshot(): Session {
+        if (!this.session) throw new Error('Session not started.');
+        return cloneSnapshot(this.session);
+    }
     async start(difficulty: Difficulty = BOT_CONFIG.defaultDifficulty as Difficulty, seed = Math.floor(Math.random() * 4294967296)): Promise<Session> {
         if (!Object.prototype.hasOwnProperty.call(BOT_CONFIG.difficulties, difficulty))
             throw new Error('Unknown difficulty.');
@@ -55,10 +63,10 @@ export class LocalGameGateway implements GameGateway {
                 throw new Error('Finish combat first.');
             if (s.round % RULES.augmentEvery === 0) {
                 s.level++;
-                s.lobby.players.forEach(p => { p.level = s.level; });
+                s.lobby.players.forEach(p => { if (!this.sharedRoom || p.human) p.level = s.level; });
                 const bots = cloneSnapshot(this.bots);
                 s.lobby.players.forEach((p, i) => {
-                    if (!p.human) {
+                    if (!this.sharedRoom && !p.human) {
                         grantBotAugment(bots[p.id], p.deck, s.round, i, s.seed);
                         p.augments = [...bots[p.id].augments];
                     }
@@ -133,7 +141,8 @@ export class LocalGameGateway implements GameGateway {
                 const [age] = s.spellAcquired.splice(from, 1);
                 s.spellAcquired.splice(to, 0, age);
             }
-            else {
+            else if (command.type === 'fight') {
+                if (this.sharedRoom) throw new Error('Ready up through the room authority.');
                 if (!s.spells.length)
                     throw new Error('Equip a spell first.');
                 if (s.spells.length > RULES.slots)
@@ -142,6 +151,7 @@ export class LocalGameGateway implements GameGateway {
                 resolveLobbyRound(s, bots);
                 this.bots = bots;
             }
+            else throw new Error('Unknown command.');
         }
         s.revision++;
         this.session = s;

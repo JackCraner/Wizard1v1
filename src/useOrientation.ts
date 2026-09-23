@@ -4,10 +4,10 @@ import * as Orientation from 'expo-screen-orientation';
 
 // Serialize native requests so a slow previous lock cannot override the new screen.
 let pending: Promise<void> = Promise.resolve();
-export function useOrientation(inGame: boolean) {
+export function useOrientation(inGame: boolean, enabled = true) {
   const [error, setError] = useState('');
   useEffect(() => {
-    if (Platform.OS === 'web') return;
+    if (Platform.OS === 'web' || !enabled) return;
     let current = true;
     const apply = () => {
       pending = pending.catch(() => {}).then(async () => {
@@ -23,6 +23,6 @@ export function useOrientation(inGame: boolean) {
     apply();
     const subscription = AppState.addEventListener('change', state => { if (state === 'active') apply(); });
     return () => { current = false; subscription.remove(); };
-  }, [inGame]);
+  }, [inGame, enabled]);
   return error;
 }

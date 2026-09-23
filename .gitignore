@@ -7,3 +7,5 @@ ios/
 *.tsbuildinfo
 .idea/
 tools/balance-lab/reports/
+.local-multiplayer/
+android/app/src/main/assets/local-web/

@@ -3,9 +3,9 @@ import { useEffect, useRef, useState } from 'react';
 import { AppState, BackHandler } from 'react-native';
 import type { Command, Difficulty, GameGateway, Session } from './game/model';
 
-export function useGame(gateway: GameGateway) {
-  const [session, setSession] = useState<Session | null>(null);
-  const [screen, setScreen] = useState<'menu' | 'game' | 'guide'>('menu');
+export function useGame(gateway: GameGateway, initialSession?: Session) {
+  const [session, setSession] = useState<Session | null>(initialSession ?? null);
+  const [screen, setScreen] = useState<'menu' | 'game' | 'guide'>(initialSession ? 'game' : 'menu');
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
   const [frame, setFrameState] = useState(0);
@@ -18,6 +18,14 @@ export function useGame(gateway: GameGateway) {
   const playback = useRef({key:'',remaining:1});
   const battle = session?.battle;
   const finished = !!battle && frame === battle.frames.length - 1;
+
+  useEffect(() => gateway.subscribe?.(next => {
+    setSession(previous => {
+      if (previous?.id === next.id && previous.revision >= next.revision) return previous;
+      return next;
+    });
+  }), [gateway]);
+  useEffect(() => { setFrame(0); setPaused(false); }, [session?.round, session?.phase]);
 
   useEffect(() => {
     const subscription = AppState.addEventListener('change', state => setActive(state === 'active'));
@@ -71,5 +79,6 @@ export function useGame(gateway: GameGateway) {
   }
 
   function step(delta:number) {setPaused(true);setFrame(value=>Math.max(0,Math.min((battle?.frames.length??1)-1,value+delta)));}
-  return { beat, paused, setPaused, step, active, session, screen, setScreen, busy, error, frame, setFrame, speed, setSpeed, battle, finished, start, act };
+  function cancelReady() { return request(async () => { if (gateway.cancelReady) setSession(await gateway.cancelReady()); }); }
+  return { beat, paused, setPaused, step, active, session, screen, setScreen, busy, error, frame, setFrame, speed, setSpeed, battle, finished, start, act, cancelReady };
 }
