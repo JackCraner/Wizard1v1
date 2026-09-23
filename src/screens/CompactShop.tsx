@@ -1,4 +1,5 @@
 import { palette, typography } from '../theme';
+import {TrophyIcon} from '../components/TrophyIcon';
 import {AttunementPanel} from '../components/Attunement';
 import {attunedDomains} from '../game/attunement';
 import { ShopSpellPreview } from './ShopSpellPreview';
@@ -82,7 +83,7 @@ export function CompactShop({ session, busy, act, onMenu, onLibrary, onLeaderboa
           <Pressable accessibilityRole="button" accessibilityLabel="Main menu" onPress={onMenu} style={s.nav}><Text style={s.navText}>‹</Text></Pressable>
           <View style={{ flex: 1 }}><Text style={s.eyebrow}>ROUND {String(session.round).padStart(2, '0')} · LV {session.level} · {botConfig.difficulties[session.difficulty].label.toUpperCase()}</Text><Text numberOfLines={1} adjustsFontSizeToFit minimumFontScale={.8} accessibilityRole="header" style={[s.title, tight && { fontSize: 18 }]}>The Arcane Emporium</Text></View>
           <View accessibilityLabel={`Health ${stats.health} of ${stats.health}`} style={[s.wallet,{backgroundColor:"#bd625b20"}]}><Text style={[s.coin,{color:palette.dangerText}]}>♥</Text><Text style={s.health}>{stats.health}</Text></View>
-          <Pressable accessibilityRole="button" accessibilityLabel={`Leaderboard. ${session.trophies} of ${session.lobby.trophiesToWin} trophies`} onPress={onLeaderboard} style={[s.wallet,{backgroundColor:"#bd9b5620"}]}><Text style={s.coin}>✦</Text><Text style={s.recordText}>{session.trophies}<Text style={{fontSize:13,color:"#d3bd8d"}}>/{session.lobby.trophiesToWin}</Text></Text></Pressable>
+          <Pressable accessibilityRole="button" accessibilityLabel={`Leaderboard. ${session.trophies} of ${session.lobby.trophiesToWin} trophies`} onPress={onLeaderboard} style={[s.wallet,{backgroundColor:"#bd9b5620"}]}><TrophyIcon/><Text style={s.recordText}>{session.trophies}<Text style={{fontSize:13,color:"#d3bd8d"}}>/{session.lobby.trophiesToWin}</Text></Text></Pressable>
           <Pressable accessibilityRole="button" onPress={onLibrary} style={s.nav}><Text style={s.navLabel}>Spells</Text></Pressable>
           <View accessibilityLabel={`${session.gold} gold`} style={s.wallet}><Text style={s.coin}>◈</Text><Text style={s.gold}>{session.gold}</Text></View>
           <Pressable accessibilityRole="button" accessibilityLabel={`Reroll for ${rollCost} gold`} disabled={busy || session.gold < rollCost} onPress={() => act({ type: 'reroll' })} style={({ pressed }) => [s.reroll, (busy || session.gold < rollCost) && s.disabled, pressed && s.pressed]}><Text style={s.rerollText}>⟳ Reroll  ·  {rollCost} ◈</Text></Pressable>
