@@ -257,6 +257,7 @@ export interface Session {
     rerolls: number;
     augments: string[];
     augmentOffers: string[];
+    augmentRerolledSlots?: number[];
     phase: 'shop' | 'result' | 'augment';
     wins: number;
     losses: number;
@@ -264,6 +265,9 @@ export interface Session {
 }
 export type Command = {
     type: 'reroll';
+} | {
+    type: 'rerollAugment';
+    slot: number;
 } | {
     type: 'chooseAugment';
     augment: string;

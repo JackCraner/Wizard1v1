@@ -32,7 +32,18 @@ export class LocalGameGateway implements GameGateway {
         if (s.lobby.finished)
             throw new Error('This game is complete. Start a new game.');
         const enterShop = () => { s.phase = 'shop'; s.round++; s.gold += shopIncome(s.augments); s.battle = null; s.rerolls = 0; s.augmentOffers = []; s.bonusMergeUsed = false; Object.assign(s, offersFor(s.round, 0, s.spells, s.augments, s.seed)); };
-        if (command.type === 'chooseAugment') {
+        if (command.type === 'rerollAugment') {
+            const slot = command.slot;
+            if (s.phase !== 'augment' || !Number.isInteger(slot) || slot < 0 || slot >= s.augmentOffers.length)
+                throw new Error('Augment slot unavailable.');
+            if (s.augmentRerolledSlots?.includes(slot)) throw new Error('This augment slot has already been rerolled.');
+            const excluded = [...new Set([...s.augments, ...s.augmentOffers])];
+            const replacement = augmentOffers(s.round, excluded, (s.seed ^ Math.imul(slot + 1, 104729)) >>> 0)[0];
+            if (!replacement) throw new Error('No other augments available.');
+            s.augmentOffers[slot] = replacement;
+            s.augmentRerolledSlots = [...(s.augmentRerolledSlots ?? []), slot];
+        }
+        else if (command.type === 'chooseAugment') {
             if (s.phase !== 'augment' || !s.augmentOffers.includes(command.augment) || s.augments.includes(command.augment))
                 throw new Error('Augment unavailable.');
             s.augments.push(command.augment);
@@ -53,6 +64,7 @@ export class LocalGameGateway implements GameGateway {
                     }
                 });
                 s.augmentOffers = augmentOffers(s.round, s.augments, s.seed);
+                s.augmentRerolledSlots = [];
                 this.bots = bots;
                 if (s.augmentOffers.length) {
                     s.phase = 'augment';
