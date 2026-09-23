@@ -9,7 +9,7 @@ import { spellVisual } from '../components/cards/spellVisual';
 import { castLabel } from '../config/catalogue';
 import { channelPower, RULES, SPELLS, spellAddReason } from '../game/engine';
 import type { Command, Session, SpellId } from '../game/model';
-import { canMerge, cardAt, UPGRADE_XP } from '../game/upgrades';
+import { cardAt, UPGRADE_XP } from '../game/upgrades';
 
 export type SpellSelection = { kind: 'shop'; id: SpellId; shopSlot: number } | { kind: 'hand'; index: number };
 const serif = typography.serif;
@@ -84,11 +84,11 @@ export function SpellDialog({ selection, session, busy, error, act, onClose, onS
               {!card.upgraded && card.upgrade && <><Text style={s.upgradeLabel}>AT {UPGRADE_XP} XP</Text><RulesText rules={upgradeSummary(card)} keywords={card.upgrade.keywords} fontSize={14} color="#e9d6ad" /></>}
             </View>
             {card.keywords.length > 0 && <><Pressable accessibilityRole="button" accessibilityState={{ expanded: showKeywords }} onPress={() => setShowKeywords(!showKeywords)} style={s.keywordToggle}><Text style={s.sectionTitle}>Keyword guide</Text><Text style={s.caption}>{showKeywords ? 'Hide −' : 'Show +'}</Text></Pressable>{showKeywords && <KeywordBoxes keywords={card.keywords} />}</>}
-            {session.spells.some((owned, i) => shop ? owned === id && (session.spellXp?.[i] ?? 0) < UPGRADE_XP : canMerge(session.spells, session.spellXp ?? [], i, selection.index)) && <View style={{ gap: 8 }}>
-              <Text style={s.eyebrow}>{shop ? 'OR UPGRADE AN OWNED COPY' : 'MERGE MATCHING COPIES'}</Text>
-              {session.spells.map((owned, i) => (shop ? owned === id && (session.spellXp?.[i] ?? 0) < UPGRADE_XP : canMerge(session.spells, session.spellXp ?? [], i, selection.index)) ?
-                <Button key={i} label={shop ? `Buy & merge · Slot ${i + 1} → ${Math.min(3,(session.spellXp?.[i] ?? 0) + 1)}/3 XP · ${price} gold` : `Consume slot ${i + 1} (${session.spellXp?.[i] ?? 0} XP) · Gain 1 XP`}
-                  disabled={busy || (shop && session.gold < price)} onPress={() => finish(shop ? { type: 'buy', spell: id, target: i, shopSlot: selection.shopSlot } : { type: 'merge', from: i, to: selection.index })} /> : null)}
+            {shop && session.spells.some((owned, i) => owned === id && (session.spellXp?.[i] ?? 0) < UPGRADE_XP) && <View style={{ gap: 8 }}>
+              <Text style={s.eyebrow}>OR UPGRADE AN OWNED COPY</Text>
+              {session.spells.map((owned, i) => owned === id && (session.spellXp?.[i] ?? 0) < UPGRADE_XP ?
+                <Button key={i} label={`Buy & merge · Slot ${i + 1} → ${Math.min(3,(session.spellXp?.[i] ?? 0) + 1)}/3 XP · ${price} gold`}
+                  disabled={busy || session.gold < price} onPress={() => finish({ type: 'buy', spell: id, target: i, shopSlot: selection.shopSlot })} /> : null)}
             </View>}
           </ScrollView>
         </View>

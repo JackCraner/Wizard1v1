@@ -1,30 +1,31 @@
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { LiftedPreview } from './LiftedPreview';
 import { liftedPreviewLayout, spellPreviewSize } from './liftedPreviewLayout';
-import type {CardBounds} from '../game/shopDrop';
+import {handDropIntent,type CardBounds} from '../game/shopDrop';
 import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { PanResponder, Platform, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
 import type { SpellId } from '../game/model';
 import { SPELLS } from '../game/engine';
-import { dropIndex } from '../game/handLayout';
 
-export function DraggableHand({ xp=[], mergeSpell, mergeTarget, onCardBounds, spells, disabled, renderCard, renderPreview, onInspect, onMove, onDrop, onDragPoint, onDragging, height = 172 }: {
+
+export function DraggableHand({ xp=[], mergeSpell, mergeTarget, onCardBounds, spells, disabled, renderCard, renderPreview, onInspect, onMove, onMerge, onDrop, onDragPoint, onDragging, height = 172 }: {
   renderPreview?: (id: SpellId, height: number, width: number, index?:number) => ReactNode;
   xp?:number[]; mergeSpell?:string; mergeTarget?:number; onCardBounds?:(bounds:CardBounds[])=>void;
   height?: number; spells: SpellId[]; disabled: boolean; renderCard: (id: SpellId, expanded?: boolean, index?:number) => ReactNode;
   onDrop?: (index:number,x:number,y:number)=>boolean; onDragPoint?: (x:number,y:number)=>void;
-  onInspect: (index: number) => void; onMove: (from: number, to: number) => void; onDragging: (dragging: boolean) => void;
+  onMerge?: (from:number,to:number)=>void; onInspect: (index: number) => void; onMove: (from: number, to: number) => void; onDragging: (dragging: boolean) => void;
 }) {
   const { height: screenHeight } = useWindowDimensions();
   const [width, setWidth] = useState(0);
-  const [drag, setDrag] = useState<{ from: number; to: number } | null>(null);
+  const [drag, setDrag] = useState<{ from: number; to: number; merge:boolean; slot:number } | null>(null);
   const handRef=useRef<View>(null);
+  const measured=useRef<CardBounds[]>([]);
   const count = Math.max(5, spells.length);
   const cardHeight = Math.max(42, height - 16);
   const cardWidth = Math.min(94, cardHeight * 2 / 3);
   const spacing = Math.min(77, Math.max(1, (width - cardWidth - 38) / (count - 1)));
   const start = (width - (cardWidth + spacing * (count - 1))) / 2;
-  const measureCards=()=>handRef.current?.measureInWindow((x,y)=>onCardBounds?.(spells.map((_,index)=>({index,x:x+start+spacing*index,y:y+6+Math.abs(index-(count-1)/2),width:cardWidth,height:cardHeight}))));
+  const measureCards=()=>handRef.current?.measureInWindow((x,y)=>{measured.current=spells.map((_,index)=>({index,x:x+start+spacing*index,y:y+6+Math.abs(index-(count-1)/2),width:cardWidth,height:cardHeight}));onCardBounds?.(measured.current);});
   useEffect(()=>{measureCards();},[width,height,spells.length,disabled]);
   useEffect(() => () => onDragging(false), [onDragging]);
   return <View ref={handRef} collapsable={false} onLayout={event => {setWidth(event.nativeEvent.layout.width);measureCards();}} style={[styles.hand, {height}]}>
@@ -33,14 +34,15 @@ export function DraggableHand({ xp=[], mergeSpell, mergeTarget, onCardBounds, sp
       const offset = index - (count - 1) / 2;
       const left = start + spacing * index;
       return id ? <DragCard key={`${index}-${id}`} id={id} index={index} left={left} top={6 + Math.abs(offset)} height={cardHeight}
-        xp={xp[index]??0} mergeEligible={mergeSpell===id&&(xp[index]??0)<3} mergeTarget={mergeTarget===index}
+        xp={xp[index]??0} mergeEligible={(mergeSpell===id||!!onMerge&&drag!==null&&drag.from!==index&&spells[drag.from]===id&&(xp[drag.from]??0)<3)&&(xp[index]??0)<3} mergeTarget={mergeTarget===index||!!drag?.merge&&drag.to===index}
         previewHeight={Math.min(240, screenHeight * .56)} width={cardWidth} angle={offset * 2.5} spacing={spacing} count={spells.length} disabled={disabled}
-        selected={drag?.from === index} target={drag?.to === index && drag.from !== index}
-        renderCard={renderCard} renderPreview={renderPreview} onInspect={onInspect} onMove={onMove} onDrop={onDrop} onDragPoint={onDragPoint}
-        onDrag={(target) => { setDrag(target === null ? null : { from: index, to: target }); onDragging(target !== null); }} />
+        selected={drag?.from === index} target={!!drag?.merge&&drag.to===index}
+        renderCard={renderCard} renderPreview={renderPreview} onInspect={onInspect} onMove={onMove} onMerge={onMerge} getIntent={(from,x,y)=>handDropIntent(measured.current,spells,xp,from,x,y)} onDrop={onDrop} onDragPoint={onDragPoint}
+        onDrag={(target) => { setDrag(target === null ? null : { from: index, ...target }); onDragging(target !== null); }} />
         : <View key={`empty-${index}`} pointerEvents="none" style={[styles.empty, { left, top: 6 + Math.abs(offset), height: cardHeight, width: cardWidth, transform: [{ rotate: `${offset * 2.5}deg` }] }]}><Text style={styles.emptyText}>✧</Text></View>;
     })}
-    {drag && <Text pointerEvents="none" style={styles.destination}>Release to place in slot {drag.to + 1}</Text>}
+    {drag&&!drag.merge&&drag.to!==drag.from&&<View pointerEvents="none" style={{position:'absolute',left:start+spacing*(drag.slot-.5)+cardWidth/2-2,top:0,bottom:12,width:3,backgroundColor:'#ffe19a',zIndex:99,borderRadius:2}}/>}
+    {drag && <Text pointerEvents="none" style={styles.destination}>Release to {drag.merge?'merge copies':'place in slot '+(drag.to+1)}</Text>}
   </View>;
 }
 
@@ -51,7 +53,7 @@ function DragCard(props: {
   previewHeight: number;
   disabled: boolean; selected: boolean; target: boolean; renderCard: (id: SpellId, expanded?: boolean, index?:number) => ReactNode;
   onDrop?: (index:number,x:number,y:number)=>boolean; onDragPoint?: (x:number,y:number)=>void;
-  onInspect: (i: number) => void; onMove: (from: number, to: number) => void; onDrag: (target: number | null) => void;
+  onInspect: (i: number) => void; onMove: (from: number, to: number) => void; onMerge?: (from:number,to:number)=>void; getIntent:(from:number,x:number,y:number)=>ReturnType<typeof handDropIntent>; onDrag: (target: ReturnType<typeof handDropIntent> | null) => void;
 }) {
   const latest = useRef(props); latest.current = props;
   const cardRef = useRef<View>(null);
@@ -70,9 +72,9 @@ function DragCard(props: {
   const lift = () => {
     if (!active.current || latest.current.disabled) return;
     lifted.current = true;
-    latest.current.onDrag(from.current);
+    latest.current.onDrag(latest.current.getIntent(from.current,touch.current.x,touch.current.y));
   };
-  const finish = (dx: number, cancelled: boolean, x=0, y=0) => {
+  const finish = (_dx: number, cancelled: boolean, x=0, y=0) => {
     clearHold();
     if (!active.current) return;
     active.current = false;
@@ -84,7 +86,8 @@ function DragCard(props: {
     if (cancelled || p.disabled) return;
     if (wasLifted) {
       if(p.onDrop?.(from.current,x,y))return;
-      const to = dropIndex(from.current, dx, p.spacing, p.count);
+      const {to,merge}=p.getIntent(from.current,x,y);
+      if(merge&&p.onMerge){p.onMerge(from.current,to);return;}
       if (to !== from.current) p.onMove(from.current, to);
     } else p.onInspect(p.index);
   };
@@ -109,7 +112,7 @@ function DragCard(props: {
         // Keep horizontal reordering steady; lift further if the thumb moves upward.
         setPoint({ x: gesture.moveX, y: Math.min(startY.current, gesture.moveY) });
         latest.current.onDragPoint?.(gesture.moveX,gesture.moveY);
-        latest.current.onDrag(dropIndex(from.current, gesture.dx, latest.current.spacing, latest.current.count));
+        latest.current.onDrag(latest.current.getIntent(from.current,gesture.moveX,gesture.moveY));
       }
     },
     onPanResponderRelease: (_, gesture) => finish(gesture.dx, false, touch.current.x, touch.current.y),
@@ -122,7 +125,7 @@ function DragCard(props: {
   const position = liftedPreviewLayout(point.x, point.y, previewWidth, previewSize.height, viewport);
   return <View ref={cardRef} collapsable={false} onLayout={measure} {...responder.panHandlers} accessible accessibilityRole="button"
     accessibilityLabel={"Slot " + (props.index + 1) + ": " + SPELLS[props.id].name + ". Inspect or reorder"}
-    accessibilityHint="Hold to enlarge, then drag left or right to reorder. Tap for details."
+    accessibilityHint="Hold to enlarge, then drag between cards to reorder or onto a matching copy to merge. Tap for details."
     accessibilityState={{ disabled: props.disabled }}
     onAccessibilityTap={() => !props.disabled && props.onInspect(props.index)}
     {...(Platform.OS === 'web' ? { tabIndex: 0, onKeyDown: (event: { key: string; preventDefault: () => void }) => {
