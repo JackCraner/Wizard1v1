@@ -32,7 +32,7 @@ export function CombatScreen({game}:{game:ReturnType<typeof useGame>}){
     {oath&&<Text numberOfLines={1} style={{color:'#ffe0a0',fontSize:9}}>Oath · {oath.condition==='safe'?'No Health loss':oath.condition==='damage100'?'Deal 100+ direct damage':'No direct damage'} · {oath.remaining} spell{oath.remaining===1?'':'s'}</Text>}
     <View style={{position:'absolute',bottom:0,left:'12%',right:'12%',height:36,alignItems:'center'}}><CastBar fighter={u} compact={compact} finished={finished} tick={frame} speed={speed} playing={playing}/></View>
    </View>;})}
-   <DamageNumbers frame={current} playing={game.active&&!game.paused} speed={speed}/>
+   <DamageNumbers compact={compact} frame={current} playing={game.active&&!game.paused} speed={speed}/>
    {finished&&<CombatResult outcome={battle.outcome} level={session.level} compact={compact}/>}
   </View>
   <CombatSequence fighter={current.player} side="player" frame={current} compact={compact} speed={speed} playing={playing} onInspect={inspect}/>

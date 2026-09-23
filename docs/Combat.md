@@ -63,3 +63,5 @@ Each fighter reserves an Imp slot on their inner side beside equally sized buff/
 Heat uses the same compact, pausable icon pulse as Tide when five stacks are ready or an Empowered cast is active. Spent zero counts stay hidden without changing chip size; no expanded Heat receipt occupies the buff row.
 
 At each level-up, each augment offer slot has one free reroll. Replacements use the run seed and exclude owned augments and all currently displayed choices. A used slot stays disabled until the next level-up; choosing an augment still ends the reward phase.
+
+The main floating-number region sits below the status boxes and includes all damage and healing events, including Trigger chains and Imp targets. Imp panels retain their local damage readout. Compact combat cards reserve space for the two-row number region above the cast bars.
