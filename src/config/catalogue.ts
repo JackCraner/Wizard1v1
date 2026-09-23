@@ -7,7 +7,8 @@ import afflictionCards from './affliction/spell.json';
 const rawCards = [...natureCards, ...waterCards, ...fireCards, ...holyCards, ...afflictionCards];
 import rawKeywords from './keywords.json';
 
-export type Domain = 'nature' | 'water' | 'fire' | 'holy' | 'affliction';
+export const DOMAINS = ['nature', 'water', 'fire', 'holy', 'affliction'] as const;
+export type Domain = typeof DOMAINS[number];
 export interface CardDefinition {
   instantWhen?: 'noHeatConsumed'|'previousHeat';
   xp?: number; upgraded?: boolean;

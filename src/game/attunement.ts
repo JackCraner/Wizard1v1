@@ -1,13 +1,7 @@
-import { CARD_BY_ID, KEYWORDS, type Domain } from '../config/catalogue';
+import { CARD_BY_ID, KEYWORDS, DOMAINS, type Domain } from '../config/catalogue';
 import settings from '../config/rules.json';
 import type { Effect } from './model';
 
-export const DOMAIN_COLORS: Record<Domain, string> = {
-    nature: '#81cf68', water: '#64c9ef', fire: '#ff7864', holy: '#edc565', affliction: '#bf8feb',
-};
-export const DOMAIN_INK: Record<Domain, string> = {
-    nature: '#286721', water: '#075b83', fire: '#a52b20', holy: '#765000', affliction: '#713592',
-};
 export const KEYWORD_DOMAINS: Record<string, Domain> = {
     poison: 'nature', regeneration: 'nature', heat: 'fire',
     tide:'water', oath:'holy', summon:'affliction', curse:'affliction',
@@ -54,7 +48,7 @@ export function requiredDomains(effects: readonly Effect[]): Domain[] {
 }
 export function keywordDomain(word: string): Domain | undefined {
     const lower = word.toLowerCase();
-    if (lower in DOMAIN_COLORS) return lower as Domain;
+    if (DOMAINS.includes(lower as Domain)) return lower as Domain;
     return Object.entries(KEYWORD_DOMAINS).find(([id]) =>
         [KEYWORDS[id]?.name, ...(KEYWORDS[id]?.aliases ?? [])].some(name => name?.toLowerCase() === lower))?.[1];
 }

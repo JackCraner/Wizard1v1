@@ -1,11 +1,11 @@
+import { combatColors, DOMAIN_COLORS } from '../theme';
 import { cardAt } from '../game/upgrades';
 import { activeSpellIndices } from '../game/rotation';
 import { useEffect, useRef } from 'react';
 import { Animated, Easing, Text, View } from 'react-native';
-import { SPELLS } from '../game/engine';
 import type { Fighter } from '../game/model';
 import { COMBAT_TICK_MS } from '../game/playback';
-import { DOMAIN_COLORS } from '../game/attunement';
+
 
 export function CastBar({fighter,tick,speed,playing,finished,compact}:{fighter:Fighter;tick:number;speed:number;playing:boolean;finished:boolean;compact:boolean}) {
   const fill=useRef(new Animated.Value(0)).current;
@@ -33,7 +33,7 @@ export function CastBar({fighter,tick,speed,playing,finished,compact}:{fighter:F
   const label=finished?'Duel complete':empty?'No spells remaining':stunned?'Stunned · rotation paused':reshuffling?'Reshuffling':spell?.name??'Ready';
   const detail=finished||empty?'':stunned?`${fighter.statuses.stun}T`:reshuffling?`${fighter.reshuffleRemaining}T`:`${remaining}T`;
   const powerLabel=cast&&!finished&&!skipped?[cast.empowered?'♨ Empowered':'',cast.echoPower!==undefined?'≈ Echo '+Math.floor(cast.echoPower*100)+'%':''].filter(Boolean).join(' · '):'';
-  const accent=cast?.empowered?'#ffb955':cast?.echoPower!==undefined?'#79dfff':stunned?'#d6a1e8':spell?DOMAIN_COLORS[spell.domain]:'#e5c16a';
+  const accent=cast?.empowered?combatColors.empowered:cast?.echoPower!==undefined?combatColors.echo:stunned?'#d6a1e8':spell?DOMAIN_COLORS[spell.domain]:'#e5c16a';
   return <View accessibilityRole="progressbar" accessibilityLabel={`${label}, ${detail}${powerLabel?`, ${powerLabel}`:''}`} accessibilityValue={{min:0,max:100,now:Math.round(start*100)}} style={{position:'absolute',bottom:2,height:compact?32:38,width:'128%',borderRadius:7,overflow:'hidden',borderWidth:1,borderColor:finished?'#7d7054':accent,backgroundColor:'#111720f2',boxShadow:finished?'none':`0 0 8px ${accent}44`}}>
     <Animated.View style={{position:'absolute',top:0,bottom:0,left:0,width:fill.interpolate({inputRange:[0,1],outputRange:['0%','100%']}),backgroundColor:accent,opacity:.36,borderRightWidth:2,borderRightColor:'#fff2cf'}} />
     <View pointerEvents="none" style={{position:'absolute',left:0,right:0,top:0,height:1,backgroundColor:'#ffffff66'}} />

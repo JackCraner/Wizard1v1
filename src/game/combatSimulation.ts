@@ -1,4 +1,4 @@
-import { RULES, fighter, channelPower, validateDeck } from './engine';
+import { RULES, channelPower, validateDeck } from './engine';
 import { cardAt } from './upgrades';
 import { activeSpellIndices } from './rotation';
 import { effectEnabled } from './attunement';
@@ -127,7 +127,7 @@ export function simulate(player:Fighter,bot:Fighter,_seed=RULES.seed):Battle {
    if(c.breaks&&!(u.broken??=[]).includes(c.index)){u.broken.push(c.index);state(side,c.index).armed=false;note(side,'fragile','BROKEN',c.index);}
    completions.push({c,echo,oldOath,effects});events.push({side,index:cast.index,spell:def.id,status:'cast',critical:!!c.critical,xp:u.spellXp?.[cast.index]??0,repeats:echo?2:1,details:[...(cast.instant?['Instant']:[]),...(c.empowered?['Empowered']:[]),...(echo?[`Echo ${cast.echoPower!*100}%`]:[]),...(state(side,cast.index).awakened?['Awakened']:[])]});
   }flush();
-  for(const {c,echo,oldOath,effects}of completions){const u=f[c.side],def=card(c.side,c.index);if(u.health<=0)continue;
+  for(const {c,echo,oldOath}of completions){const u=f[c.side],def=card(c.side,c.index);if(u.health<=0)continue;
    if(oldOath&&u.memory.sequenceOath===oldOath){const dealt=(c.damage??0)+(echo?.damage??0),failed=oldOath.failed||oldOath.condition==='noDamage'&&dealt>0||oldOath.condition==='damage100'&&dealt<100;if(failed){delete u.memory.sequenceOath;note(c.side,'oath','Oath failed',oldOath.index);}else if(--oldOath.remaining===0){delete u.memory.sequenceOath;u.memory.oathCompleted=true;execute(oldOath.effects,context(c.side,oldOath.index));note(c.side,'oath','OATH COMPLETE',oldOath.index);trigger(c.side,'oath',false,{side:c.side,kind:'spell',index:oldOath.index});}}
    if(echo){trigger(c.side,'echo',false,{side:c.side,kind:'spell',index:c.index});flush();if(rules(c.side).echoRetrigger&&u.memory.echoCycle!==u.cycle){u.memory.echoCycle=u.cycle;retrigger(context(c.side,activeSpellIndices(u).find(i=>state(c.side,i).rules?.includes('echoRetrigger'))??c.index),{kind:'retrigger'});}}
    if(c.freeHeat&&rules(c.side).livingFlameHeat)add(c.side,'heat',rules(c.side).livingFlameHeat,c.side,c);

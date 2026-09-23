@@ -45,8 +45,8 @@ Start level 1 at 500 Health. After every two rounds, all players gain a level, 1
 
 Momentum now Empowers the spell after three consecutive printed 1T completions. Blood Infusion grants 1 Heat on self Health loss. Criticality grants 2 Heat on the first Critical spell each Cycle. Tough Skin grants 40 Ward when Guard blocks damage. Hot Stuff applies its existing +10% outgoing/incoming damage while Heat is held.
 
-Full values: [spells](../../docs/Current_Spell_Reference.md) and [augments](../../docs/Current_Augment_Reference.md).
+Full values: [spell and augment reference](Spell_and_Augment_Reference.md).
 
-## Development previews
+## Playback feedback
 
-Development web builds accept `?combat-lab=fire`, `water`, `nature`, `holy`, `chains` or `ward`. The new `chains` and `ward` fixtures exercise the revised cross-domain event network. Start a new game to play a reproducible upgraded six-card duel using the normal playback, inspection and timeline controls. Production builds always use the ordinary game gateway. These previews do not persist a run.
+Trigger darts follow causal parents: siblings travel concurrently, later hops wait for their parent, and separate chains run together. Each chain fits one playback tick. Faint trails retain earlier hops. Self/Cycle activations use an exclamation hop; damage numbers and darts pause with playback. See [development previews](Development.md#browser-validation).

@@ -14,7 +14,9 @@
     "build": "tsc --noEmit && expo export --platform all",
     "test": "vitest run",
     "balance": "node tools/balance-lab/run.cjs",
-    "balance:test": "node --test tools/balance-lab/checks.cjs"
+    "balance:test": "node --test tools/balance-lab/checks.cjs",
+    "docs:generate": "node tools/refresh-spell-reference.cjs",
+    "docs:check": "node tools/refresh-spell-reference.cjs --check"
   },
   "dependencies": {
     "expo": "~57.0.24",

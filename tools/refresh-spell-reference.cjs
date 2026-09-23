@@ -1,17 +1,25 @@
-// Keep the editable reference in sync with the shipping card catalogue.
-const fs=require('fs');
-const domains=['nature','water','fire','affliction','holy'];
-const label=n=>n===0?'Instant':`${n}T`;
-let md='# Current spell reference\n\nUpdated 23 September 2026. **130 spells — 26 per Domain.** Six combat slots. Shopping may temporarily hold extra spells; reduce to six before battle. Bracketed clauses require the named Domain attunement. Upgrade columns show the complete upgraded effect. All calculated values round down.\n\nTriggers start Dormant. A copy arms after its first completed cast and its entire event chain. Armed Triggers can chain and each copy fires at most once per tick. Retrigger repeats the latest eligible Armed Trigger this Cycle without starting further Trigger chains.\n\n';
-let index='# Spell catalogue\n\n130 spells. Gold price equals stars + 1. See [complete spell and upgrade reference](../../docs/Current_Spell_Reference.md).\n\n';
-for(const d of domains){
- const cards=JSON.parse(fs.readFileSync(`src/config/${d}/spell.json`,'utf8'));
- const title=d[0].toUpperCase()+d.slice(1);
- md+=`## ${title}\n\n| Stars | Spell | Cast | Base | Upgrade cast | Upgrade |\n| --- | --- | --- | --- | --- | --- |\n`;
- index+=`## ${title}\n\n`;
- for(const c of cards){md+=`| ${'★'.repeat(c.stars)} | ${c.name} | ${label(c.castTicks)} | ${c.rules} | ${label(c.upgrade.castTicks)} | ${c.upgrade.rules} |\n`;index+=`- ${'★'.repeat(c.stars)} **${c.name}** (${label(c.castTicks)}) — ${c.rules}\n`;}
- md+='\n';index+='\n';
+const fs = require('fs');
+const path = require('path');
+const root = path.resolve(__dirname, '..');
+const read = relative => JSON.parse(fs.readFileSync(path.join(root, relative), 'utf8'));
+const domains = ['nature', 'water', 'fire', 'affliction', 'holy'];
+const catalogue = domains.map(domain => ({domain, cards: read(`src/config/${domain}/spell.json`)}));
+const augments = read('src/config/augments.json');
+const rules = read('src/config/rules.json');
+const cell = value => String(value).replaceAll('|', '\\|').replace(/\r?\n/g, '<br>');
+const cast = ticks => ticks === 0 ? 'Instant' : ticks == null ? '—' : `${ticks}T`;
+let md = `# Spell and augment reference\n\nGenerated from the shipping JSON catalogue. Edit the source configuration, then run \`npm run docs:generate\`; do not edit these tables by hand.\n\n**${catalogue.reduce((n, d) => n + d.cards.length, 0)} spells · ${augments.length} augments · ${rules.slots} combat slots.** Shopping can temporarily hold extra spells; reduce to the combat limit before battle. Bracketed clauses require the named Domain attunement. Upgrade columns show the complete upgraded effect. Gold price equals stars + 1. Calculated outcomes round down. See [combat rules](Combat.md) for timing and shared mechanics.\n\n`;
+for (const {domain, cards} of catalogue) {
+  md += `## ${domain[0].toUpperCase() + domain.slice(1)}\n\n| Stars | Spell | Cast | Base | Upgrade cast | Upgrade |\n| --- | --- | --- | --- | --- | --- |\n`;
+  for (const c of cards) md += `| ${'★'.repeat(c.stars)} | ${cell(c.name)} | ${cast(c.castTicks)} | ${cell(c.rules)} | ${cast(c.upgrade.castTicks)} | ${cell(c.upgrade.rules)} |\n`;
+  md += '\n';
 }
-fs.writeFileSync('docs/Current_Spell_Reference.md',md.trimEnd()+'\n');
-fs.writeFileSync('docs/Spell_and_Augment_Reference.md',md+'\n---\n\n'+fs.readFileSync('docs/Current_Augment_Reference.md','utf8'));
-fs.writeFileSync('src/config/CARDS.md',index.trimEnd()+'\n');
+md += `## Augments\n\nAll augments are available to every build. Every ${rules.augmentEvery} completed rounds grants a level and an augment choice. Duplicate augments cannot be owned.\n\n| Augment | Effect |\n| --- | --- |\n`;
+for (const augment of augments) md += `| ${cell(augment.name)} | ${cell(augment.description)} |\n`;
+const target = path.join(root, 'docs/Spell_and_Augment_Reference.md');
+if (process.argv.includes('--check')) {
+  if (!fs.existsSync(target) || fs.readFileSync(target, 'utf8') !== md) {
+    console.error('Reference is out of date. Run npm run docs:generate.');
+    process.exitCode = 1;
+  }
+} else fs.writeFileSync(target, md);

@@ -2,7 +2,7 @@ import {attunedDomains} from './attunement';
 import { deckXp } from './upgrades';
 import { prepareBot, botFighter, type BotStates } from './botAI';
 import settings from '../config/tournament.json';
-import { fighter, RULES, simulate } from './engine';
+import { fighter, simulate } from './engine';
 import type { Lobby, Session, SpellId } from './model';
 
 export function createLobby():Lobby {

@@ -1,7 +1,8 @@
+import { palette } from '../theme';
 import { Platform, StyleSheet, Text, View } from 'react-native';
 
 const results = {
-  victory: { title: 'VICTORY', color: '#ffe19a', wash: '#463815b8', emblem: '✦' },
+  victory: { title: 'VICTORY', color: palette.gold, wash: '#463815b8', emblem: '✦' },
   draw: { title: 'DRAW', color: '#c4e2f0', wash: '#213d4bb8', emblem: '◇' },
   defeat: { title: 'LOST', color: '#ffb3a6', wash: '#4d2427b8', emblem: '✧' },
 };

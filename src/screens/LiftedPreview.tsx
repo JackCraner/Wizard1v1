@@ -1,3 +1,4 @@
+import { palette } from '../theme';
 import { useEffect, useRef, type ReactNode } from 'react';
 import { AccessibilityInfo, Animated, Easing, Platform } from 'react-native';
 
@@ -18,6 +19,6 @@ export function LiftedPreview({ left, top, width, height, children }: {
     zIndex: 1000, elevation: 30, opacity: progress, transform: [
       { translateY: progress.interpolate({ inputRange: [0, 1], outputRange: [12, 0] }) },
       { scale: progress.interpolate({ inputRange: [0, 1], outputRange: [.94, 1] }) },
-    ], shadowColor: '#000', shadowOpacity: .8, shadowRadius: 18, shadowOffset: { width: 0, height: 8 },
+    ], shadowColor: palette.black, shadowOpacity: .8, shadowRadius: 18, shadowOffset: { width: 0, height: 8 },
   }}>{children}</Animated.View>;
 }

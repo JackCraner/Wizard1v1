@@ -1,3 +1,4 @@
+import { combatColors, palette } from '../theme';
 import {createContext,useCallback,useContext,useEffect,useRef,useState,type ReactNode} from 'react';
 import {AccessibilityInfo,StyleSheet,View,type ViewProps} from 'react-native';
 import Svg,{Circle,Path} from 'react-native-svg';
@@ -23,12 +24,12 @@ function Dart({link,progress,complete,reducedMotion}:{link:Link;progress:number;
  const control=length<5?{x:from.x+42,y:from.y-46}:{x:(from.x+to.x)/2,y:(from.y+to.y)/2-(Math.abs(dy)<40?(link.retrigger?50:28):18)};
  const at=(t:number)=>({x:(1-t)**2*from.x+2*(1-t)*t*control.x+t*t*to.x,y:(1-t)**2*from.y+2*(1-t)*t*control.y+t*t*to.y});
  const head=at(Math.max(0,Math.min(1,progress/.85))),tail=at(Math.max(0,Math.min(1,progress/.85)-.23));
- const color=link.retrigger?'#efb4ff':'#8ffff0',opacity=reducedMotion?.6:progress<0?0:progress<.85?1:Math.max(0,(1-progress)/.15);
+ const color=link.retrigger?combatColors.retrigger:combatColors.dart,opacity=reducedMotion?.6:progress<0?0:progress<.85?1:Math.max(0,(1-progress)/.15);
  const path=`M ${from.x} ${from.y} Q ${control.x} ${control.y} ${to.x} ${to.y}`;
  return <>
   <Path d={path} stroke={color} strokeWidth={3} opacity={progress>=1&&!complete?.18:opacity*.65} fill="none"/>
   {!reducedMotion&&<Path d={`M ${tail.x} ${tail.y} L ${head.x} ${head.y}`} stroke={color} strokeWidth={11} strokeLinecap="round" opacity={opacity*.45}/>}
-  <Circle cx={head.x} cy={head.y} r={5} fill="#ffffff" stroke={color} strokeWidth={2} opacity={opacity}/>
+  <Circle cx={head.x} cy={head.y} r={5} fill={palette.white} stroke={color} strokeWidth={2} opacity={opacity}/>
   <Circle cx={to.x} cy={to.y} r={progress>.85?6+(progress-.85)*60:4} stroke={color} strokeWidth={2} fill="none" opacity={opacity}/>
  </>;
 }

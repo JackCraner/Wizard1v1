@@ -1,4 +1,4 @@
-import { cardAges } from '../game/attunement';
+import {cardAges} from '../game/attunement';
 import { deckXp, mergeCards, UPGRADE_XP } from '../game/upgrades';
 import { BOT_CONFIG, createBotStates, grantBotAugment, type BotStates } from '../game/botAI';
 import { createLobby, resolveLobbyRound } from '../game/tournament';
@@ -6,7 +6,7 @@ import { offersFor, rerollCost } from '../game/shop';
 import { augmentOffers, shopIncome, trashRefund } from '../game/augments';
 import { cloneSnapshot } from '../game/clone';
 import { spellAddReason, RULES, SPELLS } from '../game/engine';
-import type { Command, Difficulty, GameGateway, Session, SpellId } from '../game/model';
+import type { Command, Difficulty, GameGateway, Session } from '../game/model';
 // IDs are local-only; a remote adapter receives its IDs from the server.
 let nextSessionId = 0;
 export class LocalGameGateway implements GameGateway {

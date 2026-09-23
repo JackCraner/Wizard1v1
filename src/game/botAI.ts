@@ -48,7 +48,7 @@ export function scoreBotDeck(deck: SpellId[], strategy: number, xp: number[] = [
         return sum + value / Math.max(1, c.castTicks ?? 1) + (xp[index] ?? 0) % 3 * 8 + (profile.domains.includes(c.domain) ? 8 : 0);
     }, 0);
 }
-export function grantBotAugment(state: BotState, deck: SpellId[], round: number, index: number, runSeed = RULES.seed) {
+export function grantBotAugment(state: BotState, _deck: SpellId[], round: number, index: number, runSeed = RULES.seed) {
     if (round % RULES.augmentEvery || state.lastRewardRound >= round)
         return;
     const offers = augmentOffers(round, state.augments, runSeed + index * 101);

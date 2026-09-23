@@ -1,8 +1,9 @@
+import { palette, typography } from '../theme';
 import { trashRefund } from '../game/augments';
 import { upgradeSummary } from '../game/cardText';
 import {attunedDomains} from '../game/attunement';
 import { useEffect, useRef, useState } from 'react';
-import { Modal, Platform, Pressable, ScrollView, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
+import { Modal, Pressable, ScrollView, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
 import { KeywordBoxes, RulesText, SpellCard } from '../components/cards/SpellCard';
 import { spellVisual } from '../components/cards/spellVisual';
 import { castLabel } from '../config/catalogue';
@@ -11,7 +12,7 @@ import type { Command, Session, SpellId } from '../game/model';
 import { canMerge, cardAt, UPGRADE_XP } from '../game/upgrades';
 
 export type SpellSelection = { kind: 'shop'; id: SpellId; shopSlot: number } | { kind: 'hand'; index: number };
-const serif = Platform.select({ ios: 'Georgia', android: 'serif', default: 'Georgia, serif' });
+const serif = typography.serif;
 
 function Button({ label, onPress, disabled, primary, danger }: {
   label: string; onPress: () => void; disabled?: boolean; primary?: boolean; danger?: boolean;
@@ -73,7 +74,7 @@ export function SpellDialog({ selection, session, busy, error, act, onClose, onS
           <ScrollView style={s.scroll} contentContainerStyle={[s.details,compact&&{padding:12,gap:10}]}>
             {compact ? <Text style={s.caption}>{castLabel(card.castTicks)} cast · {shop ? `${price} gold` : `${xp}/${UPGRADE_XP} XP`}</Text> : <View style={s.stats}>
               <View style={s.stat}><Text style={s.statValue}>{castLabel(card.castTicks)}</Text><Text style={s.caption}>Cast time</Text></View>
-              <View style={s.stat}><Text style={[s.statValue, { color: '#efd088' }]}>{shop ? price : `${xp}/${UPGRADE_XP}`}</Text><Text style={s.caption}>{shop ? 'Gold' : 'Upgrade XP'}</Text></View>
+              <View style={s.stat}><Text style={[s.statValue, { color: palette.goldBright }]}>{shop ? price : `${xp}/${UPGRADE_XP}`}</Text><Text style={s.caption}>{shop ? 'Gold' : 'Upgrade XP'}</Text></View>
             </View>}
             <View style={[s.effect,compact&&{gap:4}]}><Text style={s.eyebrow}>SPELL EFFECT</Text><RulesText card={card} domains={attunedDomains(session.spells,session.spellAcquired)} rules={card.rules} keywords={card.keywords} fontSize={16} color="#f2e6d0" /></View>
             {!shop && selection.kind === 'hand' && card.keywords.includes('channel') && <Text style={s.caption}>Channel X = {channelPower(session.spells, selection.index)} in this position</Text>}
@@ -94,7 +95,7 @@ export function SpellDialog({ selection, session, busy, error, act, onClose, onS
         <View style={[s.footer,compact&&{paddingVertical:6,gap:4}]}>
           {!!error && <Text accessibilityRole="alert" style={s.warning}>{error}</Text>}
           {shop ? <>
-            <View style={s.row}><Text style={s.caption}>Your gold: <Text style={{ color: '#efd088' }}>{session.gold}</Text></Text><Text style={s.caption}>{session.spells.length}/{RULES.slots} spell slots</Text></View>
+            <View style={s.row}><Text style={s.caption}>Your gold: <Text style={{ color: palette.goldBright }}>{session.gold}</Text></Text><Text style={s.caption}>{session.spells.length}/{RULES.slots} spell slots</Text></View>
             {!!purchaseReason && <Text style={s.warning}>{purchaseReason}</Text>}
             {!purchaseReason && session.spells.length >= RULES.slots && <Text style={s.warning}>You can buy this spell. Reduce your hand to {RULES.slots} before battle.</Text>}
             <Button primary label={`Buy ${card.name} · ${price} gold`} disabled={busy || !!purchaseReason} onPress={() => finish({ type: 'buy', spell: id, shopSlot: selection.shopSlot })} />
@@ -112,17 +113,17 @@ export function SpellDialog({ selection, session, busy, error, act, onClose, onS
 const s = StyleSheet.create({
   shade: { flex: 1, justifyContent: 'center', alignItems: 'center', padding: 24, backgroundColor: '#080604c9' },
   panel: { width: '100%', maxWidth: 800, backgroundColor: '#211c15', borderWidth: 1, borderColor: '#746044', borderTopWidth: 3, borderRadius: 14, overflow: 'hidden', boxShadow: '0 20px 70px #0009' },
-  header: { flexDirection: 'row', alignItems: 'center', gap: 12, paddingHorizontal: 22, paddingVertical: 14, borderBottomWidth: 1, borderBottomColor: '#443829' },
+  header: { flexDirection: 'row', alignItems: 'center', gap: 12, paddingHorizontal: 22, paddingVertical: 14, borderBottomWidth: 1, borderBottomColor: palette.brownBorder },
   eyebrow: { color: '#b8a88b', fontSize: 11, fontWeight: '700', letterSpacing: 1.4 },
   title: { color: '#faebc9', fontFamily: serif, fontSize: 30 },
-  close: { width: 44, height: 44, borderRadius: 22, backgroundColor: '#30291f', alignItems: 'center', justifyContent: 'center' },
+  close: { width: 44, height: 44, borderRadius: 22, backgroundColor: palette.warmSurface, alignItems: 'center', justifyContent: 'center' },
   closeText: { color: '#dfceb0', fontSize: 28 },
   body: { flexDirection: 'row', flexShrink: 1, minHeight: 0 },
   art: { padding: 22, gap: 16, alignItems: 'center', justifyContent: 'center', backgroundColor: '#18150f' },
   scroll: { flex: 1, minWidth: 0 },
   details: { padding: 20, gap: 18 },
   stats: { flexDirection: 'row', gap: 8 },
-  stat: { flex: 1, gap: 4, alignItems: 'center', paddingVertical: 10, backgroundColor: '#30291f', borderRadius: 7 },
+  stat: { flex: 1, gap: 4, alignItems: 'center', paddingVertical: 10, backgroundColor: palette.warmSurface, borderRadius: 7 },
   statValue: { color: '#efe2c9', fontFamily: serif, fontSize: 22 },
   caption: { color: '#c2b297', fontSize: 12, lineHeight: 18 },
   effect: { gap: 12, paddingVertical: 2 },
@@ -132,8 +133,8 @@ const s = StyleSheet.create({
   progress: { flexDirection: 'row', gap: 5 },
   segment: { flex: 1, height: 5, borderRadius: 3, backgroundColor: '#514532' },
   upgradeLabel: { color: '#dfbd77', fontSize: 11, fontWeight: '600' },
-  keywordToggle: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', minHeight: 44, borderBottomWidth: 1, borderBottomColor: '#443829' },
-  footer: { paddingHorizontal: 22, paddingVertical: 12, gap: 8, borderTopWidth: 1, borderTopColor: '#443829', backgroundColor: '#272117' },
+  keywordToggle: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', minHeight: 44, borderBottomWidth: 1, borderBottomColor: palette.brownBorder },
+  footer: { paddingHorizontal: 22, paddingVertical: 12, gap: 8, borderTopWidth: 1, borderTopColor: palette.brownBorder, backgroundColor: '#272117' },
   button: { minHeight: 44, paddingHorizontal: 12, paddingVertical: 10, backgroundColor: '#353025', borderWidth: 1, borderColor: '#796344', borderRadius: 7, justifyContent: 'center', alignItems: 'center' },
   primary: { backgroundColor: '#28513b', borderColor: '#86ac77', minHeight: 48 },
   danger: { backgroundColor: '#512c26', borderColor: '#976051' },

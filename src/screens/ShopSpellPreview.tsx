@@ -1,4 +1,5 @@
-import {keywordDomain,DOMAIN_COLORS} from '../game/attunement';
+import { DOMAIN_COLORS } from '../theme';
+import {keywordDomain} from '../game/attunement';
 import type {Domain} from '../config/catalogue';
 import { Text, View } from 'react-native';
 import { RulesText, SpellCard } from '../components/cards/SpellCard';

@@ -1,12 +1,13 @@
+import { palette, typography } from '../theme';
 import { useEffect, useRef, useState } from 'react';
 import {
-  AccessibilityInfo, Animated, AppState, Easing, Image, Platform,
+  AccessibilityInfo, Animated, AppState, Easing, Image, 
   Pressable, StyleSheet, Text, useWindowDimensions, View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 const background = require('../../assets/MainBackground.png');
-const serif = Platform.select({ ios: 'Georgia', android: 'serif', default: 'Georgia, serif' });
+const serif = typography.serif;
 // Positions are normalized against the original 941 × 1672 painting.
 const lights = [
   { x: .247, y: .544, radius: .125, group: 0 }, // hearth
@@ -143,11 +144,11 @@ const styles = StyleSheet.create({
   root: { flex: 1, backgroundColor: '#1d130c', overflow: 'hidden' },
   safe: { flex: 1 },
   content: { flex: 1, justifyContent: 'flex-start', alignItems: 'flex-start' },
-  panel: { width: '100%', maxWidth: 330, padding: 27, paddingTop: 24, backgroundColor: 'rgba(13, 12, 11, 0.80)', borderWidth: 1, borderColor: 'rgba(211, 175, 112, 0.25)', borderRadius: 2, shadowColor: '#000', shadowOpacity: .4, shadowRadius: 22, shadowOffset: { width: 0, height: 12 }, elevation: 12 },
+  panel: { width: '100%', maxWidth: 330, padding: 27, paddingTop: 24, backgroundColor: 'rgba(13, 12, 11, 0.80)', borderWidth: 1, borderColor: 'rgba(211, 175, 112, 0.25)', borderRadius: 2, shadowColor: palette.black, shadowOpacity: .4, shadowRadius: 22, shadowOffset: { width: 0, height: 12 }, elevation: 12 },
   compactPanel: { padding: 16 },
   innerFrame: { position: 'absolute', top: 7, left: 7, right: 7, bottom: 7, borderWidth: 1, borderColor: 'rgba(211,175,112,.11)' },
-  cornerTop: { position: 'absolute', top: -1, left: -1, width: 32, height: 32, borderTopWidth: 2, borderLeftWidth: 2, borderColor: '#b8955f' },
-  cornerBottom: { position: 'absolute', bottom: -1, right: -1, width: 32, height: 32, borderBottomWidth: 2, borderRightWidth: 2, borderColor: '#b8955f' },
+  cornerTop: { position: 'absolute', top: -1, left: -1, width: 32, height: 32, borderTopWidth: 2, borderLeftWidth: 2, borderColor: palette.goldBorder },
+  cornerBottom: { position: 'absolute', bottom: -1, right: -1, width: 32, height: 32, borderBottomWidth: 2, borderRightWidth: 2, borderColor: palette.goldBorder },
   ornament: { flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', gap: 13, marginBottom: 12 },
   rule: { height: 1, width: 62, backgroundColor: 'rgba(207, 170, 103, .45)' },
   star: { color: '#d3ac6e', fontSize: 25 },
@@ -166,7 +167,7 @@ const styles = StyleSheet.create({
   disabled: { opacity: .42 },
   note: { color: '#a79984', fontSize: 11, lineHeight: 17, textAlign: 'left', marginTop: 24 },
   error: { color: '#ffc6aa', textAlign: 'center', fontSize: 12, marginTop: 12 },
-  footer: { color: '#e3cdae', fontSize: 8, letterSpacing: 1.4, textAlign: 'left', paddingHorizontal: 18, paddingBottom: 18, textShadowColor: '#000', textShadowRadius: 8, textShadowOffset: { width: 0, height: 1 } },
+  footer: { color: '#e3cdae', fontSize: 8, letterSpacing: 1.4, textAlign: 'left', paddingHorizontal: 18, paddingBottom: 18, textShadowColor: palette.black, textShadowRadius: 8, textShadowOffset: { width: 0, height: 1 } },
 });
 
 

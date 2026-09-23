@@ -2,7 +2,7 @@ import {expect,it} from 'vitest';
 import {attunedDomains,attunementRanking,requiredDomains} from './attunement';
 import {fighter,simulate} from './engine';
 import {cardAt} from './upgrades';
-import {createBotStates,prepareBot,scoreBotDeck} from './botAI';
+import { createBotStates, prepareBot } from './botAI';
 import {LocalGameGateway} from '../services/localGateway';
 import type {Session} from './model';
 

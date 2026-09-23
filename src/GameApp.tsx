@@ -20,7 +20,7 @@ export function GameApp({ gateway }: { gateway: GameGateway }) {
   const scroll = useRef<ScrollView>(null);
   const { width, height } = useWindowDimensions();
   const orientationError = useOrientation(game.screen === 'game' || library);
-  const wide = width >= 800;
+
 
   useEffect(() => { scroll.current?.scrollTo({ y: 0, animated: false }); }, [game.screen, game.session?.phase]);
 

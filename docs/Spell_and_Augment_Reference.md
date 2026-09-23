@@ -1,8 +1,8 @@
-# Current spell reference
+# Spell and augment reference
 
-Updated 23 September 2026. **130 spells — 26 per Domain.** Six combat slots. Shopping may temporarily hold extra spells; reduce to six before battle. Bracketed clauses require the named Domain attunement. Upgrade columns show the complete upgraded effect. All calculated values round down.
+Generated from the shipping JSON catalogue. Edit the source configuration, then run `npm run docs:generate`; do not edit these tables by hand.
 
-Triggers start Dormant. A copy arms after its first completed cast and its entire event chain. Armed Triggers can chain and each copy fires at most once per tick. Retrigger repeats the latest eligible Armed Trigger this Cycle without starting further Trigger chains.
+**130 spells · 27 augments · 6 combat slots.** Shopping can temporarily hold extra spells; reduce to the combat limit before battle. Bracketed clauses require the named Domain attunement. Upgrade columns show the complete upgraded effect. Gold price equals stars + 1. Calculated outcomes round down. See [combat rules](Combat.md) for timing and shared mechanics.
 
 ## Nature
 
@@ -159,12 +159,9 @@ Triggers start Dormant. A copy arms after its first completed cast and its entir
 | ★★★★★ | Turn Unholy | 2T | Deal 60 damage. Until this Cycle ends, your healing becomes damage to the enemy instead. [Holy Attuned: converted healing also heals you for 50% of its value.] | 1T | Deal 80 damage. Until this Cycle ends, your healing becomes damage to the enemy instead. [Holy Attuned: converted healing also heals you for 75% of its value.] |
 | ★★★★★ | Divine Intervention | 2T | Gain 120 Ward. Trigger — Fatal Damage: once per combat, remain at 1 Health instead and gain 300 Ward; then remove this card from the sequence. | 1T | Gain 150 Ward. Trigger — Fatal Damage: once per combat, remain at 1 Health instead and gain 450 Ward; then remove this card. [Holy Attuned: Cleanse all debuffs when the Trigger resolves.] |
 
+## Augments
 
----
-
-# Current augments
-
-All 27 augments are available to any build. Every two completed rounds grants one augment and one level. No duplicate augments.
+All augments are available to every build. Every 2 completed rounds grants a level and an augment choice. Duplicate augments cannot be owned.
 
 | Augment | Effect |
 | --- | --- |

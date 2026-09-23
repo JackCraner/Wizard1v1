@@ -1,4 +1,5 @@
-import {DOMAIN_COLORS} from '../game/attunement';
+import { palette, DOMAIN_COLORS } from '../theme';
+
 import {AugmentInventory} from '../components/AugmentInventory';
 import { cardAt } from '../game/upgrades';
 import { useState } from 'react';
@@ -23,4 +24,4 @@ export function Leaderboard({lobby,visible,onClose}:{lobby:Lobby;visible:boolean
   </ScrollView>}
  </View></View></Modal>;
 }
-const s=StyleSheet.create({shade:{flex:1,backgroundColor:'#000c',alignItems:'center',justifyContent:'center',padding:12},panel:{width:'100%',maxWidth:820,maxHeight:'100%',backgroundColor:'#21180f',borderColor:'#b59a61',borderWidth:1,borderRadius:8,padding:12,gap:10},header:{flexDirection:'row',alignItems:'center',gap:10},title:{color:'#f4d99d',fontSize:19,fontWeight:'700'},text:{color:'#efe0c5',fontSize:12},muted:{color:'#bdae94',fontSize:10},button:{borderColor:'#9c8055',borderWidth:1,borderRadius:4,padding:10,backgroundColor:'#34271a'},row:{padding:9,gap:6,borderWidth:1,borderColor:'#655134',borderRadius:5,backgroundColor:'#19140f'},you:{borderColor:'#d4b461',backgroundColor:'#30261a'},rank:{color:'#bba37a',width:16,fontSize:14},trophies:{color:'#f0d180',fontSize:15,fontWeight:'700'},deck:{flexDirection:'row',flexWrap:'wrap',gap:5},spell:{width:62,alignItems:'center',gap:3,padding:4,borderRadius:3,backgroundColor:'#30261b'},spellName:{color:'#e5d6ba',fontSize:8,textAlign:'center'}});
+const s=StyleSheet.create({shade:{flex:1,backgroundColor:palette.overlayStrong,alignItems:'center',justifyContent:'center',padding:12},panel:{width:'100%',maxWidth:820,maxHeight:'100%',backgroundColor:'#21180f',borderColor:'#b59a61',borderWidth:1,borderRadius:8,padding:12,gap:10},header:{flexDirection:'row',alignItems:'center',gap:10},title:{color:'#f4d99d',fontSize:19,fontWeight:'700'},text:{color:'#efe0c5',fontSize:12},muted:{color:'#bdae94',fontSize:10},button:{borderColor:'#9c8055',borderWidth:1,borderRadius:4,padding:10,backgroundColor:'#34271a'},row:{padding:9,gap:6,borderWidth:1,borderColor:'#655134',borderRadius:5,backgroundColor:'#19140f'},you:{borderColor:'#d4b461',backgroundColor:'#30261a'},rank:{color:'#bba37a',width:16,fontSize:14},trophies:{color:'#f0d180',fontSize:15,fontWeight:'700'},deck:{flexDirection:'row',flexWrap:'wrap',gap:5},spell:{width:62,alignItems:'center',gap:3,padding:4,borderRadius:3,backgroundColor:'#30261b'},spellName:{color:'#e5d6ba',fontSize:8,textAlign:'center'}});

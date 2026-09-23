@@ -11,7 +11,7 @@ export const nextPlaybackSpeed=(speed:number)=>{
 
 export type CombatBeat = 'cast' | 'hold';
 // Presentation beats never create extra simulation ticks.
-export function nextCombatBeat(frame:number,beat:CombatBeat,lastFrame:number):{frame:number;beat:CombatBeat} {
+export function nextCombatBeat(frame:number,_beat:CombatBeat,lastFrame:number):{frame:number;beat:CombatBeat} {
   return {frame:Math.min(frame+1,lastFrame),beat:'cast'};
 }
 
