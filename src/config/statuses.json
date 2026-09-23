@@ -85,5 +85,13 @@
   "unholy": {
     "kind": "buff",
     "unit": "ticks"
+  },
+  "tidecallerThreshold": {
+    "kind": "buff",
+    "unit": "stacks"
+  },
+  "echoPower": {
+    "kind": "buff",
+    "unit": "multiplier"
   }
 }

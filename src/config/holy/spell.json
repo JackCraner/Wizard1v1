@@ -526,7 +526,7 @@
     "domain": "holy",
     "stars": 3,
     "castTicks": 2,
-    "rules": "Deal 80 damage. Holy attuned: If you completed an Oath this cycle, gain 50 Ward.",
+    "rules": "Deal 80 damage. Holy attuned: If you completed an Oath this Cycle, gain 50 Ward.",
     "keywords": [
       "ward",
       "oath",
@@ -549,7 +549,7 @@
     },
     "upgrade": {
       "castTicks": 2,
-      "rules": "Deal 100 damage. Holy attuned: If you completed an Oath this cycle, gain 80 Ward.",
+      "rules": "Deal 100 damage. Holy attuned: If you completed an Oath this Cycle, gain 80 Ward.",
       "keywords": [
         "ward",
         "oath",
@@ -693,7 +693,7 @@
     "domain": "holy",
     "stars": 3,
     "castTicks": 0,
-    "rules": "Instant: Heal 80.",
+    "rules": "Heal 80.",
     "keywords": [
       "instant"
     ],
@@ -708,7 +708,7 @@
     },
     "upgrade": {
       "castTicks": 0,
-      "rules": "Instant: Heal 100.",
+      "rules": "Heal 100.",
       "keywords": [
         "instant"
       ],
@@ -750,7 +750,7 @@
     },
     "upgrade": {
       "castTicks": 3,
-      "rules": "Deal 60 damage. Apply Slow for 3 ticks. Holy attuned: 100 damage and 4 Slow ticks instead.",
+      "rules": "Deal 60 damage. Apply Slow for 3 ticks. Holy attuned: Deal 100 damage and apply Slow for 4 ticks instead.",
       "keywords": [
         "slow",
         "attunement"
@@ -802,7 +802,7 @@
     },
     "upgrade": {
       "castTicks": 2,
-      "rules": "Holy attuned: Heal to full Health in 2T. Fragile. Otherwise: 3T, no effect.",
+      "rules": "Holy attuned: Heal to full Health. Fragile.",
       "keywords": [
         "fragile",
         "attunement"
@@ -819,9 +819,7 @@
             "requiresAttunement": "holy"
           }
         ]
-      },
-      "castDomain": "holy",
-      "unattunedCastTicks": 3
+      }
     }
   },
   {
@@ -920,7 +918,7 @@
     },
     "upgrade": {
       "castTicks": 2,
-      "rules": "Holy attuned: 2T; otherwise 3T. Gain Resilience for half your remaining Regeneration ticks, rounded down.",
+      "rules": "Gain Resilience for half your remaining Regeneration ticks, rounded down.",
       "keywords": [
         "regeneration",
         "resilience",
@@ -938,9 +936,7 @@
             "roundDown": true
           }
         ]
-      },
-      "castDomain": "holy",
-      "unattunedCastTicks": 3
+      }
     }
   },
   {
@@ -991,7 +987,7 @@
     "domain": "holy",
     "stars": 5,
     "castTicks": 2,
-    "rules": "Holy attuned: For 5 ticks, your healing becomes damage to the enemy instead, including Regeneration.",
+    "rules": "Holy attuned: For 6 ticks, your healing becomes damage to the enemy instead, including Regeneration.",
     "keywords": [
       "regeneration",
       "attunement"
@@ -1002,7 +998,7 @@
         {
           "kind": "status",
           "status": "unholy",
-          "amount": 5,
+          "amount": 6,
           "target": "self",
           "requiresAttunement": "holy"
         }
@@ -1010,7 +1006,7 @@
     },
     "upgrade": {
       "castTicks": 1,
-      "rules": "Holy attuned: 1T cast. For 5 ticks, your healing becomes damage to the enemy, including Regeneration. Otherwise: 2T, no effect.",
+      "rules": "Holy attuned: For 10 ticks, your healing becomes damage to the enemy instead, including Regeneration.",
       "keywords": [
         "regeneration",
         "attunement"
@@ -1021,14 +1017,12 @@
           {
             "kind": "status",
             "status": "unholy",
-            "amount": 5,
+            "amount": 10,
             "target": "self",
             "requiresAttunement": "holy"
           }
         ]
-      },
-      "castDomain": "holy",
-      "unattunedCastTicks": 2
+      }
     }
   },
   {
@@ -1036,8 +1030,8 @@
     "name": "Divine Intervention",
     "domain": "holy",
     "stars": 5,
-    "castTicks": 3,
-    "rules": "Holy attuned: Gain 300 Ward.",
+    "castTicks": 2,
+    "rules": "Holy attuned: Gain 400 Ward.",
     "keywords": [
       "ward",
       "attunement"
@@ -1047,14 +1041,14 @@
       "effects": [
         {
           "kind": "ward",
-          "amount": 300,
+          "amount": 400,
           "requiresAttunement": "holy"
         }
       ]
     },
     "upgrade": {
-      "castTicks": 3,
-      "rules": "Holy attuned: Gain 400 Ward.",
+      "castTicks": 2,
+      "rules": "Holy attuned: Gain 600 Ward.",
       "keywords": [
         "ward",
         "attunement"
@@ -1064,7 +1058,7 @@
         "effects": [
           {
             "kind": "ward",
-            "amount": 400,
+            "amount": 600,
             "requiresAttunement": "holy"
           }
         ]

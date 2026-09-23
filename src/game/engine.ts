@@ -200,7 +200,7 @@ export function simulate(player: Fighter, bot: Fighter, seed = RULES.seed): Batt
         addStatus(opposite(side), 'poison', 5, side);
         addStatus(opposite(side), 'curse', 1, side);
     }
-    messages = ['Cast left to right. One tick to reshuffle.']; frames.push(snapshot(0));
+    messages = ['Cast left to right. Two ticks to reshuffle.']; frames.push(snapshot(0));
     for (let tick = 1; tick <= RULES.maxTicks; tick++) {
         events = []; damageEvents = []; healingEvents = []; notices = []; messages = []; hits = [];
         pendingSummons = {player:0,bot:0};
@@ -232,9 +232,10 @@ export function simulate(player: Fighter, bot: Fighter, seed = RULES.seed): Batt
                 }
             }
             let echoPower: number | undefined;
-            if ((unit.statuses.tidecaller ?? 0) >= 5) {
-                unit.statuses.tidecaller -= 5; echoPower = unit.memory.nextEcho ?? .5; unit.memory.nextEcho = undefined;
-                notify(side, 'tidecaller', card.name + ': spent 5 Tidecaller');
+            const echoThreshold = unit.memory.tidecallerThreshold ?? 5;
+            if ((unit.statuses.tidecaller ?? 0) >= echoThreshold) {
+                unit.statuses.tidecaller -= echoThreshold; echoPower = unit.memory.nextEcho ?? unit.memory.echoPower ?? .5; unit.memory.nextEcho = undefined;
+                notify(side, 'tidecaller', card.name + ': spent ' + echoThreshold + ' Tidecaller');
             }
             unit.casting = { spell: card.id, index: unit.cursor, remaining: duration, totalTicks: duration, instant, echoPower };
         }
@@ -324,7 +325,7 @@ export function simulate(player: Fighter, bot: Fighter, seed = RULES.seed): Batt
                     else if (e.kind === 'removeWard') f[target].shield = 0;
                     else if (e.kind === 'sacrificeImp') {
                         if (unit.imp && unit.imp.health > 0) {
-                            const amount = e.useMaxHealth ? unit.imp.maxHealth : unit.imp.health;
+                            const amount = (e.useMaxHealth ? unit.imp.maxHealth : unit.imp.health) * (e.amount ?? 1);
                             unit.imp.health = 0; unit.imp.guard = 0; direct = true;
                             queue(enemySide, amount * damagePower * repeatPower * nextDamage * critPower, 'hit', card.domain, critical, true);
                             notify(side, 'summon', 'Imp sacrificed');
@@ -340,7 +341,9 @@ export function simulate(player: Fighter, bot: Fighter, seed = RULES.seed): Batt
                     else if (e.kind === 'modifier' && e.modifier) {
                         // A half-strength Echo scales the bonus above baseline.
                         const modified = 1 + (value - 1) * repeatPower;
-                        if (e.modifier === 'nextEcho') memory.nextEcho = Math.max(memory.nextEcho ?? .5, .5 + (value - .5) * repeatPower);
+                        if (e.modifier === 'tidecallerThreshold') memory.tidecallerThreshold = Math.min(memory.tidecallerThreshold ?? 5, Math.max(1, 5 - Math.floor((5 - value) * repeatPower)));
+                        else if (e.modifier === 'echoPower') memory.echoPower = Math.max(memory.echoPower ?? .5, .5 + (value - .5) * repeatPower);
+                        else if (e.modifier === 'nextEcho') memory.nextEcho = Math.max(memory.nextEcho ?? .5, .5 + (value - .5) * repeatPower);
                         else memory[e.modifier] = Math.max(memory[e.modifier] ?? 1, modified);
                     }
                 };

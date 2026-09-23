@@ -11,7 +11,7 @@ See [Holy and Fragile notes](Holy_Overhaul_Notes.md) and [Affliction and Imp not
 - Start at level 1 with 500 Health. Every two completed rounds, gain a level, +100 max Health and an augment. Wins grant trophies equal to your level; reach at least 20 to win.
 - Rounds 1–2: level 1 / 500 Health / 1 trophy per win. Rounds 3–4: level 2 / 600 Health / 2 trophies. Health is before augment modifiers and resets to full each duel.
 - Gold cost equals stars. There is no mana. Cards upgrade at 3 XP.
-- Cast left to right; pause one tick to reshuffle and repeat the same order. One tick is 2 seconds at 1× speed. Reckless Loop is the explicit exception to the pause.
+- Cast left to right; pause two ticks to reshuffle and repeat the same order. One tick is 2 seconds at 1× speed. Reckless Loop is the explicit exception to the pause.
 - At most two domains are attuned, by held-card count then oldest surviving card. Reordering never changes priority. Only explicitly marked effects require attunement; bracketed numerical upgrades retain their base value off-domain.
 - Ward does not stack. Channel groups have at most three adjacent matching cards. Instant resolves before periodic effects and ordinary spells. Interrupt can cancel a 1T spell or a Channel.
 - “All enemies/all allies” currently means the single enemy/self in a 1v1 duel.
@@ -81,9 +81,9 @@ Source: [nature/spell.json](../src/config/nature/spell.json)
 - **ID:** `photosynthesis`
 - **Rarity / cost:** ★★ (2 gold)
 - **Base cast:** 1T
-- **Base effect:** Gain Regeneration for 3 ticks. Channel: +1 Regeneration per adjacent copy (max 3 copies).
+- **Base effect:** Gain 3 Regeneration. Channel: +1 Regeneration per extra copy.
 - **Upgraded cast:** 1T
-- **Upgraded effect:** Gain Regeneration for 3 ticks. Channel: +1 Regeneration per adjacent copy (max 3 copies). Nature attuned: Heal 20.
+- **Upgraded effect:** Gain 3 Regeneration. Channel: +1 Regeneration per extra copy. Nature attuned: Heal 20.
 
 #### Sporeburst
 
@@ -172,7 +172,7 @@ Source: [nature/spell.json](../src/config/nature/spell.json)
 - **Rarity / cost:** ★★★ (3 gold)
 - **Base cast:** 1T
 - **Base effect:** Heal 70.
-- **Upgraded cast:** Instant with Nature attunement; otherwise 1T
+- **Upgraded cast:** Instant
 - **Upgraded effect:** Nature attuned: Instant; otherwise 1T. Heal 70.
 
 #### Bramble Wall
@@ -189,9 +189,9 @@ Source: [nature/spell.json](../src/config/nature/spell.json)
 - **ID:** `venom-bloom`
 - **Rarity / cost:** ★★★★ (4 gold)
 - **Base cast:** 1T
-- **Base effect:** Nature attuned: Your Poison deals 50% more damage for the rest of combat.
+- **Base effect:** Nature attuned: Your Poison deals 75% more damage for the rest of combat.
 - **Upgraded cast:** 1T
-- **Upgraded effect:** Nature attuned: Your Poison deals 100% more damage for the rest of combat.
+- **Upgraded effect:** Nature attuned: Your Poison deals 125% more damage for the rest of combat.
 
 #### Celestial Alignment
 
@@ -199,33 +199,33 @@ Source: [nature/spell.json](../src/config/nature/spell.json)
 - **Rarity / cost:** ★★★★ (4 gold)
 - **Base cast:** 2T
 - **Base effect:** Nature attuned: Your next spell deals double damage.
-- **Upgraded cast:** 1T with Nature attunement; otherwise 2T
-- **Upgraded effect:** Nature attuned: 1T; otherwise 2T. Nature attuned: Your next spell deals double damage.
+- **Upgraded cast:** 1T
+- **Upgraded effect:** Nature attuned: Your next spell deals triple damage.
 
 #### Wild Growth
 
 - **ID:** `wild-growth`
 - **Rarity / cost:** ★★★★ (4 gold)
 - **Base cast:** 3T
-- **Base effect:** Heal 80 to all allies.
-- **Upgraded cast:** 2T with Nature attunement; otherwise 3T
-- **Upgraded effect:** Nature attuned: 2T; otherwise 3T. Heal 80 to all allies.
+- **Base effect:** Heal 160 to all allies.
+- **Upgraded cast:** 2T
+- **Upgraded effect:** Heal 200 to all allies.
 
 #### Symbiosis
 
 - **ID:** `symbiosis`
 - **Rarity / cost:** ★★★★ (4 gold)
 - **Base cast:** 1T
-- **Base effect:** Gain Regeneration for 5 ticks. Apply Poison for 5 ticks.
+- **Base effect:** Gain Regeneration for 8 ticks. Apply Poison for 8 ticks.
 - **Upgraded cast:** 1T
-- **Upgraded effect:** Gain Regeneration for 10 ticks. Apply Poison for 10 ticks.
+- **Upgraded effect:** Gain Regeneration for 12 ticks. Apply Poison for 12 ticks.
 
 #### Transformation: Bear
 
 - **ID:** `transformation-bear`
 - **Rarity / cost:** ★★★★★ (5 gold)
 - **Base cast:** 2T
-- **Base effect:** Nature attuned: Gain Resilience for 8 ticks.
+- **Base effect:** Nature attuned: Gain Resilience for 10 ticks.
 - **Upgraded cast:** 2T
 - **Upgraded effect:** Nature attuned: Gain Resilience for the rest of combat.
 
@@ -234,18 +234,18 @@ Source: [nature/spell.json](../src/config/nature/spell.json)
 - **ID:** `cycle-of-life`
 - **Rarity / cost:** ★★★★★ (5 gold)
 - **Base cast:** 2T
-- **Base effect:** Nature attuned: Cultivate all Regeneration: remove it and heal its remaining healing immediately.
+- **Base effect:** Nature attuned: Cultivate all Regeneration for 150% of its remaining healing.
 - **Upgraded cast:** 2T
-- **Upgraded effect:** Nature attuned: Cultivate all Regeneration: remove it and heal its remaining healing immediately. Nature attuned: Heal 100.
+- **Upgraded effect:** Nature attuned: Cultivate all Regeneration for 200% of its remaining healing.
 
 #### Astral Power
 
 - **ID:** `astral-power`
 - **Rarity / cost:** ★★★★★ (5 gold)
 - **Base cast:** 1T
-- **Base effect:** Nature attuned: Deal 80 damage. +10% damage per Poison on the enemy.
+- **Base effect:** Nature attuned: Deal 100 damage. +25% damage per Poison on the enemy.
 - **Upgraded cast:** 1T
-- **Upgraded effect:** Nature attuned: Deal 80 damage. +20% damage per Poison on the enemy.
+- **Upgraded effect:** Nature attuned: Deal 100 damage. +40% damage per Poison on the enemy.
 
 ### Water — 19 spells
 
@@ -265,9 +265,9 @@ Source: [water/spell.json](../src/config/water/spell.json)
 - **ID:** `brine`
 - **Rarity / cost:** ★ (1 gold)
 - **Base cast:** 3T
-- **Base effect:** Deal 80 damage.
+- **Base effect:** Deal 100 damage.
 - **Upgraded cast:** 3T
-- **Upgraded effect:** Deal 100 damage.
+- **Upgraded effect:** Deal 140 damage.
 
 #### Current
 
@@ -294,14 +294,14 @@ Source: [water/spell.json](../src/config/water/spell.json)
 - **Base cast:** 1T
 - **Base effect:** Deal 10 damage. Apply Slow for 3 ticks.
 - **Upgraded cast:** 1T
-- **Upgraded effect:** Deal 10 damage. Apply Slow for 3 ticks. Water attuned: 5 instead.
+- **Upgraded effect:** Deal 10 damage. Apply Slow for 3 ticks. Water attuned: Apply Slow for 5 ticks instead.
 
 #### Foamguard
 
 - **ID:** `foamguard`
 - **Rarity / cost:** ★★ (2 gold)
 - **Base cast:** 2T
-- **Base effect:** Gain Guard for 1 ticks.
+- **Base effect:** Gain Guard for 1 tick.
 - **Upgraded cast:** 2T
 - **Upgraded effect:** Gain Guard for 2 ticks.
 
@@ -348,7 +348,7 @@ Source: [water/spell.json](../src/config/water/spell.json)
 - **Base cast:** 2T
 - **Base effect:** Apply Slow for 3 ticks. Apply Weaken for 4 ticks.
 - **Upgraded cast:** 2T
-- **Upgraded effect:** Apply Slow for 3 ticks. Apply Weaken for 4 ticks. Water attuned: 6 instead.
+- **Upgraded effect:** Apply Slow for 3 ticks. Apply Weaken for 4 ticks. Water attuned: Apply Weaken for 6 ticks instead.
 
 #### Riptide
 
@@ -364,9 +364,9 @@ Source: [water/spell.json](../src/config/water/spell.json)
 - **ID:** `whirlpool`
 - **Rarity / cost:** ★★★ (3 gold)
 - **Base cast:** 1T
-- **Base effect:** Deal 50 damage. Water attuned: Channel: +10 damage per adjacent copy (max 3 copies).
+- **Base effect:** Deal 50 damage. Water attuned: Channel: +10 damage per extra copy.
 - **Upgraded cast:** 1T
-- **Upgraded effect:** Deal 50 damage. Water attuned: Channel: +20 damage per adjacent copy (max 3 copies).
+- **Upgraded effect:** Deal 50 damage. Water attuned: Channel: +20 damage per extra copy.
 
 #### Water Barrier
 
@@ -383,44 +383,44 @@ Source: [water/spell.json](../src/config/water/spell.json)
 - **Rarity / cost:** ★★★★ (4 gold)
 - **Base cast:** 2T
 - **Base effect:** Water attuned: Gain Guard for 4 ticks.
-- **Upgraded cast:** 1T with Water attunement; otherwise 2T
-- **Upgraded effect:** Water attuned: 1T; otherwise 2T. Water attuned: Gain Guard for 4 ticks.
+- **Upgraded cast:** 1T
+- **Upgraded effect:** Water attuned: Gain Guard for 4 ticks.
 
 #### Tsunami
 
 - **ID:** `tsunami`
 - **Rarity / cost:** ★★★★ (4 gold)
 - **Base cast:** 2T
-- **Base effect:** Water attuned: Deal 80 damage. Water attuned: Apply Weaken for 3 ticks.
+- **Base effect:** Water attuned: Deal 140 damage. Apply Weaken for 4 ticks.
 - **Upgraded cast:** 2T
-- **Upgraded effect:** Water attuned: Deal 100 damage. Water attuned: Apply Weaken for 4 ticks.
+- **Upgraded effect:** Water attuned: Deal 180 damage. Apply Weaken for 5 ticks.
 
 #### Crash
 
 - **ID:** `crash`
 - **Rarity / cost:** ★★★★ (4 gold)
 - **Base cast:** 3T
-- **Base effect:** Water attuned: Deal 100 damage.
+- **Base effect:** Water attuned: Deal 220 damage.
 - **Upgraded cast:** 3T
-- **Upgraded effect:** Water attuned: Deal 100 damage. Deals double damage when Echoed.
+- **Upgraded effect:** Water attuned: Deal 220 damage. Deals double damage when Echoed.
 
 #### Ocean Heart
 
 - **ID:** `ocean-heart`
 - **Rarity / cost:** ★★★★★ (5 gold)
 - **Base cast:** 2T
-- **Base effect:** Water attuned: Gain 5 Tidecaller.
-- **Upgraded cast:** 1T with Water attunement; otherwise 2T
-- **Upgraded effect:** Water attuned: 1T; otherwise 2T. Water attuned: Gain 5 Tidecaller.
+- **Base effect:** Water attuned: For the rest of combat, Tidecaller triggers at 4 stacks instead of 5.
+- **Upgraded cast:** 2T
+- **Upgraded effect:** Water attuned: For the rest of combat, Tidecaller triggers at 3 stacks instead of 5.
 
 #### Tidal Power
 
 - **ID:** `tidal-power`
 - **Rarity / cost:** ★★★★★ (5 gold)
 - **Base cast:** 1T
-- **Base effect:** Water attuned: Your next Tidecaller Echo has 100% effectiveness.
+- **Base effect:** Water attuned: Your Tidecaller Echoes have 100% effectiveness for the rest of combat.
 - **Upgraded cast:** 1T
-- **Upgraded effect:** Water attuned: Your next Tidecaller Echo has 150% effectiveness.
+- **Upgraded effect:** Water attuned: Your Tidecaller Echoes have 150% effectiveness for the rest of combat.
 
 ### Fire — 20 spells
 
@@ -451,7 +451,7 @@ Source: [fire/spell.json](../src/config/fire/spell.json)
 - **Base cast:** 1T
 - **Base effect:** Deal 30 damage.
 - **Upgraded cast:** 1T
-- **Upgraded effect:** Deal 30 damage. Fire attuned: double damage below 30% Health.
+- **Upgraded effect:** Deal 30 damage. Fire attuned: Double damage below 30% Health.
 
 #### Ember
 
@@ -460,7 +460,7 @@ Source: [fire/spell.json](../src/config/fire/spell.json)
 - **Base cast:** 1T
 - **Base effect:** Gain 1 Heat.
 - **Upgraded cast:** 1T
-- **Upgraded effect:** Gain 1 Heat. Fire attuned: 2 instead.
+- **Upgraded effect:** Gain 1 Heat. Fire attuned: Gain 2 Heat instead.
 
 #### Scorch
 
@@ -469,7 +469,7 @@ Source: [fire/spell.json](../src/config/fire/spell.json)
 - **Base cast:** 2T
 - **Base effect:** Take 30 damage. Gain 2 Potency.
 - **Upgraded cast:** 2T
-- **Upgraded effect:** Take 30 damage. Gain 2 Potency. Fire attuned: 4 instead.
+- **Upgraded effect:** Take 30 damage. Gain 2 Potency. Fire attuned: Gain 4 Potency instead.
 
 #### Lava Floor
 
@@ -487,7 +487,7 @@ Source: [fire/spell.json](../src/config/fire/spell.json)
 - **Base cast:** 1T
 - **Base effect:** Apply Weaken for 3 ticks.
 - **Upgraded cast:** 1T
-- **Upgraded effect:** Apply Weaken for 3 ticks. Fire attuned: 5 instead.
+- **Upgraded effect:** Apply Weaken for 3 ticks. Fire attuned: Apply Weaken for 5 ticks instead.
 
 #### Firebolt
 
@@ -495,7 +495,7 @@ Source: [fire/spell.json](../src/config/fire/spell.json)
 - **Rarity / cost:** ★★ (2 gold)
 - **Base cast:** 1T
 - **Base effect:** Deal 80 damage.
-- **Upgraded cast:** Instant with Fire attunement; otherwise 1T
+- **Upgraded cast:** Instant
 - **Upgraded effect:** Fire attuned: Instant; otherwise 1T. Deal 80 damage.
 
 #### Firefury
@@ -505,25 +505,25 @@ Source: [fire/spell.json](../src/config/fire/spell.json)
 - **Base cast:** 1T
 - **Base effect:** Gain Fury for 2 ticks.
 - **Upgraded cast:** 1T
-- **Upgraded effect:** Gain Fury for 2 ticks. Fire attuned: 5 instead.
+- **Upgraded effect:** Gain Fury for 2 ticks. Fire attuned: Gain Fury for 5 ticks instead.
 
 #### Overheat
 
 - **ID:** `overheat`
 - **Rarity / cost:** ★★★ (3 gold)
 - **Base cast:** 1T
-- **Base effect:** Fire attuned: Lose half your current Health. Fire attuned: Gain 5 Potency.
+- **Base effect:** Fire attuned: Lose half your current Health. Gain 5 Potency.
 - **Upgraded cast:** 1T
-- **Upgraded effect:** Fire attuned: Lose half your current Health. Fire attuned: Gain 5 Potency. Fire attuned: Gain 2 Heat.
+- **Upgraded effect:** Fire attuned: Lose half your current Health. Gain 5 Potency and 2 Heat.
 
 #### Flameshield
 
 - **ID:** `flameshield`
 - **Rarity / cost:** ★★★ (3 gold)
 - **Base cast:** 2T
-- **Base effect:** Gain 40 Ward.
+- **Base effect:** Gain 60 Ward.
 - **Upgraded cast:** 2T
-- **Upgraded effect:** Gain 80 Ward.
+- **Upgraded effect:** Gain 100 Ward.
 
 #### Emberstorm
 
@@ -539,9 +539,9 @@ Source: [fire/spell.json](../src/config/fire/spell.json)
 - **ID:** `immolate`
 - **Rarity / cost:** ★★★ (3 gold)
 - **Base cast:** 2T
-- **Base effect:** Fire attuned: Deal 80 damage. Fire attuned: Gain 2 Potency.
-- **Upgraded cast:** 1T with Fire attunement; otherwise 2T
-- **Upgraded effect:** Fire attuned: 1T; otherwise 2T. Fire attuned: Deal 80 damage. Fire attuned: Gain 2 Potency.
+- **Base effect:** Fire attuned: Deal 80 damage. Gain 2 Potency.
+- **Upgraded cast:** 1T
+- **Upgraded effect:** Fire attuned: Deal 80 damage. Gain 2 Potency.
 
 #### Flamekick
 
@@ -550,51 +550,51 @@ Source: [fire/spell.json](../src/config/fire/spell.json)
 - **Base cast:** 1T
 - **Base effect:** Deal 50 damage.
 - **Upgraded cast:** 1T
-- **Upgraded effect:** Deal 50 damage. Fire attuned: Interrupt the enemy spell, including 1T spells and Channel.
+- **Upgraded effect:** Deal 50 damage. Fire attuned: Interrupt.
 
 #### Pyroblast
 
 - **ID:** `pyroblast`
 - **Rarity / cost:** ★★★★ (4 gold)
 - **Base cast:** 3T
-- **Base effect:** Deal 150 damage.
+- **Base effect:** Deal 270 damage.
 - **Upgraded cast:** 3T
-- **Upgraded effect:** Deal 300 damage.
+- **Upgraded effect:** Deal 360 damage.
 
 #### Phoenix Renewal
 
 - **ID:** `phoenix-renewal`
 - **Rarity / cost:** ★★★★ (4 gold)
 - **Base cast:** 2T
-- **Base effect:** Fire attuned: Heal 25 per Heat.
+- **Base effect:** Fire attuned: Heal 35 per Heat.
 - **Upgraded cast:** 2T
-- **Upgraded effect:** Fire attuned: Heal 35 per Heat.
+- **Upgraded effect:** Fire attuned: Heal 50 per Heat.
 
 #### Conflagrate
 
 - **ID:** `conflagrate`
 - **Rarity / cost:** ★★★★ (4 gold)
 - **Base cast:** 2T
-- **Base effect:** Gain Fury for 5 ticks.
+- **Base effect:** Gain Fury for 8 ticks.
 - **Upgraded cast:** 2T
-- **Upgraded effect:** Gain Fury for 5 ticks. Fire attuned: 10 instead.
+- **Upgraded effect:** Fire attuned: Gain Fury for 15 ticks.
 
 #### Blaze
 
 - **ID:** `blaze`
 - **Rarity / cost:** ★★★★ (4 gold)
 - **Base cast:** 1T
-- **Base effect:** Deal 120 damage. Take 30 damage.
+- **Base effect:** Deal 150 damage. Take 30 damage.
 - **Upgraded cast:** 1T
-- **Upgraded effect:** Deal 120 damage. Fire attuned: 150 instead. Take 30 damage. Fire attuned: 30 instead.
+- **Upgraded effect:** Deal 180 damage. Fire attuned: Deal 220 instead. Take 30 damage.
 
 #### Eruption
 
 - **ID:** `eruption`
 - **Rarity / cost:** ★★★★★ (5 gold)
-- **Base cast:** 3T
+- **Base cast:** 2T
 - **Base effect:** Fire attuned: Your critical hits deal 200% total damage for the rest of combat.
-- **Upgraded cast:** 3T
+- **Upgraded cast:** 1T
 - **Upgraded effect:** Fire attuned: Your critical hits deal 250% total damage for the rest of combat.
 
 #### Phoenix Guard
@@ -602,9 +602,9 @@ Source: [fire/spell.json](../src/config/fire/spell.json)
 - **ID:** `phoenix-guard`
 - **Rarity / cost:** ★★★★★ (5 gold)
 - **Base cast:** 1T
-- **Base effect:** Fire attuned: Gain Guard for 1 per Heat ticks.
+- **Base effect:** Fire attuned: Gain Guard for 1 tick per Heat.
 - **Upgraded cast:** 1T
-- **Upgraded effect:** Fire attuned: Gain Guard for 2 per Heat ticks.
+- **Upgraded effect:** Fire attuned: Gain Guard for 2 ticks per Heat.
 
 ### Holy — 23 spells
 
@@ -678,9 +678,9 @@ Source: [holy/spell.json](../src/config/holy/spell.json)
 - **ID:** `forgiveness`
 - **Rarity / cost:** ★★ (2 gold)
 - **Base cast:** 2T
-- **Base effect:** Holy attuned: Cultivate all your Curse; remove it and heal 20 per stack.
+- **Base effect:** Holy attuned: Cultivate all your Curse. Heal 20 per stack.
 - **Upgraded cast:** 2T
-- **Upgraded effect:** Holy attuned: Cultivate all your Curse; remove it and heal 30 per stack.
+- **Upgraded effect:** Holy attuned: Cultivate all your Curse. Heal 30 per stack.
 
 #### Sanctify
 
@@ -723,9 +723,9 @@ Source: [holy/spell.json](../src/config/holy/spell.json)
 - **ID:** `consecration`
 - **Rarity / cost:** ★★★ (3 gold)
 - **Base cast:** 2T
-- **Base effect:** Deal 80 damage. Holy attuned: If you completed an Oath this cycle, gain 50 Ward.
+- **Base effect:** Deal 80 damage. Holy attuned: If you completed an Oath this Cycle, gain 50 Ward.
 - **Upgraded cast:** 2T
-- **Upgraded effect:** Deal 100 damage. Holy attuned: If you completed an Oath this cycle, gain 80 Ward.
+- **Upgraded effect:** Deal 100 damage. Holy attuned: If you completed an Oath this Cycle, gain 80 Ward.
 
 #### Oath: Judgement
 
@@ -750,9 +750,9 @@ Source: [holy/spell.json](../src/config/holy/spell.json)
 - **ID:** `holy-light`
 - **Rarity / cost:** ★★★ (3 gold)
 - **Base cast:** Instant
-- **Base effect:** Instant: Heal 80.
+- **Base effect:** Heal 80.
 - **Upgraded cast:** Instant
-- **Upgraded effect:** Instant: Heal 100.
+- **Upgraded effect:** Heal 100.
 
 #### Sacred Group
 
@@ -761,16 +761,16 @@ Source: [holy/spell.json](../src/config/holy/spell.json)
 - **Base cast:** 3T
 - **Base effect:** Deal 60 damage. Apply Slow for 3 ticks.
 - **Upgraded cast:** 3T
-- **Upgraded effect:** Deal 60 damage. Apply Slow for 3 ticks. Holy attuned: 100 damage and 4 Slow ticks instead.
+- **Upgraded effect:** Deal 60 damage. Apply Slow for 3 ticks. Holy attuned: Deal 100 damage and apply Slow for 4 ticks instead.
 
 #### Lay on Hands
 
 - **ID:** `lay-on-hands`
 - **Rarity / cost:** ★★★★ (4 gold)
 - **Base cast:** 3T
-- **Base effect:** Holy attuned: Heal to full Health. Fragile: breaks after its first completed cast this duel.
-- **Upgraded cast:** 2T with Holy attunement; otherwise 3T
-- **Upgraded effect:** Holy attuned: Heal to full Health in 2T. Fragile. Otherwise: 3T, no effect.
+- **Base effect:** Holy attuned: Heal to full Health. Fragile.
+- **Upgraded cast:** 2T
+- **Upgraded effect:** Holy attuned: Heal to full Health. Fragile.
 
 #### Oath: Meditation
 
@@ -787,8 +787,8 @@ Source: [holy/spell.json](../src/config/holy/spell.json)
 - **Rarity / cost:** ★★★★ (4 gold)
 - **Base cast:** 3T
 - **Base effect:** Gain Resilience for half your remaining Regeneration ticks, rounded down.
-- **Upgraded cast:** 2T with Holy attunement; otherwise 3T
-- **Upgraded effect:** Holy attuned: 2T; otherwise 3T. Gain Resilience for half your remaining Regeneration ticks, rounded down.
+- **Upgraded cast:** 2T
+- **Upgraded effect:** Gain Resilience for half your remaining Regeneration ticks, rounded down.
 
 #### Divine Hands
 
@@ -804,18 +804,18 @@ Source: [holy/spell.json](../src/config/holy/spell.json)
 - **ID:** `turn-unholy`
 - **Rarity / cost:** ★★★★★ (5 gold)
 - **Base cast:** 2T
-- **Base effect:** Holy attuned: For 5 ticks, your healing becomes damage to the enemy instead, including Regeneration.
-- **Upgraded cast:** 1T with Holy attunement; otherwise 2T
-- **Upgraded effect:** Holy attuned: 1T cast. For 5 ticks, your healing becomes damage to the enemy, including Regeneration. Otherwise: 2T, no effect.
+- **Base effect:** Holy attuned: For 6 ticks, your healing becomes damage to the enemy instead, including Regeneration.
+- **Upgraded cast:** 1T
+- **Upgraded effect:** Holy attuned: For 10 ticks, your healing becomes damage to the enemy instead, including Regeneration.
 
 #### Divine Intervention
 
 - **ID:** `divine-intervention`
 - **Rarity / cost:** ★★★★★ (5 gold)
-- **Base cast:** 3T
-- **Base effect:** Holy attuned: Gain 300 Ward.
-- **Upgraded cast:** 3T
-- **Upgraded effect:** Holy attuned: Gain 400 Ward.
+- **Base cast:** 2T
+- **Base effect:** Holy attuned: Gain 400 Ward.
+- **Upgraded cast:** 2T
+- **Upgraded effect:** Holy attuned: Gain 600 Ward.
 
 ### Affliction — 22 spells
 
@@ -853,9 +853,9 @@ Source: [affliction/spell.json](../src/config/affliction/spell.json)
 - **ID:** `ritual`
 - **Rarity / cost:** ★★ (2 gold)
 - **Base cast:** 2T
-- **Base effect:** Summon an Imp with 50 Health. If alive, add 50 current and max Health.
+- **Base effect:** Summon 50 Imp Health.
 - **Upgraded cast:** 2T
-- **Upgraded effect:** Summon an Imp with 80 Health. If alive, add 80 current and max Health.
+- **Upgraded effect:** Summon 80 Imp Health.
 
 #### Eldritch Bolt
 
@@ -880,9 +880,9 @@ Source: [affliction/spell.json](../src/config/affliction/spell.json)
 - **ID:** `disrupt`
 - **Rarity / cost:** ★★ (2 gold)
 - **Base cast:** 1T
-- **Base effect:** Interrupt the enemy spell, including 1T spells and Channel.
+- **Base effect:** Interrupt.
 - **Upgraded cast:** 1T
-- **Upgraded effect:** Interrupt the enemy spell, including 1T spells and Channel. Affliction attuned: Apply Poison for 5 ticks.
+- **Upgraded effect:** Interrupt. Affliction attuned: Apply Poison for 5 ticks.
 
 #### Dual Hex
 
@@ -890,8 +890,8 @@ Source: [affliction/spell.json](../src/config/affliction/spell.json)
 - **Rarity / cost:** ★★ (2 gold)
 - **Base cast:** 2T
 - **Base effect:** Apply Poison for 2 ticks. Gain Poison for 2 ticks.
-- **Upgraded cast:** 1T with Affliction attunement; otherwise 2T
-- **Upgraded effect:** Affliction attuned: 1T; otherwise 2T. Apply Poison for 2 ticks. Gain Poison for 2 ticks.
+- **Upgraded cast:** 1T
+- **Upgraded effect:** Apply Poison for 2 ticks. Gain Poison for 2 ticks.
 
 #### Blood Pact
 
@@ -907,18 +907,18 @@ Source: [affliction/spell.json](../src/config/affliction/spell.json)
 - **ID:** `dark-communication`
 - **Rarity / cost:** ★★★ (3 gold)
 - **Base cast:** 2T
-- **Base effect:** Affliction attuned: Summon an Imp with 100 Health, or add 100 current and max Health.
+- **Base effect:** Affliction attuned: Summon 100 Imp Health.
 - **Upgraded cast:** 2T
-- **Upgraded effect:** Affliction attuned: Summon an Imp with 150 Health, or add 150 current and max Health.
+- **Upgraded effect:** Affliction attuned: Summon 150 Imp Health.
 
 #### Life Drain
 
 - **ID:** `life-drain`
 - **Rarity / cost:** ★★★ (3 gold)
 - **Base cast:** 1T
-- **Base effect:** Deal 40 damage. Heal 50. Channel: +10 damage and healing per extra adjacent copy (max 3 copies).
+- **Base effect:** Deal 40 damage. Heal 50. Channel: +10 damage and healing per extra copy.
 - **Upgraded cast:** 1T
-- **Upgraded effect:** Deal 40 damage. Heal 50. Channel: +20 damage and healing per extra adjacent copy (max 3 copies).
+- **Upgraded effect:** Deal 40 damage. Heal 50. Channel: +20 damage and healing per extra copy.
 
 #### Corrupt Ward
 
@@ -926,7 +926,7 @@ Source: [affliction/spell.json](../src/config/affliction/spell.json)
 - **Rarity / cost:** ★★★ (3 gold)
 - **Base cast:** 1T
 - **Base effect:** Remove all enemy Ward.
-- **Upgraded cast:** 1T
+- **Upgraded cast:** Instant
 - **Upgraded effect:** Remove all enemy Ward.
 
 #### Shadow Bolt
@@ -943,9 +943,9 @@ Source: [affliction/spell.json](../src/config/affliction/spell.json)
 - **ID:** `nightmare`
 - **Rarity / cost:** ★★★ (3 gold)
 - **Base cast:** 2T
-- **Base effect:** Affliction attuned: Cultivate all enemy Poison, consuming it to deal 10 damage per remaining tick.
+- **Base effect:** Affliction attuned: Cultivate all enemy Poison. Deal 10 damage per tick consumed.
 - **Upgraded cast:** 2T
-- **Upgraded effect:** Affliction attuned: Cultivate all enemy Poison, consuming it to deal 15 damage per remaining tick.
+- **Upgraded effect:** Affliction attuned: Cultivate all enemy Poison. Deal 15 damage per tick consumed.
 
 #### SoulBound
 
@@ -979,45 +979,45 @@ Source: [affliction/spell.json](../src/config/affliction/spell.json)
 - **ID:** `death-mark`
 - **Rarity / cost:** ★★★★ (4 gold)
 - **Base cast:** 1T
-- **Base effect:** Deal 5 damage per remaining enemy Poison tick.
+- **Base effect:** Deal 10 damage per remaining enemy Poison tick.
 - **Upgraded cast:** 1T
-- **Upgraded effect:** Deal 8 damage per remaining enemy Poison tick.
+- **Upgraded effect:** Deal 15 damage per remaining enemy Poison tick.
 
 #### Rupture
 
 - **ID:** `rupture`
 - **Rarity / cost:** ★★★★ (4 gold)
 - **Base cast:** 3T
-- **Base effect:** Deal 120 damage. Cast in 2T if the enemy is Cursed when casting starts.
+- **Base effect:** Deal 180 damage. Cast in 2T if the enemy is Cursed when casting starts.
 - **Upgraded cast:** 3T
-- **Upgraded effect:** Deal 120 damage. Cast in 1T if the enemy is Cursed when casting starts.
+- **Upgraded effect:** Deal 180 damage. Cast in 1T if the enemy is Cursed when casting starts.
 
 #### Devils Bargain
 
 - **ID:** `devils-bargain`
 - **Rarity / cost:** ★★★★ (4 gold)
 - **Base cast:** 1T
-- **Base effect:** Apply Slow for 5 ticks. Gain Slow for 5 ticks.
+- **Base effect:** Apply Slow for 6 ticks. Gain Slow for 6 ticks.
 - **Upgraded cast:** 1T
-- **Upgraded effect:** Apply Slow for 8 ticks. Gain Slow for 8 ticks.
+- **Upgraded effect:** Apply Slow for 10 ticks. Gain Slow for 10 ticks.
 
 #### Empowered Imp
 
 - **ID:** `empowered-imp`
 - **Rarity / cost:** ★★★★★ (5 gold)
 - **Base cast:** 2T
-- **Base effect:** Affliction attuned: For this combat, your living Imp deals 30 damage after each spell you complete.
+- **Base effect:** Affliction attuned: For the rest of combat, your Imp deals 40 damage after each spell you complete.
 - **Upgraded cast:** 2T
-- **Upgraded effect:** Affliction attuned: For this combat, your living Imp deals 50 damage after each spell you complete.
+- **Upgraded effect:** Affliction attuned: For the rest of combat, your Imp deals 60 damage after each spell you complete.
 
 #### Doomsday
 
 - **ID:** `doomsday`
 - **Rarity / cost:** ★★★★★ (5 gold)
 - **Base cast:** 1T
-- **Base effect:** Affliction attuned: Kill your Imp and deal damage equal to its current Health.
+- **Base effect:** Affliction attuned: Kill your Imp and deal damage equal to 150% of its current Health.
 - **Upgraded cast:** 1T
-- **Upgraded effect:** Affliction attuned: Kill your Imp and deal damage equal to its max Health.
+- **Upgraded effect:** Affliction attuned: Kill your Imp and deal damage equal to 200% of its maximum Health.
 
 ## Permanent augments — 27
 
@@ -1036,7 +1036,7 @@ All augments are available to every build, without Domain Attunement requirement
 | Glass Cannon | Deal 30% more damage. Lose 125 maximum Health. |
 | Blood Magic | Self-damage grants 3 Regeneration. |
 | Blood Infusion | Self-damage grants 1 Potency. |
-| Reckless Loop | Skip the reshuffle tick. Lose 25 Health at each new Cycle. |
+| Reckless Loop | Skip the reshuffle pause. Lose 25 Health at each new Cycle. |
 | Last Stand | Below 30% Health, spells start 1T faster (minimum 1T). |
 | Second Wind | Once per combat, reaching 30% Health restores 120 Health. |
 | Specialist | Your most common domain has triple shop weight. |
@@ -1070,7 +1070,7 @@ Recycler refunds whole gold: 1–5★ spells return **0, 1, 2, 3, 4 gold** respe
 - **Consume:** Remove the named duration or charges and use the amount removed for the payoff.
 - **Channel:** Adjacent matching copies form a Channel. Each additional copy adds the printed bonus, capped at 3 copies (two bonuses). Interrupt cancels the rest of that channel group.
 - **Unique:** Only one copy may be held. Matching shop copies can still upgrade it.
-- **Cycle:** One pass through your sequence, followed by one reshuffle tick.
+- **Cycle:** One pass through your sequence, followed by two reshuffle ticks.
 - **Frailty:** Affliction attunement required to gain or apply this keyword. Duration. Take 20% more incoming enemy damage. Loses 1 duration at the end of each following tick.
 - **Curse:** Debuff counter. Take 10 damage per stack when your next cycle begins, after reshuffling. Stacks persist until cleansed.
 - **Attunement:** Your two most numerous domains are attuned. Ties favor the oldest card still held. Only effects explicitly marked with a domain attunement requirement need that domain; unmarked effects remain usable.

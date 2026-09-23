@@ -6,7 +6,7 @@
   "maxTicks": 40,
   "seed": 42,
   "maxDomains": 2,
-  "reshuffleTicks": 1,
+  "reshuffleTicks": 2,
   "shopSlots": 5,
   "augmentEvery": 2
 }

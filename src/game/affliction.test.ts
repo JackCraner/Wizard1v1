@@ -52,8 +52,8 @@ it('an Imp killed in combat respawns at full summon health on the next Ritual',(
  expect(r.frames[1].player.imp?.health).toBe(0);
  expect(r.frames[1].damageEvents?.filter(e=>e.target==='imp')).toMatchObject([{amount:20}]);
  expect(r.frames[2].player.imp).toEqual({health:50,maxHealth:50,guard:0});
- expect(r.frames[3].player.imp?.health).toBe(5);
- expect(r.frames[3].damageEvents?.filter(e=>e.target==='imp')).toMatchObject([{amount:45}]);
+ expect(r.frames[4].player.imp?.health).toBe(5);
+ expect(r.frames[4].damageEvents?.filter(e=>e.target==='imp')).toMatchObject([{amount:45}]);
 });
 it('Imp Guard blocks entire spell hits and expires after its full duration',()=>{
  const a=fighter('A',['blood-pact','current','current','current']);a.imp={health:50,maxHealth:50,guard:0};
@@ -64,14 +64,14 @@ it('Imp Guard blocks entire spell hits and expires after its full duration',()=>
 });
 it('Empowered Imp is a persistent combat upgrade and attacks once per completion, not echo',()=>{
  const a=fighter('A',['empowered-imp','current']);a.imp={health:50,maxHealth:50,guard:0};a.statuses.tidecaller=5;
- const r=simulate(a,idle());expect(r.frames[2].bot.health).toBe(470);expect(r.frames[3].bot.health).toBe(440);
- expect(r.frames[2].player.memory.impDamage).toBe(30);
+ const r=simulate(a,idle());expect(r.frames[2].bot.health).toBe(460);expect(r.frames[3].bot.health).toBe(420);
+ expect(r.frames[2].player.memory.impDamage).toBe(40);
 });
 it('Blood Offering pays half health and summons scaled health; Doomsday sacrifices only once',()=>{
  const a=fighter('A',['blood-offering'],[],[3]);a.statuses.guard=5;
  const r=simulate(a,idle()).frames[1];expect(r.player.health).toBe(250);expect(r.player.imp?.health).toBe(375);
  const d=fighter('A',['doomsday'],[],[3]);d.imp={health:20,maxHealth:100,guard:0};d.statuses.tidecaller=5;
- const s=simulate(d,idle()).frames[1];expect(s.bot.health).toBe(400);expect(s.player.imp?.health).toBe(0);
+ const s=simulate(d,idle()).frames[1];expect(s.bot.health).toBe(300);expect(s.player.imp?.health).toBe(0);
 });
 it('Shadow Bolt bonus needs both Affliction attunement and a living Imp',()=>{
  const a=fighter('A',['shadow-bolt'],[],[3]);a.imp={health:50,maxHealth:50,guard:0};
@@ -80,7 +80,7 @@ it('Shadow Bolt bonus needs both Affliction attunement and a living Imp',()=>{
 });
 it('Curse persists and damages on the new cycle after a reshuffle, including Reckless Loop',()=>{
  const a=fighter('A',['current']);a.statuses.curse=2;
- const r=simulate(a,idle());expect(r.frames[1].player.health).toBe(500);expect(r.frames[2].player.health).toBe(480);expect(r.frames[4].player.health).toBe(460);
+ const r=simulate(a,idle());expect(r.frames[1].player.health).toBe(500);expect(r.frames[3].player.health).toBe(480);expect(r.frames[6].player.health).toBe(460);
  const b=fighter('A',['current'],['reckless-loop']);b.statuses.curse=2;
  expect(simulate(b,idle()).frames[1].player.health).toBe(455);
 });
@@ -99,7 +99,7 @@ it('SoulBound pauses both sides for five following ticks without discarding thei
 it('Nightmare consumes remaining enemy Poison; Death Mark leaves it active',()=>{
  const b=idle();b.statuses.poison=5;
  const r=simulate(fighter('A',['nightmare'],[],[3]),b).frames[2];expect(r.bot.health).toBe(435);expect(r.bot.statuses.poison).toBeUndefined();
- const d=simulate(fighter('A',['death-mark']),b).frames[1];expect(d.bot.health).toBe(470);expect(d.bot.statuses.poison).toBe(4);
+ const d=simulate(fighter('A',['death-mark']),b).frames[1];expect(d.bot.health).toBe(450);expect(d.bot.statuses.poison).toBe(4);
 });
 it('Rupture checks Curse at cast start and then applies Slow; Eldritch doubles once for any debuff',()=>{
  const a=fighter('A',['rupture'],[],[3]),b=idle();b.statuses.curse=1;a.statuses.slow=1;

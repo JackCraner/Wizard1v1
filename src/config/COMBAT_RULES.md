@@ -9,7 +9,7 @@
 5. Resolve ordinary completions and their Echoes. Healing, Guard and Ward protect against queued simultaneous damage. Apply queued damage, then check knockouts.
 6. Decrease durations that were already present at tick start. Save the completed snapshot.
 
-After the final card, spend one full tick reshuffling and restart the same order. Reckless Loop explicitly skips that wait for a 25-Health cost. At 40 ticks, higher remaining Health wins; ties are draws.
+After the final card, spend two full ticks reshuffling and restart the same order. Reckless Loop explicitly skips that wait for a 25-Health cost. At 40 ticks, higher remaining Health wins; ties are draws.
 
 ## Effects
 

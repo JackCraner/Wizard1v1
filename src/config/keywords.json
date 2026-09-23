@@ -80,7 +80,7 @@
   "cycle": {
     "name": "Cycle",
     "aliases": [],
-    "description": "One pass through your sequence, followed by one reshuffle tick.",
+    "description": "One pass through your sequence, followed by two reshuffle ticks.",
     "related": []
   },
   "frailty": {
@@ -255,5 +255,23 @@
     "aliases": [],
     "description": "Your healing becomes damage to the enemy for the duration, including Regeneration. Printed healing converts even at full Health; heal-to-full converts only missing Health. Enemy healing stays unchanged.",
     "related": []
+  },
+  "tidecallerThreshold": {
+    "name": "Ocean Heart",
+    "aliases": [],
+    "description": "For the rest of combat, Tidecaller consumes the displayed number of stacks to Echo your next spell. Reapplying keeps the lowest threshold.",
+    "related": [
+      "tidecaller",
+      "echo"
+    ]
+  },
+  "echoPower": {
+    "name": "Tidal Power",
+    "aliases": [],
+    "description": "For the rest of combat, Tidecaller Echoes use the displayed effectiveness multiplier. Reapplying keeps the strongest effect.",
+    "related": [
+      "tidecaller",
+      "echo"
+    ]
   }
 }

@@ -60,7 +60,7 @@ export function SpellDialog({ selection, session, busy, error, act, onClose, onS
   return <Modal transparent visible animationType="fade" onRequestClose={onClose}>
     <View style={s.shade}>
       <Pressable accessible={false} onPress={onClose} style={StyleSheet.absoluteFill} />
-      <View accessibilityViewIsModal accessibilityLabel={`${card.name} spell details`} style={[s.panel, { maxHeight: height - 24, borderTopColor: accent }]}>
+      <View accessibilityViewIsModal accessibilityLabel={`${card.name} spell details`} style={[s.panel, { maxHeight: height - 48, maxWidth: compact ? 620 : 760, borderTopColor: accent }]}>
         <View style={[s.header,compact&&{paddingVertical:6}]}>
           <View style={{ flex: 1, gap: 4 }}>
             <Text style={[s.eyebrow, { color: accent }]}>{card.domain.toUpperCase()} · {'★'.repeat(card.stars)} · {shop ? 'SHOP SPELL' : 'YOUR SPELL'}</Text>
@@ -109,7 +109,7 @@ export function SpellDialog({ selection, session, busy, error, act, onClose, onS
 }
 
 const s = StyleSheet.create({
-  shade: { flex: 1, justifyContent: 'center', alignItems: 'center', padding: 12, backgroundColor: '#080604c9' },
+  shade: { flex: 1, justifyContent: 'center', alignItems: 'center', padding: 24, backgroundColor: '#080604c9' },
   panel: { width: '100%', maxWidth: 800, backgroundColor: '#211c15', borderWidth: 1, borderColor: '#746044', borderTopWidth: 3, borderRadius: 14, overflow: 'hidden', boxShadow: '0 20px 70px #0009' },
   header: { flexDirection: 'row', alignItems: 'center', gap: 12, paddingHorizontal: 22, paddingVertical: 14, borderBottomWidth: 1, borderBottomColor: '#443829' },
   eyebrow: { color: '#b8a88b', fontSize: 11, fontWeight: '700', letterSpacing: 1.4 },

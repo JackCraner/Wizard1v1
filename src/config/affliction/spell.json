@@ -320,7 +320,7 @@
     },
     "upgrade": {
       "castTicks": 1,
-      "rules": "Affliction attuned: 1T; otherwise 2T. Apply Poison for 2 ticks. Gain Poison for 2 ticks.",
+      "rules": "Apply Poison for 2 ticks. Gain Poison for 2 ticks.",
       "keywords": [
         "poison",
         "attunement"
@@ -341,9 +341,7 @@
             "target": "self"
           }
         ]
-      },
-      "castDomain": "affliction",
-      "unattunedCastTicks": 2
+      }
     }
   },
   {
@@ -504,10 +502,11 @@
       ]
     },
     "upgrade": {
-      "castTicks": 1,
+      "castTicks": 0,
       "rules": "Remove all enemy Ward.",
       "keywords": [
-        "ward"
+        "ward",
+        "instant"
       ],
       "notes": [],
       "combat": {
@@ -756,7 +755,7 @@
     "domain": "affliction",
     "stars": 4,
     "castTicks": 1,
-    "rules": "Deal 5 damage per remaining enemy Poison tick.",
+    "rules": "Deal 10 damage per remaining enemy Poison tick.",
     "keywords": [
       "poison"
     ],
@@ -765,14 +764,14 @@
       "effects": [
         {
           "kind": "damage",
-          "amount": 5,
+          "amount": 10,
           "perStatus": "enemy:poison"
         }
       ]
     },
     "upgrade": {
       "castTicks": 1,
-      "rules": "Deal 8 damage per remaining enemy Poison tick.",
+      "rules": "Deal 15 damage per remaining enemy Poison tick.",
       "keywords": [
         "poison"
       ],
@@ -781,7 +780,7 @@
         "effects": [
           {
             "kind": "damage",
-            "amount": 8,
+            "amount": 15,
             "perStatus": "enemy:poison"
           }
         ]
@@ -794,7 +793,7 @@
     "domain": "affliction",
     "stars": 4,
     "castTicks": 3,
-    "rules": "Deal 120 damage. Cast in 2T if the enemy is Cursed when casting starts.",
+    "rules": "Deal 180 damage. Cast in 2T if the enemy is Cursed when casting starts.",
     "keywords": [
       "curse"
     ],
@@ -803,13 +802,13 @@
       "effects": [
         {
           "kind": "damage",
-          "amount": 120
+          "amount": 180
         }
       ]
     },
     "upgrade": {
       "castTicks": 3,
-      "rules": "Deal 120 damage. Cast in 1T if the enemy is Cursed when casting starts.",
+      "rules": "Deal 180 damage. Cast in 1T if the enemy is Cursed when casting starts.",
       "keywords": [
         "curse"
       ],
@@ -818,7 +817,7 @@
         "effects": [
           {
             "kind": "damage",
-            "amount": 120
+            "amount": 180
           }
         ]
       },
@@ -838,7 +837,7 @@
     "domain": "affliction",
     "stars": 4,
     "castTicks": 1,
-    "rules": "Apply Slow for 5 ticks. Gain Slow for 5 ticks.",
+    "rules": "Apply Slow for 6 ticks. Gain Slow for 6 ticks.",
     "keywords": [
       "slow"
     ],
@@ -848,20 +847,20 @@
         {
           "kind": "status",
           "status": "slow",
-          "amount": 5,
+          "amount": 6,
           "target": "enemy"
         },
         {
           "kind": "status",
           "status": "slow",
-          "amount": 5,
+          "amount": 6,
           "target": "self"
         }
       ]
     },
     "upgrade": {
       "castTicks": 1,
-      "rules": "Apply Slow for 8 ticks. Gain Slow for 8 ticks.",
+      "rules": "Apply Slow for 10 ticks. Gain Slow for 10 ticks.",
       "keywords": [
         "slow"
       ],
@@ -871,13 +870,13 @@
           {
             "kind": "status",
             "status": "slow",
-            "amount": 8,
+            "amount": 10,
             "target": "enemy"
           },
           {
             "kind": "status",
             "status": "slow",
-            "amount": 8,
+            "amount": 10,
             "target": "self"
           }
         ]
@@ -890,7 +889,7 @@
     "domain": "affliction",
     "stars": 5,
     "castTicks": 2,
-    "rules": "Affliction attuned: This combat, your Imp deals 30 damage after each spell you complete.",
+    "rules": "Affliction attuned: For the rest of combat, your Imp deals 40 damage after each spell you complete.",
     "keywords": [
       "attunement"
     ],
@@ -899,14 +898,14 @@
       "effects": [
         {
           "kind": "impPower",
-          "amount": 30,
+          "amount": 40,
           "requiresAttunement": "affliction"
         }
       ]
     },
     "upgrade": {
       "castTicks": 2,
-      "rules": "Affliction attuned: This combat, your Imp deals 50 damage after each spell you complete.",
+      "rules": "Affliction attuned: For the rest of combat, your Imp deals 60 damage after each spell you complete.",
       "keywords": [
         "attunement"
       ],
@@ -915,7 +914,7 @@
         "effects": [
           {
             "kind": "impPower",
-            "amount": 50,
+            "amount": 60,
             "requiresAttunement": "affliction"
           }
         ]
@@ -928,7 +927,7 @@
     "domain": "affliction",
     "stars": 5,
     "castTicks": 1,
-    "rules": "Affliction attuned: Kill your Imp and deal damage equal to its current Health.",
+    "rules": "Affliction attuned: Kill your Imp and deal damage equal to 150% of its current Health.",
     "keywords": [
       "attunement"
     ],
@@ -937,13 +936,14 @@
       "effects": [
         {
           "kind": "sacrificeImp",
-          "requiresAttunement": "affliction"
+          "requiresAttunement": "affliction",
+          "amount": 1.5
         }
       ]
     },
     "upgrade": {
       "castTicks": 1,
-      "rules": "Affliction attuned: Kill your Imp and deal damage equal to its max Health.",
+      "rules": "Affliction attuned: Kill your Imp and deal damage equal to 200% of its maximum Health.",
       "keywords": [
         "attunement"
       ],
@@ -953,7 +953,8 @@
           {
             "kind": "sacrificeImp",
             "useMaxHealth": true,
-            "requiresAttunement": "affliction"
+            "requiresAttunement": "affliction",
+            "amount": 2
           }
         ]
       }

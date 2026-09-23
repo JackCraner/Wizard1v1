@@ -7,7 +7,7 @@ it('summarizes upgrade changes while retaining attunement and complete upgraded 
  expect(upgradeSummary(cardAt('starsurge'))).toBe('Cast time becomes 1T.');
  expect(upgradeSummary(cardAt('prayer'))).toBe('Holy attuned: Gain Resilience for 1 tick.');
  expect(upgradeSummary(cardAt('germination'))).toBe('Nature attuned: Become Instant.');
- expect(upgradeSummary(cardAt('ice-block'))).toBe('Water attuned: Cast time becomes 1T.');
+ expect(upgradeSummary(cardAt('ice-block'))).toBe('Cast time becomes 1T.');
  expect(cardAt('starsurge',3).rules).toContain('Deal 100 damage');
  expect(upgradeSummary(cardAt('leech'))).toBe('Deal 45 damage. Heal 20.');
 });

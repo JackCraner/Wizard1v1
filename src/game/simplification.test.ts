@@ -49,13 +49,11 @@ it('Tidecaller consumes five at cast start and echoes at half strength without r
  const a=fighter('A',['jet']);a.statuses.tidecaller=7;const b=simulate(a,fighter('B',['current']));expect(b.frames[1].bot.health).toBe(432);expect(b.frames[1].player.statuses.tidecaller).toBe(2);expect(b.frames[1].events[0].details).toContain('Echo 50%');
  const generator=fighter('A',['current','jet']);generator.statuses.tidecaller=4;const c=simulate(generator,fighter('B',['current']));expect(c.frames[1].events[0].repeats).toBe(1);expect(c.frames[2].bot.health).toBe(432);
 });
-it('Tidal Power changes the next Echo only; upgraded Crash doubles its Echo damage',()=>{
- expect(duel(['tidal-power','ocean-heart','jet']).frames[4].bot.health).toBe(410);
- expect(duel(['tidal-power','ocean-heart','jet'],[3,0,0]).frames[4].bot.health).toBe(387);
- const a=fighter('A',['crash'],[],[3]);a.statuses.tidecaller=5;expect(simulate(a,fighter('B',['current'])).frames[3].bot.health).toBe(300);
+it('upgraded Crash doubles its Echo damage',()=>{
+ const a=fighter('A',['crash'],[],[3]);a.statuses.tidecaller=5;expect(simulate(a,fighter('B',['current'])).frames[3].bot.health).toBe(60);
 });
 it('Heat consumes five for an exact 1T cast, without the former damage bonus',()=>{
- const a=fighter('A',['pyroblast']);a.statuses={heat:7,slow:3};const b=simulate(a,fighter('B',['current']));expect(b.frames[1].bot.health).toBe(350);expect(b.frames[1].player.statuses.heat).toBe(2);
+ const a=fighter('A',['pyroblast']);a.statuses={heat:7,slow:3};const b=simulate(a,fighter('B',['current']));expect(b.frames[1].bot.health).toBe(230);expect(b.frames[1].player.statuses.heat).toBe(2);
 });
 it('Potency crits are seeded, capped, and use Eruption multipliers',()=>{
  const a=fighter('A',['spark']);a.statuses.potency=10;const b=simulate(a,fighter('B',['current']),77);expect(b.frames[1].bot.health).toBe(432);expect(b.frames[1].events[0].critical).toBe(true);expect(simulate(a,fighter('B',['current']),77)).toEqual(b);
@@ -70,16 +68,16 @@ it('Fury and Weaken are duration modifiers rather than stacking damage multiplie
  const a=fighter('A',['spark']);a.statuses={fury:5,weaken:5};expect(simulate(a,fighter('B',['current'])).frames[1].bot.health).toBe(460);
 });
 it('Venom Bloom changes Poison potency, and Cultivate consumes remaining Regeneration once',()=>{
- const b=fighter('B',['current']);b.statuses.poison=5;expect(simulate(fighter('A',['venom-bloom']),b).frames[2].bot.health).toBe(475);
- const a=fighter('A',['cycle-of-life']);a.health=100;a.statuses.regeneration=5;const c=simulate(a,fighter('B',['current']));expect(c.frames[2].player.health).toBe(150);expect(c.frames[2].player.statuses.regeneration).toBeUndefined();
+ const b=fighter('B',['current']);b.statuses.poison=5;expect(simulate(fighter('A',['venom-bloom']),b).frames[2].bot.health).toBe(472);
+ const a=fighter('A',['cycle-of-life']);a.health=100;a.statuses.regeneration=5;const c=simulate(a,fighter('B',['current']));expect(c.frames[2].player.health).toBe(165);expect(c.frames[2].player.statuses.regeneration).toBeUndefined();
 });
 it('Flourish doubles regeneration only until reshuffle; Celestial Alignment doubles the next spell',()=>{
- const a=fighter('A',['flourish','thorn-lash'],[],[3,0]);a.health=100;a.statuses.regeneration=10;const b=simulate(a,fighter('B',['current']));expect(b.frames[1].player.health).toBe(110);expect(b.frames[2].player.health).toBe(130);expect(b.frames[3].player.memory.regenerationPower).toBe(1);
+ const a=fighter('A',['flourish','thorn-lash'],[],[3,0]);a.health=100;a.statuses.regeneration=10;const b=simulate(a,fighter('B',['current']));expect(b.frames[1].player.health).toBe(110);expect(b.frames[2].player.health).toBe(130);expect(b.frames[4].player.memory.regenerationPower).toBe(1);
  expect(duel(['celestial-alignment','thorn-lash']).frames[3].bot.health).toBe(430);
 });
 it('Budding Life applies Regeneration to the enemy; Rejuvenation cleanses one debuff',()=>{
  const b=duel(['budding-life']);expect(b.frames[1].player.statuses.regeneration).toBe(5);expect(b.frames[1].bot.statuses.regeneration).toBe(5);
  const a=fighter('A',['rejuvenation'],[],[3]);a.statuses={poison:5,slow:5,trap:5};const c=simulate(a,fighter('B',['current']));expect(c.frames[3].player.statuses.poison).toBeUndefined();expect(c.frames[3].player.statuses.slow).toBeGreaterThan(0);expect(c.frames[3].player.statuses.trap).toBeGreaterThan(0);
 });
-it('preserves one reshuffle tick and bounded replay presentation',()=>{const b=duel(['thorn-lash']);expect(b.frames[2].events.filter(e=>e.side==='player')).toHaveLength(0);expect(continuousCombatFrame(b,1).player.reshuffleRemaining).toBe(1);expect(b.frames[3].events.some(e=>e.side==='player')).toBe(true);});
+it('preserves two reshuffle ticks and bounded replay presentation',()=>{const b=duel(['thorn-lash']);expect(b.frames[2].events.filter(e=>e.side==='player')).toHaveLength(0);expect(continuousCombatFrame(b,1).player.reshuffleRemaining).toBe(2);expect(b.frames[3].events.some(e=>e.side==='player')).toBe(false);expect(b.frames[4].events.some(e=>e.side==='player')).toBe(true);});
 it.each(PLAYABLE_SPELLS)('%s and its upgrade produce deterministic bounded snapshots',id=>{for(const xp of [0,3]){const a=fighter('A',[id],[],[xp]),b=fighter('B',['current']);const result=simulate(a,b);expect(simulate(a,b)).toEqual(result);for(const frame of result.frames)for(const p of [frame.player,frame.bot]){expect(Number.isFinite(p.health)).toBe(true);expect(p.health).toBeGreaterThanOrEqual(0);expect(p.health).toBeLessThanOrEqual(p.maxHealth);expect(p.shield).toBeGreaterThanOrEqual(0);for(const n of Object.values(p.statuses))expect(n).toBeGreaterThanOrEqual(0);}expect(cardAt(id,xp).castTicks).toBeGreaterThanOrEqual(0);}});

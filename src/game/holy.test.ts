@@ -8,7 +8,7 @@ it('Fragile breaks one copy only after completing, skips it next cycle and prese
  const a=fighter('A',['lay-on-hands','spark']);a.health=100;
  const b=simulate(a,idle());expect(b.frames[3].player.health).toBe(500);expect(b.frames[3].player.broken).toEqual([0]);
  expect(b.frames.flatMap(f=>f.events).filter(e=>e.side==='player'&&e.spell==='lay-on-hands')).toHaveLength(1);
- expect(b.frames[6].events.find(e=>e.side==='player')?.index).toBe(1);
+ expect(b.frames[7].events.find(e=>e.side==='player')?.index).toBe(1);
  expect(a.broken).toBeUndefined();expect(a.spells).toEqual(['lay-on-hands','spark']);
  expect(continuousCombatFrame(b,4).player.broken).toEqual([0]);expect(b.frames[0].player.broken).toBeUndefined();
  expect(activeSpellIndices(b.frames[3].player)).toEqual([1]);
@@ -30,7 +30,7 @@ it('Restraint watches two following full ticks and grants its full Guard duratio
  const r=simulate(fighter('A',['oath-restraint','prayer','current']),idle());
  expect(r.frames[1].player.oath?.remaining).toBe(2);expect(r.frames[2].player.oath?.remaining).toBe(1);
  expect(r.frames[3].player.statuses.guard).toBe(4);expect(r.frames[3].player.memory.oathCompleted).toBe(true);
- expect(r.frames[4].player.memory.oathCompleted).toBe(false);
+ expect(r.frames[5].player.memory.oathCompleted).toBe(false);
 });
 it('Restraint fails from Poison damage; self damage is not damage dealt to the enemy',()=>{
  const b=idle();b.statuses.poison=4;
@@ -46,7 +46,7 @@ it('Eye for an Eye totals real damage across two ticks and rejects a shortfall',
 it('Judgement counts damage after protection, rewards Stun, and fails on Health damage',()=>{
  const a=fighter('A',['oath-judgement','aegis','aegis']);a.shield=200;
  const r=simulate(a,fighter('B',['spark']));expect(r.frames[3].bot.statuses.stun).toBe(2);
- const s=simulate(fighter('A',['oath-judgement','current','current']),fighter('B',['spark']));expect(s.frames[3].player.oath).toBeUndefined();expect(s.frames[3].bot.statuses.stun).toBeUndefined();
+ const s=simulate(fighter('A',['oath-judgement','current','current']),fighter('B',['spark','spark']));expect(s.frames[3].player.oath).toBeUndefined();expect(s.frames[3].bot.statuses.stun).toBeUndefined();
 });
 it('Meditation pauses five full ticks and rewards damage only when finished',()=>{
  const r=simulate(fighter('A',['oath-meditation'],[],[3]),idle());
@@ -82,8 +82,8 @@ it('Holy Light heals before lethal Poison and is Instant without attunement',()=
  const r=simulate(a,idle()).frames[1];expect(r.player.health).toBe(75);expect(r.events.find(e=>e.side==='player')?.details).toContain('Instant');
 });
 it('Unholy converts direct and periodic healing, even at full health, and expires',()=>{
- const a=fighter('A',['turn-unholy','holy-light','current','current','current','current','holy-light']);a.health=100;
- const r=simulate(a,idle());expect(r.frames[3].bot.health).toBe(420);expect(r.frames[3].player.health).toBe(100);expect(r.frames[8].player.health).toBe(180);
+ const a=fighter('A',['turn-unholy','holy-light','current','current','current','current','current','holy-light']);a.health=100;
+ const r=simulate(a,idle());expect(r.frames[3].bot.health).toBe(420);expect(r.frames[3].player.health).toBe(100);expect(r.frames[9].player.health).toBe(220);
  const h=fighter('A',['turn-unholy','holy-light']);h.statuses.regeneration=5;
  const s=simulate(h,idle());expect(s.frames[3].bot.health).toBe(410);expect(s.frames[3].player.health).toBe(500);
 });

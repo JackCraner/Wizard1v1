@@ -47,12 +47,12 @@ it('sequence augments multiply direct damage but Finisher does not empower heali
 it('Opening Ward starts with 100 and does not refresh each cycle',()=>{
  const r=duel(['current'],['opening-ward'],['spark']);
  expect(r.frames[0].player).toMatchObject({shield:100,wardCapacity:100});
- expect(r.frames[3].player.shield).toBe(10);
- expect(r.frames[5].player.shield).toBe(0);
+ expect(r.frames[4].player.shield).toBe(10);
+ expect(r.frames[7].player.shield).toBe(0);
 });
 it('Heavy Hitters uses printed cast time and Momentum grants Fury after three printed 1T casts',()=>{
  const a=fighter('A',['pyroblast'],['heavy-hitter']);a.statuses.heat=5;
- expect(simulate(a,fighter('B',['current'])).frames[1].bot.health).toBe(290);
+ expect(simulate(a,fighter('B',['current'])).frames[1].bot.health).toBe(122);
  const r=duel(['current','current','current','spark'],['momentum']);
  expect(r.frames[3].player.statuses.fury).toBe(5);
  expect(r.frames[4].bot.health).toBe(450);
@@ -94,7 +94,7 @@ it('Toxic Start applies Poison and Curse before the first spell',()=>{
 it('Cursed adds exactly one reshuffle tick, including against Reckless Loop',()=>{
  const a=fighter('A',['current'],['toxic-start','cursed']);
  const r=simulate(a,fighter('B',['current']));
- expect(r.frames[1].bot.reshuffleRemaining).toBe(2);expect(r.frames[2].bot.cycle).toBe(1);expect(r.frames[3].bot.cycle).toBe(2);
+ expect(r.frames[1].bot.reshuffleRemaining).toBe(3);expect(r.frames[2].bot.cycle).toBe(1);expect(r.frames[4].bot.cycle).toBe(2);
  const q=simulate(a,fighter('B',['current'],['reckless-loop']));
  expect(q.frames[1].bot.reshuffleRemaining).toBe(1);expect(q.frames[2].bot.cycle).toBe(2);expect(q.frames[2].bot.health).toBe(445);
 });
@@ -118,7 +118,7 @@ it('Bloom fires once on natural expiry, not when Poison is consumed',()=>{
 it('Criticality grants Heat on crossing 10 Potency, not every later gain',()=>{
  const a=fighter('A',['scorch'],['criticality']);a.statuses.potency=9;
  const r=simulate(a,fighter('B',['current']));expect(r.frames[2].player.statuses.heat).toBe(15);
- expect(r.frames[4].player.statuses.heat).toBe(10);
+ expect(r.frames[5].player.statuses.heat).toBe(10);
 });
 it('Monster scales with levels and Tough Skin improves Resilience',()=>{
  expect(deriveStats(['monster'],1).health).toBe(700);expect(deriveStats(['monster'],3).health).toBe(1100);

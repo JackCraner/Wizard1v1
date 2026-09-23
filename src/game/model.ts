@@ -21,7 +21,7 @@ export interface Effect {
     currentHealthFraction?: number;
     echoMultiplier?: number;
     permanent?: boolean;
-    modifier?: 'poisonPower' | 'regenerationPower' | 'nextDamage' | 'nextEcho' | 'critDamage';
+    modifier?: 'poisonPower' | 'regenerationPower' | 'nextDamage' | 'nextEcho' | 'critDamage' | 'tidecallerThreshold' | 'echoPower';
     cycleOnly?: boolean;
     status?: string;
     target?: 'self' | 'enemy';
@@ -51,6 +51,8 @@ export interface Stats {
     health: number;
 }
 export interface CombatMemory {
+    tidecallerThreshold?: number;
+    echoPower?: number;
     impDamage?: number;
     poisonPower?: number;
     regenerationPower?: number;

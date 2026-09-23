@@ -29,6 +29,6 @@ export function CombatProcs({frame,speed,playing,compact}:{frame:CombatFrame;spe
   previous.current=frame.tick;setCues(sequential?combatProcCues(frame):[]);
  },[frame]);
  return <View pointerEvents="none" style={{position:'absolute',top:0,left:0,right:0,bottom:0,zIndex:40}}>
-  {cues.map((cue,i)=><View key={`${frame.tick}-${cue.side}-${cue.kind}-${i}`} style={{position:'absolute',top:0,bottom:0,width:compact?112:190,...(cue.side==='player'?{left:'13%'}:{right:'18%'})}}><ProcAnimation cue={cue} lane={cues.slice(0,i).filter(c=>c.side===cue.side).length} speed={speed} playing={playing}/></View>)}
+  {cues.map((cue,i)=><View key={`${frame.tick}-${cue.side}-${cue.kind}-${i}`} style={{position:'absolute',top:0,bottom:0,width:compact?112:190,...(cue.side==='player'?{left:'16%'}:{right:'16%'})}}><ProcAnimation cue={cue} lane={cues.slice(0,i).filter(c=>c.side===cue.side).length} speed={speed} playing={playing}/></View>)}
  </View>;
 }

@@ -19,7 +19,7 @@ All augments are available to every build, without Domain Attunement requirement
 | Glass Cannon | Deal 30% more damage. Lose 125 maximum Health. |
 | Blood Magic | Self-damage grants 3 Regeneration. |
 | Blood Infusion | Self-damage grants 1 Potency. |
-| Reckless Loop | Skip the reshuffle tick. Lose 25 Health at each new Cycle. |
+| Reckless Loop | Skip the reshuffle pause. Lose 25 Health at each new Cycle. |
 | Last Stand | Below 30% Health, spells start 1T faster (minimum 1T). |
 | Second Wind | Once per combat, reaching 30% Health restores 120 Health. |
 | Specialist | Your most common domain has triple shop weight. |

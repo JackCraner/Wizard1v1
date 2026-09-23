@@ -41,11 +41,11 @@
       "effects": [
         {
           "kind": "damage",
-          "amount": 80
+          "amount": 100
         }
       ]
     },
-    "rules": "Deal 80 damage.",
+    "rules": "Deal 100 damage.",
     "keywords": [],
     "notes": [],
     "upgrade": {
@@ -54,11 +54,11 @@
         "effects": [
           {
             "kind": "damage",
-            "amount": 100
+            "amount": 140
           }
         ]
       },
-      "rules": "Deal 100 damage.",
+      "rules": "Deal 140 damage.",
       "keywords": [],
       "notes": []
     }
@@ -628,14 +628,12 @@
           }
         ]
       },
-      "rules": "Water attuned: 1T; otherwise 2T. Water attuned: Gain Guard for 4 ticks.",
+      "rules": "Water attuned: Gain Guard for 4 ticks.",
       "keywords": [
         "guard",
         "attunement"
       ],
-      "notes": [],
-      "castDomain": "water",
-      "unattunedCastTicks": 2
+      "notes": []
     }
   },
   {
@@ -648,19 +646,19 @@
       "effects": [
         {
           "kind": "damage",
-          "amount": 80,
+          "amount": 140,
           "requiresAttunement": "water"
         },
         {
           "kind": "status",
           "status": "weaken",
-          "amount": 3,
+          "amount": 4,
           "target": "enemy",
           "requiresAttunement": "water"
         }
       ]
     },
-    "rules": "Water attuned: Deal 80 damage. Water attuned: Apply Weaken for 3 ticks.",
+    "rules": "Water attuned: Deal 140 damage. Apply Weaken for 4 ticks.",
     "keywords": [
       "weaken",
       "attunement"
@@ -672,19 +670,19 @@
         "effects": [
           {
             "kind": "damage",
-            "amount": 100,
+            "amount": 180,
             "requiresAttunement": "water"
           },
           {
             "kind": "status",
             "status": "weaken",
-            "amount": 4,
+            "amount": 5,
             "target": "enemy",
             "requiresAttunement": "water"
           }
         ]
       },
-      "rules": "Water attuned: Deal 100 damage. Water attuned: Apply Weaken for 4 ticks.",
+      "rules": "Water attuned: Deal 180 damage. Apply Weaken for 5 ticks.",
       "keywords": [
         "weaken",
         "attunement"
@@ -702,12 +700,12 @@
       "effects": [
         {
           "kind": "damage",
-          "amount": 100,
+          "amount": 220,
           "requiresAttunement": "water"
         }
       ]
     },
-    "rules": "Water attuned: Deal 100 damage.",
+    "rules": "Water attuned: Deal 220 damage.",
     "keywords": [
       "attunement"
     ],
@@ -718,13 +716,13 @@
         "effects": [
           {
             "kind": "damage",
-            "amount": 100,
+            "amount": 220,
             "echoMultiplier": 2,
             "requiresAttunement": "water"
           }
         ]
       },
-      "rules": "Water attuned: Deal 100 damage. Deals double damage when Echoed.",
+      "rules": "Water attuned: Deal 220 damage. Deals double damage when Echoed.",
       "keywords": [
         "echo",
         "attunement"
@@ -741,41 +739,37 @@
     "combat": {
       "effects": [
         {
-          "kind": "status",
-          "status": "tidecaller",
-          "amount": 5,
-          "target": "self",
+          "kind": "modifier",
+          "modifier": "tidecallerThreshold",
+          "amount": 4,
           "requiresAttunement": "water"
         }
       ]
     },
-    "rules": "Water attuned: Gain 5 Tidecaller.",
+    "rules": "Water attuned: For the rest of combat, Tidecaller triggers at 4 stacks instead of 5.",
     "keywords": [
       "tidecaller",
       "attunement"
     ],
     "notes": [],
     "upgrade": {
-      "castTicks": 1,
+      "castTicks": 2,
       "combat": {
         "effects": [
           {
-            "kind": "status",
-            "status": "tidecaller",
-            "amount": 5,
-            "target": "self",
+            "kind": "modifier",
+            "modifier": "tidecallerThreshold",
+            "amount": 3,
             "requiresAttunement": "water"
           }
         ]
       },
-      "rules": "Water attuned: 1T; otherwise 2T. Water attuned: Gain 5 Tidecaller.",
+      "rules": "Water attuned: For the rest of combat, Tidecaller triggers at 3 stacks instead of 5.",
       "keywords": [
         "tidecaller",
         "attunement"
       ],
-      "notes": [],
-      "castDomain": "water",
-      "unattunedCastTicks": 2
+      "notes": []
     }
   },
   {
@@ -788,13 +782,13 @@
       "effects": [
         {
           "kind": "modifier",
-          "modifier": "nextEcho",
+          "modifier": "echoPower",
           "amount": 1,
           "requiresAttunement": "water"
         }
       ]
     },
-    "rules": "Water attuned: Your next Tidecaller Echo has 100% effectiveness.",
+    "rules": "Water attuned: Your Tidecaller Echoes have 100% effectiveness for the rest of combat.",
     "keywords": [
       "tidecaller",
       "echo",
@@ -807,13 +801,13 @@
         "effects": [
           {
             "kind": "modifier",
-            "modifier": "nextEcho",
+            "modifier": "echoPower",
             "amount": 1.5,
             "requiresAttunement": "water"
           }
         ]
       },
-      "rules": "Water attuned: Your next Tidecaller Echo has 150% effectiveness.",
+      "rules": "Water attuned: Your Tidecaller Echoes have 150% effectiveness for the rest of combat.",
       "keywords": [
         "tidecaller",
         "echo",

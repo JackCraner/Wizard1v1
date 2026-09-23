@@ -100,7 +100,7 @@
           }
         ]
       },
-      "rules": "Deal 30 damage. Fire attuned: double damage below 30% Health.",
+      "rules": "Deal 30 damage. Fire attuned: Double damage below 30% Health.",
       "keywords": [
         "attunement"
       ],
@@ -385,7 +385,7 @@
         }
       ]
     },
-    "rules": "Fire attuned: Lose half your current Health. Fire attuned: Gain 5 Potency.",
+    "rules": "Fire attuned: Lose half your current Health. Gain 5 Potency.",
     "keywords": [
       "potency",
       "attunement"
@@ -416,7 +416,7 @@
           }
         ]
       },
-      "rules": "Fire attuned: Lose half your current Health. Fire attuned: Gain 5 Potency. Fire attuned: Gain 2 Heat.",
+      "rules": "Fire attuned: Lose half your current Health. Gain 5 Potency and 2 Heat.",
       "keywords": [
         "heat",
         "potency",
@@ -435,11 +435,11 @@
       "effects": [
         {
           "kind": "ward",
-          "amount": 40
+          "amount": 60
         }
       ]
     },
-    "rules": "Gain 40 Ward.",
+    "rules": "Gain 60 Ward.",
     "keywords": [
       "ward"
     ],
@@ -450,11 +450,11 @@
         "effects": [
           {
             "kind": "ward",
-            "amount": 80
+            "amount": 100
           }
         ]
       },
-      "rules": "Gain 80 Ward.",
+      "rules": "Gain 100 Ward.",
       "keywords": [
         "ward"
       ],
@@ -516,7 +516,7 @@
         }
       ]
     },
-    "rules": "Fire attuned: Deal 80 damage. Fire attuned: Gain 2 Potency.",
+    "rules": "Fire attuned: Deal 80 damage. Gain 2 Potency.",
     "keywords": [
       "potency",
       "attunement"
@@ -540,14 +540,12 @@
           }
         ]
       },
-      "rules": "Fire attuned: 1T; otherwise 2T. Fire attuned: Deal 80 damage. Fire attuned: Gain 2 Potency.",
+      "rules": "Fire attuned: Deal 80 damage. Gain 2 Potency.",
       "keywords": [
         "potency",
         "attunement"
       ],
-      "notes": [],
-      "castDomain": "fire",
-      "unattunedCastTicks": 2
+      "notes": []
     }
   },
   {
@@ -600,11 +598,11 @@
       "effects": [
         {
           "kind": "damage",
-          "amount": 150
+          "amount": 270
         }
       ]
     },
-    "rules": "Deal 150 damage.",
+    "rules": "Deal 270 damage.",
     "keywords": [],
     "notes": [],
     "upgrade": {
@@ -613,11 +611,11 @@
         "effects": [
           {
             "kind": "damage",
-            "amount": 300
+            "amount": 360
           }
         ]
       },
-      "rules": "Deal 300 damage.",
+      "rules": "Deal 360 damage.",
       "keywords": [],
       "notes": []
     }
@@ -632,13 +630,13 @@
       "effects": [
         {
           "kind": "heal",
-          "amount": 25,
+          "amount": 35,
           "perStatus": "heat",
           "requiresAttunement": "fire"
         }
       ]
     },
-    "rules": "Fire attuned: Heal 25 per Heat.",
+    "rules": "Fire attuned: Heal 35 per Heat.",
     "keywords": [
       "heat",
       "attunement"
@@ -650,13 +648,13 @@
         "effects": [
           {
             "kind": "heal",
-            "amount": 35,
+            "amount": 50,
             "perStatus": "heat",
             "requiresAttunement": "fire"
           }
         ]
       },
-      "rules": "Fire attuned: Heal 35 per Heat.",
+      "rules": "Fire attuned: Heal 50 per Heat.",
       "keywords": [
         "heat",
         "attunement"
@@ -675,12 +673,12 @@
         {
           "kind": "status",
           "status": "fury",
-          "amount": 5,
+          "amount": 8,
           "target": "self"
         }
       ]
     },
-    "rules": "Gain Fury for 5 ticks.",
+    "rules": "Gain Fury for 8 ticks.",
     "keywords": [
       "fury"
     ],
@@ -692,14 +690,13 @@
           {
             "kind": "status",
             "status": "fury",
-            "amount": 5,
+            "amount": 15,
             "target": "self",
-            "bonusDomain": "fire",
-            "attunedAmount": 10
+            "requiresAttunement": "fire"
           }
         ]
       },
-      "rules": "Gain Fury for 5 ticks. Fire attuned: Gain Fury for 10 ticks instead.",
+      "rules": "Fire attuned: Gain Fury for 15 ticks.",
       "keywords": [
         "fury",
         "attunement"
@@ -717,7 +714,7 @@
       "effects": [
         {
           "kind": "damage",
-          "amount": 120
+          "amount": 150
         },
         {
           "kind": "selfDamage",
@@ -725,7 +722,7 @@
         }
       ]
     },
-    "rules": "Deal 120 damage. Take 30 damage.",
+    "rules": "Deal 150 damage. Take 30 damage.",
     "keywords": [],
     "notes": [],
     "upgrade": {
@@ -734,9 +731,9 @@
         "effects": [
           {
             "kind": "damage",
-            "amount": 120,
+            "amount": 180,
             "bonusDomain": "fire",
-            "attunedAmount": 150
+            "attunedAmount": 220
           },
           {
             "kind": "selfDamage",
@@ -746,7 +743,7 @@
           }
         ]
       },
-      "rules": "Deal 120 damage. Fire attuned: 150 instead. Take 30 damage. Fire attuned: 30 instead.",
+      "rules": "Deal 180 damage. Fire attuned: Deal 220 instead. Take 30 damage.",
       "keywords": [
         "attunement"
       ],
@@ -758,7 +755,7 @@
     "name": "Eruption",
     "domain": "fire",
     "stars": 5,
-    "castTicks": 3,
+    "castTicks": 2,
     "combat": {
       "effects": [
         {
@@ -776,7 +773,7 @@
     ],
     "notes": [],
     "upgrade": {
-      "castTicks": 3,
+      "castTicks": 1,
       "combat": {
         "effects": [
           {

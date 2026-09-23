@@ -69,7 +69,7 @@
     "id": "reckless-loop",
     "name": "Reckless Loop",
     "category": "risk",
-    "description": "Skip the reshuffle tick. Lose 25 Health at each new Cycle."
+    "description": "Skip the reshuffle pause. Lose 25 Health at each new Cycle."
   },
   {
     "id": "last-stand",

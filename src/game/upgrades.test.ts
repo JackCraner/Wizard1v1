@@ -33,7 +33,7 @@ it('applies upgrades per card, with real upgraded damage, costs and cast times',
  expect(battle.frames[1].bot.health).toBe(430);expect(battle.frames[2].bot.health).toBe(410);
  expect(battle.frames[1].events[0].xp).toBe(3);expect(a.spellXp).toEqual([3,0]);
  const pyro=simulate(fighter('A',['pyroblast'],[],[3]),fighter('B',['current']));
- expect(pyro.frames[3].bot.health).toBe(200);
+ expect(pyro.frames[3].bot.health).toBe(140);
  expect(()=>fighter('bad',['wrath'],[],[4])).toThrow();
 });
 it('upgrades status duration while retaining the shared per-tick power',()=>{

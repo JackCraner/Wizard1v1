@@ -723,12 +723,12 @@
         {
           "kind": "modifier",
           "modifier": "poisonPower",
-          "amount": 1.5,
+          "amount": 1.75,
           "requiresAttunement": "nature"
         }
       ]
     },
-    "rules": "Nature attuned: Your Poison deals 50% more damage for the rest of combat.",
+    "rules": "Nature attuned: Your Poison deals 75% more damage for the rest of combat.",
     "keywords": [
       "poison",
       "attunement"
@@ -741,12 +741,12 @@
           {
             "kind": "modifier",
             "modifier": "poisonPower",
-            "amount": 2,
+            "amount": 2.25,
             "requiresAttunement": "nature"
           }
         ]
       },
-      "rules": "Nature attuned: Your Poison deals 100% more damage for the rest of combat.",
+      "rules": "Nature attuned: Your Poison deals 125% more damage for the rest of combat.",
       "keywords": [
         "poison",
         "attunement"
@@ -782,18 +782,16 @@
           {
             "kind": "modifier",
             "modifier": "nextDamage",
-            "amount": 2,
+            "amount": 3,
             "requiresAttunement": "nature"
           }
         ]
       },
-      "rules": "Nature attuned: 1T; otherwise 2T. Nature attuned: Your next spell deals double damage.",
+      "rules": "Nature attuned: Your next spell deals triple damage.",
       "keywords": [
         "attunement"
       ],
-      "notes": [],
-      "castDomain": "nature",
-      "unattunedCastTicks": 2
+      "notes": []
     }
   },
   {
@@ -806,12 +804,12 @@
       "effects": [
         {
           "kind": "heal",
-          "amount": 80,
+          "amount": 160,
           "all": true
         }
       ]
     },
-    "rules": "Heal 80 to all allies.",
+    "rules": "Heal 160 to all allies.",
     "keywords": [],
     "notes": [],
     "upgrade": {
@@ -820,18 +818,16 @@
         "effects": [
           {
             "kind": "heal",
-            "amount": 80,
+            "amount": 200,
             "all": true
           }
         ]
       },
-      "rules": "Nature attuned: 2T; otherwise 3T. Heal 80 to all allies.",
+      "rules": "Heal 200 to all allies.",
       "keywords": [
         "attunement"
       ],
-      "notes": [],
-      "castDomain": "nature",
-      "unattunedCastTicks": 3
+      "notes": []
     }
   },
   {
@@ -845,18 +841,18 @@
         {
           "kind": "status",
           "status": "regeneration",
-          "amount": 5,
+          "amount": 8,
           "target": "self"
         },
         {
           "kind": "status",
           "status": "poison",
-          "amount": 5,
+          "amount": 8,
           "target": "enemy"
         }
       ]
     },
-    "rules": "Gain Regeneration for 5 ticks. Apply Poison for 5 ticks.",
+    "rules": "Gain Regeneration for 8 ticks. Apply Poison for 8 ticks.",
     "keywords": [
       "poison",
       "regeneration"
@@ -869,18 +865,18 @@
           {
             "kind": "status",
             "status": "regeneration",
-            "amount": 10,
+            "amount": 12,
             "target": "self"
           },
           {
             "kind": "status",
             "status": "poison",
-            "amount": 10,
+            "amount": 12,
             "target": "enemy"
           }
         ]
       },
-      "rules": "Gain Regeneration for 10 ticks. Apply Poison for 10 ticks.",
+      "rules": "Gain Regeneration for 12 ticks. Apply Poison for 12 ticks.",
       "keywords": [
         "poison",
         "regeneration"
@@ -899,13 +895,13 @@
         {
           "kind": "status",
           "status": "resilience",
-          "amount": 8,
+          "amount": 10,
           "target": "self",
           "requiresAttunement": "nature"
         }
       ]
     },
-    "rules": "Nature attuned: Gain Resilience for 8 ticks.",
+    "rules": "Nature attuned: Gain Resilience for 10 ticks.",
     "keywords": [
       "resilience",
       "attunement"
@@ -944,12 +940,12 @@
         {
           "kind": "cultivate",
           "status": "regeneration",
-          "amount": 10,
+          "amount": 15,
           "requiresAttunement": "nature"
         }
       ]
     },
-    "rules": "Nature attuned: Cultivate all Regeneration: remove it and heal its remaining healing immediately.",
+    "rules": "Nature attuned: Cultivate all Regeneration for 150% of its remaining healing.",
     "keywords": [
       "regeneration",
       "cultivate",
@@ -963,17 +959,12 @@
           {
             "kind": "cultivate",
             "status": "regeneration",
-            "amount": 10,
-            "requiresAttunement": "nature"
-          },
-          {
-            "kind": "heal",
-            "amount": 100,
+            "amount": 20,
             "requiresAttunement": "nature"
           }
         ]
       },
-      "rules": "Nature attuned: Cultivate all Regeneration: remove it and heal its remaining healing immediately. Nature attuned: Heal 100.",
+      "rules": "Nature attuned: Cultivate all Regeneration for 200% of its remaining healing.",
       "keywords": [
         "regeneration",
         "cultivate",
@@ -992,16 +983,16 @@
       "effects": [
         {
           "kind": "damage",
-          "amount": 80,
+          "amount": 100,
           "statusMultiplier": {
             "status": "enemy:poison",
-            "amount": 0.1
+            "amount": 0.25
           },
           "requiresAttunement": "nature"
         }
       ]
     },
-    "rules": "Nature attuned: Deal 80 damage. +10% damage per Poison on the enemy.",
+    "rules": "Nature attuned: Deal 100 damage. +25% damage per Poison on the enemy.",
     "keywords": [
       "poison",
       "attunement"
@@ -1013,16 +1004,16 @@
         "effects": [
           {
             "kind": "damage",
-            "amount": 80,
+            "amount": 100,
             "statusMultiplier": {
               "status": "enemy:poison",
-              "amount": 0.2
+              "amount": 0.4
             },
             "requiresAttunement": "nature"
           }
         ]
       },
-      "rules": "Nature attuned: Deal 80 damage. +20% damage per Poison on the enemy.",
+      "rules": "Nature attuned: Deal 100 damage. +40% damage per Poison on the enemy.",
       "keywords": [
         "poison",
         "attunement"
