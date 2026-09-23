@@ -38,7 +38,7 @@ export function CompactShop({ session, busy, act, onMenu, onLibrary, onLeaderboa
   const pendingMerge=useRef<{revision:number;target:number;xp:number;id:string;x:number;y:number}|null>(null);
   const [burst,setBurst]=useState<{key:number;x:number;y:number;upgraded:boolean}|null>(null);
   useEffect(()=>{const p=pendingMerge.current;if(!p||session.revision<=p.revision)return;pendingMerge.current=null;if(session.spells[p.target]===p.id&&(session.spellXp?.[p.target]??0)>p.xp)setBurst({key:session.revision,x:p.x,y:p.y,upgraded:session.spellXp?.[p.target]===3});},[session.revision]);
-  const [offerDrag,setOfferDrag]=useState<{id:SpellId;x:number;y:number;over:boolean;target?:number}|null>(null);
+  const [offerDrag,setOfferDrag]=useState<{id:SpellId;x:number;y:number;over:boolean;preview:boolean;target?:number}|null>(null);
   const purchaseReason=(id:SpellId)=>busy?'Please wait':!canAddSpell(session.spells,id)?spellAddReason(session.spells,id):session.gold<SPELLS[id].price?'Not enough gold':null;
   const excess = Math.max(0, session.spells.length - RULES.slots);
   const warnDrag = !!offerDrag?.over && session.spells.length >= RULES.slots;
@@ -57,13 +57,13 @@ export function CompactShop({ session, busy, act, onMenu, onLibrary, onLeaderboa
     handRef.current?.measureInWindow((x,y,width,height)=>{Object.assign(bounds.current,{x,y,width,height});});
   };
   const overHand=(p:ShopPointer)=>{const b=bounds.current;return p.x>=b.x&&p.x<=b.x+b.width&&p.y>=b.y&&p.y<=b.y+b.height;};
-  const moveOffer=(id:SpellId,p:ShopPointer)=>setOfferDrag({id,x:p.x-bounds.current.rootX,y:p.y-bounds.current.rootY,over:overHand(p),target:targetAt(id,p)});
+  const moveOffer=(id:SpellId,p:ShopPointer,preview=false)=>setOfferDrag({id,preview,x:p.x-bounds.current.rootX,y:p.y-bounds.current.rootY,over:overHand(p),target:targetAt(id,p)});
   const compact = size.height < 500;
   const tight = size.width < 740;
 
   const rollCost = rerollCost(session.augments, session.rerolls);
   const stats = deriveStats(session.augments, session.level);
-  const handHeight = Math.max(76, Math.min(142, size.height * .21));
+  const handHeight = compact ? Math.max(110, Math.min(150, size.height * .35)) : Math.min(190, size.height * .25);
   const handleDragging = useCallback((value: boolean) => { setDragging(value); if (!value) setOverTrash(false); }, []);
   const viewport = { left: insets.left + 10, top: insets.top + 10,
     right: rootSize.width - insets.right - 10, bottom: rootSize.height - insets.bottom - 10 };
@@ -78,15 +78,15 @@ export function CompactShop({ session, busy, act, onMenu, onLibrary, onLeaderboa
   return <View ref={rootRef} collapsable={false} onLayout={event => { setRootSize(event.nativeEvent.layout); measure(); }} style={s.root}>
     <Image accessible={false} source={require('../../assets/MainBackground.png')} resizeMode="cover" style={[StyleSheet.absoluteFill, { width: '100%', height: '100%', opacity: .24 }]} />
     <SafeAreaView style={{ flex: 1 }}>
-      <View onLayout={event => setSize(event.nativeEvent.layout)} style={[s.page, { padding: compact ? 8 : 18, gap: compact ? 7 : 14 }]}>
-        <View style={s.header}>
-          <Pressable accessibilityRole="button" accessibilityLabel="Main menu" onPress={onMenu} style={s.nav}><Text style={s.navText}>‹</Text></Pressable>
-          <View style={{ flex: 1 }}><Text style={s.eyebrow}>ROUND {String(session.round).padStart(2, '0')} · LV {session.level} · {botConfig.difficulties[session.difficulty].label.toUpperCase()}</Text><Text numberOfLines={1} adjustsFontSizeToFit minimumFontScale={.8} accessibilityRole="header" style={[s.title, tight && { fontSize: 18 }]}>The Arcane Emporium</Text></View>
-          <View accessibilityLabel={`Health ${stats.health} of ${stats.health}`} style={[s.wallet,{backgroundColor:"#bd625b20"}]}><Text style={[s.coin,{color:palette.dangerText}]}>♥</Text><Text style={s.health}>{stats.health}</Text></View>
-          <Pressable accessibilityRole="button" accessibilityLabel={`Leaderboard. ${session.trophies} of ${session.lobby.trophiesToWin} trophies`} onPress={onLeaderboard} style={[s.wallet,{backgroundColor:"#bd9b5620"}]}><TrophyIcon/><Text style={s.recordText}>{session.trophies}<Text style={{fontSize:13,color:"#d3bd8d"}}>/{session.lobby.trophiesToWin}</Text></Text></Pressable>
-          <Pressable accessibilityRole="button" onPress={onLibrary} style={s.nav}><Text style={s.navLabel}>Spells</Text></Pressable>
-          <View accessibilityLabel={`${session.gold} gold`} style={s.wallet}><Text style={s.coin}>◈</Text><Text style={s.gold}>{session.gold}</Text></View>
-          <Pressable accessibilityRole="button" accessibilityLabel={`Reroll for ${rollCost} gold`} disabled={busy || session.gold < rollCost} onPress={() => act({ type: 'reroll' })} style={({ pressed }) => [s.reroll, (busy || session.gold < rollCost) && s.disabled, pressed && s.pressed]}><Text style={s.rerollText}>⟳ Reroll  ·  {rollCost} ◈</Text></Pressable>
+      <View onLayout={event => setSize(event.nativeEvent.layout)} style={[s.page, { padding: compact ? 6 : 18, gap: compact ? 5 : 14 }]}>
+        <View style={[s.header, compact && s.headerCompact]}>
+          <Pressable accessibilityRole="button" accessibilityLabel="Main menu" onPress={onMenu} hitSlop={compact ? 5 : 0} style={[s.nav, compact && s.navCompact]}><Text style={s.navText}>‹</Text></Pressable>
+          {compact ? <View style={s.compactHeading}><Text accessibilityRole="header" style={s.compactTitle}>Shop</Text><Text numberOfLines={1} style={s.compactRound}>Round {session.round} · Lv {session.level}</Text></View> : <View style={{ flex: 1 }}><Text style={s.eyebrow}>ROUND {String(session.round).padStart(2, '0')} · LV {session.level} · {botConfig.difficulties[session.difficulty].label.toUpperCase()}</Text><Text numberOfLines={1} adjustsFontSizeToFit minimumFontScale={.8} accessibilityRole="header" style={[s.title, tight && { fontSize: 18 }]}>The Arcane Emporium</Text></View>}
+          <View accessibilityLabel={`Health ${stats.health} of ${stats.health}`} style={[s.wallet, compact && s.walletCompact,{backgroundColor:"#bd625b20"}]}><Text style={[s.coin,{color:palette.dangerText}]}>♥</Text><Text style={[s.health, compact && s.statCompact]}>{stats.health}</Text></View>
+          <Pressable accessibilityRole="button" accessibilityLabel={`Leaderboard. ${session.trophies} of ${session.lobby.trophiesToWin} trophies`} onPress={onLeaderboard} style={[s.wallet, compact && s.walletCompact,{backgroundColor:"#bd9b5620"}]}><TrophyIcon/><Text style={[s.recordText, compact && s.statCompact]}>{session.trophies}<Text style={{fontSize:13,color:"#d3bd8d"}}>/{session.lobby.trophiesToWin}</Text></Text></Pressable>
+          <Pressable accessibilityRole="button" onPress={onLibrary} hitSlop={compact ? 5 : 0} style={[s.nav, compact && s.navCompact]}><Text style={s.navLabel}>Spells</Text></Pressable>
+          <View accessibilityLabel={`${session.gold} gold`} style={[s.wallet, compact && s.walletCompact]}><Text style={s.coin}>◈</Text><Text style={[s.gold, compact && s.statCompact]}>{session.gold}</Text></View>
+          <Pressable accessibilityRole="button" accessibilityLabel={`Reroll for ${rollCost} gold`} disabled={busy || session.gold < rollCost} onPress={() => act({ type: 'reroll' })} hitSlop={compact ? 5 : 0} style={({ pressed }) => [s.reroll, compact && s.rerollCompact, (busy || session.gold < rollCost) && s.disabled, pressed && s.pressed]}><Text style={s.rerollText}>⟳ Reroll  ·  {rollCost} ◈</Text></Pressable>
         </View>
 
         <View style={[s.market, { gap: tight ? 7 : 10 }]}>
@@ -95,7 +95,7 @@ export function CompactShop({ session, busy, act, onMenu, onLibrary, onLeaderboa
             <View style={s.offers}>{session.shop.map((id, shopSlot) => id === null
               ? <View key={shopSlot} accessibilityLabel={`Shop slot ${shopSlot + 1}: sold. Reroll to refill.`} style={s.sold}><Text style={s.soldMark}>✧</Text><Text style={s.soldText}>SOLD</Text><Text style={s.soldHint}>Reroll to refill</Text></View>
               : <ShopOffer key={shopSlot} label={`Inspect ${SPELLS[id].name}, ${SPELLS[id].price} gold`} disabled={busy} style={s.spellOffer}
-                onInspect={() => inspectSpell(id, shopSlot)} onLift={p => { measure(); moveOffer(id, p); }} onMove={p => moveOffer(id, p)} onCancel={() => setOfferDrag(null)}
+                onInspect={() => inspectSpell(id, shopSlot)} onLift={p => { measure(); moveOffer(id, p, true); }} onMove={p => moveOffer(id, p)} onCancel={() => setOfferDrag(null)}
                 onDrop={p => {
                   setOfferDrag(null); const target = targetAt(id, p);
                   if (!overHand(p) || dropReason(id, target)) return;
@@ -131,7 +131,7 @@ export function CompactShop({ session, busy, act, onMenu, onLibrary, onLeaderboa
       </View>
     </SafeAreaView>
     {burst && <MergeBurst key={burst.key} x={burst.x} y={burst.y} upgraded={burst.upgraded} onDone={() => setBurst(null)} />}
-    {offerDrag && <LiftedPreview {...previewPosition} {...previewSize}>{<ShopSpellPreview domains={attunedDomains(session.spells,session.spellAcquired)} id={offerDrag.id} shop {...previewSize} />}</LiftedPreview>}
+    {offerDrag?.preview && <LiftedPreview {...previewPosition} {...previewSize}>{<ShopSpellPreview domains={attunedDomains(session.spells,session.spellAcquired)} id={offerDrag.id} shop {...previewSize} />}</LiftedPreview>}
   </View>;
 }
 
@@ -140,6 +140,14 @@ const s = StyleSheet.create({
   root: { flex: 1, overflow: 'hidden', backgroundColor: '#0c1519' },
   page: { flex: 1, minHeight: 0, width: '100%', maxWidth: 1400, alignSelf: 'center' },
   header: { flexDirection: 'row', alignItems: 'center', gap: 10, height: 44 },
+  headerCompact: { height: 34, gap: 8 },
+  compactHeading: { flex: 1, minWidth: 0, flexDirection: 'row', alignItems: 'center', gap: 10 },
+  compactTitle: { fontFamily: serif, color: palette.parchment, fontSize: 17 },
+  compactRound: { flexShrink: 1, color: palette.goldMuted, fontSize: 11 },
+  navCompact: { height: 34 },
+  walletCompact: { height: 34, paddingHorizontal: 9, gap: 5 },
+  statCompact: { fontSize: 18 },
+  rerollCompact: { height: 34, paddingHorizontal: 10 },
   nav: { minWidth: 44, height: 44, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 7 },
   navText: { color: '#e8d4ae', fontSize: 30 }, navLabel: { color: '#c6ba9e', fontSize: 12 },
   eyebrow: { color: '#a89a7e', fontSize: 9, fontWeight: '700', letterSpacing: 1.5 },

@@ -22,8 +22,8 @@ export function DraggableHand({ xp=[], mergeSpell, mergeTarget, onCardBounds, sp
   const measured=useRef<CardBounds[]>([]);
   const count = Math.max(5, spells.length);
   const cardHeight = Math.max(42, height - 16);
-  const cardWidth = Math.min(94, cardHeight * 2 / 3);
-  const spacing = Math.min(77, Math.max(1, (width - cardWidth - 38) / (count - 1)));
+  const cardWidth = Math.min(120, cardHeight * 2 / 3);
+  const spacing = Math.min(cardWidth + 8, Math.max(1, (width - cardWidth - 38) / (count - 1)));
   const start = (width - (cardWidth + spacing * (count - 1))) / 2;
   const measureCards=()=>handRef.current?.measureInWindow((x,y)=>{measured.current=spells.map((_,index)=>({index,x:x+start+spacing*index,y:y+6+Math.abs(index-(count-1)/2),width:cardWidth,height:cardHeight}));onCardBounds?.(measured.current);});
   useEffect(()=>{measureCards();},[width,height,spells.length,disabled]);
@@ -61,6 +61,7 @@ function DragCard(props: {
   const insets = useSafeAreaInsets();
   const [origin, setOrigin] = useState({ x: 0, y: 0 });
   const [point, setPoint] = useState({ x: 0, y: 0 });
+  const [moving, setMoving] = useState(false);
   const touch = useRef({ x: 0, y: 0 });
   const startY = useRef(0);
   const measure = () => cardRef.current?.measureInWindow((x, y) => setOrigin({ x, y }));
@@ -100,13 +101,16 @@ function DragCard(props: {
       touch.current = { x: event.nativeEvent.pageX, y: event.nativeEvent.pageY };
       startY.current = touch.current.y;
       setPoint(touch.current);
-      clearHold(); active.current = true; lifted.current = false;
+      clearHold(); active.current = true; lifted.current = false; setMoving(false);
       from.current = latest.current.index;
       timer.current = setTimeout(lift, 300);
     },
     onPanResponderMove: (_, gesture) => {
       if (!active.current) return;
-      if (!lifted.current && Math.hypot(gesture.dx, gesture.dy) > 6) { clearHold(); lift(); }
+      if (Math.hypot(gesture.dx, gesture.dy) > 6) {
+        setMoving(true);
+        if (!lifted.current) { clearHold(); lift(); }
+      }
       if (lifted.current) {
         touch.current = { x: gesture.moveX, y: gesture.moveY };
         // Keep horizontal reordering steady; lift further if the thumb moves upward.
@@ -141,7 +145,7 @@ function DragCard(props: {
       <View style={{position:'absolute',bottom:-5,left:-4,right:-4,alignItems:'center'}}><Text style={{fontSize:9,fontWeight:'900',color:props.mergeTarget?'#251605':'#ffdf88',backgroundColor:props.mergeTarget?'#ffe48d':'#231a0ff2',borderWidth:1,borderColor:props.xp>0?'#ffcd55':'#766242',borderRadius:3,paddingHorizontal:3,paddingVertical:1}}>{props.mergeTarget? (props.xp===2?'UPGRADE!':'+1 XP'):props.xp>=3?'MAX ✦':props.xp+'/3 XP'}</Text></View>
       <View style={styles.badge}><Text style={styles.number}>{props.index + 1}</Text></View>
     </View>
-    {props.selected && <LiftedPreview left={position.left - origin.x} top={position.top - origin.y} width={previewWidth} height={previewSize.height}>
+    {props.selected && !moving && <LiftedPreview left={position.left - origin.x} top={position.top - origin.y} width={previewWidth} height={previewSize.height}>
       {props.renderPreview ? props.renderPreview(props.id, previewSize.height, previewWidth,props.index) : props.renderCard(props.id, true,props.index)}
     </LiftedPreview>}
   </View>;

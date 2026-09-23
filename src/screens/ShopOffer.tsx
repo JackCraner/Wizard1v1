@@ -11,7 +11,7 @@ export function ShopOffer({ label, hint, style, disabled, children, onInspect, o
   const latest=useRef({disabled,onInspect,onLift,onMove,onDrop,onCancel});
   latest.current={disabled,onInspect,onLift,onMove,onDrop,onCancel};
   const timer=useRef<ReturnType<typeof setTimeout>|null>(null);
-  const active=useRef(false), lifted=useRef(false);
+  const active=useRef(false), lifted=useRef(false), moving=useRef(false);
   const point=useRef({x:0,y:0});
   const clear=()=>{if(timer.current)clearTimeout(timer.current);timer.current=null;};
   const lift=()=>{if(active.current&&!latest.current.disabled&&!lifted.current){lifted.current=true;latest.current.onLift(point.current);}};
@@ -20,8 +20,8 @@ export function ShopOffer({ label, hint, style, disabled, children, onInspect, o
   useEffect(()=>{if(disabled)cancel();},[disabled]);
   const responder=useRef(PanResponder.create({
     onStartShouldSetPanResponder:()=>!latest.current.disabled,
-    onPanResponderGrant:(e)=>{clear();active.current=true;lifted.current=false;point.current={x:e.nativeEvent.pageX,y:e.nativeEvent.pageY};timer.current=setTimeout(lift,300);},
-    onPanResponderMove:(_,g)=>{if(!active.current)return;point.current={x:g.moveX,y:g.moveY};if(Math.hypot(g.dx,g.dy)>7){clear();lift();}if(lifted.current)latest.current.onMove(point.current);},
+    onPanResponderGrant:(e)=>{clear();active.current=true;lifted.current=false;moving.current=false;point.current={x:e.nativeEvent.pageX,y:e.nativeEvent.pageY};timer.current=setTimeout(lift,300);},
+    onPanResponderMove:(_,g)=>{if(!active.current)return;point.current={x:g.moveX,y:g.moveY};if(Math.hypot(g.dx,g.dy)>7){moving.current=true;clear();lift();}if(moving.current&&lifted.current)latest.current.onMove(point.current);},
     onPanResponderRelease:()=>{clear();if(!active.current)return;active.current=false;if(lifted.current){lifted.current=false;latest.current.onDrop(point.current);}else latest.current.onInspect();},
     onPanResponderTerminate:cancel,
     onPanResponderTerminationRequest:()=>false,
