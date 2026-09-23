@@ -2,11 +2,11 @@
   "health": 500,
   "healthPerLevel": 100,
   "gold": 10,
-  "slots": 10,
-  "maxTicks": 40,
+  "slots": 6,
+  "maxTicks": 30,
   "seed": 42,
   "maxDomains": 2,
-  "reshuffleTicks": 2,
+  "reshuffleTicks": 1,
   "shopSlots": 5,
   "augmentEvery": 2
 }

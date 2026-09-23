@@ -26,6 +26,7 @@ export function upgradeSummary(card:CardDefinition):string {
 }
 /** Explicit prose markers scope the condition; keyword themes never imply a lock. */
 export function ruleSections(rules:string,card?:Pick<CardDefinition,'combat'|'instantDomain'|'castDomain'>):RuleSection[] {
+ if(rules.includes('['))return rules.split(/(\[[^\]]*\])/).filter(s=>s.trim()).map(part=>{const match=part.match(/^\[(Nature|Water|Fire|Holy|Affliction) Attuned: ([\s\S]*)\]$/i);return match?{text:match[1]+' attuned: '+match[2],domain:match[1].toLowerCase() as Domain}:{text:part.trim()};});
  const whole=card?cardRequirements(card).whole:undefined;
  const sections:RuleSection[]=[];
  for(const sentence of rules.split(/(?<=[.!?])\s+(?=[A-Z])/) ) {

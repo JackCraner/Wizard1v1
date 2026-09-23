@@ -45,7 +45,7 @@
     "id": "momentum",
     "name": "Momentum",
     "category": "casting",
-    "description": "Three consecutive printed 1T spells grant 5 Fury."
+    "description": "Three consecutive printed 1T spells Empower your following spell."
   },
   {
     "id": "glass-cannon",
@@ -63,7 +63,7 @@
     "id": "blood-infusion",
     "name": "Blood Infusion",
     "category": "risk",
-    "description": "Self-damage grants 1 Potency."
+    "description": "Losing Health to your own effects grants 1 Heat."
   },
   {
     "id": "reckless-loop",
@@ -147,7 +147,7 @@
     "id": "criticality",
     "name": "Criticality",
     "category": "offense",
-    "description": "Crossing from below 10 to 10+ Potency grants 15 Heat."
+    "description": "Your first Critical spell each Cycle grants 2 Heat."
   },
   {
     "id": "monster",
@@ -159,6 +159,6 @@
     "id": "tough-skin",
     "name": "Tough Skin",
     "category": "defense",
-    "description": "Resilience reduces damage by 65%."
+    "description": "When your Guard blocks damage, gain 40 Ward."
   }
 ]

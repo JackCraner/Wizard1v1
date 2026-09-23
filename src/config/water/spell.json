@@ -22,11 +22,11 @@
         "effects": [
           {
             "kind": "damage",
-            "amount": 55
+            "amount": 60
           }
         ]
       },
-      "rules": "Deal 55 damage.",
+      "rules": "Deal 60 damage.",
       "keywords": [],
       "notes": []
     }
@@ -41,11 +41,11 @@
       "effects": [
         {
           "kind": "damage",
-          "amount": 100
+          "amount": 110
         }
       ]
     },
-    "rules": "Deal 100 damage.",
+    "rules": "Deal 110 damage.",
     "keywords": [],
     "notes": [],
     "upgrade": {
@@ -54,11 +54,11 @@
         "effects": [
           {
             "kind": "damage",
-            "amount": 140
+            "amount": 150
           }
         ]
       },
-      "rules": "Deal 140 damage.",
+      "rules": "Deal 150 damage.",
       "keywords": [],
       "notes": []
     }
@@ -72,16 +72,21 @@
     "combat": {
       "effects": [
         {
+          "kind": "damage",
+          "amount": 25
+        },
+        {
           "kind": "status",
-          "status": "tidecaller",
           "amount": 1,
+          "status": "tide",
           "target": "self"
         }
       ]
     },
-    "rules": "Gain 1 Tidecaller.",
+    "rules": "Deal 25 damage. Gain 1 additional Tide.",
     "keywords": [
-      "tidecaller"
+      "gain",
+      "tide"
     ],
     "notes": [],
     "upgrade": {
@@ -90,19 +95,22 @@
         "effects": [
           {
             "kind": "damage",
-            "amount": 15
+            "amount": 35
           },
           {
             "kind": "status",
-            "status": "tidecaller",
             "amount": 1,
-            "target": "self"
+            "status": "tide",
+            "target": "self",
+            "bonusDomain": "water",
+            "attunedAmount": 2
           }
         ]
       },
-      "rules": "Deal 15 damage. Gain 1 Tidecaller.",
+      "rules": "Deal 35 damage. Gain 1 additional Tide. [Water Attuned: Gain 2 additional Tide instead.]",
       "keywords": [
-        "tidecaller"
+        "gain",
+        "tide"
       ],
       "notes": []
     }
@@ -117,11 +125,11 @@
       "effects": [
         {
           "kind": "heal",
-          "amount": 40
+          "amount": 50
         }
       ]
     },
-    "rules": "Heal 40.",
+    "rules": "Heal 50.",
     "keywords": [],
     "notes": [],
     "upgrade": {
@@ -130,19 +138,20 @@
         "effects": [
           {
             "kind": "heal",
-            "amount": 40
+            "amount": 60
           },
           {
             "kind": "status",
+            "amount": 3,
             "status": "regeneration",
-            "amount": 4,
             "target": "self"
           }
         ]
       },
-      "rules": "Heal 40. Gain Regeneration for 4 ticks.",
+      "rules": "Heal 60. Gain 3 Regeneration.",
       "keywords": [
-        "regeneration"
+        "regeneration",
+        "gain"
       ],
       "notes": []
     }
@@ -157,19 +166,20 @@
       "effects": [
         {
           "kind": "damage",
-          "amount": 10
+          "amount": 25
         },
         {
           "kind": "status",
+          "amount": 1,
           "status": "slow",
-          "amount": 3,
           "target": "enemy"
         }
       ]
     },
-    "rules": "Deal 10 damage. Apply Slow for 3 ticks.",
+    "rules": "Deal 25 damage. Apply 1 Slow.",
     "keywords": [
-      "slow"
+      "slow",
+      "apply"
     ],
     "notes": [],
     "upgrade": {
@@ -178,22 +188,22 @@
         "effects": [
           {
             "kind": "damage",
-            "amount": 10
+            "amount": 40
           },
           {
             "kind": "status",
+            "amount": 2,
             "status": "slow",
-            "amount": 3,
             "target": "enemy",
             "bonusDomain": "water",
-            "attunedAmount": 5
+            "attunedAmount": 3
           }
         ]
       },
-      "rules": "Deal 10 damage. Apply Slow for 3 ticks. Water attuned: Apply Slow for 5 ticks instead.",
+      "rules": "Deal 40 damage. Apply 2 Slow. [Water Attuned: Apply 3 Slow instead.]",
       "keywords": [
         "slow",
-        "attunement"
+        "apply"
       ],
       "notes": []
     }
@@ -203,37 +213,39 @@
     "name": "Foamguard",
     "domain": "water",
     "stars": 2,
-    "castTicks": 2,
+    "castTicks": 1,
     "combat": {
       "effects": [
         {
           "kind": "status",
-          "status": "guard",
           "amount": 1,
+          "status": "guard",
           "target": "self"
         }
       ]
     },
-    "rules": "Gain Guard for 1 tick.",
+    "rules": "Gain 1 Guard.",
     "keywords": [
-      "guard"
+      "guard",
+      "gain"
     ],
     "notes": [],
     "upgrade": {
-      "castTicks": 2,
+      "castTicks": 1,
       "combat": {
         "effects": [
           {
             "kind": "status",
-            "status": "guard",
             "amount": 2,
+            "status": "guard",
             "target": "self"
           }
         ]
       },
-      "rules": "Gain Guard for 2 ticks.",
+      "rules": "Gain 2 Guard.",
       "keywords": [
-        "guard"
+        "guard",
+        "gain"
       ],
       "notes": []
     }
@@ -249,11 +261,19 @@
         {
           "kind": "damage",
           "amount": 60
+        },
+        {
+          "kind": "awaken",
+          "awakenOn": "echo",
+          "threshold": 1,
+          "awakenedDamage": 100
         }
       ]
     },
-    "rules": "Deal 60 damage.",
-    "keywords": [],
+    "rules": "Deal 60 damage. Awaken: after this spell is Echoed once. Awakened: Deal 100 damage instead.",
+    "keywords": [
+      "awaken"
+    ],
     "notes": [],
     "upgrade": {
       "castTicks": 1,
@@ -262,11 +282,19 @@
           {
             "kind": "damage",
             "amount": 70
+          },
+          {
+            "kind": "awaken",
+            "awakenOn": "echo",
+            "threshold": 1,
+            "awakenedDamage": 130
           }
         ]
       },
-      "rules": "Deal 70 damage.",
-      "keywords": [],
+      "rules": "Deal 70 damage. Awaken: after this spell is Echoed once. Awakened: Deal 130 damage instead.",
+      "keywords": [
+        "awaken"
+      ],
       "notes": []
     }
   },
@@ -279,18 +307,22 @@
     "combat": {
       "effects": [
         {
+          "kind": "ward",
+          "amount": 50
+        },
+        {
           "kind": "status",
-          "status": "tidecaller",
-          "amount": 2,
-          "target": "self",
-          "requiresAttunement": "water"
+          "amount": 1,
+          "status": "tide",
+          "target": "self"
         }
       ]
     },
-    "rules": "Water attuned: Gain 2 Tidecaller.",
+    "rules": "Gain 50 Ward. Gain 1 additional Tide.",
     "keywords": [
-      "tidecaller",
-      "attunement"
+      "ward",
+      "gain",
+      "tide"
     ],
     "notes": [],
     "upgrade": {
@@ -298,18 +330,24 @@
       "combat": {
         "effects": [
           {
+            "kind": "ward",
+            "amount": 70
+          },
+          {
             "kind": "status",
-            "status": "tidecaller",
-            "amount": 3,
+            "amount": 1,
+            "status": "tide",
             "target": "self",
-            "requiresAttunement": "water"
+            "bonusDomain": "water",
+            "attunedAmount": 2
           }
         ]
       },
-      "rules": "Water attuned: Gain 3 Tidecaller.",
+      "rules": "Gain 70 Ward. Gain 1 additional Tide. [Water Attuned: Gain 2 additional Tide instead.]",
       "keywords": [
-        "tidecaller",
-        "attunement"
+        "ward",
+        "gain",
+        "tide"
       ],
       "notes": []
     }
@@ -324,12 +362,22 @@
       "effects": [
         {
           "kind": "damage",
-          "amount": 60
+          "amount": 80
+        },
+        {
+          "kind": "status",
+          "amount": 1,
+          "status": "slow",
+          "target": "enemy",
+          "when": "echoed"
         }
       ]
     },
-    "rules": "Deal 60 damage.",
-    "keywords": [],
+    "rules": "Deal 80 damage. If this spell is Echoed, apply 1 Slow.",
+    "keywords": [
+      "slow",
+      "apply"
+    ],
     "notes": [],
     "upgrade": {
       "castTicks": 2,
@@ -337,19 +385,21 @@
         "effects": [
           {
             "kind": "damage",
-            "amount": 60,
-            "statusMultiplier": {
-              "status": "tidecaller",
-              "amount": 0.2
-            },
-            "bonusDomain": "water"
+            "amount": 110
+          },
+          {
+            "kind": "status",
+            "amount": 2,
+            "status": "slow",
+            "target": "enemy",
+            "when": "echoed"
           }
         ]
       },
-      "rules": "Deal 60 damage. Water attuned: +20% damage per Tidecaller you have.",
+      "rules": "Deal 110 damage. If this spell is Echoed, apply 2 Slow.",
       "keywords": [
-        "tidecaller",
-        "attunement"
+        "slow",
+        "apply"
       ],
       "notes": []
     }
@@ -367,18 +417,22 @@
           "amount": 70
         },
         {
-          "kind": "status",
-          "status": "tidecaller",
-          "amount": 1,
-          "target": "self",
-          "requiresAttunement": "water"
+          "kind": "trigger",
+          "event": "echo",
+          "effects": [
+            {
+              "kind": "damage",
+              "amount": 35
+            }
+          ]
         }
       ]
     },
-    "rules": "Deal 70 damage. Water attuned: Gain 1 Tidecaller.",
+    "rules": "Deal 70 damage. Trigger — Echo: the first time one of your spells Echoes each Cycle, deal 35 damage.",
     "keywords": [
-      "tidecaller",
-      "attunement"
+      "cycle",
+      "echo",
+      "trigger"
     ],
     "notes": [],
     "upgrade": {
@@ -387,21 +441,25 @@
         "effects": [
           {
             "kind": "damage",
-            "amount": 70
+            "amount": 80
           },
           {
-            "kind": "status",
-            "status": "tidecaller",
-            "amount": 3,
-            "target": "self",
-            "requiresAttunement": "water"
+            "kind": "trigger",
+            "event": "echo",
+            "effects": [
+              {
+                "kind": "damage",
+                "amount": 50
+              }
+            ]
           }
         ]
       },
-      "rules": "Deal 70 damage. Water attuned: Gain 3 Tidecaller.",
+      "rules": "Deal 80 damage. Trigger — Echo: the first time one of your spells Echoes each Cycle, deal 50 damage.",
       "keywords": [
-        "tidecaller",
-        "attunement"
+        "cycle",
+        "echo",
+        "trigger"
       ],
       "notes": []
     }
@@ -415,23 +473,21 @@
     "combat": {
       "effects": [
         {
-          "kind": "status",
-          "status": "slow",
-          "amount": 3,
-          "target": "enemy"
+          "kind": "damage",
+          "amount": 50
         },
         {
           "kind": "status",
-          "status": "weaken",
-          "amount": 4,
+          "amount": 2,
+          "status": "slow",
           "target": "enemy"
         }
       ]
     },
-    "rules": "Apply Slow for 3 ticks. Apply Weaken for 4 ticks.",
+    "rules": "Deal 50 damage. Apply 2 Slow.",
     "keywords": [
       "slow",
-      "weaken"
+      "apply"
     ],
     "notes": [],
     "upgrade": {
@@ -439,26 +495,21 @@
       "combat": {
         "effects": [
           {
-            "kind": "status",
-            "status": "slow",
-            "amount": 3,
-            "target": "enemy"
+            "kind": "damage",
+            "amount": 70
           },
           {
             "kind": "status",
-            "status": "weaken",
-            "amount": 4,
-            "target": "enemy",
-            "bonusDomain": "water",
-            "attunedAmount": 6
+            "amount": 3,
+            "status": "slow",
+            "target": "enemy"
           }
         ]
       },
-      "rules": "Apply Slow for 3 ticks. Apply Weaken for 4 ticks. Water attuned: Apply Weaken for 6 ticks instead.",
+      "rules": "Deal 70 damage. Apply 3 Slow.",
       "keywords": [
         "slow",
-        "weaken",
-        "attunement"
+        "apply"
       ],
       "notes": []
     }
@@ -474,11 +525,22 @@
         {
           "kind": "heal",
           "amount": 80
+        },
+        {
+          "kind": "status",
+          "amount": 1,
+          "status": "guard",
+          "target": "self",
+          "when": "echoed",
+          "requiresAttunement": "water"
         }
       ]
     },
-    "rules": "Heal 80.",
-    "keywords": [],
+    "rules": "Heal 80. [Water Attuned: if this spell is Echoed, gain 1 Guard.]",
+    "keywords": [
+      "guard",
+      "gain"
+    ],
     "notes": [],
     "upgrade": {
       "castTicks": 1,
@@ -486,21 +548,22 @@
         "effects": [
           {
             "kind": "heal",
-            "amount": 80
+            "amount": 100
           },
           {
             "kind": "status",
-            "status": "tidecaller",
             "amount": 2,
+            "status": "guard",
             "target": "self",
+            "when": "echoed",
             "requiresAttunement": "water"
           }
         ]
       },
-      "rules": "Heal 80. Water attuned: Gain 2 Tidecaller.",
+      "rules": "Heal 100. [Water Attuned: if this spell is Echoed, gain 2 Guard.]",
       "keywords": [
-        "tidecaller",
-        "attunement"
+        "guard",
+        "gain"
       ],
       "notes": []
     }
@@ -515,16 +578,18 @@
       "effects": [
         {
           "kind": "damage",
-          "amount": 50,
-          "channelBonus": 10,
-          "bonusDomain": "water"
+          "amount": 50
+        },
+        {
+          "kind": "retrigger",
+          "effects": []
         }
       ]
     },
-    "rules": "Deal 50 damage. Water attuned: Channel: +10 damage per extra copy.",
+    "rules": "Deal 50 damage. Retrigger your last Trigger.",
     "keywords": [
-      "channel",
-      "attunement"
+      "trigger",
+      "retrigger"
     ],
     "notes": [],
     "upgrade": {
@@ -533,16 +598,28 @@
         "effects": [
           {
             "kind": "damage",
-            "amount": 50,
-            "channelBonus": 20,
-            "bonusDomain": "water"
+            "amount": 70
+          },
+          {
+            "kind": "retrigger",
+            "effects": [
+              {
+                "kind": "status",
+                "amount": 1,
+                "status": "tide",
+                "target": "self",
+                "requiresAttunement": "water"
+              }
+            ]
           }
         ]
       },
-      "rules": "Deal 50 damage. Water attuned: Channel: +20 damage per extra copy.",
+      "rules": "Deal 70 damage. Retrigger your last Trigger. [Water Attuned: Gain 1 Tide after the Retrigger.]",
       "keywords": [
-        "channel",
-        "attunement"
+        "gain",
+        "trigger",
+        "retrigger",
+        "tide"
       ],
       "notes": []
     }
@@ -558,12 +635,26 @@
         {
           "kind": "ward",
           "amount": 80
+        },
+        {
+          "kind": "trigger",
+          "event": "echo",
+          "effects": [
+            {
+              "kind": "ward",
+              "amount": 30
+            }
+          ]
         }
       ]
     },
-    "rules": "Gain 80 Ward.",
+    "rules": "Gain 80 Ward. Trigger — Echo: the first time one of your spells Echoes each Cycle, gain 30 Ward.",
     "keywords": [
-      "ward"
+      "ward",
+      "cycle",
+      "echo",
+      "gain",
+      "trigger"
     ],
     "notes": [],
     "upgrade": {
@@ -572,22 +663,27 @@
         "effects": [
           {
             "kind": "ward",
-            "amount": 80
+            "amount": 100
           },
           {
-            "kind": "status",
-            "status": "tidecaller",
-            "amount": 2,
-            "target": "self",
-            "requiresAttunement": "water"
+            "kind": "trigger",
+            "event": "echo",
+            "effects": [
+              {
+                "kind": "ward",
+                "amount": 45
+              }
+            ]
           }
         ]
       },
-      "rules": "Gain 80 Ward. Water attuned: Gain 2 Tidecaller.",
+      "rules": "Gain 100 Ward. Trigger — Echo: the first time one of your spells Echoes each Cycle, gain 45 Ward.",
       "keywords": [
-        "tidecaller",
         "ward",
-        "attunement"
+        "cycle",
+        "echo",
+        "gain",
+        "trigger"
       ],
       "notes": []
     }
@@ -597,22 +693,25 @@
     "name": "Ice Block",
     "domain": "water",
     "stars": 4,
-    "castTicks": 2,
+    "castTicks": 1,
     "combat": {
       "effects": [
         {
           "kind": "status",
+          "amount": 3,
           "status": "guard",
-          "amount": 4,
-          "target": "self",
-          "requiresAttunement": "water"
+          "target": "self"
+        },
+        {
+          "kind": "fragile"
         }
       ]
     },
-    "rules": "Water attuned: Gain Guard for 4 ticks.",
+    "rules": "Gain 3 Guard. Fragile.",
     "keywords": [
       "guard",
-      "attunement"
+      "gain",
+      "fragile"
     ],
     "notes": [],
     "upgrade": {
@@ -621,17 +720,20 @@
         "effects": [
           {
             "kind": "status",
-            "status": "guard",
             "amount": 4,
-            "target": "self",
-            "requiresAttunement": "water"
+            "status": "guard",
+            "target": "self"
+          },
+          {
+            "kind": "fragile"
           }
         ]
       },
-      "rules": "Water attuned: Gain Guard for 4 ticks.",
+      "rules": "Gain 4 Guard. Fragile.",
       "keywords": [
         "guard",
-        "attunement"
+        "gain",
+        "fragile"
       ],
       "notes": []
     }
@@ -646,22 +748,20 @@
       "effects": [
         {
           "kind": "damage",
-          "amount": 140,
-          "requiresAttunement": "water"
+          "amount": 150
         },
         {
           "kind": "status",
-          "status": "weaken",
-          "amount": 4,
-          "target": "enemy",
-          "requiresAttunement": "water"
+          "amount": 2,
+          "status": "slow",
+          "target": "enemy"
         }
       ]
     },
-    "rules": "Water attuned: Deal 140 damage. Apply Weaken for 4 ticks.",
+    "rules": "Deal 150 damage. Apply 2 Slow.",
     "keywords": [
-      "weaken",
-      "attunement"
+      "slow",
+      "apply"
     ],
     "notes": [],
     "upgrade": {
@@ -670,22 +770,28 @@
         "effects": [
           {
             "kind": "damage",
-            "amount": 180,
-            "requiresAttunement": "water"
+            "amount": 190
           },
           {
             "kind": "status",
-            "status": "weaken",
-            "amount": 5,
+            "amount": 3,
+            "status": "slow",
+            "target": "enemy"
+          },
+          {
+            "kind": "status",
+            "amount": 1,
+            "status": "slow",
             "target": "enemy",
+            "when": "echoed",
             "requiresAttunement": "water"
           }
         ]
       },
-      "rules": "Water attuned: Deal 180 damage. Apply Weaken for 5 ticks.",
+      "rules": "Deal 190 damage. Apply 3 Slow. [Water Attuned: if Echoed, apply 1 additional Slow.]",
       "keywords": [
-        "weaken",
-        "attunement"
+        "slow",
+        "apply"
       ],
       "notes": []
     }
@@ -701,13 +807,13 @@
         {
           "kind": "damage",
           "amount": 220,
-          "requiresAttunement": "water"
+          "echoEffectiveness": 1
         }
       ]
     },
-    "rules": "Water attuned: Deal 220 damage.",
+    "rules": "Deal 220 damage. If Echoed, Crash's Echo resolves at 100% effectiveness instead of 50%.",
     "keywords": [
-      "attunement"
+      "echo"
     ],
     "notes": [],
     "upgrade": {
@@ -716,16 +822,14 @@
         "effects": [
           {
             "kind": "damage",
-            "amount": 220,
-            "echoMultiplier": 2,
-            "requiresAttunement": "water"
+            "amount": 260,
+            "echoEffectiveness": 1.5
           }
         ]
       },
-      "rules": "Water attuned: Deal 220 damage. Deals double damage when Echoed.",
+      "rules": "Deal 260 damage. If Echoed, Crash's Echo resolves at 150% effectiveness.",
       "keywords": [
-        "echo",
-        "attunement"
+        "echo"
       ],
       "notes": []
     }
@@ -739,35 +843,54 @@
     "combat": {
       "effects": [
         {
-          "kind": "modifier",
-          "modifier": "tidecallerThreshold",
-          "amount": 4,
+          "kind": "rule",
+          "amount": 2,
+          "rule": "tideThreshold"
+        },
+        {
+          "kind": "rule",
+          "amount": 1,
+          "rule": "cycleTide",
           "requiresAttunement": "water"
         }
       ]
     },
-    "rules": "Water attuned: For the rest of combat, Tidecaller triggers at 4 stacks instead of 5.",
+    "rules": "For the rest of combat, Tide activates at 2 instead of 3. [Water Attuned: Gain 1 Tide at each Cycle Start.]",
     "keywords": [
-      "tidecaller",
-      "attunement"
+      "cycle",
+      "gain",
+      "tide"
     ],
     "notes": [],
     "upgrade": {
-      "castTicks": 2,
+      "castTicks": 1,
       "combat": {
         "effects": [
           {
-            "kind": "modifier",
-            "modifier": "tidecallerThreshold",
-            "amount": 3,
+            "kind": "rule",
+            "amount": 2,
+            "rule": "tideThreshold"
+          },
+          {
+            "kind": "rule",
+            "amount": 1,
+            "rule": "cycleTide",
+            "requiresAttunement": "water"
+          },
+          {
+            "kind": "status",
+            "amount": 1,
+            "status": "tide",
+            "target": "self",
             "requiresAttunement": "water"
           }
         ]
       },
-      "rules": "Water attuned: For the rest of combat, Tidecaller triggers at 3 stacks instead of 5.",
+      "rules": "For the rest of combat, Tide activates at 2 instead of 3. [Water Attuned: Gain 1 Tide at each Cycle Start and begin with 1 Tide immediately.]",
       "keywords": [
-        "tidecaller",
-        "attunement"
+        "cycle",
+        "gain",
+        "tide"
       ],
       "notes": []
     }
@@ -781,18 +904,23 @@
     "combat": {
       "effects": [
         {
-          "kind": "modifier",
-          "modifier": "echoPower",
+          "kind": "rule",
           "amount": 1,
+          "rule": "echoPower"
+        },
+        {
+          "kind": "rule",
+          "amount": 1,
+          "rule": "echoRetrigger",
           "requiresAttunement": "water"
         }
       ]
     },
-    "rules": "Water attuned: Your Tidecaller Echoes have 100% effectiveness for the rest of combat.",
+    "rules": "For the rest of combat, your Echoes resolve at 100% effectiveness. [Water Attuned: the first Echo each Cycle also Retriggers your last Trigger.]",
     "keywords": [
-      "tidecaller",
+      "cycle",
       "echo",
-      "attunement"
+      "trigger"
     ],
     "notes": [],
     "upgrade": {
@@ -800,18 +928,23 @@
       "combat": {
         "effects": [
           {
-            "kind": "modifier",
-            "modifier": "echoPower",
+            "kind": "rule",
             "amount": 1.5,
+            "rule": "echoPower"
+          },
+          {
+            "kind": "rule",
+            "amount": 1,
+            "rule": "echoRetrigger",
             "requiresAttunement": "water"
           }
         ]
       },
-      "rules": "Water attuned: Your Tidecaller Echoes have 150% effectiveness for the rest of combat.",
+      "rules": "For the rest of combat, your Echoes resolve at 150% effectiveness. [Water Attuned: the first Echo each Cycle also Retriggers your last Trigger.]",
       "keywords": [
-        "tidecaller",
+        "cycle",
         "echo",
-        "attunement"
+        "trigger"
       ],
       "notes": []
     }

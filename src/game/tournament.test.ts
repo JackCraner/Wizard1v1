@@ -30,8 +30,8 @@ it('resolves every duel and snapshots decks independently from later shopping',a
 });
 it('awards the human their twentieth trophy, locks the game and can start fresh',async()=>{
  const g=new LocalGameGateway();const initial=await g.start(),state=internal(g);
- state.spells=Array(10).fill('spark');state.lobby.players[0].trophies=19;
- for(const bot of state.lobby.players.slice(1))bot.deck=Array(10).fill('current');
+ state.spells=Array(6).fill('spark');state.lobby.players[0].trophies=19;
+ for(const bot of state.lobby.players.slice(1))bot.deck=Array(6).fill('current');
  const s=await g.execute(initial.id,initial.revision,{type:'fight'});
  expect(s.battle?.outcome).toBe('victory');expect(s.trophies).toBe(20);
  expect(s.lobby.finished).toBe(true);expect(s.lobby.winnerIds).toEqual(['player']);
@@ -41,7 +41,7 @@ it('awards the human their twentieth trophy, locks the game and can start fresh'
 it('can lose the tournament to a bot and awards no wins for bot draws',async()=>{
  const g=new LocalGameGateway();const initial=await g.start(),state=internal(g);
  state.spells=['current'];
- for(const bot of state.lobby.players.slice(1)){bot.deck=Array(10).fill('spark');bot.trophies=19;}
+ for(const bot of state.lobby.players.slice(1)){bot.deck=Array(6).fill('spark');bot.trophies=19;}
  // Freeze shopping to make the six bot-versus-bot combatants identical.
  for(const b of Object.values((g as unknown as {bots:Record<string,{lastPreparedRound:number}>}).bots))b.lastPreparedRound=1;
  const s=await g.execute(initial.id,initial.revision,{type:'fight'});
@@ -50,9 +50,10 @@ it('can lose the tournament to a bot and awards no wins for bot draws',async()=>
 });
 it('awards shared victory when separate duels reach 20 trophies in the same round',async()=>{
  const g=new LocalGameGateway();const initial=await g.start(),state=internal(g);
- state.spells=Array(10).fill('spark');state.lobby.players[0].trophies=19;
- for(const bot of state.lobby.players.slice(1))bot.deck=Array(10).fill('current');
- state.lobby.players[1].deck=Array(10).fill('spark');state.lobby.players[1].trophies=19;
+ state.spells=Array(6).fill('spark');state.lobby.players[0].trophies=19;
+ for(const bot of state.lobby.players.slice(1))bot.deck=Array(6).fill('current');
+ state.lobby.players[1].deck=Array(6).fill('spark');state.lobby.players[1].trophies=19;
+ for(const b of Object.values((g as unknown as {bots:Record<string,{lastPreparedRound:number}>}).bots))b.lastPreparedRound=1;
  const s=await g.execute(initial.id,initial.revision,{type:'fight'});
  expect(s.lobby.winnerIds).toEqual(['player','bot-1']);
 });

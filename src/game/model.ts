@@ -5,7 +5,28 @@ export interface Effect {
     requiresAttunement?: Domain;
     attunedAmount?: number;
     bonusDomain?: Domain;
-    kind: 'damage' | 'heal' | 'ward' | 'selfDamage' | 'status' | 'interrupt' | 'cleanse' | 'consume' | 'multiply' | 'spend' | 'oath' | 'repeatNext' | 'modifier' | 'cultivate' | 'summon' | 'impGuard' | 'impPower' | 'sacrificeImp' | 'removeWard' | 'healFull' | 'fragile';
+    kind: 'rule' | 'trigger' | 'awaken' | 'retrigger' | 'sequenceOath' | 'damage' | 'heal' | 'ward' | 'selfDamage' | 'status' | 'interrupt' | 'cleanse' | 'consume' | 'multiply' | 'spend' | 'oath' | 'repeatNext' | 'modifier' | 'cultivate' | 'summon' | 'impGuard' | 'impPower' | 'sacrificeImp' | 'removeWard' | 'healFull' | 'fragile';
+    when?: 'heatConsumed'|'echoed'|'impAlive'|'impAbsent'|'regen8'|'wardRemoved'|'regen'|'poison6';
+    rule?: string;
+    event?: 'heat'|'echo'|'cycle'|'poison'|'impHurt'|'oath'|'fatal';
+    limit?: number;
+    domainFilter?: Domain;
+    onceCombat?: boolean;
+    awakenOn?: 'heat'|'echo'|'poison'|'enemyPoison';
+    threshold?: number;
+    attunedThreshold?: number;
+    awakenedDamage?: number;
+    awakenedPerPoison?: number;
+    criticalIf?: 'previousCost'|'lowHealth'|'poison'|'debuff'|'imp'|'regeneration';
+    criticalDomain?: Domain;
+    criticalMultiplier?: number;
+    empoweredIf?: 'imp'|'critical';
+    empoweredDomain?: Domain;
+    perPoison?: number;
+    echoEffectiveness?: number;
+    healFraction?: number;
+    splashImp?: boolean;
+    oathCondition?: 'noDamage'|'damage100'|'safe';
     onlyIf?: 'oath';
     roundDown?: boolean;
     impMultiplier?: number;
@@ -50,7 +71,17 @@ export interface Spell extends CardDefinition {
 export interface Stats {
     health: number;
 }
+export interface CardState { armed?:boolean; firedCycle?:number; firedCombat?:boolean; awakened?:boolean; echoes?:number; rules?:string[] }
 export interface CombatMemory {
+    rules?: Record<string,number>;
+    cards?: Record<number,CardState>;
+    heatConsumed?:number;
+    poisonEvents?:number;
+    echoCycle?:number;
+    criticalCycle?:number;
+    lastTrigger?: {index:number;effects:Effect[];cycle:number};
+    triggerHistory?: {index:number;effects:Effect[];cycle:number}[];
+    sequenceOath?: {index:number;condition:'noDamage'|'damage100'|'safe';remaining:number;effects:Effect[];failed:boolean};
     tidecallerThreshold?: number;
     echoPower?: number;
     impDamage?: number;
@@ -104,6 +135,8 @@ export interface Fighter {
         totalTicks: number;
         echoPower?: number;
         instant?: boolean;
+        empowered?:boolean;
+        heatConsumed?:boolean;
     } | null;
 }
 export interface CastEvent {
@@ -118,6 +151,8 @@ export interface CastEvent {
     details?: string[];
 }
 export interface DamageEvent {
+    sourceSide?: "player"|"bot";
+    sourceIndex?:number;
     target?: 'wizard' | 'imp' | 'ward';
     domain?: Domain;
     side: 'player' | 'bot';
@@ -126,12 +161,17 @@ export interface DamageEvent {
     kind: 'hit' | 'dot' | 'cost';
 }
 export interface HealingEvent {
+    sourceIndex?:number;
     target?: 'wizard' | 'imp';
     side: 'player' | 'bot';
     amount: number;
     kind: 'heal' | 'hot';
 }
+export interface CombatOrigin { side: 'player' | 'bot'; kind: 'spell' | 'wizard' | 'imp' | 'cycle'; index?: number; }
 export interface CombatNotice {
+    origin?: CombatOrigin;
+    index?:number;
+    targetIndex?:number;
     side: 'player' | 'bot';
     status: string;
     text: string;

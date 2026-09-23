@@ -17,9 +17,9 @@ describe('catalogue shop authority',()=>{
  });
 
  it('limits loadouts, validates reorder and isolates returned state',async()=>{
-  const g=new LocalGameGateway();let s=await g.start();const internal=(g as unknown as {session:{shop:string[];spells:string[];spellXp:number[]}}).session;internal.shop=['thorn-lash'];internal.spells=Array(10).fill('thorn-lash');internal.spellXp=Array(10).fill(0);
+  const g=new LocalGameGateway();let s=await g.start();const internal=(g as unknown as {session:{shop:string[];spells:string[];spellXp:number[]}}).session;internal.shop=['thorn-lash'];internal.spells=Array(6).fill('thorn-lash');internal.spellXp=Array(6).fill(0);
   await expect(g.execute(s.id,s.revision,{type:'buy',spell:'thorn-lash'})).rejects.toThrow('full');
-  s=await g.execute(s.id,s.revision,{type:'move',from:9,to:0});expect(s.spells[0]).toBe('thorn-lash');
+  s=await g.execute(s.id,s.revision,{type:'move',from:5,to:0});expect(s.spells[0]).toBe('thorn-lash');
   await expect(g.execute(s.id,s.revision,{type:'move',from:0,to:10})).rejects.toThrow('Invalid');
   s.augments.push("glass-cannon");s=await g.execute(s.id,s.revision,{type:'fight'});expect(s.battle!.frames[0].player.maxHealth).toBe(500);
  });

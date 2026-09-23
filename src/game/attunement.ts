@@ -10,8 +10,7 @@ export const DOMAIN_INK: Record<Domain, string> = {
 };
 export const KEYWORD_DOMAINS: Record<string, Domain> = {
     poison: 'nature', regeneration: 'nature', heat: 'fire',
-    tidecaller: 'water', potency:'fire', fury:'fire', resilience:'nature',
-    oath: 'holy', unholy:'holy', frailty: 'affliction', curse: 'affliction', repetition: 'affliction', summon:'affliction', stun:'affliction', doom:'affliction',
+    tide:'water', oath:'holy', summon:'affliction', curse:'affliction',
 };
 export function cardAges(deck: readonly string[], ages: readonly number[] = []): number[] {
     return deck.map((_, i) => ages[i] ?? i);
@@ -46,9 +45,8 @@ export function requiredDomains(effects: readonly Effect[]): Domain[] {
         const domain = effectDomain(effect);
         if (domain) required.add(domain);
         if (effect.bonusDomain) required.add(effect.bonusDomain);
-        if (effect.empowered !== undefined) required.add('fire');
-        if (effect.condition === 'poison') required.add('nature');
-        if (effect.condition === 'oath') required.add('holy');
+        if (effect.criticalDomain) required.add(effect.criticalDomain);
+        if (effect.empoweredDomain) required.add(effect.empoweredDomain);
 
         requiredDomains(effect.effects ?? []).forEach(d => required.add(d));
     }

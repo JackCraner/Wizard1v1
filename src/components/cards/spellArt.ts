@@ -24,17 +24,12 @@ export const SPELL_ART: Record<string, ImageSourcePropType> = {
 // Effects with dedicated spell artwork; generic effects keep their symbol.
 export const STATUS_ART: Record<string, ImageSourcePropType> = {
   regeneration: require('../../../assets/Regeneration_icon.png'),
-  resilience: require('../../../assets/Resilience_icon.png'),
-  tidecaller: require('../../../assets/Tidecaller_icon.png'),
+  tide: require('../../../assets/Tidecaller_icon.png'),
   heat: require('../../../assets/Heat_icon.png'),
-  potency: require('../../../assets/combust_icon.png'),
-  fury: require('../../../assets/Fury_Icon.png'),
   guard: require('../../../assets/Guard_Icon.png'),
   poison: require('../../../assets/Poison_Icon.png'),
   curse: require('../../../assets/Curse_Icon.png'),
   slow: require('../../../assets/Slow_Icon.png'),
   trap: require('../../../assets/Trap_Icon.png'),
-  weaken: require('../../../assets/Weaken_Icon.png'),
-  stun: require('../../../assets/Stun_icon.png'),
   moonfire: SPELL_ART.moonfire, sunfire: SPELL_ART.sunfire, starfall: SPELL_ART.starfall, lifebloom: SPELL_ART.lifebloom,
 };

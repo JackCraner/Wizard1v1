@@ -1,60 +1,18 @@
 import {expect,it} from 'vitest';
 import {fighter,simulate} from './engine';
+import {resourcePredictions,combatCard} from './combatCards';
+import {COMBAT_FIXTURES} from './combatFixtures';
+const idle=()=>fighter('B',['healing-seed']);
+it('Triggers arm only after a completed cast, fire once per Cycle and repeat next Cycle',()=>{const r=simulate(fighter('A',['emberstorm','healing-seed']),idle());expect(r.frames[1].notices?.some(n=>n.status==='trigger')).toBe(false);expect(r.frames[3].notices?.filter(n=>n.status==='trigger')).toHaveLength(1);expect(r.frames[6].notices?.filter(n=>n.status==='trigger')).toHaveLength(1);});
+it('Echo Triggers cannot fire before their card arms',()=>{const a=fighter('A',['storm']);a.statuses.tide=3;const r=simulate(a,idle());expect(r.frames[1].notices?.some(n=>n.status==='trigger')).toBe(false);const later=r.frames.find(f=>f.notices?.some(n=>n.status==='trigger'));expect(later).toBeDefined();expect(later!.tick).toBeGreaterThan(1);});
+it('Retrigger repeats only this Cycle, records both source cards, and does not recursively activate triggers',()=>{const a=fighter('A',['emberstorm','firefury']);const r=simulate(a,idle());expect(r.frames[2].notices?.some(n=>n.status==='retrigger')).toBe(false);const repeats=r.frames.flatMap(f=>f.notices??[]).filter(n=>n.status==='retrigger');expect(repeats.length).toBeGreaterThan(0);expect(repeats.every(n=>n.index===1&&n.targetIndex===0)).toBe(true);expect(r.frames.flatMap(f=>f.notices??[]).filter(n=>n.status==='trigger').length).toBeLessThan(15);});
+it('Awaken tracks copies independently and transforms after a completed Echo',()=>{const a=fighter('A',['deep-water','deep-water']);a.statuses.tide=3;const r=simulate(a,idle());expect(r.frames[1].player.memory.cards?.[0].awakened).toBe(true);expect(r.frames[1].player.memory.cards?.[1]?.awakened).not.toBe(true);expect(r.frames[1].bot.health).toBe(410);expect(r.frames[1].notices?.filter(n=>n.status==='awaken')).toHaveLength(1);expect(r.frames.flatMap(f=>f.notices??[]).filter(n=>n.status==='awaken'&&n.index===0)).toHaveLength(1);});
+it('Heat consumption Awakens Conflagrate, while free activations do not count as consumption',()=>{const a=fighter('A',['scorch','conflagrate'],[],[0,3]);a.statuses.heat=3;const r=simulate(a,idle());expect(r.frames[1].player.memory.heatConsumed).toBe(1);expect(r.frames[1].player.memory.cards?.[1].awakened).toBe(true);expect(r.frames[2].player.memory.heatConsumed).toBe(1);});
+it('Ocean Heart and Tidal Power change future activations permanently without stacking recasts',()=>{const a=fighter('A',['ocean-heart','tidal-power','jet'],[],[3,3,0]);const r=simulate(a,idle());expect(r.frames[2].player.memory.rules).toMatchObject({tideThreshold:2,echoPower:1.5,cycleTide:1,echoRetrigger:1});expect(r.frames.some(f=>f.events.some(e=>e.side==='player'&&e.details?.includes('Echo 150%')))).toBe(true);});
+it('Poison events Awaken Venom Bloom; blocked events do not count',()=>{const a=fighter('A',['venom-bloom'],[],[3]);const r=simulate(a,idle());expect(r.frames[4].player.memory.cards?.[0].awakened).toBe(true);const b=idle();b.statuses.guard=20;expect(simulate(a,b).frames[4].player.memory.cards?.[0]?.awakened).not.toBe(true);});
+it('predictions mark only the next eligible cards from currently held counters',()=>{const a=fighter('A',['holy-light','jet','pyroblast']);a.statuses={heat:3,tide:3};expect(resourcePredictions(a)).toEqual({heat:2,tide:1});});
+it.each(Object.entries(COMBAT_FIXTURES))('%s full builds are deterministic, symmetric and bounded',(_,preset)=>{const a=fighter('A',[...preset.player],[],[3,3,3,3,3,3],[],5),b=fighter('B',[...preset.bot],[],[3,3,3,3,3,3],[],5);const r=simulate(a,b),swap=simulate(b,a);expect(r).toEqual(simulate(a,b));expect(r.frames.at(-1)?.player.health).toBe(swap.frames.at(-1)?.bot.health);expect(r.frames.at(-1)?.bot.health).toBe(swap.frames.at(-1)?.player.health);expect(r.frames.at(-1)!.tick).toBeLessThanOrEqual(30);});
 
-const idle=()=>fighter('B',['current']);
-it('Ocean Heart and Tidal Power persist, spend the new threshold, and power multiple Echoes',()=>{
- const a=fighter('A',['ocean-heart','tidal-power','deluge','deluge','jet','jet'],[],[3,3,3,3,0,0]);
- const r=simulate(a,idle());
- expect(r.frames[2].player.memory.tidecallerThreshold).toBe(3);
- expect(r.frames[2].player.statuses.tidecaller??0).toBe(0);
- expect(r.frames[3].player.memory.echoPower).toBe(1.5);
- for(const tick of [6,7])expect(r.frames[tick].events.find(e=>e.side==='player')?.details).toContain('Echo 150%');
- expect(r.frames[6].player.statuses.tidecaller).toBe(5);
- expect(r.frames[7].player.statuses.tidecaller).toBe(2);
- expect(r.frames[7].bot.health).toBe(274);
- expect(r.frames[8].player.memory).toMatchObject({tidecallerThreshold:3,echoPower:1.5});
-});
-it('base Water capstones give a four-stack threshold and permanent full-strength Echoes',()=>{
- const a=fighter('A',['ocean-heart','tidal-power','current']);
- const r=simulate(a,idle());
- expect(r.frames[3].player.memory).toMatchObject({tidecallerThreshold:4,echoPower:1});
- expect(r.frames[10].player.memory).toMatchObject({tidecallerThreshold:4,echoPower:1});
-});
-it('Water capstones require attunement and cannot weaken stronger existing effects',()=>{
- const a=fighter('A',['ocean-heart','tidal-power']);a.attuned=[];
- const r=simulate(a,idle());
- expect(r.frames[3].player.memory.tidecallerThreshold).toBeUndefined();
- expect(r.frames[3].player.memory.echoPower).toBeUndefined();
- a.attuned=['water'];a.memory.tidecallerThreshold=3;a.memory.echoPower=1.5;
- expect(simulate(a,idle()).frames[3].player.memory).toMatchObject({tidecallerThreshold:3,echoPower:1.5});
-});
-it('Cycle of Life converts remaining healing, including Flourish, without an extra flat heal',()=>{
- for(const xp of [0,3]){
-  const a=fighter('A',['flourish','cycle-of-life'],[],[3,xp]);a.health=1;a.statuses.regeneration=5;
-  const f=simulate(a,idle()).frames[3];
-  // 10 + 20 + 20 periodic healing, then six remaining boosted ticks.
-  expect(f.player.health).toBe(51+6*20*(xp===3?2:1.5));
-  expect(f.player.statuses.regeneration).toBeUndefined();
- }
-});
-it('Venom Bloom stacks with Super Poison and Astral Power scales from remaining Poison',()=>{
- const a=fighter('A',['venom-bloom'],['super-poison'],[3]);const b=idle();b.statuses.poison=5;
- expect(simulate(a,b).frames[2].bot.health).toBe(435);
- const c=idle();c.statuses.poison=5;
- const f=simulate(fighter('A',['astral-power'],[],[3]),c).frames[1];
- expect(f.bot.health).toBe(230); // 10 Poison, then 100 * (1 + 4 * .4).
-});
-it('Doomsday scales current or maximum Imp Health and only sacrifices once when Echoed',()=>{
- for(const xp of [0,3]){
-  const a=fighter('A',['doomsday'],[],[xp]);a.imp={health:80,maxHealth:150,guard:0};a.statuses.tidecaller=5;
-  const f=simulate(a,idle()).frames[1];
-  expect(f.bot.health).toBe(xp===3?200:380);
-  expect(f.player.imp?.health).toBe(0);
- }
-});
-it('upgraded Corrupt Ward removes protection before same-tick direct damage',()=>{
- const a=fighter('A',['corrupt-ward'],[],[3]);const b=fighter('B',['spark']);b.shield=200;
- const f=simulate(a,b).frames[1];
- expect(f.bot.shield).toBe(0);
- expect(f.events.find(e=>e.side==='player')?.details).toContain('Instant');
-});
+it('Echo-only Guard and Slow payoffs grant the printed whole charge once',()=>{const a=fighter('A',['riptide']);a.statuses.tide=3;expect(simulate(a,idle()).frames[2].player.statuses.guard).toBe(1);const b=fighter('A',['downpour']);b.statuses.tide=3;expect(simulate(b,idle()).frames[2].bot.statuses.slow).toBe(1);});
+
+it('Awakened Venom Bloom still displays its Poison application',()=>{const a=fighter('A',['venom-bloom'],[],[3]);const f=simulate(a,idle()).frames[4].player;expect(combatCard(f,0).rules).toContain('Apply Poison for 5 ticks');expect(combatCard(f,0).rules).toContain('100% more damage');});

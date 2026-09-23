@@ -34,12 +34,13 @@ export function scoreBotDeck(deck: SpellId[], strategy: number, xp: number[] = [
                 value += amount * .6;
             if(e.kind==='healFull') value += 120; // One-use recovery, rather than repeatable healing.
             if (e.kind === 'status')
-                value += amount * (e.status === 'poison' ? 12 : e.status === 'regeneration' ? 8 : e.status === 'heat' || e.status === 'tidecaller' ? 15 : 12);
+                value += amount * (e.status === 'poison' ? 12 : e.status === 'regeneration' ? 8 : e.status === 'heat' || e.status === 'tide' ? 15 : 12);
             if (e.kind === 'summon') value += (e.currentHealthFraction ? 150 * amount : amount) * .8;
             if (e.kind === 'removeWard') value += 35;
             if (['impGuard','impPower','sacrificeImp'].includes(e.kind) && deck.some(id=>cardAt(id).combat?.effects?.some(effect=>effect.kind==='summon'))) value += e.kind==='impPower'?amount*3:50;
-            if (['consume', 'spend', 'multiply', 'oath', 'repeatNext', 'interrupt', 'modifier', 'cultivate'].includes(e.kind))
+            if (['consume', 'spend', 'multiply', 'oath', 'repeatNext', 'interrupt', 'modifier', 'cultivate', 'retrigger', 'sequenceOath'].includes(e.kind))
                 value += 40;
+            if (['trigger','awaken','rule'].includes(e.kind)) value += 65;
             if (e.kind === 'selfDamage')
                 value -= amount * .4;
         }
@@ -117,7 +118,7 @@ export function prepareBot(state: BotState, previous: SpellId[], round: number, 
         ages = [state.nextAcquisition++];
         state.gold--;
     }
-    const priority = (id: string) => { const e = SPELLS[id].combat?.effects ?? []; return e.some(e => e.kind === 'oath') ? 0 : e.some(e => e.kind === 'status') ? 1 : e.some(e => e.kind === 'consume' || e.empowered) ? 3 : 2; };
+    const priority = (id: string) => { const e = SPELLS[id].combat?.effects ?? []; return e.some(e => ['sequenceOath','trigger','rule'].includes(e.kind)) ? 0 : e.some(e => e.kind === 'status') ? 1 : e.some(e => e.kind === 'consume' || e.empowered) ? 3 : 2; };
     const ordered = deck.map((id, i) => ({ id, xp: xp[i], age: ages[i] })).sort((a, b) => priority(a.id) - priority(b.id));
     state.spellXp = ordered.map(x => x.xp);
     state.spellAcquired = ordered.map(x => x.age);

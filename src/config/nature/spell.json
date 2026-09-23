@@ -22,11 +22,11 @@
         "effects": [
           {
             "kind": "damage",
-            "amount": 45
+            "amount": 50
           }
         ]
       },
-      "rules": "Deal 45 damage.",
+      "rules": "Deal 50 damage.",
       "keywords": [],
       "notes": []
     }
@@ -41,11 +41,11 @@
       "effects": [
         {
           "kind": "heal",
-          "amount": 20
+          "amount": 25
         }
       ]
     },
-    "rules": "Heal 20.",
+    "rules": "Heal 25.",
     "keywords": [],
     "notes": [],
     "upgrade": {
@@ -54,11 +54,11 @@
         "effects": [
           {
             "kind": "heal",
-            "amount": 35
+            "amount": 40
           }
         ]
       },
-      "rules": "Heal 35.",
+      "rules": "Heal 40.",
       "keywords": [],
       "notes": []
     }
@@ -73,13 +73,14 @@
       "effects": [
         {
           "kind": "ward",
-          "amount": 40
+          "amount": 50
         }
       ]
     },
-    "rules": "Gain 40 Ward.",
+    "rules": "Gain 50 Ward.",
     "keywords": [
-      "ward"
+      "ward",
+      "gain"
     ],
     "notes": [],
     "upgrade": {
@@ -88,13 +89,14 @@
         "effects": [
           {
             "kind": "ward",
-            "amount": 50
+            "amount": 70
           }
         ]
       },
-      "rules": "Gain 50 Ward.",
+      "rules": "Gain 70 Ward.",
       "keywords": [
-        "ward"
+        "ward",
+        "gain"
       ],
       "notes": []
     }
@@ -109,15 +111,16 @@
       "effects": [
         {
           "kind": "status",
-          "status": "poison",
           "amount": 5,
+          "status": "poison",
           "target": "enemy"
         }
       ]
     },
     "rules": "Apply Poison for 5 ticks.",
     "keywords": [
-      "poison"
+      "poison",
+      "apply"
     ],
     "notes": [],
     "upgrade": {
@@ -126,15 +129,16 @@
         "effects": [
           {
             "kind": "status",
+            "amount": 7,
             "status": "poison",
-            "amount": 8,
             "target": "enemy"
           }
         ]
       },
-      "rules": "Apply Poison for 8 ticks.",
+      "rules": "Apply Poison for 7 ticks.",
       "keywords": [
-        "poison"
+        "poison",
+        "apply"
       ],
       "notes": []
     }
@@ -149,15 +153,16 @@
       "effects": [
         {
           "kind": "status",
-          "status": "regeneration",
           "amount": 5,
+          "status": "regeneration",
           "target": "self"
         }
       ]
     },
     "rules": "Gain Regeneration for 5 ticks.",
     "keywords": [
-      "regeneration"
+      "regeneration",
+      "gain"
     ],
     "notes": [],
     "upgrade": {
@@ -166,15 +171,16 @@
         "effects": [
           {
             "kind": "status",
-            "status": "regeneration",
             "amount": 5,
+            "status": "regeneration",
             "target": "self"
           }
         ]
       },
       "rules": "Gain Regeneration for 5 ticks.",
       "keywords": [
-        "regeneration"
+        "regeneration",
+        "gain"
       ],
       "notes": []
     }
@@ -189,12 +195,16 @@
       "effects": [
         {
           "kind": "damage",
-          "amount": 20
+          "amount": 30,
+          "criticalIf": "poison"
         }
       ]
     },
-    "rules": "Deal 20 damage.",
-    "keywords": [],
+    "rules": "Deal 30 damage. Critical if the enemy has Poison.",
+    "keywords": [
+      "poison",
+      "critical"
+    ],
     "notes": [],
     "upgrade": {
       "castTicks": 1,
@@ -202,12 +212,16 @@
         "effects": [
           {
             "kind": "damage",
-            "amount": 70
+            "amount": 45,
+            "criticalIf": "poison"
           }
         ]
       },
-      "rules": "Deal 70 damage.",
-      "keywords": [],
+      "rules": "Deal 45 damage. Critical if the enemy has Poison.",
+      "keywords": [
+        "poison",
+        "critical"
+      ],
       "notes": []
     }
   },
@@ -221,17 +235,31 @@
       "effects": [
         {
           "kind": "status",
-          "status": "regeneration",
           "amount": 3,
-          "target": "self",
-          "channelBonus": 1
+          "status": "regeneration",
+          "target": "self"
+        },
+        {
+          "kind": "trigger",
+          "event": "cycle",
+          "effects": [
+            {
+              "kind": "status",
+              "amount": 2,
+              "status": "regeneration",
+              "target": "self"
+            }
+          ],
+          "when": "regen"
         }
       ]
     },
-    "rules": "Gain 3 Regeneration. Channel: +1 Regeneration per extra copy.",
+    "rules": "Gain 3 Regeneration. Trigger — Cycle Start: if you have Regeneration, gain 2 Regeneration.",
     "keywords": [
       "regeneration",
-      "channel"
+      "cycle",
+      "gain",
+      "trigger"
     ],
     "notes": [],
     "upgrade": {
@@ -240,23 +268,31 @@
         "effects": [
           {
             "kind": "status",
+            "amount": 4,
             "status": "regeneration",
-            "amount": 3,
-            "target": "self",
-            "channelBonus": 1
+            "target": "self"
           },
           {
-            "kind": "heal",
-            "amount": 20,
-            "requiresAttunement": "nature"
+            "kind": "trigger",
+            "event": "cycle",
+            "effects": [
+              {
+                "kind": "status",
+                "amount": 3,
+                "status": "regeneration",
+                "target": "self"
+              }
+            ],
+            "when": "regen"
           }
         ]
       },
-      "rules": "Gain 3 Regeneration. Channel: +1 Regeneration per extra copy. Nature attuned: Heal 20.",
+      "rules": "Gain 4 Regeneration. Trigger — Cycle Start: if you have Regeneration, gain 3 Regeneration.",
       "keywords": [
         "regeneration",
-        "channel",
-        "attunement"
+        "cycle",
+        "gain",
+        "trigger"
       ],
       "notes": []
     }
@@ -271,12 +307,12 @@
       "effects": [
         {
           "kind": "damage",
-          "amount": 50,
-          "criticalIfDebuffed": true
+          "amount": 55,
+          "criticalIf": "debuff"
         }
       ]
     },
-    "rules": "Deal 50 damage. Guaranteed critical hit if the enemy has a debuff.",
+    "rules": "Deal 55 damage. Guaranteed Critical if the enemy has any debuff.",
     "keywords": [
       "critical"
     ],
@@ -288,11 +324,13 @@
           {
             "kind": "damage",
             "amount": 80,
-            "criticalIfDebuffed": true
+            "criticalIf": "debuff",
+            "criticalMultiplier": 2,
+            "criticalDomain": "nature"
           }
         ]
       },
-      "rules": "Deal 80 damage. Guaranteed critical hit if the enemy has a debuff.",
+      "rules": "Deal 80 damage. Guaranteed Critical if the enemy has any debuff. [Nature Attuned: this Critical deals 200% total damage.]",
       "keywords": [
         "critical"
       ],
@@ -308,22 +346,21 @@
     "combat": {
       "effects": [
         {
-          "kind": "status",
-          "status": "regeneration",
-          "amount": 5,
-          "target": "self"
+          "kind": "heal",
+          "amount": 40
         },
         {
           "kind": "status",
+          "amount": 3,
           "status": "regeneration",
-          "amount": 5,
-          "target": "enemy"
+          "target": "self"
         }
       ]
     },
-    "rules": "Gain Regeneration for 5 ticks. Apply Regeneration for 5 ticks.",
+    "rules": "Heal 40. Gain 3 Regeneration.",
     "keywords": [
-      "regeneration"
+      "regeneration",
+      "gain"
     ],
     "notes": [],
     "upgrade": {
@@ -331,22 +368,21 @@
       "combat": {
         "effects": [
           {
-            "kind": "status",
-            "status": "regeneration",
-            "amount": 8,
-            "target": "self"
+            "kind": "heal",
+            "amount": 60
           },
           {
             "kind": "status",
+            "amount": 4,
             "status": "regeneration",
-            "amount": 5,
-            "target": "enemy"
+            "target": "self"
           }
         ]
       },
-      "rules": "Gain Regeneration for 8 ticks. Apply Regeneration for 5 ticks.",
+      "rules": "Heal 60. Gain 4 Regeneration.",
       "keywords": [
-        "regeneration"
+        "regeneration",
+        "gain"
       ],
       "notes": []
     }
@@ -361,11 +397,11 @@
       "effects": [
         {
           "kind": "damage",
-          "amount": 100
+          "amount": 110
         }
       ]
     },
-    "rules": "Deal 100 damage.",
+    "rules": "Deal 110 damage.",
     "keywords": [],
     "notes": [],
     "upgrade": {
@@ -394,11 +430,17 @@
         {
           "kind": "heal",
           "amount": 80
+        },
+        {
+          "kind": "cleanse",
+          "amount": 1
         }
       ]
     },
-    "rules": "Heal 80.",
-    "keywords": [],
+    "rules": "Heal 80. Cleanse 1.",
+    "keywords": [
+      "cleanse"
+    ],
     "notes": [],
     "upgrade": {
       "castTicks": 2,
@@ -406,19 +448,17 @@
         "effects": [
           {
             "kind": "heal",
-            "amount": 80
+            "amount": 100
           },
           {
             "kind": "cleanse",
-            "amount": 1,
-            "requiresAttunement": "nature"
+            "amount": 2
           }
         ]
       },
-      "rules": "Heal 80. Nature attuned: Cleanse 1 debuff.",
+      "rules": "Heal 100. Cleanse 2.",
       "keywords": [
-        "cleanse",
-        "attunement"
+        "cleanse"
       ],
       "notes": []
     }
@@ -437,15 +477,16 @@
         },
         {
           "kind": "status",
-          "status": "poison",
           "amount": 5,
+          "status": "poison",
           "target": "enemy"
         }
       ]
     },
     "rules": "Deal 30 damage. Apply Poison for 5 ticks.",
     "keywords": [
-      "poison"
+      "poison",
+      "apply"
     ],
     "notes": [],
     "upgrade": {
@@ -458,15 +499,16 @@
           },
           {
             "kind": "status",
+            "amount": 6,
             "status": "poison",
-            "amount": 5,
             "target": "enemy"
           }
         ]
       },
-      "rules": "Deal 50 damage. Apply Poison for 5 ticks.",
+      "rules": "Deal 50 damage. Apply Poison for 6 ticks.",
       "keywords": [
-        "poison"
+        "poison",
+        "apply"
       ],
       "notes": []
     }
@@ -481,12 +523,12 @@
       "effects": [
         {
           "kind": "multiply",
-          "status": "regeneration",
-          "amount": 2
+          "amount": 2,
+          "status": "regeneration"
         }
       ]
     },
-    "rules": "Double your Regeneration duration.",
+    "rules": "Double your remaining Regeneration duration.",
     "keywords": [
       "regeneration"
     ],
@@ -497,23 +539,21 @@
         "effects": [
           {
             "kind": "multiply",
-            "status": "regeneration",
-            "amount": 2
+            "amount": 2,
+            "status": "regeneration"
           },
           {
-            "kind": "modifier",
-            "modifier": "regenerationPower",
-            "amount": 2,
-            "cycleOnly": true,
+            "kind": "retrigger",
+            "domainFilter": "nature",
             "requiresAttunement": "nature"
           }
         ]
       },
-      "rules": "Double your Regeneration duration. Nature attuned: Your Regeneration heals double this Cycle.",
+      "rules": "Double your remaining Regeneration duration. [Nature Attuned: then Retrigger your last Nature Trigger.]",
       "keywords": [
         "regeneration",
-        "cycle",
-        "attunement"
+        "trigger",
+        "retrigger"
       ],
       "notes": []
     }
@@ -529,14 +569,13 @@
         {
           "kind": "damage",
           "amount": 100,
-          "debuffMultiplier": 0.2,
-          "bonusDomain": "nature"
+          "debuffMultiplier": 0.25
         }
       ]
     },
-    "rules": "Deal 100 damage. Nature attuned: +20% damage per unique enemy debuff.",
+    "rules": "Deal 100 damage. +25% direct damage per unique debuff type on the enemy.",
     "keywords": [
-      "attunement"
+      "unique"
     ],
     "notes": [],
     "upgrade": {
@@ -546,14 +585,13 @@
           {
             "kind": "damage",
             "amount": 100,
-            "debuffMultiplier": 0.2,
-            "bonusDomain": "nature"
+            "debuffMultiplier": 0.25
           }
         ]
       },
-      "rules": "Deal 100 damage. Nature attuned: +20% damage per unique enemy debuff.",
+      "rules": "Deal 100 damage. +25% direct damage per unique debuff type on the enemy.",
       "keywords": [
-        "attunement"
+        "unique"
       ],
       "notes": []
     }
@@ -568,17 +606,16 @@
       "effects": [
         {
           "kind": "status",
+          "amount": 3,
           "status": "trap",
-          "amount": 5,
-          "target": "enemy",
-          "requiresAttunement": "nature"
+          "target": "enemy"
         }
       ]
     },
-    "rules": "Nature attuned: Apply Trap for 5 ticks.",
+    "rules": "Apply 3 Trap.",
     "keywords": [
       "trap",
-      "attunement"
+      "apply"
     ],
     "notes": [],
     "upgrade": {
@@ -587,17 +624,24 @@
         "effects": [
           {
             "kind": "status",
+            "amount": 5,
             "status": "trap",
-            "amount": 10,
+            "target": "enemy"
+          },
+          {
+            "kind": "status",
+            "amount": 1,
+            "status": "slow",
             "target": "enemy",
             "requiresAttunement": "nature"
           }
         ]
       },
-      "rules": "Nature attuned: Apply Trap for 10 ticks.",
+      "rules": "Apply 5 Trap. [Nature Attuned: also apply 1 Slow.]",
       "keywords": [
+        "slow",
         "trap",
-        "attunement"
+        "apply"
       ],
       "notes": []
     }
@@ -612,12 +656,12 @@
       "effects": [
         {
           "kind": "damage",
-          "amount": 80,
-          "all": true
+          "amount": 90,
+          "splashImp": true
         }
       ]
     },
-    "rules": "Deal 80 damage to all enemies.",
+    "rules": "Deal 90 damage to the enemy and 90 damage to their Imp if one is alive.",
     "keywords": [],
     "notes": [],
     "upgrade": {
@@ -626,12 +670,12 @@
         "effects": [
           {
             "kind": "damage",
-            "amount": 120,
-            "all": true
+            "amount": 130,
+            "splashImp": true
           }
         ]
       },
-      "rules": "Deal 120 damage to all enemies.",
+      "rules": "Deal 130 damage to the enemy and 130 damage to their Imp if one is alive.",
       "keywords": [],
       "notes": []
     }
@@ -646,30 +690,52 @@
       "effects": [
         {
           "kind": "heal",
-          "amount": 70
+          "amount": 80
+        },
+        {
+          "kind": "status",
+          "amount": 3,
+          "status": "regeneration",
+          "target": "self"
+        },
+        {
+          "kind": "fragile"
         }
       ]
     },
-    "rules": "Heal 70.",
-    "keywords": [],
+    "rules": "Heal 80. Gain 3 Regeneration. Fragile.",
+    "keywords": [
+      "regeneration",
+      "gain",
+      "fragile"
+    ],
     "notes": [],
     "upgrade": {
-      "castTicks": 0,
+      "castTicks": 1,
       "combat": {
         "effects": [
           {
             "kind": "heal",
-            "amount": 70
+            "amount": 100
+          },
+          {
+            "kind": "status",
+            "amount": 5,
+            "status": "regeneration",
+            "target": "self"
+          },
+          {
+            "kind": "fragile"
           }
         ]
       },
-      "rules": "Nature attuned: Instant; otherwise 1T. Heal 70.",
+      "rules": "Heal 100. Gain 5 Regeneration. Fragile.",
       "keywords": [
-        "instant",
-        "attunement"
+        "regeneration",
+        "gain",
+        "fragile"
       ],
-      "notes": [],
-      "instantDomain": "nature"
+      "notes": []
     }
   },
   {
@@ -682,15 +748,27 @@
       "effects": [
         {
           "kind": "ward",
-          "amount": 100,
-          "requiresAttunement": "nature"
+          "amount": 100
+        },
+        {
+          "kind": "trigger",
+          "event": "poison",
+          "effects": [
+            {
+              "kind": "ward",
+              "amount": 50
+            }
+          ]
         }
       ]
     },
-    "rules": "Nature attuned: Gain 100 Ward.",
+    "rules": "Gain 100 Ward. Trigger — Poison: the first time your Poison deals damage each Cycle, gain 50 Ward.",
     "keywords": [
+      "poison",
       "ward",
-      "attunement"
+      "cycle",
+      "gain",
+      "trigger"
     ],
     "notes": [],
     "upgrade": {
@@ -699,15 +777,27 @@
         "effects": [
           {
             "kind": "ward",
-            "amount": 150,
-            "requiresAttunement": "nature"
+            "amount": 150
+          },
+          {
+            "kind": "trigger",
+            "event": "poison",
+            "effects": [
+              {
+                "kind": "ward",
+                "amount": 70
+              }
+            ]
           }
         ]
       },
-      "rules": "Nature attuned: Gain 150 Ward.",
+      "rules": "Gain 150 Ward. Trigger — Poison: the first time your Poison deals damage each Cycle, gain 70 Ward.",
       "keywords": [
+        "poison",
         "ward",
-        "attunement"
+        "cycle",
+        "gain",
+        "trigger"
       ],
       "notes": []
     }
@@ -721,17 +811,30 @@
     "combat": {
       "effects": [
         {
-          "kind": "modifier",
-          "modifier": "poisonPower",
-          "amount": 1.75,
-          "requiresAttunement": "nature"
+          "kind": "status",
+          "amount": 4,
+          "status": "poison",
+          "target": "enemy"
+        },
+        {
+          "kind": "awaken",
+          "awakenOn": "poison",
+          "threshold": 5,
+          "effects": [
+            {
+              "kind": "rule",
+              "amount": 1.75,
+              "rule": "poisonPower"
+            }
+          ]
         }
       ]
     },
-    "rules": "Nature attuned: Your Poison deals 75% more damage for the rest of combat.",
+    "rules": "Apply Poison for 4 ticks. Awaken: after your Poison deals damage 5 times. Awakened: your Poison deals 75% more damage for the rest of combat.",
     "keywords": [
       "poison",
-      "attunement"
+      "apply",
+      "awaken"
     ],
     "notes": [],
     "upgrade": {
@@ -739,17 +842,32 @@
       "combat": {
         "effects": [
           {
-            "kind": "modifier",
-            "modifier": "poisonPower",
-            "amount": 2.25,
-            "requiresAttunement": "nature"
+            "kind": "status",
+            "amount": 5,
+            "status": "poison",
+            "target": "enemy"
+          },
+          {
+            "kind": "awaken",
+            "awakenOn": "poison",
+            "threshold": 4,
+            "bonusDomain": "nature",
+            "attunedThreshold": 3,
+            "effects": [
+              {
+                "kind": "rule",
+                "amount": 2,
+                "rule": "poisonPower"
+              }
+            ]
           }
         ]
       },
-      "rules": "Nature attuned: Your Poison deals 125% more damage for the rest of combat.",
+      "rules": "Apply Poison for 5 ticks. Awaken: after your Poison deals damage 4 times. Awakened: your Poison deals 100% more damage for the rest of combat. [Nature Attuned: Awaken after 3 Poison damage events instead.]",
       "keywords": [
         "poison",
-        "attunement"
+        "apply",
+        "awaken"
       ],
       "notes": []
     }
@@ -763,33 +881,35 @@
     "combat": {
       "effects": [
         {
-          "kind": "modifier",
-          "modifier": "nextDamage",
+          "kind": "rule",
           "amount": 2,
-          "requiresAttunement": "nature"
+          "rule": "nextDamage"
         }
       ]
     },
-    "rules": "Nature attuned: Your next spell deals double damage.",
-    "keywords": [
-      "attunement"
-    ],
+    "rules": "Your next damaging spell deals double direct damage.",
+    "keywords": [],
     "notes": [],
     "upgrade": {
       "castTicks": 1,
       "combat": {
         "effects": [
           {
-            "kind": "modifier",
-            "modifier": "nextDamage",
+            "kind": "rule",
             "amount": 3,
+            "rule": "nextDamage"
+          },
+          {
+            "kind": "rule",
+            "amount": 1,
+            "rule": "nextCritical",
             "requiresAttunement": "nature"
           }
         ]
       },
-      "rules": "Nature attuned: Your next spell deals triple damage.",
+      "rules": "Your next damaging spell deals triple direct damage. [Nature Attuned: that spell is also guaranteed Critical.]",
       "keywords": [
-        "attunement"
+        "critical"
       ],
       "notes": []
     }
@@ -799,18 +919,22 @@
     "name": "Wild Growth",
     "domain": "nature",
     "stars": 4,
-    "castTicks": 3,
+    "castTicks": 2,
     "combat": {
       "effects": [
         {
           "kind": "heal",
-          "amount": 160,
-          "all": true
+          "amount": 180
+        },
+        {
+          "kind": "fragile"
         }
       ]
     },
-    "rules": "Heal 160 to all allies.",
-    "keywords": [],
+    "rules": "Heal 180. Fragile.",
+    "keywords": [
+      "fragile"
+    ],
     "notes": [],
     "upgrade": {
       "castTicks": 2,
@@ -818,14 +942,32 @@
         "effects": [
           {
             "kind": "heal",
-            "amount": 200,
-            "all": true
+            "amount": 220
+          },
+          {
+            "kind": "status",
+            "amount": 6,
+            "status": "regeneration",
+            "target": "self"
+          },
+          {
+            "kind": "status",
+            "amount": 1,
+            "status": "guard",
+            "target": "self",
+            "requiresAttunement": "nature"
+          },
+          {
+            "kind": "fragile"
           }
         ]
       },
-      "rules": "Heal 200 to all allies.",
+      "rules": "Heal 220. Gain 6 Regeneration. Fragile. [Nature Attuned: gain 1 Guard before this card breaks.]",
       "keywords": [
-        "attunement"
+        "regeneration",
+        "guard",
+        "gain",
+        "fragile"
       ],
       "notes": []
     }
@@ -840,22 +982,24 @@
       "effects": [
         {
           "kind": "status",
-          "status": "regeneration",
           "amount": 8,
+          "status": "regeneration",
           "target": "self"
         },
         {
           "kind": "status",
-          "status": "poison",
           "amount": 8,
+          "status": "poison",
           "target": "enemy"
         }
       ]
     },
-    "rules": "Gain Regeneration for 8 ticks. Apply Poison for 8 ticks.",
+    "rules": "Gain 8 Regeneration. Apply Poison for 8 ticks.",
     "keywords": [
       "poison",
-      "regeneration"
+      "regeneration",
+      "apply",
+      "gain"
     ],
     "notes": [],
     "upgrade": {
@@ -864,22 +1008,24 @@
         "effects": [
           {
             "kind": "status",
+            "amount": 10,
             "status": "regeneration",
-            "amount": 12,
             "target": "self"
           },
           {
             "kind": "status",
+            "amount": 10,
             "status": "poison",
-            "amount": 12,
             "target": "enemy"
           }
         ]
       },
-      "rules": "Gain Regeneration for 12 ticks. Apply Poison for 12 ticks.",
+      "rules": "Gain 10 Regeneration. Apply Poison for 10 ticks.",
       "keywords": [
         "poison",
-        "regeneration"
+        "regeneration",
+        "apply",
+        "gain"
       ],
       "notes": []
     }
@@ -893,38 +1039,48 @@
     "combat": {
       "effects": [
         {
-          "kind": "status",
-          "status": "resilience",
-          "amount": 10,
-          "target": "self",
+          "kind": "rule",
+          "amount": 1,
+          "rule": "addWard"
+        },
+        {
+          "kind": "ward",
+          "amount": 100,
           "requiresAttunement": "nature"
         }
       ]
     },
-    "rules": "Nature attuned: Gain Resilience for 10 ticks.",
+    "rules": "For the rest of combat, Ward gained adds to existing Ward instead of only keeping the higher value. [Nature Attuned: Gain 100 Ward immediately.]",
     "keywords": [
-      "resilience",
-      "attunement"
+      "ward",
+      "gain"
     ],
     "notes": [],
     "upgrade": {
-      "castTicks": 2,
+      "castTicks": 1,
       "combat": {
         "effects": [
           {
-            "kind": "status",
-            "status": "resilience",
+            "kind": "rule",
             "amount": 1,
-            "target": "self",
-            "permanent": true,
+            "rule": "addWard"
+          },
+          {
+            "kind": "rule",
+            "amount": 0.25,
+            "rule": "wardHeal"
+          },
+          {
+            "kind": "ward",
+            "amount": 150,
             "requiresAttunement": "nature"
           }
         ]
       },
-      "rules": "Nature attuned: Gain Resilience for the rest of combat.",
+      "rules": "For the rest of combat, Ward gained adds to existing Ward. Whenever you gain Ward, heal 25% of the amount gained. [Nature Attuned: Gain 150 Ward immediately.]",
       "keywords": [
-        "resilience",
-        "attunement"
+        "ward",
+        "gain"
       ],
       "notes": []
     }
@@ -939,17 +1095,19 @@
       "effects": [
         {
           "kind": "cultivate",
-          "status": "regeneration",
           "amount": 15,
-          "requiresAttunement": "nature"
+          "status": "regeneration"
+        },
+        {
+          "kind": "fragile"
         }
       ]
     },
-    "rules": "Nature attuned: Cultivate all Regeneration for 150% of its remaining healing.",
+    "rules": "Cultivate all your Regeneration for 150% of its remaining healing. Fragile.",
     "keywords": [
       "regeneration",
       "cultivate",
-      "attunement"
+      "fragile"
     ],
     "notes": [],
     "upgrade": {
@@ -958,17 +1116,28 @@
         "effects": [
           {
             "kind": "cultivate",
-            "status": "regeneration",
             "amount": 20,
-            "requiresAttunement": "nature"
+            "status": "regeneration"
+          },
+          {
+            "kind": "status",
+            "amount": 5,
+            "status": "regeneration",
+            "target": "self",
+            "bonusDomain": "nature",
+            "attunedAmount": 8
+          },
+          {
+            "kind": "fragile"
           }
         ]
       },
-      "rules": "Nature attuned: Cultivate all Regeneration for 200% of its remaining healing.",
+      "rules": "Cultivate all your Regeneration for 200% of its remaining healing. Gain 5 Regeneration. Fragile. [Nature Attuned: gain 8 Regeneration instead.]",
       "keywords": [
         "regeneration",
         "cultivate",
-        "attunement"
+        "gain",
+        "fragile"
       ],
       "notes": []
     }
@@ -984,18 +1153,20 @@
         {
           "kind": "damage",
           "amount": 100,
-          "statusMultiplier": {
-            "status": "enemy:poison",
-            "amount": 0.25
-          },
-          "requiresAttunement": "nature"
+          "perPoison": 20
+        },
+        {
+          "kind": "awaken",
+          "awakenOn": "enemyPoison",
+          "threshold": 10,
+          "awakenedPerPoison": 35
         }
       ]
     },
-    "rules": "Nature attuned: Deal 100 damage. +25% damage per Poison on the enemy.",
+    "rules": "Deal 100 damage plus 20 damage per remaining enemy Poison tick. Awaken: when the enemy reaches 10+ Poison. Awakened: deal 100 plus 35 per remaining Poison tick instead.",
     "keywords": [
       "poison",
-      "attunement"
+      "awaken"
     ],
     "notes": [],
     "upgrade": {
@@ -1004,19 +1175,21 @@
         "effects": [
           {
             "kind": "damage",
-            "amount": 100,
-            "statusMultiplier": {
-              "status": "enemy:poison",
-              "amount": 0.4
-            },
-            "requiresAttunement": "nature"
+            "amount": 120,
+            "perPoison": 25
+          },
+          {
+            "kind": "awaken",
+            "awakenOn": "enemyPoison",
+            "threshold": 10,
+            "awakenedPerPoison": 50
           }
         ]
       },
-      "rules": "Nature attuned: Deal 100 damage. +40% damage per Poison on the enemy.",
+      "rules": "Deal 120 damage plus 25 per remaining enemy Poison tick. Awaken: when the enemy reaches 10+ Poison. Awakened: deal 120 plus 50 per remaining Poison tick instead.",
       "keywords": [
         "poison",
-        "attunement"
+        "awaken"
       ],
       "notes": []
     }

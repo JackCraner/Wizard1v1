@@ -11,8 +11,7 @@ it('defines a literal upgraded version for every catalogue card and preserves av
   expect(c.upgrade,c.id).toBeDefined();const u=cardAt(c.id,3);
   expect(u.upgraded).toBe(true);expect(u.id).toBe(c.id);expect(u.stars).toBe(c.stars);
   expect(u.combat?.blockedReason).toBe(c.combat?.blockedReason);
-  if(c.id==='corrupt-ward') expect(u.combat).toEqual(c.combat); // No upgraded effect supplied yet.
-  else expect(JSON.stringify([u.castTicks,u.rules,u.combat]),c.id).not.toBe(JSON.stringify([c.castTicks,c.rules,c.combat]));
+  expect(JSON.stringify([u.castTicks,u.rules,u.combat]),c.id).not.toBe(JSON.stringify([c.castTicks,c.rules,c.combat]));
  }
 });
 it('merges only the selected copy, consumes exactly one card and caps XP at three',()=>{
@@ -30,7 +29,7 @@ it('consuming a partially trained copy still grants exactly one XP',()=>{
 it('applies upgrades per card, with real upgraded damage, costs and cast times',()=>{
  const a=fighter('A',['wrath','wrath'],[],[3,0]);
  const battle=simulate(a,fighter('B',['current']));
- expect(battle.frames[1].bot.health).toBe(430);expect(battle.frames[2].bot.health).toBe(410);
+ expect(battle.frames[1].bot.health).toBe(455);expect(battle.frames[2].bot.health).toBe(425);
  expect(battle.frames[1].events[0].xp).toBe(3);expect(a.spellXp).toEqual([3,0]);
  const pyro=simulate(fighter('A',['pyroblast'],[],[3]),fighter('B',['current']));
  expect(pyro.frames[3].bot.health).toBe(140);
@@ -38,8 +37,8 @@ it('applies upgrades per card, with real upgraded damage, costs and cast times',
 });
 it('upgrades status duration while retaining the shared per-tick power',()=>{
  const battle=simulate(fighter('A',['moonblight'],[],[3]),fighter('B',['current']));
- expect(battle.frames[1].bot.statuses.poison).toBe(8);
- expect(battle.frames[2].bot.statuses.poison).toBe(7);expect(battle.frames[2].bot.health).toBe(490);
+ expect(battle.frames[1].bot.statuses.poison).toBe(7);
+ expect(battle.frames[2].bot.statuses.poison).toBe(6);expect(battle.frames[2].bot.health).toBe(490);
 });
 it('runs every playable upgrade deterministically with legal resources',()=>{
  for(const id of PLAYABLE_SPELLS){
@@ -51,9 +50,9 @@ it('runs every playable upgrade deterministically with legal resources',()=>{
 it('buys XP into a full hand, validates transactions, and preserves XP through reorder, trash and combat',async()=>{
  const g=new LocalGameGateway();await g.start();
  const internal=(g as unknown as {session:Session}).session;
- internal.spells=Array(10).fill('wrath');internal.spellXp=[2,0,0,0,0,0,0,0,0,0];internal.shop=['wrath'];
+ internal.spells=Array(6).fill('wrath');internal.spellXp=[2,0,0,0,0,0];internal.shop=['wrath'];
  let s=await g.execute(internal.id,0,{type:'buy',spell:'wrath',target:0});
- expect(s.gold).toBe(9);expect(s.spells).toHaveLength(10);expect(s.spellXp?.[0]).toBe(3);
+ expect(s.gold).toBe(9);expect(s.spells).toHaveLength(6);expect(s.spellXp?.[0]).toBe(3);
  await expect(g.execute(s.id,s.revision,{type:'buy',spell:'wrath',target:0})).rejects.toThrow();
  await expect(g.execute(s.id,s.revision-1,{type:'merge',from:2,to:1})).rejects.toThrow('out of date');
  s=await g.execute(s.id,s.revision,{type:'move',from:0,to:4});expect(s.spellXp?.[4]).toBe(3);

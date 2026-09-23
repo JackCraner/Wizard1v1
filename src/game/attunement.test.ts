@@ -39,16 +39,16 @@ it('purchase, reorder, merge and trash preserve surviving ownership age and comb
 it('unbracketed early effects work off-domain but bracketed upgrades require attunement',()=>{
  const deck=['ember','wrath','current'];
  const off=simulate(fighter('A',deck,[],[0,0,0],[2,0,1]),fighter('B',['current']));
- expect(off.frames[1].player.statuses.heat).toBe(1);
+ expect(off.frames[1].player.statuses.heat).toBe(2);
  const upgradedOff=simulate(fighter('A',deck,[],[3,0,0],[2,0,1]),fighter('B',['current']));
- expect(upgradedOff.frames[1].player.statuses.heat).toBe(1);
+ expect(upgradedOff.frames[1].player.statuses.heat).toBe(2);
  const upgradedOn=simulate(fighter('A',deck,[],[3,0,0],[0,1,2]),fighter('B',['current']));
- expect(upgradedOn.frames[1].player.statuses.heat).toBe(2);
+ expect(upgradedOn.frames[1].player.statuses.heat).toBe(3);
 });
 it('inspection matches explicit bracket requirements instead of inferring locks from keyword names',()=>{
  expect(requiredDomains(cardAt('pyroblast').combat!.effects!)).toEqual([]);
  expect(requiredDomains(cardAt('moonblight').combat!.effects!)).toEqual([]);
- expect(requiredDomains(cardAt('immolate').combat!.effects!)).toEqual(['fire']);
+ expect(requiredDomains(cardAt('immolate').combat!.effects!)).toEqual([]);
 });
 it('bot shopping retains unique acquisition ages',()=>{
  const state=createBotStates(['bot']).bot;let deck:string[]=[];

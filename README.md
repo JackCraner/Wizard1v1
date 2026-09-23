@@ -5,29 +5,31 @@ A mobile spell auto-battler built with Expo, React Native, and TypeScript. Build
 ## The simplified game
 
 - You and seven bots race to 20 trophies. Each win awards trophies equal to the winner’s current level; draws award none.
-- Start at level 1 with 500 Health, an empty hand, and 10 gold. There is no mana. Combust grants seeded critical-hit chance.
+- Start at level 1 with 500 Health, an empty hand, and 10 gold. There is no mana. Critical hits follow printed card conditions.
 - Buy from five spell offers. Price equals the clearly displayed 1–5 star rarity. Drag into your hand to buy, or tap for full rules and purchase controls.
-- Hold a card to read a large preview placed above or beside your finger. Drag owned cards to arrange up to ten spells in casting order.
+- Hold a card to read a large preview placed above or beside your finger. Drag owned cards to arrange up to six spells in casting order.
 - Spells take 1T, 2T, or 3T before modifiers; Instant upgrades resolve at the start of a tick. After the last spell, spend one tick reshuffling and repeat the same order.
-- Duels end on a knockout or after 40 ticks; higher remaining Health wins at timeout.
-- After rounds 2, 4, 6, and so on, every player gains a level and 100 max Health, then chooses a free permanent augment from three unowned options. The pool contains 32 augments. Identical augments cannot stack.
+- Duels end on a knockout or after 30 ticks; higher remaining Health wins at timeout.
+- After rounds 2, 4, 6, and so on, every player gains a level and 100 max Health, then chooses a free permanent augment from three unowned options. The pool contains 27 augments. Identical augments cannot stack.
 - Unspent gold carries over. Each new shop adds 10 gold, and a reroll costs 1 gold before augment modifiers.
 
 ## Domains and card upgrades
 
-All five domains are playable: 25 Nature, 19 Water, 20 Fire, 10 Holy and 10 Affliction spells. Shops remain open to every domain. Your two most numerous domains are attuned. Ties favor the oldest card still held; reordering never changes priority. Buying, merging or trashing can change the counts. Merging preserves the recipient’s age and removes the donor. There are no passive Affinity/Mastery stat bonuses.
+All five domains are playable: 25 Nature, 19 Water, 20 Fire, 23 Holy and 22 Affliction spells. Shops remain open to every domain. Your two most numerous domains are attuned. Ties favor the oldest card still held; reordering never changes priority. Buying, merging or trashing can change the counts. Merging preserves the recipient’s age and removes the donor. There are no passive Affinity/Mastery stat bonuses.
 
 Square-bracket effects in the design are explicit domain-attuned requirements in the game. Unmarked effects remain usable off-domain. Upgraded numerical bonuses retain their basic value without attunement. Incoming enemy debuffs still affect unattuned targets.
 
-Nature uses 10-point Poison/Regeneration ticks, Cultivate and Channel (groups of at most three). Water builds five Tidecaller charges to Echo the next spell at 50% effectiveness. Five Heat make the next non-Instant cast 1T; Combust adds 10% critical chance per charge. Ward does not stack. Guard blocks damage for its duration, Slow adds +1T to new casts during its duration, and interrupts can stop 1T spells and channels. Affliction summons an Imp and uses Curse and Stun. Holy uses timed Oaths, healing conversion, and Fragile spells that leave the rotation after their first completed cast each duel.
+Poison and Regeneration deal/heal 10 per tick. Completing Fire or Water cards grants Heat or Tide. Three Heat accelerate and Empower the next non-Instant Fire spell; three Tide Echo the next non-Instant spell at 50%. Guard, Slow and Trap use charges. Triggers arm after the first successful cast and fire once per Cycle unless printed otherwise. Retrigger repeats the latest eligible Trigger without further Trigger chains. Awaken transforms individual cards for this duel. Oaths track following spells; Fragile cards leave after their first completed cast and Echo.
 
-Cards start at 0/3 XP. Merge a matching card to add 1 XP; reaching 3 upgrades its printed effects. Drag a shop copy onto a matching owned card to buy and merge it, even when your hand is full. Owned-card merges remain available in inspection. A partially trained donor grants only 1 XP; upgraded cards cannot be donors. Scholar makes the first purchased duplicate each shop grant 2 XP.
+See [current combat rules](src/config/COMBAT_RULES.md) and [all spells and augments](docs/Spell_and_Augment_Reference.md).
 
-Trash removes an owned spell without a refund unless Recycler grants 1 gold. You need at least one spell to enter combat. The spell library includes base and upgraded effects and the shared keyword glossary.
+Cards start at 0/3 XP. Merge a matching card to add 1 XP; reaching 3 upgrades its printed effects. Drag a shop copy onto a matching owned card to buy and merge it, even when your hand is full. Owned-card merges remain available in inspection. A partially trained donor grants only 1 XP; upgraded cards cannot be donors.
+
+Trash removes an owned spell without a refund unless Recycler refunds 80% of its price, rounded down. You need at least one spell to enter combat. The spell library includes base and upgraded effects and the shared keyword glossary.
 
 ## Augments and scouting
 
-Augments replace purchased items. They can change domain interactions, casting speed, sequence rewards, risk/reward, or shop economy. Examples include repeating every fourth spell, empowering the final spell, faster casting after three quick spells, and a free first reroll. Reward cards explain their keywords before selection.
+Augments replace purchased items. They can change domain interactions, casting speed, sequence rewards, risk/reward, or shop economy. Examples include a stronger first or final spell, Empowered after three quick spells, and two free rerolls each shop. Reward cards explain their keywords before selection.
 
 Inspect augments from the shop, combat, or leaderboard. The leaderboard preserves each player's last combat deck and XP while showing their current permanent augments. Bot choices follow the same reward cadence and cannot duplicate owned augments.
 

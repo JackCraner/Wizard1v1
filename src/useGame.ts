@@ -38,7 +38,7 @@ export function useGame(gateway: GameGateway) {
     if(playback.current.key!==key)playback.current={key,remaining:1};
     if (paused || !active || screen !== 'game' || !battle || finished) return;
     if(beat==='hold'){setBeat('cast');return;}
-    const started=Date.now(),duration=COMBAT_TICK_MS/speed;
+    const started=Date.now(),duration=(COMBAT_TICK_MS+(battle.frames[frame]?.notices?.some(n=>n.status==='awaken')?350:0))/speed;
     const timer = setTimeout(() => {const next=nextCombatBeat(frame,beat,battle.frames.length-1);setFrameState(next.frame);setBeat(next.beat);}, playback.current.remaining*duration);
     return () => {clearTimeout(timer);playback.current.remaining=Math.max(0,playback.current.remaining-(Date.now()-started)/duration);};
   }, [paused, active, screen, battle, finished, frame, beat, speed]);
