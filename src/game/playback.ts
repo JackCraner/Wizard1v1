@@ -33,7 +33,11 @@ export function continuousCombatFrame(battle:Battle,frame:number):CombatFrame {
  const resolved=presentedCombatFrame(battle,frame,'hold');
  const start=battle.frames[frame+1]?.tickStart;
  if(!start)return resolved;
- return {...start,tick:frame,presentationPhase:'resolve',events:[...resolved.events,...start.events],
+ // Starting the next simulation tick clears dead Imps. Retain the just-defeated
+ // copy for this presentation tick only; a new summon always takes precedence.
+ const presentedFighter=(side:'player'|'bot')=>!start[side].imp&&resolved[side].imp?.health===0
+  ?{...start[side],imp:{...resolved[side].imp!}}:start[side];
+ return {...start,player:presentedFighter('player'),bot:presentedFighter('bot'),tick:frame,presentationPhase:'resolve',events:[...resolved.events,...start.events],
   messages:[...resolved.messages,...start.messages],
   damageEvents:[...(resolved.damageEvents??[]),...(start.damageEvents??[])],
   healingEvents:[...(resolved.healingEvents??[]),...(start.healingEvents??[])],

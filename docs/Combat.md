@@ -9,8 +9,9 @@ Six active spells maximum in combat. During shopping, extra spells may be purcha
 3. Resolve Poison damage; check deaths before healing.
 4. Resolve Regeneration healing.
 5. Advance ordinary casts and reshuffles. Interrupts cancel even a 1T cast completing now; simultaneous interrupts cancel both. Channels skip remaining adjacent copies, capped at three.
-6. Resolve completing spells and their Echoes. Healing, Guard and Ward resolve before queued direct damage. Apply damage and check deaths. Complete Oaths, fire eligible Triggers and completion effects, then break Fragile cards and advance the sequence.
-7. Apply pending summons last, so newly summoned Health cannot absorb this tick's damage. A defeated Imp remains visible for one tick, then disappears unless resummoned.
+6. Resolve completing spells and their Echoes. Healing and Guard resolve before queued direct damage; Ward gains wait. Apply damage and check deaths. Complete Oaths, fire eligible Triggers and completion effects, then break Fragile cards and advance the sequence.
+7. Apply queued Ward grants to surviving fighters after damage and completion chains, then resolve Ward Gain Triggers. Damage caused by these Triggers can hit the newly granted Ward; any further Ward grants wait until that chain finishes. Only then arm newly completed cards, so their first cast cannot catch its own Ward chain. Opening Ward is present before tick one; Ward gains during combat, including Instant effects, wait for this phase.
+8. Apply pending summons last, so newly summoned Health cannot absorb this tick's damage. A defeated Imp remains visible for one tick, then disappears unless resummoned.
 
 ## Counters, protection and scaling
 
@@ -56,3 +57,5 @@ All cards show rising embers and sparks that grow denser, brighter and faster ac
 When an Echo resolves, a translucent blue copy of that spell appears behind its sequence card, rises slightly and fades. This feedback follows pause and playback speed; reduced motion uses a stationary fading copy.
 
 The combat HUD reserves Ward space even at zero Ward and fixed-height buff/debuff boxes. Status chips wrap horizontally and scroll within the reserved box when needed. During an echoed cast, the Tide wave icon remains visible at zero stacks and pulses with playback; it replaces the extended Tide activation receipt.
+
+Each fighter reserves an Imp slot on their inner side beside equally sized buff/debuff boxes, leaving a central gap between the two Imps. Ward uses the Mana bar artwork: capacity controls the frame width (with a readable minimum and bounded maximum), while remaining Ward controls its fill. A fresh grant exceeding the remaining Ward resets capacity to that grant, so 20/100 plus a 40 grant becomes 40/40. The Imp panel shows its title, damage feedback and a prominent Health bar without character art. Defeat remains visible for one presentation tick, then clears; resummoning restores the live panel.

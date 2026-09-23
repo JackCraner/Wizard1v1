@@ -41,21 +41,6 @@ export function EffectBar({fighter,compact,group,highlight=[],activations=[],pla
  </View>;
 }
 type Hit={target?:'wizard'|'imp'|'ward';side:'player'|'bot';amount:number;critical:boolean;healing:boolean;key:string;lane:number};
-const impArt = require('../../assets/Imp.png');
-export function ImpCompanion({fighter,onInspect,frame,side}:{fighter:Fighter;onInspect:()=>void;frame:CombatFrame;side:'player'|'bot'}) {
- const [open,setOpen]=useState(false);const imp=fighter.imp;
- if(!imp)return null;
- const alive=imp.health>0;
- return <>
-  <Pressable accessibilityRole="button" accessibilityLabel={`${fighter.name==='You'?'Your':fighter.name+"'s"} Imp: ${imp.health} of ${imp.maxHealth} Health${imp.guard>0?`, Guard ${imp.guard} charges`:''}. ${fighter.memory.rules?.impDamage??0} damage per completed spell. Inspect Imp.`} onPress={()=>{onInspect();setOpen(true);}} style={{position:'absolute',bottom:34,alignSelf:'center',width:112,padding:4,borderRadius:8,borderWidth:1,borderColor:imp.guard?'#9be3ff':palette.purple,backgroundColor:'#20132feb',alignItems:'center',zIndex:23,opacity:alive?1:.65}}>
-   <View style={{flexDirection:'row',alignItems:'center',gap:4}}><Image accessible={false} source={impArt} resizeMode="contain" style={{width:42,height:56}}/><View><Text style={{color:palette.purpleLight,fontSize:10,fontWeight:'800'}}>IMP{imp.guard>0?' ◇':''}</Text><Text style={{color:palette.white,fontSize:10}}>{alive?'ACTIVE':'Defeated'}</Text></View></View>
-   <View accessibilityRole="progressbar" accessibilityLabel="Imp Health" accessibilityValue={{min:0,max:imp.maxHealth,now:imp.health}} style={{height:16,width:'100%',backgroundColor:'#24132f',borderWidth:1,borderColor:palette.purple,borderRadius:3,overflow:'hidden'}}><View style={{position:'absolute',height:'100%',width:`${Math.max(0,Math.min(100,100*imp.health/imp.maxHealth))}%`,backgroundColor:imp.guard?'#326581':'#754099'}}/><Text style={{color:palette.white,fontSize:10,fontWeight:'800',textAlign:'center'}}>{imp.health} / {imp.maxHealth} HP</Text></View>
-   {alive&&<Text style={{fontSize:8,color:'#ead3fa',marginTop:2}}>{imp.guard>0?`Guard · ${imp.guard}T`:(fighter.memory.impDamage?`${fighter.memory.impDamage} / spell`:'Protecting you')}</Text>}
-   <DamageNumbers frame={frame} impSide={side}/>
-  </Pressable>
-  <Modal visible={open} transparent onRequestClose={()=>setOpen(false)} animationType="fade"><View style={{flex:1,backgroundColor:'#000a',alignItems:'center',justifyContent:'center',padding:20}}><View accessibilityViewIsModal style={{width:"100%",maxWidth:360,maxHeight:"100%",padding:14,gap:8,backgroundColor:'#20132f',borderWidth:1,borderColor:palette.purple,borderRadius:10}}><View style={{flexDirection:"row",alignItems:"center",gap:12}}><Image accessible={false} source={impArt} resizeMode="contain" style={{width:48,height:64}}/><Text style={{flex:1,fontSize:18,color:palette.purpleLight,fontWeight:"800"}}>Imp · {imp.health}/{imp.maxHealth} Health</Text></View><Text style={{color:palette.white}}>{KEYWORDS.summon.description}</Text><Text style={{color:'#d5c5e7'}}>Guard: {imp.guard} charges. Attack: {fighter.memory.rules?.impDamage??0} damage per completed spell. Summoning after defeat creates a fresh Imp.</Text><Pressable accessibilityRole="button" onPress={()=>setOpen(false)} style={{padding:10,borderWidth:1,borderColor:palette.purple}}><Text style={{color:palette.white,textAlign:'center'}}>Close Imp details</Text></Pressable></View></View></Modal>
- </>;
-}
 function FloatingHit({hit,rows,height,playing,speed,onDone}:{hit:Hit;rows:number;height:number;playing:boolean;speed:number;onDone:(key:string)=>void}) {
  const progress=useFeedbackProgress(playing,1450/speed,()=>onDone(hit.key));
  const size=Math.max(8,Math.min(hit.critical?25:21,height/rows*.75,48/((String(Math.abs(hit.amount)).length+1+(hit.critical?1:0))*.63)));

@@ -4,6 +4,7 @@ import { Image, Text, View } from 'react-native';
 export const combatArt = {
   background: require('../../assets/CombatBackground.png'),
   health: require('../../assets/healthBar.png'),
+  ward: require('../../assets/ManaBar.png'),
 };
 export function OrnateMeter({ value, max }: { value: number; max: number }) {
   const ratio = max ? Math.max(0, Math.min(1, value / max)) : 0;
@@ -17,8 +18,14 @@ export function OrnateMeter({ value, max }: { value: number; max: number }) {
 
 export function WardMeter({ value, capacity }: { value: number; capacity: number }) {
   if (value <= 0) return <View accessible={false} style={{height:13}}/>;
-  return <View accessible accessibilityLabel={`${value} of ${capacity} Ward`} style={{ height: 13, marginHorizontal: '8%', borderWidth: 1, borderColor: '#8bc8ed', borderRadius: 3, backgroundColor: '#102a40e6', overflow: 'hidden' }}>
-    <View style={{ position: 'absolute', left: 0, top: 0, bottom: 0, width: `${Math.min(100, value / Math.max(1, capacity) * 100)}%`, backgroundColor: '#428dbc' }}/>
-    <Text style={{ color: '#e0f5ff', fontSize: 9, lineHeight: 11, textAlign: 'center', fontWeight: '800', textShadowColor: '#102030', textShadowRadius: 2, textShadowOffset: { width: 0, height: 1 } }}>⬡ {value}/{capacity} Ward</Text>
+  // Capacity sizes the frame; remaining Ward fills it. Keep small grants readable.
+  return <View style={{height:13,marginHorizontal:'8%'}}>
+    <View accessible accessibilityLabel={`${value} of ${capacity} Ward`} style={{height:13,alignSelf:'center',width:90+capacity*0.4,maxWidth:'100%',overflow:'hidden'}}>
+      <Image accessible={false} source={combatArt.ward} resizeMode="stretch" style={{position:'absolute',left:0,top:'-76%',width:'100%',height:'260%'}}/>
+      <View style={{position:'absolute',left:'14%',right:'14%',top:'28%',bottom:'32%',backgroundColor:palette.black,overflow:'hidden',borderRadius:2}}>
+        <View style={{height:'100%',width:`${Math.max(0,Math.min(100,value/Math.max(1,capacity)*100))}%`,backgroundColor:palette.ward}}/>
+      </View>
+      <Text style={{color:palette.white,fontSize:9,lineHeight:13,textAlign:'center',fontWeight:'800',textShadowColor:palette.black,textShadowRadius:2,textShadowOffset:{width:0,height:1}}}>{value}/{capacity}</Text>
+    </View>
   </View>;
 }

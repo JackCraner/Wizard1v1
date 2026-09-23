@@ -12,7 +12,7 @@ const debuffs=['poison','slow','trap','curse'];
 type Context={parentTriggerId?:number;side:Side;index:number;spell:boolean;scale:number;echo:boolean;empowered:boolean;heat:boolean;quiet:boolean;eventAmount?:number;startWard?:number;startTide?:number;fireBonus?:number;freeHeat?:boolean;breaks?:boolean;heatEmpowered?:boolean;removedWard?:boolean;cost?:number;damage?:number;critical?:boolean;nextDamage?:number;nextCritical?:boolean};
 type Hit={side:Side;amount:number;kind:DamageEvent['kind'];ctx:Context;critical?:boolean;intercept?:boolean;impOnly?:boolean;leech?:number;poison?:boolean;impAttack?:boolean};
 
-/** Deterministic phases: Instant, DoT/deaths, HoT, normal effects/damage, summons. */
+/** Deterministic phases: Instant, DoT/deaths, HoT, normal healing/effects/damage, Ward, summons. */
 export function simulate(player:Fighter,bot:Fighter,_seed=RULES.seed):Battle {
  const f={player:cloneSnapshot(player),bot:cloneSnapshot(bot)};
  const frames:CombatFrame[]=[];
@@ -20,6 +20,8 @@ export function simulate(player:Fighter,bot:Fighter,_seed=RULES.seed):Battle {
  let feedbackId=0;
  type TriggerEvent={parentTriggerId?:number;triggerGroup:number;side:Side;event:NonNullable<Effect['event']>;origin?:CombatOrigin;amount:number;eligible:number[]};
  const queue:TriggerEvent[]=[];
+ const pendingWard:{side:Side;amount:number;ctx:Context}[]=[];
+ const pendingArms:{side:Side;index:number}[]=[];
  const originOf=(c:Context):CombatOrigin=>({side:c.side,kind:c.index>=0?'spell':'wizard',...(c.index>=0?{index:c.index}:{})});
  const secondWind=new Set<Side>();
  for(const side of sides){validateDeck(f[side].spells);f[side].memory.cards??={};f[side].memory.rules??={};if(f[side].shield)f[side].wardCapacity=Math.max(f[side].shield,f[side].wardCapacity??0);}
@@ -40,7 +42,19 @@ export function simulate(player:Fighter,bot:Fighter,_seed=RULES.seed):Battle {
   if(direct&&has(side,'friendly-imp')&&(f[side].imp?.health??0)>0){const imp=f[side].imp!,v=Math.min(n,imp.maxHealth-imp.health);imp.health+=v;n-=v;if(v){healingEvents.push({side,amount:v,kind:'heal',target:'imp',sourceIndex:c.index});trigger(side,'heal',c.quiet,originOf(c),v,c.parentTriggerId);}}
   const v=Math.min(n,f[side].maxHealth-f[side].health);f[side].health+=v;if(v){healingEvents.push({side,amount:v,kind:direct?'heal':'hot',sourceIndex:c.index});trigger(side,'heal',c.quiet,originOf(c),v,c.parentTriggerId);}
  }
- function ward(side:Side,n:number,c:Context){const u=f[side],v=Math.floor(n+1e-8),before=u.shield;u.shield=rules(side).addWard?u.shield+v:Math.max(u.shield,v);if(rules(side).addWard)u.wardCapacity=Math.max(u.wardCapacity??0,u.shield);else if(v>=before)u.wardCapacity=v;if(u.shield>before)trigger(side,'ward',c.quiet,originOf(c),u.shield-before,c.parentTriggerId);}
+ function ward(side:Side,n:number,c:Context){
+  if(tick>0){pendingWard.push({side,amount:n,ctx:{...c}});return;}
+  grantWard(side,n,c);
+ }
+ function grantWard(side:Side,n:number,c:Context){const u=f[side],v=Math.floor(n+1e-8),before=u.shield;u.shield=rules(side).addWard?u.shield+v:Math.max(u.shield,v);if(rules(side).addWard)u.wardCapacity=Math.max(u.wardCapacity??0,u.shield);else if(v>=before)u.wardCapacity=v;if(u.shield>before)trigger(side,'ward',c.quiet,originOf(c),u.shield-before,c.parentTriggerId);}
+ function resolveWard(){
+  // Apply both fighters' grants together before resolving Ward-gain trigger chains.
+  while(pendingWard.length){
+   const batch=pendingWard.splice(0);
+   for(const {side,amount,ctx} of batch)if(f[side].health>0)grantWard(side,amount,ctx);
+   flush();
+  }
+ }
  function awaken(){for(const side of sides)for(const i of activeSpellIndices(f[side])){const a=card(side,i).combat?.effects?.find(e=>e.kind==='awaken');if(!a||state(side,i).awakened)continue;const count=a.awakenOn==='heat'?f[side].memory.heatConsumed??0:a.awakenOn==='echo'?state(side,i).echoes??0:a.awakenOn==='poison'?f[side].memory.poisonEvents??0:f[other(side)].statuses.poison??0;const threshold=a.attunedThreshold!==undefined&&attuned(side,a.bonusDomain)?a.attunedThreshold:a.threshold??1;if(count<threshold)continue;state(side,i).awakened=true;note(side,'awaken','AWAKEN',i);execute(a.effects??[],context(side,i));}}
  // Events capture eligible armed copies at emission. A first cast cannot catch its own chain.
  function trigger(side:Side,event:NonNullable<Effect['event']>,quiet=false,origin?:CombatOrigin,amount=0,parentTriggerId?:number){
@@ -140,7 +154,7 @@ export function simulate(player:Fighter,bot:Fighter,_seed=RULES.seed):Battle {
    u.memory.previousSelfDamage=(c.cost??0)>0;u.memory.previousDomain=def.domain;u.memory.previousHeat=c.heat;u.memory.previousEcho=!!echo;(u.memory.cycleDomains??={})[def.domain]=(u.memory.cycleDomains?.[def.domain]??0)+1;u.memory.casts++;u.memory.cycleCasts++;awaken();
   }flush();
   for(const {c} of completions)if(f[c.side].health>0)advance(c.side);flush();
-  for(const {c,effects} of completions)if(effects.some(e=>e.kind==='trigger')&&!(f[c.side].broken??[]).includes(c.index)&&!state(c.side,c.index).armed){state(c.side,c.index).armed=true;note(c.side,'armed','ARMED',c.index);}
+  for(const {c,effects} of completions)if(effects.some(e=>e.kind==='trigger'))pendingArms.push({side:c.side,index:c.index});
  }
  const snapshot=(tickStart?:CombatFrame):CombatFrame=>({tick,stateTick:tick,player:cloneSnapshot(f.player),bot:cloneSnapshot(f.bot),events:cloneSnapshot(events),notices:cloneSnapshot(notices),damageEvents:cloneSnapshot(damageEvents),healingEvents:cloneSnapshot(healingEvents),messages:[],...(tickStart?{tickStart}:{})});
  for(const side of sides){if(has(side,'opening-ward'))ward(side,100,context(side));if(has(side,'toxic-start')){add(other(side),'poison',5,side);add(other(side),'curse',1,side);}}frames.push(snapshot());
@@ -160,6 +174,8 @@ export function simulate(player:Fighter,bot:Fighter,_seed=RULES.seed):Battle {
   const tickStart=snapshot();tickStart.presentationPhase='start';
   for(const side of waiting)if(--f[side].reshuffleRemaining===0){f[side].cycle++;startCycle(side);}flush();
   if(!sides.some(s=>f[s].health<=0))resolve(sides.filter(s=>!waiting.has(s)&&f[s].casting&&!f[s].casting!.instant&&--f[s].casting!.remaining===0));
+  resolveWard();
+  for(const {side,index} of pendingArms.splice(0))if(!(f[side].broken??[]).includes(index)&&!state(side,index).armed){state(side,index).armed=true;note(side,'armed','ARMED',index);}
   for(const side of sides){const u=f[side],n=pending[side];if(n>0&&u.health>0){if(u.imp&&u.imp.health>0){u.imp.health+=n;u.imp.maxHealth+=n;}else u.imp={health:n,maxHealth:n,guard:0};note(side,'summon',`Summon +${n}`);}for(const k of Object.keys(u.statuses))if(u.statuses[k]<=0)delete u.statuses[k];}frames.push(snapshot(tickStart));if(sides.some(s=>f[s].health<=0))break;
  }
  return {frames,outcome:f.player.health===f.bot.health?'draw':f.player.health>f.bot.health?'victory':'defeat',endReason:sides.some(s=>f[s].health<=0)?'knockout':'timeout'};
