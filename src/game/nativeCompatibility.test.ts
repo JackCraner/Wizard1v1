@@ -1,5 +1,4 @@
 import { afterEach, expect, it, vi } from 'vitest';
-import { SPELLS } from './engine';
 import { LocalGameGateway } from '../services/localGateway';
 
 afterEach(() => vi.unstubAllGlobals());
@@ -14,7 +13,7 @@ it('runs a complete session without browser crypto or structuredClone', async ()
   expect(result.battle?.frames.length).toBeGreaterThan(1);
   const next = await gateway.execute(result.id, result.revision, { type: 'next' });
   expect(next.round).toBe(2);
-  expect(next.gold).toBe(20-SPELLS[first.shop[0]!].price);
+  expect(next.gold).toBe(10);
 });
 
 it('rejects old sessions after starting again and isolates nested snapshots', async () => {

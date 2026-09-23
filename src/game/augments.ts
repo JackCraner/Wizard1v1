@@ -1,4 +1,5 @@
 import catalogue from '../config/augments.json';
+import rules from '../config/rules.json';
 export const AUGMENTS = Object.fromEntries(catalogue.map(a => [a.id, a]));
 export function validateAugments(ids: readonly string[]) {
     if (new Set(ids).size !== ids.length || ids.some(id => !AUGMENTS[id]))
@@ -21,6 +22,6 @@ export function augmentOffers(round: number, owned: readonly string[], seed = 42
     return choices;
 }
 export const rerollCost = (augments: readonly string[], rerolls: number) => augments.includes('scavenger') && rerolls < 2 ? 0 : 2;
-export const shopIncome = (augments: readonly string[]) => 10 + (augments.includes('deep-pockets') ? 3 : 0);
+export const shopIncome = (augments: readonly string[]) => rules.gold + (augments.includes('deep-pockets') ? 3 : 0);
 
 export const trashRefund = (augments: readonly string[], price: number) => augments.includes('recycler') ? Math.floor(price * .8) : 0;

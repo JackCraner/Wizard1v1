@@ -39,7 +39,7 @@ export class LocalGameGateway implements GameGateway {
         s.nextAcquisition = Math.max(s.nextAcquisition ?? 0, ...s.spellAcquired.map(n => n + 1));
         if (s.lobby.finished)
             throw new Error('This game is complete. Start a new game.');
-        const enterShop = () => { s.phase = 'shop'; s.round++; s.gold += shopIncome(s.augments); s.battle = null; s.rerolls = 0; s.augmentOffers = []; s.bonusMergeUsed = false; Object.assign(s, offersFor(s.round, 0, s.spells, s.augments, s.seed)); };
+        const enterShop = () => { s.phase = 'shop'; s.round++; s.gold = shopIncome(s.augments); s.battle = null; s.rerolls = 0; s.augmentOffers = []; s.bonusMergeUsed = false; Object.assign(s, offersFor(s.round, 0, s.spells, s.augments, s.seed)); };
         if (command.type === 'rerollAugment') {
             const slot = command.slot;
             if (s.phase !== 'augment' || !Number.isInteger(slot) || slot < 0 || slot >= s.augmentOffers.length)

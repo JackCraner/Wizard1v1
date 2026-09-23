@@ -42,7 +42,7 @@ Six active spells maximum in combat. During shopping, extra spells may be purcha
 
 ## Progression
 
-Start level 1 at 500 Health. After every two rounds, all players gain a level, 100 max Health and one permanent augment. Wins award trophies equal to current level; 20 trophies wins. Resolve every duel before awarding shared tournament victories. All 27 augments are available to every build.
+Start level 1 at 500 Health. Each shopping round resets gold to 10 (13 with Deep Pockets); unspent gold does not carry over. After every two rounds, all players gain a level, 100 max Health and one permanent augment. Wins award trophies equal to current level; 20 trophies wins. Resolve every duel before awarding shared tournament victories. All 27 augments are available to every build.
 
 Momentum now Empowers the spell after three consecutive printed 1T completions. Blood Infusion grants 1 Heat on self Health loss. Criticality grants 2 Heat on the first Critical spell each Cycle. Tough Skin grants 40 Ward when Guard blocks damage. Hot Stuff applies its existing +10% outgoing/incoming damage while Heat is held.
 

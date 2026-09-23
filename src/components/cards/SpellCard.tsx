@@ -1,5 +1,5 @@
 import { palette, DOMAIN_COLORS, DOMAIN_INK, typography } from '../../theme';
-import {ruleSections} from '../../game/cardText';
+import {ruleSections, upgradeSummary} from '../../game/cardText';
 import {keywordDomain} from '../../game/attunement';
 import { cardAt, UPGRADE_XP } from '../../game/upgrades';
 import { useState } from 'react';
@@ -64,10 +64,17 @@ export function CardPreview({ card, height = 260, width, shop = false }: {
     shop?: boolean;
 }) {
     const cardWidth = height * 2 / 3;
-    const hasKeywords = explainedKeywords(card.keywords).some(keyword=>keyword.id!=='attunement');
+    const hasKeywords = explainedKeywords(card.keywords).some(keyword=>keyword.id!=='attunement') || !!card.upgrade;
     return <View style={{ flexDirection: 'row', gap: hasKeywords ? 8 : 0, width: hasKeywords ? (width ?? cardWidth + 200) : cardWidth, height }}>
     <View style={{ width: cardWidth, height }}><SpellCard {...card} shop={shop}/></View>
-    {hasKeywords && <ScrollView style={{ flex: 1, minWidth: 0 }} nestedScrollEnabled contentContainerStyle={{ paddingBottom: 4 }}><KeywordBoxes keywords={card.keywords} small/></ScrollView>}
+    {hasKeywords && <ScrollView style={{ flex: 1, minWidth: 0 }} nestedScrollEnabled contentContainerStyle={{ paddingBottom: 4, gap: 6 }}><UpgradeDetails card={card} /><KeywordBoxes keywords={card.keywords} small/></ScrollView>}
   </View>;
+}
+export function UpgradeDetails({ card, compact = false }: { card: CardDefinition; compact?: boolean }) {
+    if (!card.upgrade) return null;
+    return <View style={[s.keyword, { padding: compact ? 5 : 7, gap: 4 }]}>
+      <Text style={{ color: palette.gold, fontSize: 11, fontWeight: '800' }}>{card.upgraded ? 'Fully upgraded' : `Upgrade · ${UPGRADE_XP} XP`}</Text>
+      {!card.upgraded && <RulesText rules={upgradeSummary(card)} keywords={card.upgrade.keywords} fontSize={compact ? 11 : 12} color={palette.parchment} />}
+    </View>;
 }
 const s = StyleSheet.create({ card: { flex: 1, overflow: 'hidden', backgroundColor: '#172326' }, keyword: { backgroundColor: '#21180ff5', borderWidth: 1, borderColor: '#93753f', borderRadius: 4 } });

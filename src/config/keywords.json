@@ -2,91 +2,91 @@
   "poison": {
     "name": "Poison",
     "aliases": [],
-    "description": "Debuff duration. Take 10 damage at the start of each tick after Instant spells, then lose 1 duration. New applications add duration.",
+    "description": "Take 10 damage per tick. More Poison extends the duration.",
     "related": []
   },
   "regeneration": {
     "name": "Regeneration",
     "aliases": [],
-    "description": "Buff duration. Heal 10 at the start of each tick after Instant spells, then lose 1 duration. New applications add duration.",
+    "description": "Heal 10 per tick. More Regeneration extends the duration.",
     "related": []
   },
   "ward": {
     "name": "Ward",
     "aliases": [],
-    "description": "Absorbs direct damage before Health; excess damage hits Health. Damage over time bypasses Ward. Does not stack: gaining Ward keeps the higher of your current Ward and the new amount. Does not decay.",
+    "description": "Absorbs direct damage, but not damage over time. Keeps the higher amount instead of stacking.",
     "related": []
   },
   "interrupt": {
     "name": "Interrupt",
     "aliases": [],
-    "description": "Cancels the current enemy spell, even a 1T spell finishing this tick. Also skips the remaining copies in its current Channel group (up to 3). Simultaneous interrupts cancel each other.",
+    "description": "Cancels the enemy’s current spell and remaining Channel copies.",
     "related": []
   },
   "empowered": {
     "name": "Empowered",
     "aliases": [],
-    "description": "50% more direct damage, direct healing and Ward. Does not increase counters, durations, Trigger payloads or percentage effects.",
+    "description": "+50% direct damage, healing and Ward. Does not boost Trigger effects.",
     "related": []
   },
   "heat": {
     "name": "Heat",
     "aliases": [],
-    "description": "Completing a Fire spell grants 1 Heat. At 5 Heat, your next non-Instant spell of any domain consumes 5, becomes 1T and Empowered. Slow then adds 1T if present.",
+    "description": "Fire casts grant 1 Heat. Spend 5 to make your next non-Instant spell 1T and Empowered.",
     "related": []
   },
   "oath": {
     "name": "Oath",
     "aliases": [],
-    "description": "Only one Oath at a time. Evaluate the following completed spell or spells. Succeed to resolve the printed reward immediately; a new Oath replaces the old one.",
+    "description": "Meet the condition with your following spells to earn the reward. Only one Oath at a time.",
     "related": []
   },
   "slow": {
     "name": "Slow",
     "aliases": [],
-    "description": "Each charge is consumed when a non-Instant spell starts, adding 1T.",
+    "description": "Each charge adds 1T to your next non-Instant cast.",
     "related": []
   },
   "cleanse": {
     "name": "Cleanse",
     "aliases": [],
-    "description": "Remove the printed number of debuff types: Poison, Slow, Trap or Curse.",
+    "description": "Remove debuff types: Poison, Slow, Trap or Curse.",
     "related": []
   },
   "repeat": {
     "name": "Repeat",
     "aliases": [],
-    "description": "Resolve a spell’s effects again without advancing the sequence. A repeat does not count as another spell for Oaths or augment counters.",
+    "description": "Resolve the spell’s effects again without another cast.",
     "related": []
   },
   "consume": {
     "name": "Consume",
     "aliases": [],
-    "description": "Remove the named duration or charges and use the amount removed for the payoff.",
+    "description": "Spend the named effect for the listed benefit.",
     "related": []
   },
   "channel": {
     "name": "Channel",
     "aliases": [],
-    "description": "Link up to 3 matching spells in adjacent slots. Each extra copy adds the Channel bonus to every spell in the group. Interrupt cancels the remaining group.",
+    "description": "Link up to 3 adjacent matching spells. Each extra copy boosts every spell in the group.",
     "related": []
   },
   "unique": {
     "name": "Unique",
     "aliases": [],
-    "description": "Only one copy may be held. Matching shop copies can still upgrade it.",
+    "description": "Hold only one copy. Matching copies can still upgrade it.",
     "related": []
   },
   "cycle": {
     "name": "Cycle",
     "aliases": [],
-    "description": "One pass through the active sequence, followed by one reshuffle tick.",
+    "description": "One pass through your spells, then a 1T reshuffle.",
     "related": []
   },
   "curse": {
     "name": "Curse",
     "aliases": [],
-    "description": "Debuff counter. Take 10 damage per stack when your next cycle begins, after reshuffling. Stacks persist until cleansed.",
+    "description": "Take 10 damage per stack each Cycle. Lasts until cleansed.",
     "related": []
   },
   "attunement": {
@@ -94,97 +94,97 @@
     "aliases": [
       "attuned"
     ],
-    "description": "Your two most numerous domains are attuned. Ties favor the oldest card still held. Only effects explicitly marked with a domain attunement requirement need that domain; unmarked effects remain usable.",
+    "description": "Your two most common domains are attuned, unlocking their marked effects. Ties favor older cards.",
     "related": []
   },
   "instant": {
     "name": "Instant",
     "aliases": [],
-    "description": "Resolves before other effects that tick, including over-time effects and ordinary spells. Simultaneous Instant spells resolve together.",
+    "description": "Resolves before other effects that tick.",
     "related": []
   },
   "trap": {
     "name": "Trap",
     "aliases": [],
-    "description": "After completing a spell, consume one charge and take 10 damage. Echo is not a second cast.",
+    "description": "Each completed spell spends a charge and deals 10 damage to you.",
     "related": []
   },
   "guard": {
     "name": "Guard",
     "aliases": [],
-    "description": "Each charge prevents one incoming damage event and is consumed. Explicit Health costs bypass Guard.",
+    "description": "Each charge blocks one damage event. Cannot block Health costs.",
     "related": []
   },
   "echo": {
     "name": "Echo",
     "aliases": [],
-    "description": "Repeat the spell effects at the stated effectiveness, rounding down. Does not count as a cast or produce another Echo.",
+    "description": "Repeat the spell’s effects at the listed strength, without another cast.",
     "related": []
   },
   "critical": {
     "name": "Critical",
     "aliases": [],
-    "description": "Deals 150% direct damage by default. Determined by printed spell conditions, not random chance.",
+    "description": "Deals 150% direct damage when its condition is met.",
     "related": []
   },
   "cultivate": {
     "name": "Cultivate",
     "aliases": [],
-    "description": "Consume the named duration or counter and immediately resolve the printed payoff.",
+    "description": "Spend the named effect to gain the listed reward.",
     "related": []
   },
   "apply": {
     "name": "Apply",
     "aliases": [],
-    "description": "Put the named effect on the enemy. Applying Regeneration heals the enemy.",
+    "description": "Give the effect to the enemy.",
     "related": []
   },
   "gain": {
     "name": "Gain",
     "aliases": [],
-    "description": "Put the named effect on yourself.",
+    "description": "Give the effect to yourself.",
     "related": []
   },
   "summon": {
     "name": "Summon",
     "aliases": [],
-    "description": "At the end of the tick, summon or revive an Imp with the printed Health. If still alive, add to its current and maximum Health. It absorbs direct enemy damage; overflow hits you. Applied effects and damage over time still hit you. Empowered Imp attacks after each spell you complete.",
+    "description": "Summon or strengthen an Imp that absorbs direct damage. Empowered Imps attack after your casts.",
     "related": []
   },
   "fragile": {
     "name": "Fragile",
     "aliases": [],
-    "description": "After a successful cast and its Echo, this copy breaks for the rest of the duel. Remaining cards move together. Returns next duel.",
+    "description": "Breaks after casting and Echoing. Returns next duel.",
     "related": []
   },
   "unholy": {
     "name": "Unholy",
     "aliases": [],
-    "description": "Your healing becomes damage to the enemy for the duration, including Regeneration. Printed healing converts even at full Health; heal-to-full converts only missing Health. Enemy healing stays unchanged.",
+    "description": "Your healing deals damage to the enemy instead.",
     "related": []
   },
   "tide": {
     "name": "Tide",
     "aliases": [],
-    "description": "Completing a Water spell grants 1 Tide. At 3 Tide, your next non-Instant spell consumes 3 and Echoes at 50% effectiveness.",
+    "description": "Water casts grant 1 Tide. Spend 3 to Echo your next non-Instant spell at 50% strength.",
     "related": []
   },
   "trigger": {
     "name": "Trigger",
     "aliases": [],
-    "description": "Dormant until this copy completes its first cast and its entire effect chain. Once Armed, resolves at most once per tick, in sequence order. Normal Trigger effects can activate other Armed Triggers. Broken cards lose their Trigger.",
+    "description": "Arms after its first cast. Then activates when its condition is met, once per tick.",
     "related": []
   },
   "retrigger": {
     "name": "Retrigger",
     "aliases": [],
-    "description": "Repeat the last eligible Armed Trigger resolved this Cycle, ignoring its per-tick limit. Does not update Trigger history, retrigger Retrigger, or activate other Triggers.",
+    "description": "Repeat your last Armed Trigger this Cycle. Cannot start another Trigger chain.",
     "related": []
   },
   "awaken": {
     "name": "Awaken",
     "aliases": [],
-    "description": "When the printed condition is met, this copy transforms for the rest of combat. Happens once per copy.",
+    "description": "Transforms for the rest of the duel when its condition is met.",
     "related": []
   }
 }

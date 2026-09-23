@@ -143,7 +143,6 @@ function DragCard(props: {
       transform: [{ rotate: props.angle + "deg" }], borderWidth: props.target||props.mergeEligible ? 2 : 0, borderColor: props.mergeTarget?'#fff4ad':'#e9b651', backgroundColor:props.mergeTarget?'#ffc84b44':'transparent', shadowColor:'#ffce54',shadowOpacity:props.mergeTarget?1:props.mergeEligible?.6:0,shadowRadius:props.mergeTarget?12:6,shadowOffset:{width:0,height:0}, borderRadius: 5 }}>
       {props.renderCard(props.id,false,props.index)}
       <View style={{position:'absolute',bottom:-5,left:-4,right:-4,alignItems:'center'}}><Text style={{fontSize:9,fontWeight:'900',color:props.mergeTarget?'#251605':'#ffdf88',backgroundColor:props.mergeTarget?'#ffe48d':'#231a0ff2',borderWidth:1,borderColor:props.xp>0?'#ffcd55':'#766242',borderRadius:3,paddingHorizontal:3,paddingVertical:1}}>{props.mergeTarget? (props.xp===2?'UPGRADE!':'+1 XP'):props.xp>=3?'MAX ✦':props.xp+'/3 XP'}</Text></View>
-      <View style={styles.badge}><Text style={styles.number}>{props.index + 1}</Text></View>
     </View>
     {props.selected && !moving && <LiftedPreview left={position.left - origin.x} top={position.top - origin.y} width={previewWidth} height={previewSize.height}>
       {props.renderPreview ? props.renderPreview(props.id, previewSize.height, previewWidth,props.index) : props.renderCard(props.id, true,props.index)}
@@ -155,7 +154,5 @@ const styles = StyleSheet.create({
   hand: { width: '100%', height: 172, overflow: 'visible', zIndex: 10 },
   empty: { position: 'absolute', height: 125, borderWidth: 1, borderColor: '#776345', borderRadius: 4, backgroundColor: '#181713', justifyContent: 'center', alignItems: 'center' },
   emptyText: { color: '#716248', fontSize: 35 },
-  badge: { position: 'absolute', top: 0, left: 0, width: 20, height: 20, borderRadius: 10, backgroundColor: '#31251a', borderWidth: 1, borderColor: '#c5a26b', alignItems: 'center', justifyContent: 'center' },
-  number: { color: '#efdab0', fontSize: 10 },
   destination: { position: 'absolute', bottom: 1, alignSelf: 'center', color: '#f5d495', fontSize: 11 },
 });

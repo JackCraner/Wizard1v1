@@ -4,6 +4,16 @@ import {deriveStats} from './engine';
 import type {Session} from './model';
 const raw=(g:LocalGameGateway)=>(g as unknown as {session:Session}).session;
 
+it.each([{augments:[]}, {augments:['deep-pockets']}])('resets unspent gold each round with $augments', async ({augments}) => {
+ const g=new LocalGameGateway();let s=await g.start();
+ raw(g).augments=augments;
+ raw(g).gold=25;
+ raw(g).spells=['spark'];
+ s=await g.execute(s.id,s.revision,{type:'fight'});
+ s=await g.execute(s.id,s.revision,{type:'next'});
+ expect(s.gold).toBe(augments.includes('deep-pockets')?13:10);
+});
+
 it('levels every player after two rounds, grants one augment and carries increased Health into combat',async()=>{
  const g=new LocalGameGateway();let s=await g.start();
  expect(s.level).toBe(1);expect(s.trophies).toBe(0);
