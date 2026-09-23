@@ -4,6 +4,7 @@ import {LocalGameGateway} from '../services/localGateway';
 
 /** Development-only, reproducible full-sequence previews through the normal game UI. */
 export const COMBAT_FIXTURES={
+ instant:{player:['holy-light','firefury'],bot:['holy-light','healing-seed']},
  imps:{player:['ritual','aegis','divine-intervention','shadow-bolt'],bot:['ritual','aegis','divine-intervention','shadow-bolt']},
  'tide-cast':{player:['current','brine','jet'],bot:['photosynthesis']},
  statuses:{player:['moonblight','hex','ice-shard','searing-touch','prayer','ember'],bot:['moonblight','hex','ice-shard','searing-touch','prayer','ember']},

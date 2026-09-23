@@ -16,7 +16,7 @@ export function nextCombatBeat(frame:number,_beat:CombatBeat,lastFrame:number):{
 }
 
 // Completed frames remain intact for timeline inspection; only presentation
-// splits periodic effects from spell resolution to avoid displaying them twice.
+// separates cast-start feedback from resolution without displaying effects twice.
 export function presentedCombatFrame(battle:Battle,frame:number,beat:CombatBeat):CombatFrame {
  const completed=battle.frames[frame];
  if(beat==='cast'&&battle.frames[frame+1]?.tickStart)return battle.frames[frame+1].tickStart!;
@@ -28,7 +28,7 @@ export function presentedCombatFrame(battle:Battle,frame:number,beat:CombatBeat)
 }
 
 // At the boundary, resolve the previous spell and start the next tick's
-// periodic effects together, keeping both sets of feedback visible.
+// cast-start feedback together, keeping both sets of feedback visible.
 export function continuousCombatFrame(battle:Battle,frame:number):CombatFrame {
  const resolved=presentedCombatFrame(battle,frame,'hold');
  const start=battle.frames[frame+1]?.tickStart;
