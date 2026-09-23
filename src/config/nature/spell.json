@@ -9,12 +9,16 @@
       "effects": [
         {
           "kind": "damage",
-          "amount": 35
+          "amount": 35,
+          "bonusWhen": "enemyPoison",
+          "bonus": 15
         }
       ]
     },
-    "rules": "Deal 35 damage.",
-    "keywords": [],
+    "rules": "Deal 35 damage. Deal 50 instead if the enemy has Poison.",
+    "keywords": [
+      "poison"
+    ],
     "notes": [],
     "upgrade": {
       "castTicks": 1,
@@ -22,12 +26,16 @@
         "effects": [
           {
             "kind": "damage",
-            "amount": 50
+            "amount": 50,
+            "bonusWhen": "enemyPoison",
+            "bonus": 20
           }
         ]
       },
-      "rules": "Deal 50 damage.",
-      "keywords": [],
+      "rules": "Deal 50 damage. Deal 70 instead if the enemy has Poison.",
+      "keywords": [
+        "poison"
+      ],
       "notes": []
     }
   },
@@ -42,11 +50,23 @@
         {
           "kind": "heal",
           "amount": 25
+        },
+        {
+          "kind": "trigger",
+          "event": "damage",
+          "effects": [
+            {
+              "kind": "heal",
+              "amount": 5
+            }
+          ]
         }
       ]
     },
-    "rules": "Heal 25.",
-    "keywords": [],
+    "rules": "Heal 25. Trigger — Damage: Heal 5.",
+    "keywords": [
+      "trigger"
+    ],
     "notes": [],
     "upgrade": {
       "castTicks": 1,
@@ -55,11 +75,23 @@
           {
             "kind": "heal",
             "amount": 40
+          },
+          {
+            "kind": "trigger",
+            "event": "damage",
+            "effects": [
+              {
+                "kind": "heal",
+                "amount": 8
+              }
+            ]
           }
         ]
       },
-      "rules": "Heal 40.",
-      "keywords": [],
+      "rules": "Heal 40. Trigger — Damage: Heal 8.",
+      "keywords": [
+        "trigger"
+      ],
       "notes": []
     }
   },
@@ -73,12 +105,15 @@
       "effects": [
         {
           "kind": "ward",
-          "amount": 50
+          "amount": 50,
+          "bonusWhen": "regen",
+          "bonus": 20
         }
       ]
     },
-    "rules": "Gain 50 Ward.",
+    "rules": "Gain 50 Ward. Gain 70 instead while you have Regeneration.",
     "keywords": [
+      "regeneration",
       "ward",
       "gain"
     ],
@@ -89,12 +124,15 @@
         "effects": [
           {
             "kind": "ward",
-            "amount": 70
+            "amount": 75,
+            "bonusWhen": "regen",
+            "bonus": 25
           }
         ]
       },
-      "rules": "Gain 70 Ward.",
+      "rules": "Gain 75 Ward. Gain 100 instead while you have Regeneration.",
       "keywords": [
+        "regeneration",
         "ward",
         "gain"
       ],
@@ -113,11 +151,13 @@
           "kind": "status",
           "amount": 5,
           "status": "poison",
-          "target": "enemy"
+          "target": "enemy",
+          "bonusWhen": "enemyPoison",
+          "bonus": 1
         }
       ]
     },
-    "rules": "Apply Poison for 5 ticks.",
+    "rules": "Apply Poison for 5 ticks. If the enemy already has Poison, apply 6 instead.",
     "keywords": [
       "poison",
       "apply"
@@ -131,11 +171,13 @@
             "kind": "status",
             "amount": 7,
             "status": "poison",
-            "target": "enemy"
+            "target": "enemy",
+            "bonusWhen": "enemyPoison",
+            "bonus": 2
           }
         ]
       },
-      "rules": "Apply Poison for 7 ticks.",
+      "rules": "Apply Poison for 7 ticks. If the enemy already has Poison, apply 9 instead.",
       "keywords": [
         "poison",
         "apply"
@@ -159,7 +201,7 @@
         }
       ]
     },
-    "rules": "Gain Regeneration for 5 ticks.",
+    "rules": "Gain 5 Regeneration.",
     "keywords": [
       "regeneration",
       "gain"
@@ -177,7 +219,7 @@
           }
         ]
       },
-      "rules": "Gain Regeneration for 5 ticks.",
+      "rules": "Gain 5 Regeneration.",
       "keywords": [
         "regeneration",
         "gain"
@@ -235,31 +277,18 @@
       "effects": [
         {
           "kind": "status",
-          "amount": 3,
+          "amount": 4,
           "status": "regeneration",
-          "target": "self"
-        },
-        {
-          "kind": "trigger",
-          "event": "cycle",
-          "effects": [
-            {
-              "kind": "status",
-              "amount": 2,
-              "status": "regeneration",
-              "target": "self"
-            }
-          ],
-          "when": "regen"
+          "target": "self",
+          "bonusWhen": "regen",
+          "bonus": 2
         }
       ]
     },
-    "rules": "Gain 3 Regeneration. Trigger — Cycle Start: if you have Regeneration, gain 2 Regeneration.",
+    "rules": "Gain 4 Regeneration. If you already had Regeneration, gain 2 additional Regeneration.",
     "keywords": [
       "regeneration",
-      "cycle",
-      "gain",
-      "trigger"
+      "gain"
     ],
     "notes": [],
     "upgrade": {
@@ -268,31 +297,18 @@
         "effects": [
           {
             "kind": "status",
-            "amount": 4,
+            "amount": 5,
             "status": "regeneration",
-            "target": "self"
-          },
-          {
-            "kind": "trigger",
-            "event": "cycle",
-            "effects": [
-              {
-                "kind": "status",
-                "amount": 3,
-                "status": "regeneration",
-                "target": "self"
-              }
-            ],
-            "when": "regen"
+            "target": "self",
+            "bonusWhen": "regen",
+            "bonus": 3
           }
         ]
       },
-      "rules": "Gain 4 Regeneration. Trigger — Cycle Start: if you have Regeneration, gain 3 Regeneration.",
+      "rules": "Gain 5 Regeneration. If you already had Regeneration, gain 3 additional Regeneration.",
       "keywords": [
         "regeneration",
-        "cycle",
-        "gain",
-        "trigger"
+        "gain"
       ],
       "notes": []
     }
@@ -397,12 +413,17 @@
       "effects": [
         {
           "kind": "damage",
-          "amount": 110
+          "amount": 100,
+          "addPerStatus": "regeneration",
+          "perStatusAmount": 10,
+          "bonusLimit": 50
         }
       ]
     },
-    "rules": "Deal 110 damage.",
-    "keywords": [],
+    "rules": "Deal 100 damage. Deal 10 additional damage per Regeneration you have, up to +50.",
+    "keywords": [
+      "regeneration"
+    ],
     "notes": [],
     "upgrade": {
       "castTicks": 3,
@@ -410,12 +431,17 @@
         "effects": [
           {
             "kind": "damage",
-            "amount": 200
+            "amount": 150,
+            "addPerStatus": "regeneration",
+            "perStatusAmount": 15,
+            "bonusLimit": 75
           }
         ]
       },
-      "rules": "Deal 200 damage.",
-      "keywords": [],
+      "rules": "Deal 150 damage. Deal 15 additional damage per Regeneration you have, up to +75.",
+      "keywords": [
+        "regeneration"
+      ],
       "notes": []
     }
   },
@@ -480,13 +506,26 @@
           "amount": 5,
           "status": "poison",
           "target": "enemy"
+        },
+        {
+          "kind": "trigger",
+          "event": "heal",
+          "effects": [
+            {
+              "kind": "status",
+              "amount": 1,
+              "status": "poison",
+              "target": "enemy"
+            }
+          ]
         }
       ]
     },
-    "rules": "Deal 30 damage. Apply Poison for 5 ticks.",
+    "rules": "Deal 30 damage. Apply Poison for 5 ticks. Trigger — Heal: Apply 1 Poison.",
     "keywords": [
       "poison",
-      "apply"
+      "apply",
+      "trigger"
     ],
     "notes": [],
     "upgrade": {
@@ -502,16 +541,95 @@
             "amount": 6,
             "status": "poison",
             "target": "enemy"
+          },
+          {
+            "kind": "trigger",
+            "event": "heal",
+            "effects": [
+              {
+                "kind": "status",
+                "amount": 1,
+                "status": "poison",
+                "target": "enemy",
+                "bonusDomain": "nature",
+                "attunedAmount": 2
+              }
+            ]
           }
         ]
       },
-      "rules": "Deal 50 damage. Apply Poison for 6 ticks.",
+      "rules": "Deal 50 damage. Apply Poison for 6 ticks. Trigger — Heal: Apply 1 Poison. [Nature Attuned: Trigger applies 2 Poison instead.]",
       "keywords": [
         "poison",
-        "apply"
+        "apply",
+        "trigger"
       ],
       "notes": []
     }
+  },
+  {
+    "id": "briarheart",
+    "name": "Briarheart",
+    "domain": "nature",
+    "notes": [],
+    "combat": {
+      "effects": [
+        {
+          "kind": "ward",
+          "amount": 60
+        },
+        {
+          "kind": "trigger",
+          "event": "poison",
+          "effects": [
+            {
+              "kind": "heal",
+              "amount": 8
+            }
+          ]
+        }
+      ]
+    },
+    "upgrade": {
+      "combat": {
+        "effects": [
+          {
+            "kind": "ward",
+            "amount": 90
+          },
+          {
+            "kind": "trigger",
+            "event": "poison",
+            "effects": [
+              {
+                "kind": "heal",
+                "amount": 12,
+                "bonusDomain": "nature",
+                "attunedAmount": 16
+              }
+            ]
+          }
+        ]
+      },
+      "notes": [],
+      "castTicks": 1,
+      "rules": "Gain 90 Ward. Trigger — Poison Damage: Heal 12. [Nature Attuned: Trigger heals 16 instead.]",
+      "keywords": [
+        "poison",
+        "ward",
+        "gain",
+        "trigger"
+      ]
+    },
+    "stars": 2,
+    "castTicks": 1,
+    "rules": "Gain 60 Ward. Trigger — Poison Damage: Heal 8.",
+    "keywords": [
+      "poison",
+      "ward",
+      "gain",
+      "trigger"
+    ]
   },
   {
     "id": "flourish",
@@ -540,20 +658,17 @@
           {
             "kind": "multiply",
             "amount": 2,
-            "status": "regeneration"
-          },
-          {
-            "kind": "retrigger",
-            "domainFilter": "nature",
-            "requiresAttunement": "nature"
+            "status": "regeneration",
+            "wardPerAdded": 10,
+            "bonusDomain": "nature"
           }
         ]
       },
-      "rules": "Double your remaining Regeneration duration. [Nature Attuned: then Retrigger your last Nature Trigger.]",
+      "rules": "Double your remaining Regeneration duration. [Nature Attuned: gain 10 Ward for each Regeneration tick added by the doubling.]",
       "keywords": [
         "regeneration",
-        "trigger",
-        "retrigger"
+        "ward",
+        "gain"
       ],
       "notes": []
     }
@@ -590,9 +705,7 @@
         ]
       },
       "rules": "Deal 100 damage. +25% direct damage per unique debuff type on the enemy.",
-      "keywords": [
-        "unique"
-      ],
+      "keywords": [],
       "notes": []
     }
   },
@@ -762,11 +875,10 @@
         }
       ]
     },
-    "rules": "Gain 100 Ward. Trigger — Poison: the first time your Poison deals damage each Cycle, gain 50 Ward.",
+    "rules": "Gain 100 Ward. Trigger — Poison Damage: Gain 50 Ward.",
     "keywords": [
       "poison",
       "ward",
-      "cycle",
       "gain",
       "trigger"
     ],
@@ -791,11 +903,10 @@
           }
         ]
       },
-      "rules": "Gain 150 Ward. Trigger — Poison: the first time your Poison deals damage each Cycle, gain 70 Ward.",
+      "rules": "Gain 150 Ward. Trigger — Poison Damage: Gain 70 Ward.",
       "keywords": [
         "poison",
         "ward",
-        "cycle",
         "gain",
         "trigger"
       ],
@@ -863,7 +974,7 @@
           }
         ]
       },
-      "rules": "Apply Poison for 5 ticks. Awaken: after your Poison deals damage 4 times. Awakened: your Poison deals 100% more damage for the rest of combat. [Nature Attuned: Awaken after 3 Poison damage events instead.]",
+      "rules": "Apply Poison for 5 ticks. Awaken: after your Poison deals damage 4 times. Awakened: your Poison deals 100% more damage. [Nature Attuned: Awaken after 3 Poison damage events instead.]",
       "keywords": [
         "poison",
         "apply",
@@ -962,7 +1073,7 @@
           }
         ]
       },
-      "rules": "Heal 220. Gain 6 Regeneration. Fragile. [Nature Attuned: gain 1 Guard before this card breaks.]",
+      "rules": "Heal 220. Gain 6 Regeneration. Fragile. [Nature Attuned: Gain 1 Guard before this card breaks.]",
       "keywords": [
         "regeneration",
         "guard",
@@ -1039,18 +1150,17 @@
     "combat": {
       "effects": [
         {
+          "kind": "ward",
+          "amount": 100
+        },
+        {
           "kind": "rule",
           "amount": 1,
           "rule": "addWard"
-        },
-        {
-          "kind": "ward",
-          "amount": 100,
-          "requiresAttunement": "nature"
         }
       ]
     },
-    "rules": "For the rest of combat, Ward gained adds to existing Ward instead of only keeping the higher value. [Nature Attuned: Gain 100 Ward immediately.]",
+    "rules": "Gain 100 Ward. For the rest of combat, Ward gained adds to your existing Ward instead of keeping only the higher value.",
     "keywords": [
       "ward",
       "gain"
@@ -1061,26 +1171,34 @@
       "combat": {
         "effects": [
           {
+            "kind": "ward",
+            "amount": 150
+          },
+          {
             "kind": "rule",
             "amount": 1,
             "rule": "addWard"
           },
           {
-            "kind": "rule",
-            "amount": 0.25,
-            "rule": "wardHeal"
-          },
-          {
-            "kind": "ward",
-            "amount": 150,
-            "requiresAttunement": "nature"
+            "kind": "trigger",
+            "event": "ward",
+            "effects": [
+              {
+                "kind": "heal",
+                "amount": 0.25,
+                "perEventAmount": true,
+                "bonusDomain": "nature",
+                "attunedAmount": 0.35
+              }
+            ]
           }
         ]
       },
-      "rules": "For the rest of combat, Ward gained adds to existing Ward. Whenever you gain Ward, heal 25% of the amount gained. [Nature Attuned: Gain 150 Ward immediately.]",
+      "rules": "Gain 150 Ward. For the rest of combat, Ward gained adds to existing Ward. Trigger — Ward Gain: Heal 25% of Ward actually gained. [Nature Attuned: Trigger heals 35% instead.]",
       "keywords": [
         "ward",
-        "gain"
+        "gain",
+        "trigger"
       ],
       "notes": []
     }
@@ -1132,7 +1250,7 @@
           }
         ]
       },
-      "rules": "Cultivate all your Regeneration for 200% of its remaining healing. Gain 5 Regeneration. Fragile. [Nature Attuned: gain 8 Regeneration instead.]",
+      "rules": "Cultivate all your Regeneration for 200% of its remaining healing. Gain 5 Regeneration. Fragile. [Nature Attuned: Gain 8 Regeneration instead.]",
       "keywords": [
         "regeneration",
         "cultivate",
@@ -1163,7 +1281,7 @@
         }
       ]
     },
-    "rules": "Deal 100 damage plus 20 damage per remaining enemy Poison tick. Awaken: when the enemy reaches 10+ Poison. Awakened: deal 100 plus 35 per remaining Poison tick instead.",
+    "rules": "Deal 100 damage plus 20 per remaining enemy Poison tick. Awaken: when the enemy reaches 10+ Poison. Awakened: deal 100 plus 35 per Poison tick instead.",
     "keywords": [
       "poison",
       "awaken"
@@ -1186,7 +1304,7 @@
           }
         ]
       },
-      "rules": "Deal 120 damage plus 25 per remaining enemy Poison tick. Awaken: when the enemy reaches 10+ Poison. Awakened: deal 120 plus 50 per remaining Poison tick instead.",
+      "rules": "Deal 120 damage plus 25 per remaining Poison tick. Awaken: at 10+ Poison. Awakened: deal 120 plus 50 per Poison tick instead.",
       "keywords": [
         "poison",
         "awaken"

@@ -4,6 +4,10 @@ import type { Battle, CombatFrame } from './model';
 export const PLAYBACK_CONFIG = playbackConfig;
 // Duration of a real tick; there is no automatic hold between ticks.
 export const COMBAT_TICK_MS = PLAYBACK_CONFIG.tickDurationMs;
+export const nextPlaybackSpeed=(speed:number)=>{
+ const speeds=PLAYBACK_CONFIG.speedMultipliers;
+ return speeds[(speeds.indexOf(speed)+1)%speeds.length];
+};
 
 export type CombatBeat = 'cast' | 'hold';
 // Presentation beats never create extra simulation ticks.

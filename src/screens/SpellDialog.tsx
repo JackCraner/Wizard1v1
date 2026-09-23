@@ -39,7 +39,7 @@ export function SpellDialog({ selection, session, busy, error, act, onClose, onS
   const xp = card.xp ?? 0;
   const addReason = spellAddReason(session.spells, id);
   const purchaseReason = session.gold < price ? `You need ${price - session.gold} more gold.`
-    : session.spells.length >= RULES.slots ? 'Your hand is full. Merge a matching copy or remove a spell.' : addReason;
+    : addReason;
   const artHeight = Math.min(330, height - 220);
   const showArt = width >= 650 && artHeight >= 180;
 
@@ -96,10 +96,11 @@ export function SpellDialog({ selection, session, busy, error, act, onClose, onS
           {shop ? <>
             <View style={s.row}><Text style={s.caption}>Your gold: <Text style={{ color: '#efd088' }}>{session.gold}</Text></Text><Text style={s.caption}>{session.spells.length}/{RULES.slots} spell slots</Text></View>
             {!!purchaseReason && <Text style={s.warning}>{purchaseReason}</Text>}
+            {!purchaseReason && session.spells.length >= RULES.slots && <Text style={s.warning}>You can buy this spell. Reduce your hand to {RULES.slots} before battle.</Text>}
             <Button primary label={`Buy ${card.name} · ${price} gold`} disabled={busy || !!purchaseReason} onPress={() => finish({ type: 'buy', spell: id, shopSlot: selection.shopSlot })} />
           </> : <>
             <View style={s.row}><Text accessibilityLiveRegion="polite" style={s.caption}>Casting position {selection.index + 1} of {session.spells.length}</Text><Pressable accessibilityRole="button" accessibilityLabel="Trash spell" disabled={busy} onPress={() => setConfirmTrash(!confirmTrash)} style={s.trash}><Text style={{ color: '#dca69b', fontSize: 13 }}>Trash spell</Text></Pressable></View>
-            {confirmTrash ? <View style={{ gap: 8 }}><Text style={s.warning}>Remove {card.name} from your hand? {session.augments.includes("recycler")?`You receive ${trashRefund(session.augments,card.stars)} gold.`:"No gold is refunded."}</Text><View style={s.row}><View style={{ flex: 1 }}><Button label="Keep spell" onPress={() => setConfirmTrash(false)} /></View><View style={{ flex: 1 }}><Button danger label="Remove spell" disabled={busy} onPress={() => finish({ type: 'trash', index: selection.index })} /></View></View></View>
+            {confirmTrash ? <View style={{ gap: 8 }}><Text style={s.warning}>Remove {card.name} from your hand? {session.augments.includes("recycler")?`You receive ${trashRefund(session.augments,price)} gold.`:"No gold is refunded."}</Text><View style={s.row}><View style={{ flex: 1 }}><Button label="Keep spell" onPress={() => setConfirmTrash(false)} /></View><View style={{ flex: 1 }}><Button danger label="Remove spell" disabled={busy} onPress={() => finish({ type: 'trash', index: selection.index })} /></View></View></View>
               : <View style={s.row}><View style={{ flex: 1 }}><Button label="← Cast earlier" disabled={busy || selection.index === 0} onPress={() => move(selection.index - 1)} /></View><View style={{ flex: 1 }}><Button label="Cast later →" disabled={busy || selection.index === session.spells.length - 1} onPress={() => move(selection.index + 1)} /></View></View>}
           </>}
         </View>

@@ -2,7 +2,7 @@
 
 ## Sequence and tick order
 
-Six active spells maximum, no reserve. A Cycle is one pass through the surviving sequence. Spend one full tick reshuffling; Reckless Loop skips it and costs 25 Health. Cursed adds one reshuffle tick while Curse is present. Combat ends on a knockout or at 30 ticks; greater remaining Health wins, equal Health draws.
+Six active spells maximum in combat. During shopping, extra spells may be purchased at their full gold price as a temporary bench. Combat is blocked until the hand contains at most six spells; trashing or merging removes extras. A Cycle is one pass through the surviving sequence. Spend one full tick reshuffling; Reckless Loop skips it and costs 25 Health. Cursed adds one reshuffle tick while Curse is present. Combat ends on a knockout or at 30 ticks; greater remaining Health wins, equal Health draws.
 
 1. Start eligible casts. Reserve Heat/Tide, consume Slow charges, and resolve cast-start Triggers. Each fighter starts at most one card each tick.
 2. Resolve Instant effects and simultaneous damage; check deaths.
@@ -28,13 +28,16 @@ Six active spells maximum, no reserve. A Cycle is one pass through the surviving
 ## Card rules
 
 - Only explicit bracketed clauses require the named attunement. The two most common held domains are attuned; ties use oldest held card. Combat breakage does not recalculate attunement.
-- Triggers arm after their card's first successful completion. Each card fires once per Cycle unless explicitly once per combat. Trigger effects take no casting time and do not advance the sequence. Broken cards cannot fire.
-- Retrigger repeats the latest eligible friendly Trigger payload from this Cycle, ignoring its limit. It does not replace Trigger history, activate further Triggers or repeat another Retrigger.
+- Every Trigger starts Dormant. That copy arms only after its first successful cast and the entire resulting event chain resolve; interruption does not arm it. Armed state lasts for the duel. Each copy fires at most once per tick (Fatal Damage is also once per combat). Eligible cards resolve in sequence order through a deterministic event queue. Normal Trigger effects can create further events, without a global chain-length cap. Broken cards immediately lose their Trigger.
+- Damage listens to actual outgoing damage, including damage absorbed by Ward or Imp. Heal listens to actual Health restored to the owner or their Imp, including Regeneration; overhealing emits no event. Self-Damage listens to actual owner-caused Health loss. Ward Gain carries only the actual increase, so an equal/lower non-stacking grant emits no event. Curse Applied listens to an actual enemy stack increase; Imp Attack requires positive damage. Heat/Tide Consume require actual counters spent; free activations do not emit them.
+- Retrigger repeats the latest eligible Armed friendly Trigger payload from this Cycle, ignoring its per-tick limit. It does not replace Trigger history, activate further Triggers or repeat another Retrigger. Dormant and broken copies are ineligible. Percentage payloads retain the original event amount.
 - Awaken transforms that copy once per duel when its condition is met. Conditions can be reached before its first cast. The replay briefly holds the transformation, then preserves its border and updated text.
 - Fragile leaves only after both the original cast and its Echo complete. Removed cards compress the sequence and return next duel. Divine Intervention instead breaks after its fatal-damage Trigger fires.
 - One Oath at a time. New Oaths replace old ones. They inspect following completed spells, including their Echo, rather than elapsed ticks. Direct damage includes damage absorbed by Ward/Imp; Health costs do not count. Safe Oaths track actual Health loss. Rewards resolve immediately after the qualifying completion.
 - Conditional 'if Echoed, gain/apply X' bonuses happen once, at the printed whole amount. The ordinary payload still uses the reserved Echo effectiveness.
 - Permanent spell rules use a source-card marker rather than extra status icons. Heat/Tide predictions use currently held counters only.
+- Living Flame modifies the first non-Instant Fire cast start of each Cycle. Maelstrom reserves its free Echo on the first spell start, including Instant. Free activations take priority over normal consumption, grant one activation rather than a second Echo, and interrupted casts still use that Cycle's free activation. Previously started spells are not retroactively modified when the permanent rule is acquired.
+- Downpour, Radiant Bolt and Sacred Group snapshot their conditions at cast start. First-domain bonuses check completed spells this Cycle. Heatwave's next-Fire bonus expires at the Cycle boundary. Holy no longer generates Heat, Curse or Slow.
 
 ## Progression
 
@@ -46,4 +49,4 @@ Full values: [spells](../../docs/Current_Spell_Reference.md) and [augments](../.
 
 ## Development previews
 
-Development web builds accept `?combat-lab=fire`, `water`, `nature` or `holy`. Start a new game to play a reproducible upgraded six-card duel using the normal playback, inspection and timeline controls. Production builds always use the ordinary game gateway. These previews do not persist a run.
+Development web builds accept `?combat-lab=fire`, `water`, `nature`, `holy`, `chains` or `ward`. The new `chains` and `ward` fixtures exercise the revised cross-domain event network. Start a new game to play a reproducible upgraded six-card duel using the normal playback, inspection and timeline controls. Production builds always use the ordinary game gateway. These previews do not persist a run.

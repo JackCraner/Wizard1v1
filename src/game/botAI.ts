@@ -36,6 +36,7 @@ export function scoreBotDeck(deck: SpellId[], strategy: number, xp: number[] = [
             if (e.kind === 'status')
                 value += amount * (e.status === 'poison' ? 12 : e.status === 'regeneration' ? 8 : e.status === 'heat' || e.status === 'tide' ? 15 : 12);
             if (e.kind === 'summon') value += (e.currentHealthFraction ? 150 * amount : amount) * .8;
+            if (e.kind === 'growImp' && deck.some(id=>cardAt(id).combat?.effects?.some(effect=>effect.kind==='summon'))) value += amount * .8;
             if (e.kind === 'removeWard') value += 35;
             if (['impGuard','impPower','sacrificeImp'].includes(e.kind) && deck.some(id=>cardAt(id).combat?.effects?.some(effect=>effect.kind==='summon'))) value += e.kind==='impPower'?amount*3:50;
             if (['consume', 'spend', 'multiply', 'oath', 'repeatNext', 'interrupt', 'modifier', 'cultivate', 'retrigger', 'sequenceOath'].includes(e.kind))
@@ -116,7 +117,7 @@ export function prepareBot(state: BotState, previous: SpellId[], round: number, 
         deck = ['wrath'];
         xp = [0];
         ages = [state.nextAcquisition++];
-        state.gold--;
+        state.gold -= SPELLS.wrath.price;
     }
     const priority = (id: string) => { const e = SPELLS[id].combat?.effects ?? []; return e.some(e => ['sequenceOath','trigger','rule'].includes(e.kind)) ? 0 : e.some(e => e.kind === 'status') ? 1 : e.some(e => e.kind === 'consume' || e.empowered) ? 3 : 2; };
     const ordered = deck.map((id, i) => ({ id, xp: xp[i], age: ages[i] })).sort((a, b) => priority(a.id) - priority(b.id));

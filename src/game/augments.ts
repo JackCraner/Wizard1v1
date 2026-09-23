@@ -20,7 +20,7 @@ export function augmentOffers(round: number, owned: readonly string[], seed = 42
     }
     return choices;
 }
-export const rerollCost = (augments: readonly string[], rerolls: number) => augments.includes('scavenger') && rerolls < 2 ? 0 : 1;
+export const rerollCost = (augments: readonly string[], rerolls: number) => augments.includes('scavenger') && rerolls < 2 ? 0 : 2;
 export const shopIncome = (augments: readonly string[]) => 10 + (augments.includes('deep-pockets') ? 3 : 0);
 
-export const trashRefund = (augments: readonly string[], stars: number) => augments.includes('recycler') ? Math.floor(stars * .8) : 0;
+export const trashRefund = (augments: readonly string[], price: number) => augments.includes('recycler') ? Math.floor(price * .8) : 0;

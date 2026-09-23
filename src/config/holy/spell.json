@@ -5,10 +5,11 @@
     "domain": "holy",
     "stars": 1,
     "castTicks": 1,
-    "rules": "Gain 50 Ward.",
+    "rules": "Gain 50 Ward. Trigger — Heal: Gain 15 Ward.",
     "keywords": [
       "ward",
-      "gain"
+      "gain",
+      "trigger"
     ],
     "notes": [],
     "combat": {
@@ -16,15 +17,26 @@
         {
           "kind": "ward",
           "amount": 50
+        },
+        {
+          "kind": "trigger",
+          "event": "heal",
+          "effects": [
+            {
+              "kind": "ward",
+              "amount": 15
+            }
+          ]
         }
       ]
     },
     "upgrade": {
       "castTicks": 1,
-      "rules": "Gain 75 Ward.",
+      "rules": "Gain 75 Ward. Trigger — Heal: Gain 25 Ward. [Holy Attuned: Trigger gains 35 Ward instead.]",
       "keywords": [
         "ward",
-        "gain"
+        "gain",
+        "trigger"
       ],
       "notes": [],
       "combat": {
@@ -32,6 +44,18 @@
           {
             "kind": "ward",
             "amount": 75
+          },
+          {
+            "kind": "trigger",
+            "event": "heal",
+            "effects": [
+              {
+                "kind": "ward",
+                "amount": 25,
+                "bonusDomain": "holy",
+                "attunedAmount": 35
+              }
+            ]
           }
         ]
       }
@@ -85,27 +109,43 @@
     "domain": "holy",
     "stars": 1,
     "castTicks": 2,
-    "rules": "Deal 50 damage.",
-    "keywords": [],
+    "rules": "Deal 50 damage. If you have no Ward when this starts, gain 25 Ward.",
+    "keywords": [
+      "ward",
+      "gain"
+    ],
     "notes": [],
     "combat": {
       "effects": [
         {
           "kind": "damage",
           "amount": 50
+        },
+        {
+          "kind": "ward",
+          "amount": 25,
+          "when": "startNoWard"
         }
       ]
     },
     "upgrade": {
       "castTicks": 2,
-      "rules": "Deal 80 damage.",
-      "keywords": [],
+      "rules": "Deal 80 damage. If you have no Ward when this starts, gain 40 Ward.",
+      "keywords": [
+        "ward",
+        "gain"
+      ],
       "notes": [],
       "combat": {
         "effects": [
           {
             "kind": "damage",
             "amount": 80
+          },
+          {
+            "kind": "ward",
+            "amount": 40,
+            "when": "startNoWard"
           }
         ]
       }
@@ -117,9 +157,9 @@
     "domain": "holy",
     "stars": 1,
     "castTicks": 2,
-    "rules": "Deal 40 damage. Gain 1 Heat.",
+    "rules": "Deal 40 damage. Gain 30 Ward.",
     "keywords": [
-      "heat",
+      "ward",
       "gain"
     ],
     "notes": [],
@@ -130,18 +170,16 @@
           "amount": 40
         },
         {
-          "kind": "status",
-          "amount": 1,
-          "status": "heat",
-          "target": "self"
+          "kind": "ward",
+          "amount": 30
         }
       ]
     },
     "upgrade": {
       "castTicks": 2,
-      "rules": "Deal 60 damage. Gain 2 Heat.",
+      "rules": "Deal 60 damage. Gain 45 Ward.",
       "keywords": [
-        "heat",
+        "ward",
         "gain"
       ],
       "notes": [],
@@ -152,14 +190,116 @@
             "amount": 60
           },
           {
-            "kind": "status",
-            "amount": 2,
-            "status": "heat",
-            "target": "self"
+            "kind": "ward",
+            "amount": 45
           }
         ]
       }
     }
+  },
+  {
+    "id": "blessing",
+    "name": "Blessing",
+    "domain": "holy",
+    "notes": [],
+    "combat": {
+      "effects": [
+        {
+          "kind": "heal",
+          "amount": 20
+        },
+        {
+          "kind": "ward",
+          "amount": 30
+        }
+      ]
+    },
+    "upgrade": {
+      "combat": {
+        "effects": [
+          {
+            "kind": "heal",
+            "amount": 30
+          },
+          {
+            "kind": "ward",
+            "amount": 50
+          }
+        ]
+      },
+      "notes": [],
+      "castTicks": 1,
+      "rules": "Heal 30. Gain 50 Ward.",
+      "keywords": [
+        "ward",
+        "gain"
+      ]
+    },
+    "stars": 1,
+    "castTicks": 1,
+    "rules": "Heal 20. Gain 30 Ward.",
+    "keywords": [
+      "ward",
+      "gain"
+    ]
+  },
+  {
+    "id": "radiance",
+    "name": "Radiance",
+    "domain": "holy",
+    "notes": [],
+    "combat": {
+      "effects": [
+        {
+          "kind": "damage",
+          "amount": 30
+        },
+        {
+          "kind": "trigger",
+          "event": "heal",
+          "effects": [
+            {
+              "kind": "damage",
+              "amount": 5
+            }
+          ]
+        }
+      ]
+    },
+    "upgrade": {
+      "combat": {
+        "effects": [
+          {
+            "kind": "damage",
+            "amount": 45
+          },
+          {
+            "kind": "trigger",
+            "event": "heal",
+            "effects": [
+              {
+                "kind": "damage",
+                "amount": 8,
+                "bonusDomain": "holy",
+                "attunedAmount": 10
+              }
+            ]
+          }
+        ]
+      },
+      "notes": [],
+      "castTicks": 1,
+      "rules": "Deal 45 damage. Trigger — Heal: Deal 8 damage. [Holy Attuned: Trigger deals 10 instead.]",
+      "keywords": [
+        "trigger"
+      ]
+    },
+    "stars": 1,
+    "castTicks": 1,
+    "rules": "Deal 30 damage. Trigger — Heal: Deal 5 damage.",
+    "keywords": [
+      "trigger"
+    ]
   },
   {
     "id": "oath-restraint",
@@ -229,27 +369,35 @@
     "domain": "holy",
     "stars": 2,
     "castTicks": 2,
-    "rules": "Deal 80 damage.",
-    "keywords": [],
+    "rules": "Deal 80 damage. Deal 95 instead while you have Ward.",
+    "keywords": [
+      "ward"
+    ],
     "notes": [],
     "combat": {
       "effects": [
         {
           "kind": "damage",
-          "amount": 80
+          "amount": 80,
+          "bonusWhen": "ward",
+          "bonus": 15
         }
       ]
     },
     "upgrade": {
       "castTicks": 2,
-      "rules": "Deal 110 damage.",
-      "keywords": [],
+      "rules": "Deal 110 damage. Deal 135 instead while you have Ward.",
+      "keywords": [
+        "ward"
+      ],
       "notes": [],
       "combat": {
         "effects": [
           {
             "kind": "damage",
-            "amount": 110
+            "amount": 110,
+            "bonusWhen": "ward",
+            "bonus": 25
           }
         ]
       }
@@ -304,7 +452,7 @@
     "domain": "holy",
     "stars": 2,
     "castTicks": 2,
-    "rules": "Cultivate all your Curse. Heal 25 per stack consumed.",
+    "rules": "Cultivate all Curse on yourself. Heal 25 per stack consumed.",
     "keywords": [
       "curse",
       "cultivate"
@@ -321,7 +469,7 @@
     },
     "upgrade": {
       "castTicks": 2,
-      "rules": "Cultivate all your Curse. Heal 35 per stack consumed. [Holy Attuned: Cleanse 1 after resolving.]",
+      "rules": "Cultivate all Curse on yourself. Heal 35 per stack consumed. [Holy Attuned: Cleanse 1 after resolving.]",
       "keywords": [
         "cleanse",
         "curse",
@@ -400,37 +548,45 @@
     "domain": "holy",
     "stars": 2,
     "castTicks": 2,
-    "rules": "Apply 4 Curse.",
+    "rules": "Deal 70 damage. If you completed an Oath this Cycle, deal 110 instead.",
     "keywords": [
-      "curse",
-      "apply"
+      "oath",
+      "cycle"
     ],
     "notes": [],
     "combat": {
       "effects": [
         {
-          "kind": "status",
-          "amount": 4,
-          "status": "curse",
-          "target": "enemy"
+          "kind": "damage",
+          "amount": 70,
+          "bonusWhen": "oath",
+          "bonus": 40
         }
       ]
     },
     "upgrade": {
       "castTicks": 2,
-      "rules": "Apply 6 Curse.",
+      "rules": "Deal 90 damage. If you completed an Oath this Cycle, deal 140 instead. [Holy Attuned: if the bonus activates, also gain 40 Ward.]",
       "keywords": [
-        "curse",
-        "apply"
+        "ward",
+        "oath",
+        "cycle",
+        "gain"
       ],
       "notes": [],
       "combat": {
         "effects": [
           {
-            "kind": "status",
-            "amount": 6,
-            "status": "curse",
-            "target": "enemy"
+            "kind": "damage",
+            "amount": 90,
+            "bonusWhen": "oath",
+            "bonus": 50
+          },
+          {
+            "kind": "ward",
+            "amount": 40,
+            "when": "oath",
+            "requiresAttunement": "holy"
           }
         ]
       }
@@ -481,6 +637,68 @@
     }
   },
   {
+    "id": "judicator",
+    "name": "Judicator",
+    "domain": "holy",
+    "notes": [],
+    "combat": {
+      "effects": [
+        {
+          "kind": "damage",
+          "amount": 55
+        },
+        {
+          "kind": "trigger",
+          "event": "ward",
+          "effects": [
+            {
+              "kind": "damage",
+              "amount": 6
+            }
+          ]
+        }
+      ]
+    },
+    "upgrade": {
+      "combat": {
+        "effects": [
+          {
+            "kind": "damage",
+            "amount": 75
+          },
+          {
+            "kind": "trigger",
+            "event": "ward",
+            "effects": [
+              {
+                "kind": "damage",
+                "amount": 10,
+                "bonusDomain": "holy",
+                "attunedAmount": 14
+              }
+            ]
+          }
+        ]
+      },
+      "notes": [],
+      "castTicks": 1,
+      "rules": "Deal 75 damage. Trigger — Ward Gain: Deal 10 damage. [Holy Attuned: Trigger deals 14 instead.]",
+      "keywords": [
+        "ward",
+        "gain",
+        "trigger"
+      ]
+    },
+    "stars": 2,
+    "castTicks": 1,
+    "rules": "Deal 55 damage. Trigger — Ward Gain: Deal 6 damage.",
+    "keywords": [
+      "ward",
+      "gain",
+      "trigger"
+    ]
+  },
+  {
     "id": "oath-eye-for-an-eye",
     "name": "Oath: Eye for an Eye",
     "domain": "holy",
@@ -510,7 +728,7 @@
     },
     "upgrade": {
       "castTicks": 1,
-      "rules": "Oath: your next spell must deal at least 100 direct damage.. Reward: your following spell is Empowered and gain 1 Guard. [Holy Attuned: also gain 50 Ward.]",
+      "rules": "Oath: your next spell must deal at least 100 direct damage. Reward: your following spell is Empowered and gain 1 Guard. [Holy Attuned: also gain 50 Ward.]",
       "keywords": [
         "ward",
         "empowered",
@@ -554,7 +772,7 @@
     "domain": "holy",
     "stars": 3,
     "castTicks": 2,
-    "rules": "Deal 80 damage. Trigger — Oath: when you complete an Oath, gain 70 Ward.",
+    "rules": "Deal 80 damage. Trigger — Oath Complete: Gain 70 Ward.",
     "keywords": [
       "ward",
       "oath",
@@ -582,7 +800,7 @@
     },
     "upgrade": {
       "castTicks": 2,
-      "rules": "Deal 100 damage. Trigger — Oath: when you complete an Oath, gain 100 Ward.",
+      "rules": "Deal 100 damage. Trigger — Oath Complete: Gain 100 Ward.",
       "keywords": [
         "ward",
         "oath",
@@ -642,7 +860,7 @@
     },
     "upgrade": {
       "castTicks": 1,
-      "rules": "Oath: take no Health damage before your next spell completes.. Reward: Gain 3 Guard. [Holy Attuned: also Cleanse 1.]",
+      "rules": "Oath: take no Health damage before your next spell completes. Reward: Gain 3 Guard. [Holy Attuned: also Cleanse 1.]",
       "keywords": [
         "oath",
         "cleanse",
@@ -680,10 +898,10 @@
     "domain": "holy",
     "stars": 3,
     "castTicks": 2,
-    "rules": "Gain 4 Regeneration and 1 Heat.",
+    "rules": "Gain 4 Regeneration and 60 Ward.",
     "keywords": [
       "regeneration",
-      "heat",
+      "ward",
       "gain"
     ],
     "notes": [],
@@ -696,19 +914,17 @@
           "target": "self"
         },
         {
-          "kind": "status",
-          "amount": 1,
-          "status": "heat",
-          "target": "self"
+          "kind": "ward",
+          "amount": 60
         }
       ]
     },
     "upgrade": {
       "castTicks": 2,
-      "rules": "Gain 5 Regeneration and 2 Heat. [Holy Attuned: also gain 1 Guard.]",
+      "rules": "Gain 5 Regeneration and 90 Ward. [Holy Attuned: also gain 1 Guard.]",
       "keywords": [
         "regeneration",
-        "heat",
+        "ward",
         "guard",
         "gain"
       ],
@@ -722,10 +938,8 @@
             "target": "self"
           },
           {
-            "kind": "status",
-            "amount": 2,
-            "status": "heat",
-            "target": "self"
+            "kind": "ward",
+            "amount": 90
           },
           {
             "kind": "status",
@@ -745,7 +959,9 @@
     "stars": 3,
     "castTicks": 0,
     "rules": "Heal 80.",
-    "keywords": [],
+    "keywords": [
+      "instant"
+    ],
     "notes": [],
     "combat": {
       "effects": [
@@ -758,7 +974,9 @@
     "upgrade": {
       "castTicks": 0,
       "rules": "Heal 100.",
-      "keywords": [],
+      "keywords": [
+        "instant"
+      ],
       "notes": [],
       "combat": {
         "effects": [
@@ -776,10 +994,11 @@
     "domain": "holy",
     "stars": 3,
     "castTicks": 3,
-    "rules": "Deal 80 damage. Apply 2 Slow.",
+    "rules": "Deal 80 damage. If you have Ward when this starts, gain 1 Guard.",
     "keywords": [
-      "slow",
-      "apply"
+      "ward",
+      "guard",
+      "gain"
     ],
     "notes": [],
     "combat": {
@@ -790,18 +1009,20 @@
         },
         {
           "kind": "status",
-          "amount": 2,
-          "status": "slow",
-          "target": "enemy"
+          "amount": 1,
+          "status": "guard",
+          "target": "self",
+          "when": "startWard"
         }
       ]
     },
     "upgrade": {
       "castTicks": 3,
-      "rules": "Deal 110 damage. Apply 3 Slow.",
+      "rules": "Deal 110 damage. If you have Ward when this starts, gain 2 Guard.",
       "keywords": [
-        "slow",
-        "apply"
+        "ward",
+        "guard",
+        "gain"
       ],
       "notes": [],
       "combat": {
@@ -812,9 +1033,10 @@
           },
           {
             "kind": "status",
-            "amount": 3,
-            "status": "slow",
-            "target": "enemy"
+            "amount": 2,
+            "status": "guard",
+            "target": "self",
+            "when": "startWard"
           }
         ]
       }
@@ -843,7 +1065,7 @@
     },
     "upgrade": {
       "castTicks": 2,
-      "rules": "Heal to full Health. Fragile. [Holy Attuned: gain 1 Guard before this card breaks.]",
+      "rules": "Heal to full Health. Fragile. [Holy Attuned: Gain 1 Guard before this card breaks.]",
       "keywords": [
         "guard",
         "gain",
@@ -897,7 +1119,7 @@
     },
     "upgrade": {
       "castTicks": 1,
-      "rules": "Oath: your next two spells must deal no direct damage.. Reward: Deal 400 damage. [Holy Attuned: also gain 100 Ward.]",
+      "rules": "Oath: your next two spells must deal no direct damage. Reward: Deal 400 damage. [Holy Attuned: also gain 100 Ward.]",
       "keywords": [
         "ward",
         "oath",
@@ -1028,13 +1250,17 @@
     "domain": "holy",
     "stars": 5,
     "castTicks": 2,
-    "rules": "Until this Cycle ends, your healing becomes damage to the enemy instead. [Holy Attuned: converted healing also heals you for 50% of its value.]",
+    "rules": "Deal 60 damage. Until this Cycle ends, your healing becomes damage to the enemy instead. [Holy Attuned: converted healing also heals you for 50% of its value.]",
     "keywords": [
       "cycle"
     ],
     "notes": [],
     "combat": {
       "effects": [
+        {
+          "kind": "damage",
+          "amount": 60
+        },
         {
           "kind": "rule",
           "amount": 1,
@@ -1050,13 +1276,17 @@
     },
     "upgrade": {
       "castTicks": 1,
-      "rules": "Until this Cycle ends, your healing becomes damage to the enemy instead. [Holy Attuned: converted healing also heals you for 75% of its value.]",
+      "rules": "Deal 80 damage. Until this Cycle ends, your healing becomes damage to the enemy instead. [Holy Attuned: converted healing also heals you for 75% of its value.]",
       "keywords": [
         "cycle"
       ],
       "notes": [],
       "combat": {
         "effects": [
+          {
+            "kind": "damage",
+            "amount": 80
+          },
           {
             "kind": "rule",
             "amount": 1,
@@ -1078,7 +1308,7 @@
     "domain": "holy",
     "stars": 5,
     "castTicks": 2,
-    "rules": "Trigger — Fatal Damage: once per combat, when you would die, remain at 1 Health, gain 300 Ward, then remove Divine Intervention from the sequence.",
+    "rules": "Gain 120 Ward. Trigger — Fatal Damage: once per combat, remain at 1 Health instead and gain 300 Ward; then remove this card from the sequence.",
     "keywords": [
       "ward",
       "gain",
@@ -1087,6 +1317,10 @@
     "notes": [],
     "combat": {
       "effects": [
+        {
+          "kind": "ward",
+          "amount": 120
+        },
         {
           "kind": "trigger",
           "event": "fatal",
@@ -1105,7 +1339,7 @@
     },
     "upgrade": {
       "castTicks": 1,
-      "rules": "Trigger — Fatal Damage: once per combat, when you would die, remain at 1 Health, gain 450 Ward, then remove Divine Intervention from the sequence. [Holy Attuned: Cleanse all debuffs when the Trigger resolves.]",
+      "rules": "Gain 150 Ward. Trigger — Fatal Damage: once per combat, remain at 1 Health instead and gain 450 Ward; then remove this card. [Holy Attuned: Cleanse all debuffs when the Trigger resolves.]",
       "keywords": [
         "ward",
         "cleanse",
@@ -1115,6 +1349,10 @@
       "notes": [],
       "combat": {
         "effects": [
+          {
+            "kind": "ward",
+            "amount": 150
+          },
           {
             "kind": "trigger",
             "event": "fatal",

@@ -32,10 +32,11 @@ export function CastBar({fighter,tick,speed,playing,finished,compact}:{fighter:F
   },[tick,speed,playing,finished,start,end,skipped,instant,stunned,fill]);
   const label=finished?'Duel complete':empty?'No spells remaining':stunned?'Stunned · rotation paused':reshuffling?'Reshuffling':spell?.name??'Ready';
   const detail=finished||empty?'':stunned?`${fighter.statuses.stun}T`:reshuffling?`${fighter.reshuffleRemaining}T`:`${remaining}T`;
-  const accent=stunned?'#d6a1e8':spell?DOMAIN_COLORS[spell.domain]:'#e5c16a';
-  return <View accessibilityRole="progressbar" accessibilityLabel={`${label}, ${detail}`} accessibilityValue={{min:0,max:100,now:Math.round(start*100)}} style={{position:'absolute',bottom:2,height:compact?32:38,width:'128%',borderRadius:7,overflow:'hidden',borderWidth:1,borderColor:finished?'#7d7054':accent,backgroundColor:'#111720f2',boxShadow:finished?'none':`0 0 8px ${accent}44`}}>
+  const powerLabel=cast&&!finished&&!skipped?[cast.empowered?'♨ Empowered':'',cast.echoPower!==undefined?'≈ Echo '+Math.floor(cast.echoPower*100)+'%':''].filter(Boolean).join(' · '):'';
+  const accent=cast?.empowered?'#ffb955':cast?.echoPower!==undefined?'#79dfff':stunned?'#d6a1e8':spell?DOMAIN_COLORS[spell.domain]:'#e5c16a';
+  return <View accessibilityRole="progressbar" accessibilityLabel={`${label}, ${detail}${powerLabel?`, ${powerLabel}`:''}`} accessibilityValue={{min:0,max:100,now:Math.round(start*100)}} style={{position:'absolute',bottom:2,height:compact?32:38,width:'128%',borderRadius:7,overflow:'hidden',borderWidth:1,borderColor:finished?'#7d7054':accent,backgroundColor:'#111720f2',boxShadow:finished?'none':`0 0 8px ${accent}44`}}>
     <Animated.View style={{position:'absolute',top:0,bottom:0,left:0,width:fill.interpolate({inputRange:[0,1],outputRange:['0%','100%']}),backgroundColor:accent,opacity:.36,borderRightWidth:2,borderRightColor:'#fff2cf'}} />
     <View pointerEvents="none" style={{position:'absolute',left:0,right:0,top:0,height:1,backgroundColor:'#ffffff66'}} />
-    <View style={{flex:1,flexDirection:'row',alignItems:'center',justifyContent:'space-between',paddingHorizontal:7,gap:5}}><Text numberOfLines={1} style={{flex:1,color:'#fff2d2',fontSize:compact?11:13,fontWeight:'700'}}>{label}</Text><Text style={{color:'#fff1c9',fontSize:compact?11:12,fontWeight:'800'}}>{instant&&!finished?'ϟ':detail}</Text></View>
+    <View style={{flex:1,flexDirection:'row',alignItems:'center',justifyContent:'space-between',paddingHorizontal:7,gap:5}}><Text numberOfLines={1} style={{flex:1,color:'#fff2d2',fontSize:compact?11:13,fontWeight:'700'}}>{label}</Text>{!!powerLabel&&<Text style={{color:accent,fontSize:compact?9:11,fontWeight:'900'}}>{powerLabel}</Text>}<Text style={{color:'#fff1c9',fontSize:compact?11:12,fontWeight:'800'}}>{instant&&!finished?'ϟ':detail}</Text></View>
   </View>;
 }

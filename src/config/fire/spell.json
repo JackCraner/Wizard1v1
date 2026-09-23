@@ -9,12 +9,16 @@
       "effects": [
         {
           "kind": "damage",
-          "amount": 45
+          "amount": 45,
+          "bonusWhen": "enemyNoWard",
+          "bonus": 10
         }
       ]
     },
-    "rules": "Deal 45 damage.",
-    "keywords": [],
+    "rules": "Deal 45 damage. Deal 55 instead if the enemy has no Ward.",
+    "keywords": [
+      "ward"
+    ],
     "notes": [],
     "upgrade": {
       "castTicks": 1,
@@ -22,12 +26,16 @@
         "effects": [
           {
             "kind": "damage",
-            "amount": 65
+            "amount": 60,
+            "bonusWhen": "enemyNoWard",
+            "bonus": 15
           }
         ]
       },
-      "rules": "Deal 65 damage.",
-      "keywords": [],
+      "rules": "Deal 60 damage. Deal 75 instead if the enemy has no Ward.",
+      "keywords": [
+        "ward"
+      ],
       "notes": []
     }
   },
@@ -49,7 +57,7 @@
         }
       ]
     },
-    "rules": "Deal 60 damage. Lose 15 Health.",
+    "rules": "Deal 60 damage. Take 15 self-damage.",
     "keywords": [],
     "notes": [],
     "upgrade": {
@@ -66,7 +74,7 @@
           }
         ]
       },
-      "rules": "Deal 85 damage. Lose 20 Health.",
+      "rules": "Deal 85 damage. Take 20 self-damage.",
       "keywords": [],
       "notes": []
     }
@@ -108,6 +116,186 @@
       ],
       "notes": []
     }
+  },
+  {
+    "id": "cinder",
+    "name": "Cinder",
+    "domain": "fire",
+    "notes": [],
+    "combat": {
+      "effects": [
+        {
+          "kind": "damage",
+          "amount": 30
+        },
+        {
+          "kind": "status",
+          "amount": 1,
+          "status": "heat",
+          "target": "self",
+          "when": "firstFire"
+        },
+        {
+          "kind": "trigger",
+          "event": "heat",
+          "effects": [
+            {
+              "kind": "damage",
+              "amount": 6
+            }
+          ]
+        }
+      ]
+    },
+    "upgrade": {
+      "combat": {
+        "effects": [
+          {
+            "kind": "damage",
+            "amount": 45
+          },
+          {
+            "kind": "status",
+            "amount": 1,
+            "status": "heat",
+            "target": "self",
+            "when": "firstFire"
+          },
+          {
+            "kind": "trigger",
+            "event": "heat",
+            "effects": [
+              {
+                "kind": "damage",
+                "amount": 10,
+                "bonusDomain": "fire",
+                "attunedAmount": 14
+              }
+            ]
+          }
+        ]
+      },
+      "notes": [],
+      "castTicks": 1,
+      "rules": "Deal 45 damage. If this is your first Fire spell this Cycle, gain 1 additional Heat. Trigger — Heat Consume: Deal 10 damage. [Fire Attuned: Trigger deals 14 instead.]",
+      "keywords": [
+        "heat",
+        "consume",
+        "cycle",
+        "gain",
+        "trigger"
+      ]
+    },
+    "stars": 1,
+    "castTicks": 1,
+    "rules": "Deal 30 damage. If this is your first Fire spell this Cycle, gain 1 additional Heat. Trigger — Heat Consume: Deal 6 damage.",
+    "keywords": [
+      "heat",
+      "consume",
+      "cycle",
+      "gain",
+      "trigger"
+    ]
+  },
+  {
+    "id": "cauterize",
+    "name": "Cauterize",
+    "domain": "fire",
+    "notes": [],
+    "combat": {
+      "effects": [
+        {
+          "kind": "heal",
+          "amount": 45
+        },
+        {
+          "kind": "selfDamage",
+          "amount": 10
+        }
+      ]
+    },
+    "upgrade": {
+      "combat": {
+        "effects": [
+          {
+            "kind": "heal",
+            "amount": 65
+          },
+          {
+            "kind": "selfDamage",
+            "amount": 10
+          },
+          {
+            "kind": "status",
+            "amount": 1,
+            "status": "heat",
+            "target": "self",
+            "requiresAttunement": "fire"
+          }
+        ]
+      },
+      "notes": [],
+      "castTicks": 1,
+      "rules": "Heal 65. Take 10 self-damage. [Fire Attuned: Gain 1 Heat.]",
+      "keywords": [
+        "heat",
+        "gain"
+      ]
+    },
+    "stars": 1,
+    "castTicks": 1,
+    "rules": "Heal 45. Take 10 self-damage.",
+    "keywords": []
+  },
+  {
+    "id": "searing-touch",
+    "name": "Searing Touch",
+    "domain": "fire",
+    "notes": [],
+    "combat": {
+      "effects": [
+        {
+          "kind": "damage",
+          "amount": 30
+        },
+        {
+          "kind": "status",
+          "amount": 1,
+          "status": "trap",
+          "target": "enemy"
+        }
+      ]
+    },
+    "upgrade": {
+      "combat": {
+        "effects": [
+          {
+            "kind": "damage",
+            "amount": 45
+          },
+          {
+            "kind": "status",
+            "amount": 2,
+            "status": "trap",
+            "target": "enemy"
+          }
+        ]
+      },
+      "notes": [],
+      "castTicks": 1,
+      "rules": "Deal 45 damage. Apply 2 Trap.",
+      "keywords": [
+        "trap",
+        "apply"
+      ]
+    },
+    "stars": 1,
+    "castTicks": 1,
+    "rules": "Deal 30 damage. Apply 1 Trap.",
+    "keywords": [
+      "trap",
+      "apply"
+    ]
   },
   {
     "id": "ember",
@@ -274,20 +462,18 @@
       "effects": [
         {
           "kind": "damage",
-          "amount": 45
+          "amount": 50
         },
         {
-          "kind": "status",
-          "amount": 1,
-          "status": "slow",
-          "target": "enemy"
+          "kind": "rule",
+          "amount": 30,
+          "rule": "nextFireDamage"
         }
       ]
     },
-    "rules": "Deal 45 damage. Apply 1 Slow.",
+    "rules": "Deal 50 damage. Your next Fire spell this Cycle deals 30 more direct damage.",
     "keywords": [
-      "slow",
-      "apply"
+      "cycle"
     ],
     "notes": [],
     "upgrade": {
@@ -296,20 +482,18 @@
         "effects": [
           {
             "kind": "damage",
-            "amount": 60
+            "amount": 65
           },
           {
-            "kind": "status",
-            "amount": 2,
-            "status": "slow",
-            "target": "enemy"
+            "kind": "rule",
+            "amount": 45,
+            "rule": "nextFireDamage"
           }
         ]
       },
-      "rules": "Deal 60 damage. Apply 2 Slow.",
+      "rules": "Deal 65 damage. Your next Fire spell this Cycle deals 45 more direct damage.",
       "keywords": [
-        "slow",
-        "apply"
+        "cycle"
       ],
       "notes": []
     }
@@ -324,28 +508,37 @@
       "effects": [
         {
           "kind": "damage",
-          "amount": 80
+          "amount": 75,
+          "bonusWhen": "heatConsumed",
+          "bonus": 20
         }
       ]
     },
-    "rules": "Deal 80 damage.",
-    "keywords": [],
+    "rules": "Deal 75 damage. If this spell consumes Heat, deal 95 instead.",
+    "keywords": [
+      "heat"
+    ],
     "notes": [],
     "upgrade": {
-      "castTicks": 0,
+      "castTicks": 1,
       "combat": {
         "effects": [
           {
             "kind": "damage",
-            "amount": 80
+            "amount": 90,
+            "bonusWhen": "heatConsumed",
+            "bonus": 25
           }
         ]
       },
-      "rules": "Deal 80 damage. [Fire Attuned: Instant.]",
+      "rules": "Deal 90 damage. If this spell consumes Heat, deal 115 instead. [Fire Attuned: Instant when it does not consume Heat.]",
       "keywords": [
+        "heat",
+        "consume",
         "instant"
       ],
       "notes": [],
+      "instantWhen": "noHeatConsumed",
       "instantDomain": "fire"
     }
   },
@@ -359,18 +552,14 @@
       "effects": [
         {
           "kind": "damage",
-          "amount": 40
-        },
-        {
-          "kind": "retrigger",
-          "domainFilter": "fire"
+          "amount": 45
         }
       ]
     },
-    "rules": "Deal 40 damage. Retrigger your last Fire Trigger.",
+    "rules": "Deal 45 damage. If your previous spell consumed Heat, this spell is Instant.",
     "keywords": [
-      "trigger",
-      "retrigger"
+      "heat",
+      "instant"
     ],
     "notes": [],
     "upgrade": {
@@ -379,11 +568,7 @@
         "effects": [
           {
             "kind": "damage",
-            "amount": 60
-          },
-          {
-            "kind": "retrigger",
-            "domainFilter": "fire"
+            "amount": 65
           },
           {
             "kind": "status",
@@ -394,15 +579,15 @@
           }
         ]
       },
-      "rules": "Deal 60 damage. Retrigger your last Fire Trigger. [Fire Attuned: Gain 1 Heat.]",
+      "rules": "Deal 65 damage. If your previous spell consumed Heat, this spell is Instant. [Fire Attuned: gain 1 Heat after it resolves.]",
       "keywords": [
         "heat",
-        "gain",
-        "trigger",
-        "retrigger"
+        "instant",
+        "gain"
       ],
       "notes": []
-    }
+    },
+    "instantWhen": "previousHeat"
   },
   {
     "id": "overheat",
@@ -479,13 +664,13 @@
           "effects": [
             {
               "kind": "ward",
-              "amount": 40
+              "amount": 70
             }
           ]
         }
       ]
     },
-    "rules": "Gain 100 Ward. Trigger — Heat: When you consume Heat, gain 40 Ward.",
+    "rules": "Gain 100 Ward. Trigger — Heat Consume: Gain 70 Ward.",
     "keywords": [
       "ward",
       "heat",
@@ -500,7 +685,7 @@
         "effects": [
           {
             "kind": "ward",
-            "amount": 120
+            "amount": 130
           },
           {
             "kind": "trigger",
@@ -508,13 +693,13 @@
             "effects": [
               {
                 "kind": "ward",
-                "amount": 60
+                "amount": 90
               }
             ]
           }
         ]
       },
-      "rules": "Gain 120 Ward. Trigger — Heat: When you consume Heat, gain 60 Ward.",
+      "rules": "Gain 130 Ward. Trigger — Heat Consume: Gain 90 Ward.",
       "keywords": [
         "ward",
         "heat",
@@ -535,25 +720,14 @@
       "effects": [
         {
           "kind": "damage",
-          "amount": 100
-        },
-        {
-          "kind": "trigger",
-          "event": "cycle",
-          "effects": [
-            {
-              "kind": "damage",
-              "amount": 35
-            }
-          ]
+          "amount": 105,
+          "bonusWhen": "belowHalf",
+          "bonus": 20
         }
       ]
     },
-    "rules": "Deal 100 damage. Trigger — Cycle Start: Deal 35 damage.",
-    "keywords": [
-      "cycle",
-      "trigger"
-    ],
+    "rules": "Deal 105 damage. If you are below 50% Health, deal 125 instead.",
+    "keywords": [],
     "notes": [],
     "upgrade": {
       "castTicks": 1,
@@ -561,24 +735,24 @@
         "effects": [
           {
             "kind": "damage",
-            "amount": 130
+            "amount": 135,
+            "bonusWhen": "belowHalf",
+            "bonus": 30
           },
           {
-            "kind": "trigger",
-            "event": "cycle",
-            "effects": [
-              {
-                "kind": "damage",
-                "amount": 50
-              }
-            ]
+            "kind": "status",
+            "amount": 1,
+            "status": "heat",
+            "target": "self",
+            "when": "belowHalf",
+            "requiresAttunement": "fire"
           }
         ]
       },
-      "rules": "Deal 130 damage. Trigger — Cycle Start: Deal 50 damage.",
+      "rules": "Deal 135 damage. If you are below 50% Health, deal 165 instead. [Fire Attuned: gain 1 Heat after the bonus damage resolves.]",
       "keywords": [
-        "cycle",
-        "trigger"
+        "heat",
+        "gain"
       ],
       "notes": []
     }
@@ -612,12 +786,12 @@
     ],
     "notes": [],
     "upgrade": {
-      "castTicks": 1,
+      "castTicks": 2,
       "combat": {
         "effects": [
           {
             "kind": "damage",
-            "amount": 100
+            "amount": 120
           },
           {
             "kind": "status",
@@ -628,7 +802,7 @@
           }
         ]
       },
-      "rules": "Deal 100 damage. If this spell consumes Heat, apply 3 Trap.",
+      "rules": "Deal 120 damage. If this spell consumes Heat, apply 3 Trap. [Fire Attuned: 1T if it consumes Heat.]",
       "keywords": [
         "heat",
         "trap",
@@ -647,7 +821,7 @@
       "effects": [
         {
           "kind": "damage",
-          "amount": 50
+          "amount": 55
         },
         {
           "kind": "interrupt",
@@ -655,7 +829,7 @@
         }
       ]
     },
-    "rules": "Deal 50 damage. [Fire Attuned: Interrupt.]",
+    "rules": "Deal 55 damage. [Fire Attuned: Interrupt.]",
     "keywords": [
       "interrupt"
     ],
@@ -666,19 +840,152 @@
         "effects": [
           {
             "kind": "damage",
-            "amount": 60
+            "amount": 75
           },
           {
-            "kind": "interrupt"
+            "kind": "interrupt",
+            "requiresAttunement": "fire"
+          },
+          {
+            "kind": "status",
+            "amount": 1,
+            "status": "trap",
+            "target": "enemy",
+            "requiresAttunement": "fire"
           }
         ]
       },
-      "rules": "Deal 60 damage. Interrupt.",
+      "rules": "Deal 75 damage. [Fire Attuned: Interrupt and apply 1 Trap.]",
       "keywords": [
-        "interrupt"
+        "interrupt",
+        "trap",
+        "apply"
       ],
       "notes": []
     }
+  },
+  {
+    "id": "backdraft",
+    "name": "Backdraft",
+    "domain": "fire",
+    "notes": [],
+    "combat": {
+      "effects": [
+        {
+          "kind": "damage",
+          "amount": 80
+        },
+        {
+          "kind": "trigger",
+          "event": "heal",
+          "effects": [
+            {
+              "kind": "damage",
+              "amount": 12
+            }
+          ]
+        }
+      ]
+    },
+    "upgrade": {
+      "combat": {
+        "effects": [
+          {
+            "kind": "damage",
+            "amount": 100
+          },
+          {
+            "kind": "trigger",
+            "event": "heal",
+            "effects": [
+              {
+                "kind": "damage",
+                "amount": 18,
+                "bonusDomain": "fire",
+                "attunedAmount": 22
+              }
+            ]
+          }
+        ]
+      },
+      "notes": [],
+      "castTicks": 1,
+      "rules": "Deal 100 damage. Trigger — Heal: Deal 18 damage. [Fire Attuned: Trigger deals 22 instead.]",
+      "keywords": [
+        "trigger"
+      ]
+    },
+    "stars": 3,
+    "castTicks": 1,
+    "rules": "Deal 80 damage. Trigger — Heal: Deal 12 damage.",
+    "keywords": [
+      "trigger"
+    ]
+  },
+  {
+    "id": "flashover",
+    "name": "Flashover",
+    "domain": "fire",
+    "notes": [],
+    "combat": {
+      "effects": [
+        {
+          "kind": "damage",
+          "amount": 75
+        },
+        {
+          "kind": "trigger",
+          "event": "selfDamage",
+          "effects": [
+            {
+              "kind": "damage",
+              "amount": 10
+            }
+          ]
+        }
+      ]
+    },
+    "upgrade": {
+      "combat": {
+        "effects": [
+          {
+            "kind": "damage",
+            "amount": 95
+          },
+          {
+            "kind": "trigger",
+            "event": "selfDamage",
+            "effects": [
+              {
+                "kind": "damage",
+                "amount": 15
+              },
+              {
+                "kind": "status",
+                "amount": 1,
+                "status": "heat",
+                "target": "self",
+                "requiresAttunement": "fire"
+              }
+            ]
+          }
+        ]
+      },
+      "notes": [],
+      "castTicks": 1,
+      "rules": "Deal 95 damage. Trigger — Self-Damage: Deal 15 damage. [Fire Attuned: when the Trigger resolves, also gain 1 Heat.]",
+      "keywords": [
+        "heat",
+        "gain",
+        "trigger"
+      ]
+    },
+    "stars": 3,
+    "castTicks": 1,
+    "rules": "Deal 75 damage. Trigger — Self-Damage: Deal 10 damage.",
+    "keywords": [
+      "trigger"
+    ]
   },
   {
     "id": "pyroblast",
@@ -726,20 +1033,18 @@
         },
         {
           "kind": "trigger",
-          "event": "heat",
+          "event": "selfDamage",
           "effects": [
             {
               "kind": "heal",
-              "amount": 40
+              "amount": 20
             }
           ]
         }
       ]
     },
-    "rules": "Heal 120. Trigger — Heat: When you consume Heat, heal 40.",
+    "rules": "Heal 120. Trigger — Self-Damage: Heal 20.",
     "keywords": [
-      "heat",
-      "consume",
       "trigger"
     ],
     "notes": [],
@@ -753,28 +1058,20 @@
           },
           {
             "kind": "trigger",
-            "event": "heat",
+            "event": "selfDamage",
             "effects": [
               {
                 "kind": "heal",
-                "amount": 60
-              },
-              {
-                "kind": "status",
-                "amount": 1,
-                "status": "heat",
-                "target": "self",
-                "requiresAttunement": "fire"
+                "amount": 30,
+                "bonusDomain": "fire",
+                "attunedAmount": 40
               }
             ]
           }
         ]
       },
-      "rules": "Heal 150. Trigger — Heat: When you consume Heat, heal 60. [Fire Attuned: Gain 1 Heat when this Trigger fires.]",
+      "rules": "Heal 150. Trigger — Self-Damage: Heal 30. [Fire Attuned: Trigger heals 40 instead.]",
       "keywords": [
-        "heat",
-        "consume",
-        "gain",
         "trigger"
       ],
       "notes": []
@@ -852,7 +1149,7 @@
         }
       ]
     },
-    "rules": "Deal 160 damage. Lose 30 Health.",
+    "rules": "Deal 160 damage. Take 30 self-damage.",
     "keywords": [],
     "notes": [],
     "upgrade": {
@@ -871,7 +1168,7 @@
           }
         ]
       },
-      "rules": "Deal 200 damage. Lose 30 Health. [Fire Attuned: Critical while below 40% Health.]",
+      "rules": "Deal 200 damage. Take 30 self-damage. [Fire Attuned: Critical while below 40% Health.]",
       "keywords": [
         "critical"
       ],
@@ -887,6 +1184,10 @@
     "combat": {
       "effects": [
         {
+          "kind": "damage",
+          "amount": 100
+        },
+        {
           "kind": "rule",
           "amount": 1,
           "rule": "heatCritical"
@@ -899,7 +1200,7 @@
         }
       ]
     },
-    "rules": "For the rest of combat, Heat-Empowered spells are guaranteed Critical. [Fire Attuned: those Criticals deal 200% total damage instead of 150%.]",
+    "rules": "Deal 100 damage. For the rest of combat, Heat-Empowered spells are guaranteed Critical. [Fire Attuned: those Criticals deal 200% total damage.]",
     "keywords": [
       "empowered",
       "heat",
@@ -910,6 +1211,10 @@
       "castTicks": 1,
       "combat": {
         "effects": [
+          {
+            "kind": "damage",
+            "amount": 130
+          },
           {
             "kind": "rule",
             "amount": 1,
@@ -923,7 +1228,7 @@
           }
         ]
       },
-      "rules": "For the rest of combat, Heat-Empowered spells are guaranteed Critical. [Fire Attuned: those Criticals deal 250% total damage instead of 150%.]",
+      "rules": "Deal 130 damage. For the rest of combat, Heat-Empowered spells are guaranteed Critical. [Fire Attuned: those Criticals deal 250% total damage.]",
       "keywords": [
         "empowered",
         "heat",
@@ -1000,5 +1305,62 @@
       ],
       "notes": []
     }
+  },
+  {
+    "id": "living-flame",
+    "name": "Living Flame",
+    "domain": "fire",
+    "notes": [],
+    "combat": {
+      "effects": [
+        {
+          "kind": "damage",
+          "amount": 120
+        },
+        {
+          "kind": "rule",
+          "amount": 1,
+          "rule": "livingFlame"
+        }
+      ]
+    },
+    "upgrade": {
+      "combat": {
+        "effects": [
+          {
+            "kind": "damage",
+            "amount": 150
+          },
+          {
+            "kind": "rule",
+            "amount": 1,
+            "rule": "livingFlame"
+          },
+          {
+            "kind": "rule",
+            "amount": 2,
+            "rule": "livingFlameHeat",
+            "requiresAttunement": "fire"
+          }
+        ]
+      },
+      "notes": [],
+      "castTicks": 1,
+      "rules": "Deal 150 damage. For the rest of combat, your first non-Instant Fire spell each Cycle becomes 1T and Empowered without consuming Heat. [Fire Attuned: after that free Empowered spell completes, gain 2 Heat.]",
+      "keywords": [
+        "empowered",
+        "heat",
+        "gain"
+      ]
+    },
+    "stars": 5,
+    "castTicks": 2,
+    "rules": "Deal 120 damage. For the rest of combat, your first non-Instant Fire spell each Cycle becomes 1T and Empowered without consuming Heat.",
+    "keywords": [
+      "empowered",
+      "heat",
+      "cycle",
+      "instant"
+    ]
   }
 ]

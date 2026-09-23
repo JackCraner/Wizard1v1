@@ -19,11 +19,11 @@ it('offers only the 27 domain-free augments without duplicates',()=>{
 });
 it('changes economy values and rounds Recycler refunds down',async()=>{
  expect(shopIncome(['deep-pockets'])).toBe(13);
- expect([0,1,2,3].map(n=>rerollCost(['scavenger'],n))).toEqual([0,0,1,1]);
+ expect([0,1,2,3].map(n=>rerollCost(['scavenger'],n))).toEqual([0,0,2,2]);
  expect([1,2,3,4,5].map(n=>trashRefund(['recycler'],n))).toEqual([0,1,2,3,4]);
  const g=new LocalGameGateway();let s=await g.start('normal',42);
  Object.assign(raw(g),{augments:['recycler','scavenger','deep-pockets'],spells:['starsurge'],spellXp:[0]});
- s=await g.execute(s.id,s.revision,{type:'trash',index:0});expect(s.gold).toBe(12);
+ s=await g.execute(s.id,s.revision,{type:'trash',index:0});expect(s.gold).toBe(13);
  for(let i=0;i<3;i++)s=await g.execute(s.id,s.revision,{type:'reroll'});
  expect(s.gold).toBe(11);
 });

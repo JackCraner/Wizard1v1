@@ -1,5 +1,5 @@
 import { attunedDomains, effectEnabled, KEYWORD_DOMAINS } from './attunement';
-import { CARDS, type Domain } from '../config/catalogue';
+import { goldCost, CARDS, type Domain } from '../config/catalogue';
 import settings from '../config/rules.json';
 import statusRules from '../config/statuses.json';
 import { cloneSnapshot } from './clone';
@@ -8,7 +8,7 @@ import { cardAt, deckXp, validateXp } from './upgrades';
 import { validateAugments } from './augments';
 import type { Battle, CastEvent, CombatFrame, DamageEvent, Effect, Fighter, HealingEvent, Spell, SpellId, Stats } from './model';
 export const RULES = settings;
-export const SPELLS: Record<string, Spell> = Object.fromEntries(CARDS.map(c => [c.id, { ...c, price: c.stars, description: c.rules }]));
+export const SPELLS: Record<string, Spell> = Object.fromEntries(CARDS.map(c => [c.id, { ...c, price: goldCost(c), description: c.rules }]));
 export const PLAYABLE_SPELLS = CARDS.filter(c => c.combat?.effects && !c.combat.blockedReason).map(c => c.id);
 export const deckDomains = (deck: readonly string[]) => [...new Set(deck.map(id => SPELLS[id]?.domain).filter(Boolean))];
 export function domainProgress(deck: readonly string[]) { return deckDomains(deck).map(domain => ({ domain, count: deck.filter(id => SPELLS[id].domain === domain).length })).sort((a, b) => b.count - a.count); }

@@ -9,7 +9,7 @@ import {MergeBurst} from './MergeBurst';
 import botConfig from '../config/bots.json';
 import { ShopOffer, type ShopPointer } from './ShopOffer';
 import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react';
-import { Image, Platform, Pressable, StyleSheet, Text, View } from 'react-native';
+import { AccessibilityInfo, Animated, Image, Platform, Pressable, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { RULES, SPELLS, deriveStats, spellAddReason, canAddSpell } from '../game/engine';
 import { rerollCost } from '../game/shop';
@@ -37,7 +37,15 @@ export function CompactShop({ session, busy, act, onMenu, onLibrary, onLeaderboa
   const [burst,setBurst]=useState<{key:number;x:number;y:number;upgraded:boolean}|null>(null);
   useEffect(()=>{const p=pendingMerge.current;if(!p||session.revision<=p.revision)return;pendingMerge.current=null;if(session.spells[p.target]===p.id&&(session.spellXp?.[p.target]??0)>p.xp)setBurst({key:session.revision,x:p.x,y:p.y,upgraded:session.spellXp?.[p.target]===3});},[session.revision]);
   const [offerDrag,setOfferDrag]=useState<{id:SpellId;x:number;y:number;over:boolean;target?:number}|null>(null);
-  const purchaseReason=(id:SpellId)=>busy?'Please wait':session.spells.length>=RULES.slots?'Your hand is full':!canAddSpell(session.spells,id)?spellAddReason(session.spells,id):session.gold<SPELLS[id].price?'Not enough gold':null;
+  const purchaseReason=(id:SpellId)=>busy?'Please wait':!canAddSpell(session.spells,id)?spellAddReason(session.spells,id):session.gold<SPELLS[id].price?'Not enough gold':null;
+  const excess = Math.max(0, session.spells.length - RULES.slots);
+  const warnDrag = !!offerDrag?.over && session.spells.length >= RULES.slots;
+  const handPulse = useRef(new Animated.Value(0)).current;
+  const limitPulse = useRef(new Animated.Value(0)).current;
+  const [reducedMotion,setReducedMotion] = useState(false);
+  useEffect(()=>{let active=true;AccessibilityInfo.isReduceMotionEnabled().then(value=>{if(active)setReducedMotion(value);});const sub=AccessibilityInfo.addEventListener('reduceMotionChanged',setReducedMotion);return()=>{active=false;sub.remove();};},[]);
+  useEffect(()=>{handPulse.setValue(excess ? 1 : 0);if(!excess||reducedMotion)return;const pulse=Animated.loop(Animated.sequence([Animated.timing(handPulse,{toValue:0,duration:1200,useNativeDriver:false}),Animated.timing(handPulse,{toValue:1,duration:1200,useNativeDriver:false})]));pulse.start();return()=>pulse.stop();},[excess>0,reducedMotion]);
+  useEffect(()=>{limitPulse.setValue(warnDrag ? 1 : 0);if(!warnDrag||reducedMotion)return;const pulse=Animated.loop(Animated.sequence([Animated.timing(limitPulse,{toValue:0,duration:450,useNativeDriver:false}),Animated.timing(limitPulse,{toValue:1,duration:450,useNativeDriver:false})]));pulse.start();return()=>pulse.stop();},[warnDrag,reducedMotion]);
   const targetAt=(id:SpellId,p:ShopPointer)=>{const i=cardUnderPointer(cardBounds.current,p.x,p.y);return i!==undefined&&session.spells[i]===id?i:undefined;};
   const dropReason=(id:SpellId,target?:number)=>target===undefined?purchaseReason(id):busy?'Please wait':session.gold<SPELLS[id].price?'Not enough gold':(session.spellXp?.[target]??0)>=3?'Already upgraded · drop in empty hand space to buy another':null;
   const canMergeOffer=(id:SpellId)=>!busy&&session.gold>=SPELLS[id].price&&session.spells.some((s,i)=>s===id&&(session.spellXp?.[i]??0)<3);
@@ -63,7 +71,7 @@ export function CompactShop({ session, busy, act, onMenu, onLibrary, onLeaderboa
     ? dropReason(offerDrag.id, offerDrag.target) ?? (offerDrag.target !== undefined
       ? `Release to ${(session.spellXp?.[offerDrag.target] ?? 0) >= 2 ? 'UPGRADE' : 'merge · +'+1+' XP'} · ${SPELLS[offerDrag.id].price} gold`
       : offerDrag.over ? `Release to buy · ${SPELLS[offerDrag.id].price} gold` : 'Drop here to buy · release elsewhere to cancel')
-    : dragging ? 'Drag to set cast order · release to place' : session.spells.length ? 'Cast order →  ·  matching copies add XP' : 'Drag a spell here to begin';
+    : excess ? `Remove ${excess} spell${excess===1?'':'s'} before battle` : dragging ? 'Drag to set cast order · release to place' : session.spells.length ? 'Cast order →  ·  matching copies add XP' : 'Drag a spell here to begin';
 
   return <View ref={rootRef} collapsable={false} onLayout={event => { setRootSize(event.nativeEvent.layout); measure(); }} style={s.root}>
     <Image accessible={false} source={require('../../assets/MainBackground.png')} resizeMode="cover" style={[StyleSheet.absoluteFill, { width: '100%', height: '100%', opacity: .24 }]} />
@@ -108,13 +116,13 @@ export function CompactShop({ session, busy, act, onMenu, onLibrary, onLeaderboa
           </View>
 
 
-          <View ref={handRef} collapsable={false} onLayout={measure} style={[s.handDrop, offerDrag && (dropReason(offerDrag.id, offerDrag.target) ? s.blockedDrop : offerDrag.over ? s.activeDrop : s.readyDrop)]}>
-            <View style={s.handHeading}><Text style={s.sectionTitle}>YOUR HAND <Text style={s.muted}>{session.spells.length}/{RULES.slots}</Text></Text><Text accessibilityLiveRegion="polite" numberOfLines={1} style={s.handHint}>{handMessage}</Text></View>
+          <Animated.View ref={handRef} collapsable={false} onLayout={measure} style={[s.handDrop, offerDrag && (dropReason(offerDrag.id, offerDrag.target) ? s.blockedDrop : session.spells.length >= RULES.slots && offerDrag.target === undefined ? (offerDrag.over ? s.overflowDrop : s.overflowReadyDrop) : offerDrag.over ? s.activeDrop : s.readyDrop), excess>0 && {borderColor:handPulse.interpolate({inputRange:[0,1],outputRange:['#894c48','#f58b7d']}),backgroundColor:handPulse.interpolate({inputRange:[0,1],outputRange:['#281c21','#582a30']})}]}>
+            <View style={s.handHeading}><View style={{flexDirection:'row',alignItems:'center',gap:5}}><Text style={s.sectionTitle}>YOUR HAND</Text><Animated.Text accessibilityLabel={`${session.spells.length} of ${RULES.slots} spells${excess?' — over battle limit':''}`} style={[s.sectionTitle,{fontSize:10,lineHeight:14,minWidth:56,textAlign:'center',color:limitPulse.interpolate({inputRange:[0,1],outputRange:[excess?'#ffab9d':'#c7d2bf','#ff8e76']}),transform:[{scale:limitPulse.interpolate({inputRange:[0,1],outputRange:warnDrag?[1.8,2.25]:[1,1]})}]}]}>{session.spells.length}/{RULES.slots}</Animated.Text></View><Text accessibilityLiveRegion="polite" numberOfLines={1} style={[s.handHint,excess>0&&{color:'#ffd1c7'}]}>{handMessage}</Text></View>
             <DraggableHand xp={session.spellXp} onCardBounds={b => { cardBounds.current = b; }} mergeSpell={offerDrag && canMergeOffer(offerDrag.id) ? offerDrag.id : undefined} mergeTarget={offerDrag?.target !== undefined && !dropReason(offerDrag.id, offerDrag.target) ? offerDrag.target : undefined} height={handHeight} spells={session.spells} disabled={busy || !!offerDrag} renderCard={renderCard} renderPreview={(id, height, width, index) => <ShopSpellPreview domains={attunedDomains(session.spells,session.spellAcquired)} id={id} height={height} width={width} xp={index === undefined ? 0 : session.spellXp?.[index]} />} onInspect={inspectHand} onMove={(from, to) => act({ type: 'move', from, to })} onDragging={handleDragging} onDragPoint={(x, y) => setOverTrash(hitsTrash(x, y))} onDrop={(index, x, y) => { setOverTrash(false); if (!hitsTrash(x, y)) return false; act({ type: 'trash', index }); return true; }} />
-          </View>
+          </Animated.View>
           <View style={[s.roundActions, { width: tight ? 102 : 134 }]}>
             <View ref={trashRef} collapsable={false} onLayout={measure} accessibilityLabel={"Trash drop target. Drag a hand card here to remove it. "+(session.augments.includes("recycler")?"Refund 80% · rounded down.":"No gold refund.")} style={[s.trash, dragging && s.trashReady, dragging && overTrash && s.trashActive]}><Text style={s.trashText}>{dragging && overTrash ? 'Release to trash' : '×  Trash spell'}</Text><Text style={s.trashHint}>{session.augments.includes("recycler")?"Refund 80% · rounded down":"No gold refund"}</Text></View>
-            <Pressable accessibilityRole="button" accessibilityLabel="Next round" disabled={busy || !session.spells.length} onPress={() => act({ type: 'fight' })} style={({ pressed }) => [s.next, (busy || !session.spells.length) && s.disabled, pressed && s.pressed]}><Text style={s.nextLabel}>{session.spells.length ? 'Battle →' : 'Buy a spell'}</Text></Pressable>
+            <Pressable accessibilityRole="button" accessibilityLabel={excess ? `Battle unavailable: remove ${excess} spell${excess===1?'':'s'}` : 'Next round'} disabled={busy || !session.spells.length || excess>0} onPress={() => act({ type: 'fight' })} style={({ pressed }) => [s.next, (busy || !session.spells.length || excess>0) && s.disabled, pressed && s.pressed]}><Text style={[s.nextLabel,excess>0&&{fontSize:15,textAlign:'center'}]}>{excess ? `Remove ${excess} spell${excess===1?'':'s'}` : session.spells.length ? 'Battle →' : 'Buy a spell'}</Text></Pressable>
           </View>
         </View>
         {!!error && <Text accessibilityRole="alert" style={s.error}>{error}</Text>}
@@ -161,6 +169,8 @@ const s = StyleSheet.create({
   handDrop: { flex: 1, minWidth: 0, borderWidth: 1, borderColor: '#586657', borderRadius: 11, backgroundColor: '#101d20ee' },
   handHeading: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 10, paddingTop: 6, gap: 10 },
   handHint: { flex: 1, textAlign: 'right', color: '#a8b9a8', fontSize: 10 },
+  overflowReadyDrop: { borderColor: '#d98073', backgroundColor: '#582a3066', borderStyle: 'dashed' },
+  overflowDrop: { borderColor: '#ff9989', backgroundColor: '#713239aa', borderStyle: 'solid', boxShadow: '0 0 16px #ef665b66' },
   readyDrop: { borderColor: '#b9d28e', backgroundColor: '#2e4a3766', borderStyle: 'dashed' }, activeDrop: { borderColor: '#d4f1a1', backgroundColor: '#416642aa', borderStyle: 'solid' }, blockedDrop: { borderColor: '#a46c5b', backgroundColor: '#62372e88' },
   roundActions: { justifyContent: 'space-between', gap: 6 },
   trash: { flex: 1, minHeight: 44, justifyContent: 'center', alignItems: 'center', gap: 2, borderRadius: 8, borderWidth: 1, borderColor: '#514d43', backgroundColor: '#172023' },

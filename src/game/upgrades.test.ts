@@ -52,12 +52,12 @@ it('buys XP into a full hand, validates transactions, and preserves XP through r
  const internal=(g as unknown as {session:Session}).session;
  internal.spells=Array(6).fill('wrath');internal.spellXp=[2,0,0,0,0,0];internal.shop=['wrath'];
  let s=await g.execute(internal.id,0,{type:'buy',spell:'wrath',target:0});
- expect(s.gold).toBe(9);expect(s.spells).toHaveLength(6);expect(s.spellXp?.[0]).toBe(3);
+ expect(s.gold).toBe(8);expect(s.spells).toHaveLength(6);expect(s.spellXp?.[0]).toBe(3);
  await expect(g.execute(s.id,s.revision,{type:'buy',spell:'wrath',target:0})).rejects.toThrow();
  await expect(g.execute(s.id,s.revision-1,{type:'merge',from:2,to:1})).rejects.toThrow('out of date');
  s=await g.execute(s.id,s.revision,{type:'move',from:0,to:4});expect(s.spellXp?.[4]).toBe(3);
  s=await g.execute(s.id,s.revision,{type:'trash',index:1});expect(s.spellXp?.[3]).toBe(3);
- s=await g.execute(s.id,s.revision,{type:'merge',from:0,to:1});expect(s.spellXp?.[0]).toBe(1);expect(s.gold).toBe(9);
+ s=await g.execute(s.id,s.revision,{type:'merge',from:0,to:1});expect(s.spellXp?.[0]).toBe(1);expect(s.gold).toBe(8);
  const xp=[...s.spellXp!];s=await g.execute(s.id,s.revision,{type:'fight'});
  expect(s.battle?.frames[0].player.spellXp).toEqual(xp);
  expect(s.lobby.players[0].lastCombatXp).toEqual(xp);

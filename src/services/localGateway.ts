@@ -80,8 +80,6 @@ export class LocalGameGateway implements GameGateway {
                 const shopSlot = command.shopSlot ?? s.shop.indexOf(command.spell);
                 if (!spell || !Number.isInteger(shopSlot) || shopSlot < 0 || s.shop[shopSlot] !== command.spell)
                     throw new Error('Spell unavailable.');
-                if (command.target === undefined && s.spells.length >= RULES.slots)
-                    throw new Error('Your spellbook is full.');
                 if (command.target !== undefined && (!Number.isInteger(command.target) || command.target < 0 || s.spells[command.target] !== spell.id || s.spellXp[command.target] >= UPGRADE_XP))
                     throw new Error('Choose a matching card that can gain XP.');
                 const addReason = command.target === undefined ? spellAddReason(s.spells, spell.id) : null;
@@ -107,7 +105,7 @@ export class LocalGameGateway implements GameGateway {
             else if (command.type === 'trash') {
                 if (!Number.isInteger(command.index) || command.index < 0 || command.index >= s.spells.length)
                     throw new Error('Invalid spell position.');
-                s.gold += trashRefund(s.augments, SPELLS[s.spells[command.index]].stars);
+                s.gold += trashRefund(s.augments, SPELLS[s.spells[command.index]].price);
                 s.spells.splice(command.index, 1);
                 s.spellXp.splice(command.index, 1);
                 s.spellAcquired.splice(command.index, 1);
@@ -126,6 +124,8 @@ export class LocalGameGateway implements GameGateway {
             else {
                 if (!s.spells.length)
                     throw new Error('Equip a spell first.');
+                if (s.spells.length > RULES.slots)
+                    throw new Error(`Reduce your hand to ${RULES.slots} spells before battle.`);
                 const bots = cloneSnapshot(this.bots);
                 resolveLobbyRound(s, bots);
                 this.bots = bots;

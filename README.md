@@ -19,7 +19,7 @@ All five domains are playable: 25 Nature, 19 Water, 20 Fire, 23 Holy and 22 Affl
 
 Square-bracket effects in the design are explicit domain-attuned requirements in the game. Unmarked effects remain usable off-domain. Upgraded numerical bonuses retain their basic value without attunement. Incoming enemy debuffs still affect unattuned targets.
 
-Poison and Regeneration deal/heal 10 per tick. Completing Fire or Water cards grants Heat or Tide. Three Heat accelerate and Empower the next non-Instant Fire spell; three Tide Echo the next non-Instant spell at 50%. Guard, Slow and Trap use charges. Triggers arm after the first successful cast and fire once per Cycle unless printed otherwise. Retrigger repeats the latest eligible Trigger without further Trigger chains. Awaken transforms individual cards for this duel. Oaths track following spells; Fragile cards leave after their first completed cast and Echo.
+Poison and Regeneration deal/heal 10 per tick. Completing Fire or Water cards grants Heat or Tide. Three Heat accelerate and Empower the next non-Instant Fire spell; three Tide Echo the next non-Instant spell at 50%. Guard, Slow and Trap use charges. Triggers arm after the first successful cast and its whole effect chain. Each Armed copy may fire once per tick; normal Trigger effects can chain into other Armed Triggers. Retrigger repeats the latest eligible Trigger without further Trigger chains. Awaken transforms individual cards for this duel. Oaths track following spells; Fragile cards leave after their first completed cast and Echo.
 
 See [current combat rules](src/config/COMBAT_RULES.md) and [all spells and augments](docs/Spell_and_Augment_Reference.md).
 

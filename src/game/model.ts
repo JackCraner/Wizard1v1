@@ -2,13 +2,19 @@ import type { CardDefinition, Domain } from '../config/catalogue';
 export type SpellId = string;
 export type Difficulty = 'easy' | 'normal' | 'hard' | 'nightmare';
 export interface Effect {
+    bonusWhen?: Effect['when'];
+    addPerStatus?: string;
+    perStatusAmount?: number;
+    bonusLimit?: number;
+    perEventAmount?: boolean;
+    wardPerAdded?: number;
     requiresAttunement?: Domain;
     attunedAmount?: number;
     bonusDomain?: Domain;
-    kind: 'rule' | 'trigger' | 'awaken' | 'retrigger' | 'sequenceOath' | 'damage' | 'heal' | 'ward' | 'selfDamage' | 'status' | 'interrupt' | 'cleanse' | 'consume' | 'multiply' | 'spend' | 'oath' | 'repeatNext' | 'modifier' | 'cultivate' | 'summon' | 'impGuard' | 'impPower' | 'sacrificeImp' | 'removeWard' | 'healFull' | 'fragile';
-    when?: 'heatConsumed'|'echoed'|'impAlive'|'impAbsent'|'regen8'|'wardRemoved'|'regen'|'poison6';
+    kind: 'growImp' | 'rule' | 'trigger' | 'awaken' | 'retrigger' | 'sequenceOath' | 'damage' | 'heal' | 'ward' | 'selfDamage' | 'status' | 'interrupt' | 'cleanse' | 'consume' | 'multiply' | 'spend' | 'oath' | 'repeatNext' | 'modifier' | 'cultivate' | 'summon' | 'impGuard' | 'impPower' | 'sacrificeImp' | 'removeWard' | 'healFull' | 'fragile';
+    when?: 'heatConsumed'|'echoed'|'impAlive'|'impAbsent'|'regen8'|'wardRemoved'|'regen'|'poison6'|'firstFire'|'firstWater'|'belowHalf'|'enemyNoWard'|'enemyPoison'|'enemyCurse'|'startTide2'|'startWard'|'startNoWard'|'ward'|'oath'|'previousEcho';
     rule?: string;
-    event?: 'heat'|'echo'|'cycle'|'poison'|'impHurt'|'oath'|'fatal';
+    event?: 'heat'|'tide'|'ward'|'curse'|'impAttack'|'damage'|'heal'|'selfDamage'|'echo'|'cycle'|'poison'|'impHurt'|'oath'|'fatal';
     limit?: number;
     domainFilter?: Domain;
     onceCombat?: boolean;
@@ -71,16 +77,22 @@ export interface Spell extends CardDefinition {
 export interface Stats {
     health: number;
 }
-export interface CardState { armed?:boolean; firedCycle?:number; firedCombat?:boolean; awakened?:boolean; echoes?:number; rules?:string[] }
+export interface CardState { armed?:boolean; firedTick?:number; firedCombat?:boolean; awakened?:boolean; echoes?:number; rules?:string[] }
 export interface CombatMemory {
+    cycleDomains?: Partial<Record<Domain,number>>;
+    cycleStarts?: number;
+    cycleFireStarts?: number;
+    previousHeat?: boolean;
+    previousEcho?: boolean;
+    livingFlameCycle?: number;
     rules?: Record<string,number>;
     cards?: Record<number,CardState>;
     heatConsumed?:number;
     poisonEvents?:number;
     echoCycle?:number;
     criticalCycle?:number;
-    lastTrigger?: {index:number;effects:Effect[];cycle:number};
-    triggerHistory?: {index:number;effects:Effect[];cycle:number}[];
+    lastTrigger?: {index:number;effects:Effect[];cycle:number;eventAmount?:number};
+    triggerHistory?: {index:number;effects:Effect[];cycle:number;eventAmount?:number}[];
     sequenceOath?: {index:number;condition:'noDamage'|'damage100'|'safe';remaining:number;effects:Effect[];failed:boolean};
     tidecallerThreshold?: number;
     echoPower?: number;
@@ -129,6 +141,9 @@ export interface Fighter {
     oath?: Oath;
     memory: CombatMemory;
     casting: {
+        startWard?: number;
+        startTide?: number;
+        freeHeat?: boolean;
         spell: SpellId;
         index: number;
         remaining: number;
@@ -169,6 +184,10 @@ export interface HealingEvent {
 }
 export interface CombatOrigin { side: 'player' | 'bot'; kind: 'spell' | 'wizard' | 'imp' | 'cycle'; index?: number; }
 export interface CombatNotice {
+    triggerId?: number;
+    parentTriggerId?: number;
+    triggerGroup?: number;
+    resource?: { before:number; spent:number; after:number };
     origin?: CombatOrigin;
     index?:number;
     targetIndex?:number;
@@ -177,6 +196,7 @@ export interface CombatNotice {
     text: string;
 }
 export interface CombatFrame {
+    stateTick?: number;
     tickStart?: CombatFrame;
     presentationPhase?: 'start' | 'resolve';
     notices?: CombatNotice[];

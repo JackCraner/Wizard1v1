@@ -172,13 +172,13 @@
   "trigger": {
     "name": "Trigger",
     "aliases": [],
-    "description": "Dormant until this copy completes its first cast. Then fires automatically, once per Cycle unless stated otherwise. Leaves when its card breaks.",
+    "description": "Dormant until this copy completes its first cast and its entire effect chain. Once Armed, resolves at most once per tick, in sequence order. Normal Trigger effects can activate other Armed Triggers. Broken cards lose their Trigger.",
     "related": []
   },
   "retrigger": {
     "name": "Retrigger",
     "aliases": [],
-    "description": "Repeat the most recent eligible friendly Trigger this Cycle. Does not activate more Triggers or repeat another Retrigger.",
+    "description": "Repeat the last eligible Armed Trigger resolved this Cycle, ignoring its per-tick limit. Does not update Trigger history, retrigger Retrigger, or activate other Triggers.",
     "related": []
   },
   "awaken": {

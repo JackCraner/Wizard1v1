@@ -9,11 +9,12 @@ import rawKeywords from './keywords.json';
 
 export type Domain = 'nature' | 'water' | 'fire' | 'holy' | 'affliction';
 export interface CardDefinition {
+  instantWhen?: 'noHeatConsumed'|'previousHeat';
   xp?: number; upgraded?: boolean;
   enemyStatusCast?: {status:string;ticks:number};
   instantDomain?: Domain;
   castDomain?: Domain; unattunedCastTicks?:number;
-  upgrade?: { enemyStatusCast?:{status:string;ticks:number}; instantDomain?:Domain; castDomain?:Domain; unattunedCastTicks?:number; castTicks:number|null;  rules:string; keywords:string[]; combat?:{effects?:Effect[];blockedReason?:string}; notes?:string[] };
+  upgrade?: { instantWhen?: 'noHeatConsumed'|'previousHeat'; enemyStatusCast?:{status:string;ticks:number}; instantDomain?:Domain; castDomain?:Domain; unattunedCastTicks?:number; castTicks:number|null;  rules:string; keywords:string[]; combat?:{effects?:Effect[];blockedReason?:string}; notes?:string[] };
   id: string; name: string; domain: Domain; stars: number; castTicks: number | null;
   combat?: { effects?: Effect[]; blockedReason?: string };
   rules: string; keywords: string[]; notes: string[];
@@ -22,7 +23,7 @@ export interface Keyword { name: string; aliases: string[]; description: string;
 export const KEYWORDS: Record<string, Keyword> = rawKeywords;
 export const CARDS: readonly CardDefinition[] = rawCards as CardDefinition[];
 export const CARD_BY_ID = Object.fromEntries(CARDS.map(card => [card.id, card])) as Record<string, CardDefinition>;
-export const goldCost = (card: Pick<CardDefinition, 'stars'>) => card.stars;
+export const goldCost = (card: Pick<CardDefinition, 'stars'>) => card.stars + 1;
 export const castLabel = (ticks: number | null) => ticks === null ? 'TBD' : ticks === 0 ? 'Instant' : `${ticks}T`;
 export function explainedKeywords(ids: readonly string[]) {
   const found = new Set<string>();
