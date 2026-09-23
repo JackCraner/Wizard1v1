@@ -4,6 +4,8 @@ import {LocalGameGateway} from '../services/localGateway';
 
 /** Development-only, reproducible full-sequence previews through the normal game UI. */
 export const COMBAT_FIXTURES={
+ 'tide-cast':{player:['current','brine','jet'],bot:['photosynthesis']},
+ statuses:{player:['moonblight','hex','ice-shard','searing-touch','prayer','ember'],bot:['moonblight','hex','ice-shard','searing-touch','prayer','ember']},
  'mixed-heat':{player:['ember','spark','spark','aegis','brine','leech'],bot:['photosynthesis']},
  heat:{player:['spark','spark','spark','spark','spark','pyroblast'],bot:['photosynthesis']},
  branches:{player:['healing-seed','backdraft','healing-seed','radiance','spark','whirlpool'],bot:['ritual','soul-tithe','leech','empowered-imp','radiance','blood-pact']},

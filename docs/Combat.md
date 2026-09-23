@@ -52,3 +52,7 @@ Full values: [spell and augment reference](Spell_and_Augment_Reference.md).
 Trigger darts follow causal parents: siblings travel concurrently, later hops wait for their parent, and separate chains run together. Each chain fits one playback tick. Faint trails retain earlier hops. Self/Cycle activations use an exclamation hop; damage numbers and darts pause with playback. See [development previews](Development.md#browser-validation).
 
 All cards show rising embers and sparks that grow denser, brighter and faster across five Heat levels, with a restrained edge glow. The next eligible card pulses more strongly at five Heat. Empowered adds a brief ignition burst and white-hot corners. The animation follows playback speed and pause; reduced motion keeps a static glow.
+
+When an Echo resolves, a translucent blue copy of that spell appears behind its sequence card, rises slightly and fades. This feedback follows pause and playback speed; reduced motion uses a stationary fading copy.
+
+The combat HUD reserves Ward space even at zero Ward and fixed-height buff/debuff boxes. Status chips wrap horizontally and scroll within the reserved box when needed. During an echoed cast, the Tide wave icon remains visible at zero stacks and pulses with playback; it replaces the extended Tide activation receipt.
