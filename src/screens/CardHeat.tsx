@@ -1,6 +1,6 @@
 import settings from '../config/rules.json';
-import {useEffect, useRef} from 'react';
-import {Animated, Easing, StyleSheet, View} from 'react-native';
+import {memo, useEffect, useRef} from 'react';
+import {Animated, Easing, Platform, StyleSheet, View} from 'react-native';
 import {heatColors} from '../theme';
 import {useCombatMotion} from './CombatConnections';
 import {useFeedbackProgress} from './useFeedbackProgress';
@@ -16,7 +16,7 @@ function Ignition({playing, speed, reduced}: {playing: boolean; speed: number; r
 }
 
 /** Edge-only heat leaves the spell text and other combat cues unobscured. */
-export function CardHeat({heat, empowered, next, playing, speed}: {
+export const CardHeat = memo(function CardHeat({heat, empowered, next, playing, speed}: {
   heat: number; empowered: boolean; next: boolean; playing: boolean; speed: number;
 }) {
   const reducedMotion = useCombatMotion();
@@ -24,17 +24,16 @@ export function CardHeat({heat, empowered, next, playing, speed}: {
   const position = useRef(0);
   const stage = empowered ? settings.heatThreshold + 1 : Math.min(settings.heatThreshold, Math.max(0, heat));
   useEffect(() => {
-    const listener = phase.addListener(({value}) => { position.current = value; });
-    return () => phase.removeListener(listener);
-  }, [phase]);
-  useEffect(() => {
     if (!playing || reducedMotion || !stage) return;
     let stopped = false;
+    let started = performance.now(), start = position.current;
     const cycle = () => {
       if (stopped) return;
+      start = position.current; started = performance.now();
+      phase.setValue(start);
       const animation = Animated.timing(phase, {
         toValue: 1, duration: (1 - position.current) * (2100 - stage * 200) / speed,
-        easing: Easing.linear, useNativeDriver: false,
+        easing: Easing.linear, useNativeDriver: Platform.OS !== 'web', isInteraction: false,
       });
       animation.start(({finished}) => {
         if (!finished || stopped) return;
@@ -44,7 +43,7 @@ export function CardHeat({heat, empowered, next, playing, speed}: {
       });
     };
     cycle();
-    return () => { stopped = true; phase.stopAnimation(); };
+    return () => { stopped = true; position.current = Math.min(1, start + (performance.now() - started) * speed / (2100 - stage * 200)); phase.stopAnimation(); };
   }, [phase, playing, reducedMotion, speed, stage]);
 
   if (!stage) return null;
@@ -76,4 +75,4 @@ export function CardHeat({heat, empowered, next, playing, speed}: {
       }}/>;
     })}
   </View>;
-}
+});

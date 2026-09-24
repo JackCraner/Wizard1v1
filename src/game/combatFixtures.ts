@@ -4,6 +4,7 @@ import {LocalGameGateway} from '../services/localGateway';
 
 /** Development-only, reproducible full-sequence previews through the normal game UI. */
 export const COMBAT_FIXTURES={
+ resolutions:{player:['oath-restraint','prayer','current','current','current','wild-growth'],bot:['oath-restraint','prayer','current','current','current','wild-growth']},
  instant:{player:['holy-light','firefury'],bot:['holy-light','healing-seed']},
  imps:{player:['ritual','aegis','divine-intervention','shadow-bolt'],bot:['ritual','aegis','divine-intervention','shadow-bolt']},
  'tide-cast':{player:['current','brine','jet'],bot:['photosynthesis']},

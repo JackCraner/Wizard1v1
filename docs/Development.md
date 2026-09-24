@@ -35,11 +35,13 @@ Supported browsers show **Full screen** in the main menu and Local lobby. Tap it
 
 Use 832 × 384 CSS pixels as the established S24 Ultra landscape reference; this is a logical viewport, not the panel's physical resolution. Check a wider viewport when changing responsive layout. Verify readable inspection dialogs, long-hold previews away from the finger, drag/drop, full-hand warnings and disabled battle entry above the slot limit.
 
-Development builds support `?combat-lab=mixed-heat`, `heat`, `branches`, `chains`, `ward`, `signals`, `fire`, `water`, `nature` and `holy`. Open a separate tab and start a new game for a reproducible combat preview. Production builds use the regular gateway. Preserve the user's active run and close temporary tabs afterward.
+Development builds support `?combat-lab=mixed-heat`, `heat`, `branches`, `chains`, `ward`, `signals`, `fire`, `water`, `nature`, `holy` and `resolutions` (successful Oaths and Fragile casts with Echo). Open a separate tab and start a new game for a reproducible combat preview. Production builds use the regular gateway. Preserve the user's active run and close temporary tabs afterward.
 
 For combat visuals, check pause/resume, 0.5× and normal speed, independent concurrent chains, parent-before-child hops, self/Cycle exclamation cues, Imp origins and damage-number positioning. One chain fits one tick; siblings depart together. IDs describe actual causal events rather than inferring dependencies from card positions.
 
 ## Runtime boundaries
+
+Combat darts update SVG geometry directly from one progress clock, without per-frame React state. Measure each distinct endpoint once per feedback batch, retain causal trigger scheduling, and keep inactive darts static. Native transform/opacity feedback and heat particles use the native animation driver; SVG geometry and width-based bars remain JavaScript-driven. Pause/speed changes preserve normalized progress without per-frame position listeners. Keep particle counts, glow styles and simulation outcomes unchanged when optimizing presentation.
 
 Runs are currently in memory; refreshing loses them. Reload after changing the ruleset. Keep combat snapshots JSON-compatible and avoid browser-only globals or native UI imports inside game logic. Use the shared snapshot clone helper rather than requiring browser crypto or structuredClone.
 

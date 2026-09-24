@@ -24,7 +24,7 @@ export function CombatScreen({game}:{game:ReturnType<typeof useGame>}){
  const inspect=()=>{const paused=game.paused;game.setPaused(true);return()=>game.setPaused(paused);};
  return <CombatConnections frame={current} speed={speed} playing={game.active&&!game.paused}><View style={{flex:1,backgroundColor:'#11151a'}}><Image source={combatArt.background} resizeMode="cover" style={[StyleSheet.absoluteFill,{width:'100%',height:'100%',opacity:.3}]} accessible={false}/><SafeAreaView style={{flex:1}}><View style={{flex:1,padding:compact?8:16,gap:compact?6:12}}>
   <View style={{flexDirection:'row',alignItems:'center',gap:5}}><Text style={{color:'#ead6ad',fontSize:11,fontWeight:'800',flex:1}}>ROUND {session.round} · {current.tick}/{RULES.maxTicks} · {finished?'Complete':game.paused?'Paused':'Combat'}</Text>{button('‹ Menu',()=>game.setScreen('menu'))}{button('‹ Tick',()=>game.step(-1),frame===0)}{button(finished?'Replay':game.paused?'Play':'Pause',()=>{if(finished)game.setFrame(0);game.setPaused(finished?false:!game.paused);})}{button('Tick ›',()=>game.step(1),finished)}{button(`${speed}×`,()=>game.setSpeed(nextPlaybackSpeed(speed)))}{button('Timeline',()=>{game.setPaused(true);setHistory(true);})}{button('Skip',()=>game.setFrame(battle.frames.length-1),finished)}</View>
-  <CombatSequence fighter={current.bot} side="bot" frame={current} compact={compact} speed={speed} playing={playing} onInspect={inspect}/>
+  <CombatSequence fighter={current.bot} side="bot" frame={current} compact={compact} speed={speed} playing={playing} feedbackPlaying={game.active&&!game.paused} onInspect={inspect}/>
   <View style={{flex:1,minHeight:0,flexDirection:'row',gap:compact?22:60,paddingHorizontal:compact?12:70,alignItems:'stretch'}}>
    {(['player','bot'] as const).map(side=>{const u=current[side],oath=u.memory.sequenceOath;return <View key={side} style={{flex:1,minWidth:0,paddingBottom:compact?35:42,gap:3}}>
     <View style={{flexDirection:'row',alignItems:'center',gap:8}}><CombatAnchor id={side+':wizard'} style={{flex:1}}><Text numberOfLines={1} style={{color:'#e8dbc5',fontSize:11,fontWeight:'700'}}>{side==='player'?'You':u.name} · Lv {u.level}</Text><OrnateMeter value={u.health} max={u.maxHealth}/><WardMeter value={u.shield} capacity={u.wardCapacity??u.shield}/></CombatAnchor><AugmentInventory augments={u.augments} compact inline onInspect={()=>game.setPaused(true)}/></View>
@@ -35,7 +35,7 @@ export function CombatScreen({game}:{game:ReturnType<typeof useGame>}){
    <DamageNumbers compact={compact} frame={current} playing={game.active&&!game.paused} speed={speed}/>
    {finished&&<CombatResult outcome={battle.outcome} level={session.level} compact={compact}/>}
   </View>
-  <CombatSequence fighter={current.player} side="player" frame={current} compact={compact} speed={speed} playing={playing} onInspect={inspect}/>
+  <CombatSequence fighter={current.player} side="player" frame={current} compact={compact} speed={speed} playing={playing} feedbackPlaying={game.active&&!game.paused} onInspect={inspect}/>
   {finished&&<View style={{alignItems:'center'}}>{button(session.round%2===0?'Level up →':'Return to shop →',()=>game.act({type:'next'}),game.busy)}</View>}
   {!!game.error&&<Text style={{color:'#ffb9a4'}}>{game.error}</Text>}
  </View></SafeAreaView>

@@ -1,17 +1,19 @@
 import {useEffect,useRef} from 'react';
-import {Animated,Easing} from 'react-native';
+import {Animated,Easing,Platform} from 'react-native';
 
-/** Keep the same animation position across pause, resume and speed changes. */
-export function useFeedbackProgress(playing:boolean,duration:number,onDone?:()=>void,delay=0){
+/** Linear progress resumes at the same position without a per-frame JS listener.
+ * SVG darts opt out of the native driver because they update path geometry. */
+export function useFeedbackProgress(playing:boolean,duration:number,onDone?:()=>void,delay=0,native=true){
  const value=useRef(new Animated.Value(-delay/duration)).current;
  const position=useRef(-delay/duration),done=useRef(onDone);
  done.current=onDone;
- useEffect(()=>{const id=value.addListener(({value:v})=>{position.current=v;});return()=>value.removeListener(id);},[value]);
  useEffect(()=>{
   if(!playing||position.current>=1)return;
-  const animation=Animated.timing(value,{toValue:1,duration:Math.max(0,(1-position.current)*duration),easing:Easing.linear,useNativeDriver:false});
-  animation.start(({finished})=>{if(finished)done.current?.();});
-  return()=>animation.stop();
- },[playing,duration,value]);
+  const start=position.current,started=performance.now();
+  value.setValue(start);
+  const animation=Animated.timing(value,{toValue:1,duration:Math.max(0,(1-start)*duration),easing:Easing.linear,useNativeDriver:native&&Platform.OS!=='web',isInteraction:false});
+  animation.start(({finished})=>{if(finished){position.current=1;done.current?.();}});
+  return()=>{position.current=Math.min(1,start+(performance.now()-started)/duration);animation.stop();};
+ },[playing,duration,value,native]);
  return value;
 }
