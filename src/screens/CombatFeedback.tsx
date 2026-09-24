@@ -4,7 +4,7 @@ import { palette, DOMAIN_COLORS, combatColors } from '../theme';
 import {KEYWORD_DOMAINS} from '../game/attunement';
 import { STATUS_ART } from '../components/cards/spellArt';
 import { useEffect, useRef, useState } from 'react';
-import { Animated, Image, Modal, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Animated, Image, Modal, Pressable, ScrollView, Text, View } from 'react-native';
 import {useFeedbackProgress} from './useFeedbackProgress';
 import { KEYWORDS } from '../config/catalogue';
 import statuses from '../config/statuses.json';
@@ -43,19 +43,20 @@ export function EffectBar({fighter,compact,group,highlight=[],playing=true,speed
  </View>;
 }
 type Hit={target?:'wizard'|'imp'|'ward';side:'player'|'bot';amount:number;critical:boolean;healing:boolean;key:string;lane:number};
-function FloatingHit({hit,rows,height,playing,speed,onDone}:{hit:Hit;rows:number;height:number;playing:boolean;speed:number;onDone:(key:string)=>void}) {
+function FloatingHit({hit,height,playing,speed,onDone}:{hit:Hit;height:number;playing:boolean;speed:number;onDone:(key:string)=>void}) {
  const progress=useFeedbackProgress(playing,1450/speed,()=>onDone(hit.key));
- const size=Math.max(8,Math.min(hit.critical?25:21,height/rows*.9,48/((String(Math.abs(hit.amount)).length+1+(hit.critical?1:0))*.63)));
- return <View style={{position:'absolute',left:`${(hit.lane%3)*100/3}%`,top:`${Math.floor((hit.lane%6)/3)*100/rows}%`,width:'33.33%',height:`${100/rows}%`,alignItems:'center',justifyContent:'center'}}><Animated.Text numberOfLines={1} adjustsFontSizeToFit style={{maxWidth:'96%',fontWeight:'900',color:hit.healing?'#87f5a0':hit.target==='ward'?palette.ward:'#ff7770',textShadowColor:palette.shadow,textShadowRadius:5,textShadowOffset:{width:1,height:2},fontSize:size,opacity:progress.interpolate({inputRange:[0,.65,1],outputRange:[1,1,0],extrapolate:'clamp'})}}>{hit.healing?'+':'−'}{Math.abs(hit.amount)}{hit.critical?'!':''}</Animated.Text></View>;
+ const size=Math.max(8,Math.min(hit.critical?25:21,height*.9,28/((String(Math.abs(hit.amount)).length+1+(hit.critical?1:0))*.63)));
+ return <View style={{position:'absolute',left:`${hit.lane*20}%`,top:0,width:'20%',height:'100%',alignItems:'center',justifyContent:'center'}}><Animated.Text numberOfLines={1} adjustsFontSizeToFit style={{maxWidth:'96%',fontWeight:'900',color:hit.healing?'#87f5a0':hit.target==='ward'?palette.ward:'#ff7770',textShadowColor:palette.shadow,textShadowRadius:5,textShadowOffset:{width:1,height:2},fontSize:size,opacity:progress.interpolate({inputRange:[0,.65,1],outputRange:[1,1,0],extrapolate:'clamp'})}}>{hit.healing?'+':'−'}{Math.abs(hit.amount)}{hit.critical?'!':''}</Animated.Text></View>;
 }
-export function DamageNumbers({frame,impSide,compact=false,playing=true,speed=1}:{frame:CombatFrame;impSide?:'player'|'bot';compact?:boolean;playing?:boolean;speed?:number}) {
+export function DamageNumbers({frame,side,compact=false,playing=true,speed=1}:{frame:CombatFrame;side:'player'|'bot';compact?:boolean;playing?:boolean;speed?:number}) {
  const [hits,setHits]=useState<Hit[]>([]);const previous=useRef(frame.tick),seen=useRef(new Set<string>());
  useEffect(()=>{
    const sequential=frame.tick===previous.current||(playing&&frame.tick===previous.current+1);previous.current=frame.tick;
    if(!sequential)seen.current.clear();
-   const incoming=[...(frame.damageEvents??[]).filter(hit=>impSide?hit.target==='imp'&&hit.side===impSide:true).map((hit,i)=>({...hit,healing:false,key:frame.tick+'-'+frame.presentationPhase+'-damage-'+i})),...(frame.healingEvents??[]).filter(hit=>impSide?hit.target==='imp'&&hit.side===impSide:true).map((hit,i)=>({...hit,healing:true,critical:false,key:frame.tick+'-'+frame.presentationPhase+'-heal-'+i}))].filter(hit=>!seen.current.has(hit.key));
+   const incoming=[...(frame.damageEvents??[]).filter(hit=>hit.side===side).map((hit,i)=>({...hit,healing:false,key:frame.tick+'-'+frame.presentationPhase+'-damage-'+i})),...(frame.healingEvents??[]).filter(hit=>hit.side===side).map((hit,i)=>({...hit,healing:true,critical:false,key:frame.tick+'-'+frame.presentationPhase+'-heal-'+i}))].filter(hit=>!seen.current.has(hit.key));
    incoming.forEach(hit=>seen.current.add(hit.key));
-   setHits(old=>{const next=sequential?[...old]:[];for(const hit of incoming){const occupied=new Set(next.filter(h=>h.side===hit.side).map(h=>h.lane));let lane=0;while(occupied.has(lane))lane++;next.push({...hit,lane});}return next.slice(-36);});
- },[frame,impSide]);
- return <View pointerEvents="none" style={[StyleSheet.absoluteFill,{zIndex:50,top:impSide?44:compact?82:104,bottom:0}]}>{(['player','bot'] as const).filter(side=>!impSide||side===impSide).map(side=>{const group=hits.filter(h=>h.side===side),rows=2;return <View key={side} style={{position:'absolute',left:impSide?'50%':side==='player'?'19%':'69%',width:156,maxWidth:impSide?'100%':'38%',height:compact?28:40,transform:[{translateX:-78}]}}>{group.map(hit=><FloatingHit key={hit.key} hit={hit} rows={rows} height={compact?28:40} playing={playing} speed={speed} onDone={key=>setHits(old=>old.filter(h=>h.key!==key))}/>)}</View>;})}</View>;
+   setHits(old=>{const next=sequential?[...old]:[];for(const hit of incoming){if(next.length===5)next.shift();const occupied=new Set(next.map(h=>h.lane));let lane=0;while(occupied.has(lane))lane++;next.push({...hit,lane});}return next;});
+ },[frame,side]);
+ // Reserve space in the health-bar header; feedback never rises into the card row.
+ return <View pointerEvents="none" style={{width:156,maxWidth:'60%',height:compact?16:24,flexShrink:0,overflow:'hidden'}}>{hits.map(hit=><FloatingHit key={hit.key} hit={hit} height={compact?16:24} playing={playing} speed={speed} onDone={key=>setHits(old=>old.filter(h=>h.key!==key))}/>)}</View>;
 }
