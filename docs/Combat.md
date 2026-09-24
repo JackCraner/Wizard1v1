@@ -50,6 +50,8 @@ Full values: [spell and augment reference](Spell_and_Augment_Reference.md).
 
 ## Playback feedback
 
+Reshuffling fills the cast bar in grey across its full duration, including extra Curse ticks. Echo remains in the cast bar and the upcoming “Echo next” hint; completed Echoes use the animated copy without a lingering card label.
+
 Successful Oaths briefly light their source card with a gold-white beam. Fragile cards split into two halves and fade after the simulator reports their break, including after any Echo. Both effects follow pause and playback speed; reduced motion uses a stationary fade. They use bounded opacity/transform animations rather than particle emitters.
 
 Local multiplayer uses the same combat and progression rules. Both humans lock their hands with **Ready** before the host resolves the round. With an odd total player count, one player rests each round; rest rounds award no trophies. Ready can be cancelled until the other human is ready. Each player controls their own playback speed and may return to shopping independently, but the next round waits for both players again.

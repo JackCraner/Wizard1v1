@@ -17,6 +17,7 @@ export const palette = {
 } as const;
 
 export const combatColors = {
+ reshuffle: '#92989f',
  trigger: '#69ffe0', dart: '#8ffff0', retrigger: '#efb4ff', empowered: '#ffb955', echo: '#79dfff', echoSurface: '#14394b',
  awakened: '#e9aaff', casting: '#ffe5a2', readySurface: '#153b38', castingSurface: '#34312a',
  cardSurface: '#14212a', brokenSurface: '#53262b', armed: '#e6ffb0', activated: '#baffef',

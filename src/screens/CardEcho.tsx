@@ -26,6 +26,5 @@ export function CardEcho({card, index, compact, playing, speed}: {
     </View>
     <Text numberOfLines={2} style={{color: palette.cream, fontWeight: '800', fontSize: compact ? 10 : 13, lineHeight: compact ? 12 : 16}}>{card.name}</Text>
     <Text numberOfLines={compact ? 1 : 3} style={{color: combatColors.echo, fontSize: compact ? 8 : 11}}>{card.rules.replace(/\[|\]/g, '')}</Text>
-    <Text style={{position: 'absolute', bottom: 2, left: 5, color: combatColors.echo, fontSize: 8, fontWeight: '800'}}>≈ ECHO</Text>
   </Animated.View>;
 }

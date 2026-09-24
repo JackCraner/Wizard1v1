@@ -10,7 +10,7 @@ import {EffectBar,DamageNumbers} from './CombatFeedback';
 import {CombatTimeline} from './CombatTimeline';
 import {CombatResult} from './CombatResult';
 import {OrnateMeter,WardMeter,combatArt} from './CombatAssets';
-import {continuousCombatFrame,nextPlaybackSpeed} from '../game/playback';
+import {continuousCombatFrame,nextPlaybackSpeed,reshuffleDuration} from '../game/playback';
 import {RULES} from '../game/engine';
 import type {useGame} from '../useGame';
 
@@ -30,7 +30,7 @@ export function CombatScreen({game}:{game:ReturnType<typeof useGame>}){
     <View style={{flexDirection:'row',alignItems:'center',gap:8}}><CombatAnchor id={side+':wizard'} style={{flex:1}}><Text numberOfLines={1} style={{color:'#e8dbc5',fontSize:11,fontWeight:'700'}}>{side==='player'?'You':u.name} · Lv {u.level}</Text><OrnateMeter value={u.health} max={u.maxHealth}/><WardMeter value={u.shield} capacity={u.wardCapacity??u.shield}/></CombatAnchor><AugmentInventory augments={u.augments} compact inline onInspect={()=>game.setPaused(true)}/></View>
     <View style={{flex:1,minHeight:0,flexDirection:'row',gap:6}}>{side==='bot'&&<ImpPanel frame={current} side={side} compact={compact}/>}<View style={{flex:1}}><EffectBar fighter={u} compact={compact} playing={playing} speed={speed} group="buff" onInspect={()=>game.setPaused(true)}/></View><View style={{flex:1}}><EffectBar fighter={u} compact={compact} group="debuff" onInspect={()=>game.setPaused(true)}/></View>{side==='player'&&<ImpPanel frame={current} side={side} compact={compact}/>}</View>
     {oath&&<Text numberOfLines={1} style={{color:'#ffe0a0',fontSize:9}}>Oath · {oath.condition==='safe'?'No Health loss':oath.condition==='damage100'?'Deal 100+ direct damage':'No direct damage'} · {oath.remaining} spell{oath.remaining===1?'':'s'}</Text>}
-    <View style={{position:'absolute',bottom:0,left:'12%',right:'12%',height:36,alignItems:'center'}}><CastBar fighter={u} compact={compact} finished={finished} tick={frame} speed={speed} playing={playing}/></View>
+    <View style={{position:'absolute',bottom:0,left:'12%',right:'12%',height:36,alignItems:'center'}}><CastBar fighter={u} reshuffleTicks={reshuffleDuration(battle,frame,side,u)} compact={compact} finished={finished} tick={frame} speed={speed} playing={playing}/></View>
    </View>;})}
    <DamageNumbers compact={compact} frame={current} playing={game.active&&!game.paused} speed={speed}/>
    {finished&&<CombatResult outcome={battle.outcome} level={session.level} compact={compact}/>}

@@ -1,9 +1,20 @@
 import playbackConfig from '../config/playback.json';
-import type { Battle, CombatFrame } from './model';
+import type { Battle, CombatFrame, Fighter } from './model';
 // Shared by replay advancement and cast-bar interpolation.
 export const PLAYBACK_CONFIG = playbackConfig;
 // Duration of a real tick; there is no automatic hold between ticks.
 export const COMBAT_TICK_MS = PLAYBACK_CONFIG.tickDurationMs;
+// Recover the original wait from snapshots, including when seeking mid-reshuffle.
+export function reshuffleDuration(battle:Battle,frame:number,side:'player'|'bot',fighter:Fighter):number {
+ let duration=fighter.reshuffleRemaining;
+ if(!duration)return 0;
+ for(let index=frame;index>=0;index--){
+  const previous=battle.frames[index][side];
+  if(previous.cycle!==fighter.cycle||!previous.reshuffleRemaining)break;
+  duration=Math.max(duration,previous.reshuffleRemaining);
+ }
+ return duration;
+}
 export const nextPlaybackSpeed=(speed:number)=>{
  const speeds=PLAYBACK_CONFIG.speedMultipliers;
  return speeds[(speeds.indexOf(speed)+1)%speeds.length];
