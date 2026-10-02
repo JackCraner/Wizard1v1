@@ -83,6 +83,20 @@
         "holy",
         "water"
       ]
+    },
+    {
+      "id": "coven",
+      "domains": [
+        "affliction",
+        "fire"
+      ]
+    },
+    {
+      "id": "familiar",
+      "domains": [
+        "affliction",
+        "holy"
+      ]
     }
   ]
 }

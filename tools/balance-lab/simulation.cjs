@@ -1,5 +1,6 @@
 const { fighter, simulate, SPELLS, PLAYABLE_SPELLS, RULES, AUGMENTS, canAddSpell,
   createBotStates, prepareBot, grantBotAugment, BOT_CONFIG, roundPairings, tournament } = require('./game.cjs');
+const { orderBotDeck } = require('../../src/game/botTactics.ts');
 
 function randomSource(seed) {
   let state = seed >>> 0;
@@ -12,6 +13,8 @@ function duel(a, b, trace = false) {
   const last = battle.frames.at(-1);
   return { score: battle.outcome === 'victory' ? 1 : battle.outcome === 'draw' ? .5 : 0,
     ticks: last.tick, healthA: last.player.health, healthB: last.bot.health,
+    maxHealthA: last.player.maxHealth, maxHealthB: last.bot.maxHealth,
+    castsA: last.player.memory.casts, castsB: last.bot.memory.casts,
     endReason: battle.endReason, ...(trace ? { battle } : {}) };
 }
 function build(random, id, stage) {
@@ -35,8 +38,8 @@ function build(random, id, stage) {
     xp: deck.map((_, i) => stage >= 5 && i % 3 === 0 ? 3 : 0), acquired: deck.map((_, i) => i),
     profile: [...new Set(deck.map(id => SPELLS[id].domain))].sort().join(' + ') };
 }
-function run(options, progress = () => {}) {
-  const random = randomSource(options.seed), builds = [], matches = [], searches = [];
+function runSeed(options, progress = () => {}) {
+  const random = randomSource(options.seed), builds = [], matches = [], searches = [], dependencies = [];
   const record = (a, b, mode, round = 0) => {
     const result = duel(a, b);
     matches.push({ a: a.id, b: b.id, mode, round, stage: a.stage, ...result });
@@ -53,7 +56,8 @@ function run(options, progress = () => {}) {
     const training = pool.slice(0, Math.floor(pool.length / 2));
     const heldOut = pool.slice(Math.floor(pool.length / 2));
     const fitness = b => training.reduce((sum, enemy) => sum + duel(b, enemy).score + (1 - duel(enemy, b).score), 0) / (2 * training.length);
-    let best = structuredClone(pool[0]), score = fitness(best);
+    for (let restart = 0; restart < (options.restarts ?? 1); restart++) {
+    let best = structuredClone(training[restart % training.length]), score = fitness(best);
     for (let n = 0; n < options.search; n++) {
       const candidate = structuredClone(best), slot = Math.floor(random() * best.deck.length);
       if (n % 3 === 0 && candidate.augments.length) {
@@ -71,11 +75,19 @@ function run(options, progress = () => {}) {
       const next = fitness(candidate);
       if (next > score) { best = candidate; score = next; }
     }
-    best.id = `search-${stage}`;
+    best.id = `search-${stage}-${restart}`;
     best.profile = [...new Set(best.deck.map(id => SPELLS[id].domain))].sort().join(' + ');
     builds.push(best);
     for (const enemy of heldOut) { record(best, enemy, 'search'); record(enemy, best, 'search'); }
     searches.push({ id: best.id, trainingScore: score });
+    dependencies.push(...probeDependencies(best, heldOut.slice(0, 4), random));
+    }
+    // Same cards, XP, ages and augments; isolate the effect of bot ordering.
+    const tactical = pool.map(b => ({ ...b, ...orderBotDeck(b), id: b.id.replace('arena-', 'tactical-') }));
+    builds.push(...tactical);
+    for (let i = 0; i < tactical.length; i++) for (let j = i + 1; j < tactical.length; j++) {
+      record(tactical[i], tactical[j], 'tactical'); record(tactical[j], tactical[i], 'tactical');
+    }
   }
   for (let t = 0; t < options.tournaments; t++) {
     const ids = Array.from({ length: 8 }, (_, i) => `t${t}-bot${i}`), states = createBotStates(ids);
@@ -85,11 +97,13 @@ function run(options, progress = () => {}) {
       const level = 1 + Math.floor((round - 1) / RULES.augmentEvery);
       const current = {};
       ids.forEach((id, i) => {
-        const index = (options.seed % 100000) * 1000 + t * 8 + i;
-        decks[id] = prepareBot(states[id], decks[id], round, index, options.difficulty);
+        const index = t * 8 + i;
+        states[id].strategy = (t * 8 + i) % BOT_CONFIG.strategies.length;
+        decks[id] = prepareBot(states[id], decks[id], round, index, options.difficulty, options.seed);
         const state = states[id];
         current[id] = { id: `${id}-r${round}`, deck: [...decks[id]], xp: [...state.spellXp], acquired: [...state.spellAcquired],
-          augments: [...state.augments], level, stage: level, profile: BOT_CONFIG.strategies[state.strategy].domains.join(' + ') };
+          augments: [...state.augments], level, stage: level, strategy: BOT_CONFIG.strategies[state.strategy].id,
+          lineage: id, gold: state.gold, profile: [...new Set(decks[id].map(id => SPELLS[id].domain))].sort().join(' + ') };
         builds.push(current[id]);
       });
       for (const [a, b] of roundPairings(ids, round)) {
@@ -97,7 +111,7 @@ function run(options, progress = () => {}) {
         if (result.score !== .5) trophies[result.score === 1 ? a : b] += level;
       }
       if (Object.values(trophies).some(n => n >= tournament.trophiesToWin)) break;
-      ids.forEach((id, i) => grantBotAugment(states[id], decks[id], round, (options.seed % 100000) * 1000 + t * 8 + i));
+      ids.forEach((id, i) => grantBotAugment(states[id], decks[id], round, t * 8 + i, options.seed));
     }
     progress(`Tournament ${t + 1}/${options.tournaments}: ${matches.length} battles completed`);
   }
@@ -110,9 +124,47 @@ function run(options, progress = () => {}) {
       const removed = { ...a, augments: a.augments.filter(id => id !== augment) };
       const full = (duel(a, b).score + 1 - duel(b, a).score) / 2;
       const without = (duel(removed, b).score + 1 - duel(b, removed).score) / 2;
-      contributions.push({ augment, stage: a.stage, delta: full - without });
+      contributions.push({ augment, build: a.id, opponent: b.id, stage: a.stage, delta: full - without });
     }
   }
-  return { builds, matches, searches, contributions };
+  return { builds, matches, searches, contributions, dependencies };
 }
-module.exports = { randomSource, build, duel, run };
+
+function probeDependencies(build, enemies, random) {
+  const score = b => enemies.reduce((sum, enemy) => sum + duel(b, enemy).score + 1 - duel(enemy, b).score, 0) / (enemies.length * 2);
+  const baseline = score(build), probes = [];
+  const record = (kind, detail, candidate) => probes.push({ build: build.id, stage: build.stage, kind, detail, baseline, score: score(candidate), opponents: enemies.length });
+  const seen = new Set([JSON.stringify([build.deck, build.xp, build.acquired])]);
+  for (let n = 0; n < 6; n++) {
+    const order = build.deck.map((_, i) => i);
+    for (let i = order.length - 1; i > 0; i--) { const j = Math.floor(random() * (i + 1)); [order[i], order[j]] = [order[j], order[i]]; }
+    const candidate = { ...build, deck: order.map(i => build.deck[i]), xp: order.map(i => build.xp[i]), acquired: order.map(i => build.acquired[i]) };
+    const key = JSON.stringify([candidate.deck, candidate.xp, candidate.acquired]);
+    if (!seen.has(key)) { seen.add(key); record('order', candidate.deck.join(' → '), candidate); }
+  }
+  for (const augment of build.augments) record('augment', augment, { ...build, augments: build.augments.filter(id => id !== augment) });
+  build.deck.forEach((id, slot) => {
+    const legal = PLAYABLE_SPELLS.filter(next => next !== id && SPELLS[next].stars === SPELLS[id].stars && canAddSpell(build.deck.filter((_, i) => i !== slot), next));
+    if (!legal.length) return;
+    const replacement = pick(legal, random), deck = [...build.deck]; deck[slot] = replacement;
+    record('card', `${id} → ${replacement} (slot ${slot + 1})`, { ...build, deck });
+  });
+  return probes;
+}
+
+function run(options, progress = () => {}) {
+  const combined = { builds: [], matches: [], searches: [], contributions: [], dependencies: [] };
+  for (let offset = 0; offset < (options.seeds ?? 1); offset++) {
+    const seed = (options.seed + offset) >>> 0;
+    const data = runSeed({ ...options, seed }, message => progress(`Seed ${seed}: ${message}`));
+    const id = value => `s${seed}/${value}`;
+    data.builds.forEach(b => { b.id = id(b.id); if (b.lineage) b.lineage = id(b.lineage); b.seed = seed; });
+    data.matches.forEach(m => { m.a = id(m.a); m.b = id(m.b); m.seed = seed; });
+    data.searches.forEach(s => { s.id = id(s.id); s.seed = seed; });
+    data.contributions.forEach(c => { c.build = id(c.build); c.opponent = id(c.opponent); c.seed = seed; });
+    data.dependencies.forEach(p => { p.build = id(p.build); p.seed = seed; });
+    for (const key of Object.keys(combined)) combined[key].push(...data[key]);
+  }
+  return combined;
+}
+module.exports = { randomSource, build, duel, run, probeDependencies };

@@ -104,21 +104,21 @@ Generated from the shipping JSON catalogue. Edit the source configuration, then 
 | ★ | Leech | 1T | Deal 35 damage. Heal 15. Trigger — Curse Applied: Heal 5. | 1T | Deal 50 damage. Heal 25. Trigger — Curse Applied: Heal 8. |
 | ★ | Agony | 1T | Apply Poison for 5 ticks. | 1T | Apply Poison for 6 ticks. Apply 1 Curse. |
 | ★ | Dark Grab | 3T | Deal 100 damage. If the enemy is Cursed when casting starts, cast in 2T instead. | 3T | Deal 130 damage. If the enemy is Cursed when casting starts, cast in 1T instead. |
-| ★ | Bloodletting | 1T | Deal 50 damage. Take 10 self-damage. | 1T | Deal 70 damage. Take 10 self-damage. |
+| ★ | Bloodletting | 1T | Deal 60 damage. Take 10 self-damage. | 1T | Deal 80 damage. Take 10 self-damage. |
 | ★ | Hex | 1T | Apply 1 Curse. | 1T | Apply 2 Curse. |
 | ★ | Impish Bolt | 1T | Deal 30 damage. If your Imp is alive, add 20 current and maximum Imp Health. | 1T | Deal 45 damage. If your Imp is alive, add 30 current and maximum Imp Health. |
-| ★★ | Ritual | 2T | Summon 60 Imp Health. | 2T | Summon 90 Imp Health. |
+| ★★ | Ritual | 2T | Summon 90 Imp Health. | 2T | Summon 120 Imp Health. |
 | ★★ | Eldritch Bolt | 2T | Deal 80 damage. Critical if the enemy has any debuff. | 2T | Deal 100 damage. Critical if the enemy has any debuff. |
 | ★★ | Malison | 2T | Deal 50 damage. Apply 2 Curse. | 2T | Deal 70 damage. Apply 3 Curse. [Affliction Attuned: Apply 1 additional Curse.] |
 | ★★ | Disrupt | 1T | Deal 20 damage. Interrupt. Fragile. | 1T | Deal 30 damage. Interrupt. Apply Poison for 3 ticks. Fragile. |
-| ★★ | Dual Hex | 1T | Apply Poison for 3 ticks to the enemy and yourself. | 1T | Apply Poison for 4 ticks to the enemy and yourself. [Affliction Attuned: also apply 2 Curse to the enemy.] |
+| ★★ | Dual Hex | 1T | Apply Poison for 5 ticks to the enemy and 3 ticks to yourself. | 1T | Apply Poison for 6 ticks to the enemy and 3 ticks to yourself. [Affliction Attuned: also apply 2 Curse to the enemy.] |
 | ★★ | Blood Pact | 1T | Take 30 self-damage. If your Imp is alive, give it 2 Guard; otherwise summon 50 Imp Health. Trigger — Self-Damage: if your Imp is alive, add 10 current and maximum Imp Health. | 1T | Take 30 self-damage. If your Imp is alive, give it 3 Guard; otherwise summon 70 Imp Health. Trigger — Self-Damage: if your Imp is alive, add 15 current and maximum Imp Health. [Affliction Attuned: add 20 instead.] |
 | ★★ | Soul Tithe | 1T | Deal 45 damage. Apply 1 Curse. Trigger — Imp Attack: Apply 1 Curse. | 1T | Deal 60 damage. Apply 2 Curse. Trigger — Imp Attack: Apply 1 Curse. [Affliction Attuned: Trigger also deals 10 damage.] |
 | ★★★ | Dark Communication | 2T | Summon 100 Imp Health. Trigger — Cycle Start: if your Imp is alive, add 30 current and maximum Imp Health. | 2T | Summon 130 Imp Health. Trigger — Cycle Start: if your Imp is alive, add 40 current and maximum Imp Health. |
 | ★★★ | Life Drain | 1T | Deal 40 damage. Heal 50. Channel: +15 damage and healing per extra adjacent copy. | 1T | Deal 40 damage. Heal 50. Channel: +25 damage and healing per extra adjacent copy. |
-| ★★★ | Corrupt Ward | 1T | Deal 40 damage. Remove all enemy Ward. Fragile. | Instant | Deal 50 damage. Remove all enemy Ward. Fragile. [Affliction Attuned: if Ward was removed, deal 50 additional damage.] |
+| ★★★ | Corrupt Ward | 1T | Remove all enemy Ward. Deal 60 damage. If Ward was removed, deal 40 additional damage. Fragile. | Instant | Remove all enemy Ward. Deal 80 damage. Fragile. [Affliction Attuned: if Ward was removed, deal 60 additional damage.] |
 | ★★★ | Shadow Bolt | 1T | Deal 80 damage. Critical while your Imp is alive. | 1T | Deal 100 damage. Critical while your Imp is alive. [Affliction Attuned: Empowered while your Imp is alive.] |
-| ★★★ | Nightmare | 2T | Cultivate all enemy Poison. Deal 12 damage per tick consumed. | 2T | Cultivate all enemy Poison. Deal 16 damage per tick consumed. |
+| ★★★ | Nightmare | 2T | Cultivate all enemy Poison. Deal 16 damage per tick consumed. | 2T | Cultivate all enemy Poison. Deal 20 damage per tick consumed. |
 | ★★★ | SoulBound | 1T | Deal 50 damage. Trigger — Imp Hurt: Heal 25. | 1T | Deal 70 damage. Trigger — Imp Hurt: Heal 40. |
 | ★★★ | Damnation | 1T | Apply Poison for 8 ticks. If the enemy is Cursed, apply 2 additional Poison. | 1T | Apply Poison for 10 ticks. If the enemy is Cursed, apply 3 additional Poison. |
 | ★★★★ | Blood Offering | 1T | Lose half your current Health. Summon an Imp with that much Health, or add that amount to a living Imp's current and maximum Health. [Affliction Attuned: use 150% of the Health lost instead.] | 1T | Lose half your current Health. Summon or grow your Imp by 150% of Health lost. [Affliction Attuned: use 200% instead.] |

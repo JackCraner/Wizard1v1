@@ -12,7 +12,9 @@
 
 Spells have explicit `castTicks`, `rules`, `keywords` and executable `combat.effects`. Upgrades specify the full resulting rules/effects. Conditional speed uses `instantDomain`, `castDomain` and `unattunedCastTicks`. Text describes mechanics; the simulator does not parse rules text to execute effects. Keep both aligned.
 
-Bots use the same catalogue, prices, XP and reward cadence. Difficulty affects configured shopping attempts and income advantages, not hidden combat stats. Deck growth is bounded by `rules.slots`. Scouting uses copied last-combat decks and XP.
+Bots use the same catalogue, prices, XP and reward cadence. Gold resets each shopping phase; replacements pay the full purchase price before receiving the normal selling refund. Bots compare all visible offers by estimated improvement per net gold, value progress toward the actual upgrade, and consider whether Trigger enablers exist. Strategy preferences include Affliction but do not restrict purchases. Difficulty affects configured shopping attempts and income advantages, not hidden combat stats. Deck growth is bounded by `rules.slots`. Scouting uses copied last-combat decks and XP.
+
+`game/botTactics.ts` uses bounded deterministic practice simulations to select augments and improve ordering (setup-first, each possible lead, then adjacent swaps). Card XP and acquisition ages move together. Practice opponents are two fixed, public archetypes; bots cannot see the next opponent’s hidden purchases. Evaluation rewards wins and remaining-Health margin, so timeout strategies remain legitimate. Economy augments receive a modest future-value allowance because combat cannot measure shop benefits. This is a stronger heuristic opponent, not exhaustive search or a model of expert human play; bots currently choose from the initial augment offers without rerolling. Keep the practice search bounded for mobile turn latency.
 
 ## Local workflow
 

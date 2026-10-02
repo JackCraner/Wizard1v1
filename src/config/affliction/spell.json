@@ -163,7 +163,7 @@
       "effects": [
         {
           "kind": "damage",
-          "amount": 50
+          "amount": 60
         },
         {
           "kind": "selfDamage",
@@ -176,7 +176,7 @@
         "effects": [
           {
             "kind": "damage",
-            "amount": 70
+            "amount": 80
           },
           {
             "kind": "selfDamage",
@@ -186,12 +186,12 @@
       },
       "notes": [],
       "castTicks": 1,
-      "rules": "Deal 70 damage. Take 10 self-damage.",
+      "rules": "Deal 80 damage. Take 10 self-damage.",
       "keywords": []
     },
     "stars": 1,
     "castTicks": 1,
-    "rules": "Deal 50 damage. Take 10 self-damage.",
+    "rules": "Deal 60 damage. Take 10 self-damage.",
     "keywords": []
   },
   {
@@ -282,7 +282,7 @@
     "domain": "affliction",
     "stars": 2,
     "castTicks": 2,
-    "rules": "Summon 60 Imp Health.",
+    "rules": "Summon 90 Imp Health.",
     "keywords": [
       "summon"
     ],
@@ -291,13 +291,13 @@
       "effects": [
         {
           "kind": "summon",
-          "amount": 60
+          "amount": 90
         }
       ]
     },
     "upgrade": {
       "castTicks": 2,
-      "rules": "Summon 90 Imp Health.",
+      "rules": "Summon 120 Imp Health.",
       "keywords": [
         "summon"
       ],
@@ -306,7 +306,7 @@
         "effects": [
           {
             "kind": "summon",
-            "amount": 90
+            "amount": 120
           }
         ]
       }
@@ -466,7 +466,7 @@
     "domain": "affliction",
     "stars": 2,
     "castTicks": 1,
-    "rules": "Apply Poison for 3 ticks to the enemy and yourself.",
+    "rules": "Apply Poison for 5 ticks to the enemy and 3 ticks to yourself.",
     "keywords": [
       "poison",
       "apply"
@@ -476,7 +476,7 @@
       "effects": [
         {
           "kind": "status",
-          "amount": 3,
+          "amount": 5,
           "status": "poison",
           "target": "enemy"
         },
@@ -490,7 +490,7 @@
     },
     "upgrade": {
       "castTicks": 1,
-      "rules": "Apply Poison for 4 ticks to the enemy and yourself. [Affliction Attuned: also apply 2 Curse to the enemy.]",
+      "rules": "Apply Poison for 6 ticks to the enemy and 3 ticks to yourself. [Affliction Attuned: also apply 2 Curse to the enemy.]",
       "keywords": [
         "poison",
         "curse",
@@ -501,13 +501,13 @@
         "effects": [
           {
             "kind": "status",
-            "amount": 4,
+            "amount": 6,
             "status": "poison",
             "target": "enemy"
           },
           {
             "kind": "status",
-            "amount": 4,
+            "amount": 3,
             "status": "poison",
             "target": "self"
           },
@@ -801,7 +801,7 @@
     "domain": "affliction",
     "stars": 3,
     "castTicks": 1,
-    "rules": "Deal 40 damage. Remove all enemy Ward. Fragile.",
+    "rules": "Remove all enemy Ward. Deal 60 damage. If Ward was removed, deal 40 additional damage. Fragile.",
     "keywords": [
       "ward",
       "fragile"
@@ -810,11 +810,16 @@
     "combat": {
       "effects": [
         {
-          "kind": "damage",
-          "amount": 40
+          "kind": "removeWard"
         },
         {
-          "kind": "removeWard"
+          "kind": "damage",
+          "amount": 60
+        },
+        {
+          "kind": "damage",
+          "amount": 40,
+          "when": "wardRemoved"
         },
         {
           "kind": "fragile"
@@ -823,7 +828,7 @@
     },
     "upgrade": {
       "castTicks": 0,
-      "rules": "Deal 50 damage. Remove all enemy Ward. Fragile. [Affliction Attuned: if Ward was removed, deal 50 additional damage.]",
+      "rules": "Remove all enemy Ward. Deal 80 damage. Fragile. [Affliction Attuned: if Ward was removed, deal 60 additional damage.]",
       "keywords": [
         "ward",
         "fragile",
@@ -833,15 +838,15 @@
       "combat": {
         "effects": [
           {
-            "kind": "damage",
-            "amount": 50
-          },
-          {
             "kind": "removeWard"
           },
           {
             "kind": "damage",
-            "amount": 50,
+            "amount": 80
+          },
+          {
+            "kind": "damage",
+            "amount": 60,
             "when": "wardRemoved",
             "requiresAttunement": "affliction"
           },
@@ -899,7 +904,7 @@
     "domain": "affliction",
     "stars": 3,
     "castTicks": 2,
-    "rules": "Cultivate all enemy Poison. Deal 12 damage per tick consumed.",
+    "rules": "Cultivate all enemy Poison. Deal 16 damage per tick consumed.",
     "keywords": [
       "poison",
       "cultivate"
@@ -909,7 +914,7 @@
       "effects": [
         {
           "kind": "consume",
-          "amount": 12,
+          "amount": 16,
           "status": "poison",
           "target": "enemy"
         }
@@ -917,7 +922,7 @@
     },
     "upgrade": {
       "castTicks": 2,
-      "rules": "Cultivate all enemy Poison. Deal 16 damage per tick consumed.",
+      "rules": "Cultivate all enemy Poison. Deal 20 damage per tick consumed.",
       "keywords": [
         "poison",
         "cultivate"
@@ -927,7 +932,7 @@
         "effects": [
           {
             "kind": "consume",
-            "amount": 16,
+            "amount": 20,
             "status": "poison",
             "target": "enemy"
           }

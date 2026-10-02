@@ -17,5 +17,5 @@ it('replaces the defeated presentation with a resummoned Imp', () => {
   player.imp = {health: 20, maxHealth: 80, guard: 0};
   const battle = simulate(player, fighter('B', ['spark']));
   expect(continuousCombatFrame(battle, 1).player.imp?.health).toBe(0);
-  expect(continuousCombatFrame(battle, 2).player.imp?.health).toBe(60);
+  expect(continuousCombatFrame(battle, 2).player.imp?.health).toBe(90);
 });
