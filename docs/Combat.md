@@ -51,6 +51,10 @@ Full values: [spell and augment reference](Spell_and_Augment_Reference.md).
 
 ## Playback feedback
 
+The result banner shows a translucent damage/healing meter over every original spell slot on both sides, including broken Fragile spells. Totals include actual damage to Health, Ward and Imps and actual healing (no overhealing or self-damage costs). Echoes and Triggers credit their source card; Retriggers credit the repeated Trigger. Poison, Regeneration and Trap spend credited durations oldest-first; Curse damage is shared by its contributing stacks. Added durations from multiplication credit the multiplying spell. Empowered Imp attacks credit the spell that established its attack power. Augment-only effects and unowned starting statuses are not assigned to a spell. Bars share one scale across both fighters. Replay hides the totals until combat finishes again.
+
+Combat damage and healing text grows with magnitude using bounded square-root scaling, with extra emphasis for Critical hits. HUD feedback uses three wider lanes to fit larger numbers and retains the existing pause/speed timing.
+
 Reshuffling fills the cast bar in grey across its full duration, including extra Curse ticks. Echo remains in the cast bar and the upcoming “Echo next” hint; completed Echoes use the animated copy without a lingering card label.
 
 Successful Oaths briefly light their source card with a gold-white beam. Fragile cards split into two halves and fade after the simulator reports their break, including after any Echo. Both effects follow pause and playback speed; reduced motion uses a stationary fade. They use bounded opacity/transform animations rather than particle emitters.

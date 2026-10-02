@@ -1,3 +1,4 @@
+import { CombatAttribution, distributeCredit } from './combatAttribution';
 import { AUGMENTS } from './augments';
 import { RULES, channelPower, validateDeck } from './engine';
 import { cardAt } from './upgrades';
@@ -10,7 +11,7 @@ type Side='player'|'bot';
 const sides:Side[]=['player','bot'];
 const other=(s:Side):Side=>s==='player'?'bot':'player';
 const debuffs=['poison','slow','trap','curse'];
-type Context={triggerEffect?:boolean;parentTriggerId?:number;side:Side;index:number;spell:boolean;scale:number;echo:boolean;empowered:boolean;heat:boolean;quiet:boolean;eventAmount?:number;startWard?:number;startTide?:number;fireBonus?:number;freeHeat?:boolean;breaks?:boolean;heatEmpowered?:boolean;removedWard?:boolean;cost?:number;damage?:number;critical?:boolean;nextDamage?:number;nextCritical?:boolean};
+type Context={credits?:ReturnType<CombatAttribution['credits']>;triggerEffect?:boolean;parentTriggerId?:number;side:Side;index:number;spell:boolean;scale:number;echo:boolean;empowered:boolean;heat:boolean;quiet:boolean;eventAmount?:number;startWard?:number;startTide?:number;fireBonus?:number;freeHeat?:boolean;breaks?:boolean;heatEmpowered?:boolean;removedWard?:boolean;cost?:number;damage?:number;critical?:boolean;nextDamage?:number;nextCritical?:boolean};
 type Hit={side:Side;amount:number;kind:DamageEvent['kind'];ctx:Context;critical?:boolean;intercept?:boolean;impOnly?:boolean;leech?:number;poison?:boolean;impAttack?:boolean};
 
 /** Deterministic phases: Instant, DoT/deaths, HoT, normal healing/effects/damage, Ward, summons. */
@@ -24,6 +25,8 @@ export function simulate(player:Fighter,bot:Fighter,_seed=RULES.seed):Battle {
  const pendingWard:{side:Side;amount:number;ctx:Context}[]=[];
  const pendingArms:{side:Side;index:number}[]=[];
  const originOf=(c:Context):CombatOrigin=>({side:c.side,kind:c.index>=0?'spell':'wizard',...(c.index>=0?{index:c.index}:{})});
+ const attribution = new CombatAttribution();
+ const impSources = {player: -1, bot: -1};
  const secondWind=new Set<Side>();
  const triggerCounts={player:0,bot:0},barrierTicks={player:-1,bot:-1};
  for(const side of sides){validateDeck(f[side].spells);f[side].memory.cards??={};f[side].memory.rules??={};if(f[side].shield)f[side].wardCapacity=Math.max(f[side].shield,f[side].wardCapacity??0);}
@@ -36,13 +39,13 @@ export function simulate(player:Fighter,bot:Fighter,_seed=RULES.seed):Battle {
  const context=(side:Side,index=-1):Context=>({side,index,spell:false,scale:1,echo:false,empowered:false,heat:false,quiet:false});
  const note=(side:Side,status:string,text:string,index?:number,targetIndex?:number,origin?:CombatOrigin)=>notices.push({side,status,text,index,targetIndex,origin});
  const condition=(s:Side,e:Pick<Effect,'when'>,c:Context)=>!e.when||({heatConsumed:c.heat,echoed:c.echo,impAlive:(f[s].imp?.health??0)>0,impAbsent:!(f[s].imp?.health??0),regen8:(f[s].statuses.regeneration??0)>=8,wardRemoved:!!c.removedWard,regen:!!f[s].statuses.regeneration,poison6:(f[other(s)].statuses.poison??0)>=6,firstFire:!f[s].memory.cycleDomains?.fire,firstWater:!f[s].memory.cycleDomains?.water,belowHalf:f[s].health<f[s].maxHealth*.5,enemyNoWard:!f[other(s)].shield,enemyPoison:!!f[other(s)].statuses.poison,enemyCurse:!!f[other(s)].statuses.curse,startTide2:(c.startTide??0)>=2,startWard:(c.startWard??0)>0,startNoWard:c.startWard===0,ward:f[s].shield>0,oath:!!f[s].memory.oathCompleted,previousEcho:!!f[s].memory.previousEcho}[e.when]);
- const add=(side:Side,status:string,n:number,source:Side,c:Context=context(source))=>{n=Math.floor(n);if(n<=0)return;f[side].statuses[status]=(f[side].statuses[status]??0)+Math.floor(n);if(debuffs.includes(status))(f[side].statusSources??={})[status]=source===side?'self':'enemy';if(status==='curse'&&source!==side)trigger(source,'curse',c.quiet,originOf(c),n,c.parentTriggerId);};
+ const add=(side:Side,status:string,n:number,source:Side,c:Context=context(source))=>{n=Math.floor(n);if(n<=0)return;const before=f[side].statuses[status]??0;f[side].statuses[status]=before+Math.floor(n);attribution.change(side,status,before,f[side].statuses[status],source,c.index);if(debuffs.includes(status))(f[side].statusSources??={})[status]=source===side?'self':'enemy';if(status==='curse'&&source!==side)trigger(source,'curse',c.quiet,originOf(c),n,c.parentTriggerId);};
  const enqueue=(side:Side,n:number,ctx:Context,extra:Partial<Hit>={})=>{if(n>0)hits.push({side,amount:Math.floor(n+1e-8),kind:'hit',ctx,intercept:true,...extra});};
  function heal(side:Side,n:number,c:Context,direct=true,converted=false){
   n=Math.floor(n+1e-8);if(n<=0)return;
   if(rules(side).unholy&&!converted){enqueue(other(side),n*power(side),c,{kind:direct?'hit':'dot',intercept:direct});if(rules(side).unholyHeal)heal(side,n*rules(side).unholyHeal,c,direct,true);return;}
-  if(direct&&has(side,'friendly-imp')&&(f[side].imp?.health??0)>0){const imp=f[side].imp!,v=Math.min(n,imp.maxHealth-imp.health);imp.health+=v;n-=v;if(v){healingEvents.push({side,amount:v,kind:'heal',target:'imp',sourceIndex:c.index});trigger(side,'heal',c.quiet,originOf(c),v,c.parentTriggerId);}}
-  const v=Math.min(n,f[side].maxHealth-f[side].health);f[side].health+=v;if(v){healingEvents.push({side,amount:v,kind:direct?'heal':'hot',sourceIndex:c.index});trigger(side,'heal',c.quiet,originOf(c),v,c.parentTriggerId);}
+  if(direct&&has(side,'friendly-imp')&&(f[side].imp?.health??0)>0){const imp=f[side].imp!,v=Math.min(n,imp.maxHealth-imp.health);imp.health+=v;n-=v;if(v){healingEvents.push({side,amount:v,kind:'heal',target:'imp',sourceIndex:c.index,...(c.credits?{contributions:distributeCredit(v,c.credits)}:{})});trigger(side,'heal',c.quiet,originOf(c),v,c.parentTriggerId);}}
+  const v=Math.min(n,f[side].maxHealth-f[side].health);f[side].health+=v;if(v){healingEvents.push({side,amount:v,kind:direct?'heal':'hot',sourceIndex:c.index,...(c.credits?{contributions:distributeCredit(v,c.credits)}:{})});trigger(side,'heal',c.quiet,originOf(c),v,c.parentTriggerId);}
  }
  function ward(side:Side,n:number,c:Context){
   if(tick>0){pendingWard.push({side,amount:n,ctx:{...c}});return;}
@@ -110,13 +113,13 @@ export function simulate(player:Fighter,bot:Fighter,_seed=RULES.seed):Battle {
    else if(e.kind==='ward')ward(target,value*direct,c);
    else if(e.kind==='status'){add(target,e.status!,value*(e.when==='echoed'?1:c.scale),side,c);if(e.status==='poison'&&target!==side&&has(side,'wildfire')&&u.statuses.heat)enqueue(other(side),20*power(side),{...c,spell:false});}
    else if(e.kind==='selfDamage'){const n=Math.floor(e.currentHealthFraction?u.health*e.currentHealthFraction*c.scale:value*c.scale);c.cost=(c.cost??0)+n;enqueue(side,n,c,{kind:'cost',intercept:false});}
-   else if(e.kind==='multiply'){const before=u.statuses[e.status!]??0;u.statuses[e.status!]=Math.floor(before*(1+(value-1)*c.scale));if(e.wardPerAdded&&attuned(side,e.bonusDomain))ward(side,(u.statuses[e.status!]-before)*e.wardPerAdded,c);}
-   else if(e.kind==='cleanse'){for(const id of (e.status?[e.status]:debuffs).filter(k=>u.statuses[k]>0).slice(0,Math.floor(value*c.scale)))delete u.statuses[id];}
-   else if(e.kind==='consume'||e.kind==='cultivate'){const who=e.kind==='consume'?enemy:u;const count=Math.min(who.statuses[e.status!]??0,e.limit??Infinity);who.statuses[e.status!]=(who.statuses[e.status!]??0)-count;if(e.kind==='consume')enqueue(other(side),count*value*damagePower,c,{critical});else if(e.rule==='ward')ward(side,count*value*direct,c);else heal(side,count*value*direct,c);}
+   else if(e.kind==='multiply'){const before=u.statuses[e.status!]??0;u.statuses[e.status!]=Math.floor(before*(1+(value-1)*c.scale));attribution.change(side,e.status!,before,u.statuses[e.status!],side,c.index);if(e.wardPerAdded&&attuned(side,e.bonusDomain))ward(side,(u.statuses[e.status!]-before)*e.wardPerAdded,c);}
+   else if(e.kind==='cleanse'){for(const id of (e.status?[e.status]:debuffs).filter(k=>u.statuses[k]>0).slice(0,Math.floor(value*c.scale))) {attribution.change(side,id,u.statuses[id],0);delete u.statuses[id];}}
+   else if(e.kind==='consume'||e.kind==='cultivate'){const who=e.kind==='consume'?enemy:u;const count=Math.min(who.statuses[e.status!]??0,e.limit??Infinity);attribution.change(e.kind==='consume'?other(side):side,e.status!,who.statuses[e.status!]??0,(who.statuses[e.status!]??0)-count);who.statuses[e.status!]=(who.statuses[e.status!]??0)-count;if(e.kind==='consume')enqueue(other(side),count*value*damagePower,c,{critical});else if(e.rule==='ward')ward(side,count*value*direct,c);else heal(side,count*value*direct,c);}
    else if(e.kind==='growImp'&&u.imp&&u.imp.health>0){const n=Math.floor(value*c.scale);u.imp.health+=n;u.imp.maxHealth+=n;}
    else if(e.kind==='summon')pending[side]+=Math.floor((e.currentHealthFraction?(c.cost??Math.floor(u.health*e.currentHealthFraction))*value:value)*c.scale);
    else if(e.kind==='impGuard'&&u.imp&&u.imp.health>0)u.imp.guard+=Math.floor(value*c.scale);
-   else if(e.kind==='impPower')rules(side).impDamage=Math.max(rules(side).impDamage??0,value);
+   else if(e.kind==='impPower'){if(value>(rules(side).impDamage??0))impSources[side]=c.index;rules(side).impDamage=Math.max(rules(side).impDamage??0,value);}
    else if(e.kind==='sacrificeImp'&&u.imp&&u.imp.health>0){const amount=(e.useMaxHealth?u.imp.maxHealth:u.imp.health)*value;u.imp.health=0;enqueue(other(side),amount*damagePower,c,{critical,leech:attuned(side,e.bonusDomain)?e.healFraction:undefined});note(side,'summon','Imp sacrificed',c.index);}
    else if(e.kind==='removeWard'){const amount=Math.min(enemy.shield,e.amount??Infinity);enemy.shield-=amount;c.removedWard=amount>0;}
    else if(e.kind==='rule'){const r=rules(side),name=e.rule!;if(name==='tideThreshold')r[name]=Math.min(r[name]??3,value);else r[name]=Math.max(r[name]??0,value);if(c.index>=0)state(side,c.index).rules=[...new Set([...(state(side,c.index).rules??[]),name])];}
@@ -125,7 +128,7 @@ export function simulate(player:Fighter,bot:Fighter,_seed=RULES.seed):Battle {
    else if(e.kind==='fragile'){if(c.spell){c.breaks=true;continue;}if(!(u.broken??=[]).includes(c.index)){u.broken.push(c.index);state(side,c.index).armed=false;note(side,'fragile','BROKEN',c.index);}}
   }awaken();
  }
- function flush(){while(hits.length||queue.length){if(!hits.length){fireTriggers(queue.shift()!);continue;}const batch=hits;hits=[];for(const hit of batch){const u=f[hit.side],c=hit.ctx,source=c.side;let n=hit.amount,total=0,healthLost=0;const record=(amount:number,target:DamageEvent['target'])=>{if(amount>0){damageEvents.push({side:hit.side,sourceSide:source,sourceIndex:c.index,amount,kind:hit.kind,critical:!!hit.critical,target,domain:c.index>=0?card(source,c.index).domain:undefined});total+=amount;}};
+ function flush(){while(hits.length||queue.length){if(!hits.length){fireTriggers(queue.shift()!);continue;}const batch=hits;hits=[];for(const hit of batch){const u=f[hit.side],c=hit.ctx,source=c.side;let n=hit.amount,total=0,healthLost=0;const record=(amount:number,target:DamageEvent['target'])=>{if(amount>0){damageEvents.push({side:hit.side,sourceSide:source,sourceIndex:c.index,amount,kind:hit.kind,critical:!!hit.critical,target,domain:c.index>=0?card(source,c.index).domain:undefined,...(c.credits?{contributions:distributeCredit(amount,c.credits)}:{})});total+=amount;}};
     if((hit.intercept||hit.impOnly)&&(u.imp?.health??0)>0){const imp=u.imp!;if(imp.guard){imp.guard--;n=0;note(hit.side,'guard','Imp Guard blocked damage');}else{const amount=Math.min(imp.health,n);imp.health-=amount;n-=amount;record(amount,'imp');if(amount)trigger(hit.side,'impHurt',c.quiet,{side:hit.side,kind:'imp'},0,c.parentTriggerId);}}
     if(hit.impOnly)n=0;
     if(n>0&&hit.kind!=='cost'&&u.statuses.guard){u.statuses.guard--;n=0;note(hit.side,'guard','Guard blocked damage');if(has(hit.side,'tough-skin'))ward(hit.side,40,{...context(hit.side),quiet:c.quiet,parentTriggerId:c.parentTriggerId});}
@@ -139,7 +142,7 @@ export function simulate(player:Fighter,bot:Fighter,_seed=RULES.seed):Battle {
     if(healthLost&&u.health>0&&u.health<=u.maxHealth*.3&&has(hit.side,'second-wind')&&!secondWind.has(hit.side)){secondWind.add(hit.side);heal(hit.side,120,{...context(hit.side),quiet:c.quiet,parentTriggerId:c.parentTriggerId},false);}
    }} }
  function startCycle(side:Side){const u=f[side];u.memory.cycleCasts=0;u.memory.cycleDomains={};u.memory.cycleStarts=0;u.memory.cycleFireStarts=0;u.memory.oathCompleted=false;delete rules(side).nextFireDamage;u.memory.triggerHistory=[];delete u.memory.lastTrigger;delete rules(side).unholy;delete rules(side).unholyHeal;
-  if(u.statuses.curse){const source=u.statusSources?.curse==='self'?side:other(side);enqueue(side,u.statuses.curse*10*power(source),context(source),{kind:'dot',intercept:false});}
+  if(u.statuses.curse){const source=u.statusSources?.curse==='self'?side:other(side);enqueue(side,u.statuses.curse*10*power(source),{...context(source),credits:attribution.credits(side,'curse',true)},{kind:'dot',intercept:false});}
   if(rules(side).cycleTide)add(side,'tide',1,side);trigger(side,'cycle',false,{side,kind:'cycle'});if(has(side,'reckless-loop')&&u.cycle>1)enqueue(side,25,context(side),{kind:'cost',intercept:false});}
  function advance(side:Side){const u=f[side],active=activeSpellIndices(u),next=active.find(i=>i>u.cursor);u.casting=null;if(!active.length){u.reshuffleRemaining=0;return;}if(next!==undefined)u.cursor=next;else{u.cursor=active[0];const source=u.statusSources?.curse==='self'?side:other(side);u.reshuffleRemaining=(has(side,'reckless-loop')?0:RULES.reshuffleTicks)+(u.statuses.curse&&has(source,'cursed')?1:0);if(!u.reshuffleRemaining){u.cycle++;startCycle(side);}}}
  function interrupt(side:Side){const u=f[side],cast=u.casting;if(!cast)return;const indices=activeSpellIndices(u);let last=cast.index;if(card(side,cast.index).keywords.includes('channel')){let n=0;for(const i of indices.filter(i=>i>=cast.index)){if(u.spells[i]!==cast.spell||n++===3)break;last=i;}}for(const i of indices.filter(i=>i>=cast.index&&i<=last))events.push({side,index:i,spell:u.spells[i],status:'skipped',critical:false,details:['Interrupted']});u.cursor=last;advance(side);}
@@ -154,8 +157,8 @@ export function simulate(player:Fighter,bot:Fighter,_seed=RULES.seed):Battle {
    if(echo){trigger(c.side,'echo',false,{side:c.side,kind:'spell',index:c.index});flush();if(rules(c.side).echoRetrigger&&u.memory.echoCycle!==u.cycle){u.memory.echoCycle=u.cycle;retrigger(context(c.side,activeSpellIndices(u).find(i=>state(c.side,i).rules?.includes('echoRetrigger'))??c.index),{kind:'retrigger'});}}
    if(c.freeHeat&&rules(c.side).livingFlameHeat)add(c.side,'heat',rules(c.side).livingFlameHeat,c.side,c);
    if(def.domain==='fire')add(c.side,'heat',1,c.side);if(def.domain==='water')add(c.side,'tide',1,c.side);
-   if(u.statuses.trap){u.statuses.trap--;enqueue(c.side,10,context(u.statusSources?.trap==='self'?c.side:other(c.side)),{kind:'dot',intercept:false});}
-   if(rules(c.side).impDamage&&(u.imp?.health??0)>0)enqueue(other(c.side),rules(c.side).impDamage*power(c.side),context(c.side,c.index),{impAttack:true});
+   if(u.statuses.trap){const credits=attribution.credits(c.side,'trap');attribution.change(c.side,'trap',u.statuses.trap,u.statuses.trap-1);u.statuses.trap--;enqueue(c.side,10,{...context(u.statusSources?.trap==='self'?c.side:other(c.side)),credits},{kind:'dot',intercept:false});}
+   if(rules(c.side).impDamage&&(u.imp?.health??0)>0)enqueue(other(c.side),rules(c.side).impDamage*power(c.side),{...context(c.side,c.index),credits:[{side:c.side,index:impSources[c.side],amount:1}]},{impAttack:true});
    u.memory.fastStreak=def.castTicks===1?u.memory.fastStreak+1:0;if(has(c.side,'momentum')&&u.memory.fastStreak===3){rules(c.side).nextEmpowered=1;u.memory.fastStreak=0;}
    if(c.critical&&has(c.side,'criticality')&&u.memory.criticalCycle!==u.cycle){u.memory.criticalCycle=u.cycle;add(c.side,'heat',2,c.side);}
    if(c.breaks)state(c.side,c.index).armed=false;
@@ -178,8 +181,8 @@ export function simulate(player:Fighter,bot:Fighter,_seed=RULES.seed):Battle {
   }awaken();flush();if(sides.some(s=>f[s].health<=0)){frames.push(snapshot());break;}
   const tickStart=snapshot();tickStart.presentationPhase='start';
   resolve(sides.filter(s=>f[s].casting?.instant&&--f[s].casting!.remaining===0));if(sides.some(s=>f[s].health<=0)){frames.push(snapshot(tickStart));break;}
-  for(const side of sides){const u=f[side];if(u.statuses.poison){const source=u.statusSources?.poison==='self'?side:other(side);enqueue(side,10*(rules(source).poisonPower??1)*(has(source,'super-poison')?2:1)*power(source),context(source),{kind:'dot',intercept:false,poison:true});u.statuses.poison--;if(!u.statuses.poison&&has(source,'bloom'))enqueue(side,60*power(source),context(source));}}flush();if(sides.some(s=>f[s].health<=0)){frames.push(snapshot(tickStart));break;}
-  for(const side of sides)if(f[side].statuses.regeneration){heal(side,10,context(side),false);f[side].statuses.regeneration--;}flush();if(sides.some(s=>f[s].health<=0)){frames.push(snapshot(tickStart));break;}
+  for(const side of sides){const u=f[side];if(u.statuses.poison){const source=u.statusSources?.poison==='self'?side:other(side);enqueue(side,10*(rules(source).poisonPower??1)*(has(source,'super-poison')?2:1)*power(source),{...context(source),credits:attribution.credits(side,'poison')},{kind:'dot',intercept:false,poison:true});attribution.change(side,'poison',u.statuses.poison,u.statuses.poison-1);u.statuses.poison--;if(!u.statuses.poison&&has(source,'bloom'))enqueue(side,60*power(source),context(source));}}flush();if(sides.some(s=>f[s].health<=0)){frames.push(snapshot(tickStart));break;}
+  for(const side of sides)if(f[side].statuses.regeneration){heal(side,10,{...context(side),credits:attribution.credits(side,'regeneration')},false);attribution.change(side,'regeneration',f[side].statuses.regeneration,f[side].statuses.regeneration-1);f[side].statuses.regeneration--;}flush();if(sides.some(s=>f[s].health<=0)){frames.push(snapshot(tickStart));break;}
 
   for(const side of waiting)if(--f[side].reshuffleRemaining===0){f[side].cycle++;startCycle(side);}flush();
   if(!sides.some(s=>f[s].health<=0))resolve(sides.filter(s=>!waiting.has(s)&&f[s].casting&&!f[s].casting!.instant&&--f[s].casting!.remaining===0));

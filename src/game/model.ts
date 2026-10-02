@@ -165,7 +165,9 @@ export interface CastEvent {
     critMultiplier?: number;
     details?: string[];
 }
+export interface CombatContribution { side: 'player' | 'bot'; index: number; amount: number }
 export interface DamageEvent {
+    contributions?: CombatContribution[];
     sourceSide?: "player"|"bot";
     sourceIndex?:number;
     target?: 'wizard' | 'imp' | 'ward';
@@ -176,6 +178,7 @@ export interface DamageEvent {
     kind: 'hit' | 'dot' | 'cost';
 }
 export interface HealingEvent {
+    contributions?: CombatContribution[];
     sourceIndex?:number;
     target?: 'wizard' | 'imp';
     side: 'player' | 'bot';

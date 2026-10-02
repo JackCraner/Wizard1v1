@@ -1,3 +1,4 @@
+import {combatNumberSize} from './combatNumberSize';
 import {TideIcon,StatusIconPulse} from './TideIcon';
 import {RULES} from '../game/engine';
 import { palette, DOMAIN_COLORS, combatColors } from '../theme';
@@ -45,8 +46,8 @@ export function EffectBar({fighter,compact,group,highlight=[],playing=true,speed
 type Hit={target?:'wizard'|'imp'|'ward';side:'player'|'bot';amount:number;critical:boolean;healing:boolean;key:string;lane:number};
 function FloatingHit({hit,height,playing,speed,onDone}:{hit:Hit;height:number;playing:boolean;speed:number;onDone:(key:string)=>void}) {
  const progress=useFeedbackProgress(playing,1450/speed,()=>onDone(hit.key));
- const size=Math.max(8,Math.min(hit.critical?25:21,height*.9,28/((String(Math.abs(hit.amount)).length+1+(hit.critical?1:0))*.63)));
- return <View style={{position:'absolute',left:`${hit.lane*20}%`,top:0,width:'20%',height:'100%',alignItems:'center',justifyContent:'center'}}><Animated.Text numberOfLines={1} adjustsFontSizeToFit style={{maxWidth:'96%',fontWeight:'900',color:hit.healing?'#87f5a0':hit.target==='ward'?palette.ward:'#ff7770',textShadowColor:palette.shadow,textShadowRadius:5,textShadowOffset:{width:1,height:2},fontSize:size,opacity:progress.interpolate({inputRange:[0,.65,1],outputRange:[1,1,0],extrapolate:'clamp'})}}>{hit.healing?'+':'−'}{Math.abs(hit.amount)}{hit.critical?'!':''}</Animated.Text></View>;
+ const size=combatNumberSize(hit.amount,height<32,hit.critical);
+ return <View style={{position:'absolute',left:`${hit.lane*(100/3)}%`,top:0,width:'33.333%',height:'100%',alignItems:'center',justifyContent:'center'}}><Animated.Text numberOfLines={1} adjustsFontSizeToFit style={{maxWidth:'96%',fontWeight:'900',color:hit.healing?'#87f5a0':hit.target==='ward'?palette.ward:'#ff7770',textShadowColor:palette.shadow,textShadowRadius:5,textShadowOffset:{width:1,height:2},fontSize:size,opacity:progress.interpolate({inputRange:[0,.65,1],outputRange:[1,1,0],extrapolate:'clamp'})}}>{hit.healing?'+':'−'}{Math.abs(hit.amount)}{hit.critical?'!':''}</Animated.Text></View>;
 }
 export function DamageNumbers({frame,side,compact=false,playing=true,speed=1}:{frame:CombatFrame;side:'player'|'bot';compact?:boolean;playing?:boolean;speed?:number}) {
  const [hits,setHits]=useState<Hit[]>([]);const previous=useRef(frame.tick),seen=useRef(new Set<string>());
@@ -55,8 +56,8 @@ export function DamageNumbers({frame,side,compact=false,playing=true,speed=1}:{f
    if(!sequential)seen.current.clear();
    const incoming=[...(frame.damageEvents??[]).filter(hit=>hit.side===side).map((hit,i)=>({...hit,healing:false,key:frame.tick+'-'+frame.presentationPhase+'-damage-'+i})),...(frame.healingEvents??[]).filter(hit=>hit.side===side).map((hit,i)=>({...hit,healing:true,critical:false,key:frame.tick+'-'+frame.presentationPhase+'-heal-'+i}))].filter(hit=>!seen.current.has(hit.key));
    incoming.forEach(hit=>seen.current.add(hit.key));
-   setHits(old=>{const next=sequential?[...old]:[];for(const hit of incoming){if(next.length===5)next.shift();const occupied=new Set(next.map(h=>h.lane));let lane=0;while(occupied.has(lane))lane++;next.push({...hit,lane});}return next;});
+   setHits(old=>{const next=sequential?[...old]:[];for(const hit of incoming){if(next.length===3)next.shift();const occupied=new Set(next.map(h=>h.lane));let lane=0;while(occupied.has(lane))lane++;next.push({...hit,lane});}return next;});
  },[frame,side]);
  // Reserve space in the health-bar header; feedback never rises into the card row.
- return <View pointerEvents="none" style={{width:156,maxWidth:'60%',height:compact?16:24,flexShrink:0,overflow:'hidden'}}>{hits.map(hit=><FloatingHit key={hit.key} hit={hit} height={compact?16:24} playing={playing} speed={speed} onDone={key=>setHits(old=>old.filter(h=>h.key!==key))}/>)}</View>;
+ return <View pointerEvents="none" style={{width:216,maxWidth:'65%',height:compact?28:36,flexShrink:0,overflow:'hidden'}}>{hits.map(hit=><FloatingHit key={hit.key} hit={hit} height={compact?28:36} playing={playing} speed={speed} onDone={key=>setHits(old=>old.filter(h=>h.key!==key))}/>)}</View>;
 }

@@ -5,8 +5,8 @@ import {useCombatMotion} from './CombatConnections';
 import {useFeedbackProgress} from './useFeedbackProgress';
 
 /** A completed Echo leaves a translucent copy behind its original sequence card. */
-export function CardEcho({card, index, compact, playing, speed}: {
-  card: CardDefinition; index: number; compact: boolean; playing: boolean; speed: number;
+export function CardEcho({card, compact, playing, speed}: {
+  card: CardDefinition; compact: boolean; playing: boolean; speed: number;
 }) {
   const reduced = useCombatMotion();
   const progress = useFeedbackProgress(playing, 2000 / speed);
@@ -20,11 +20,13 @@ export function CardEcho({card, index, compact, playing, speed}: {
       transform: [{translateY: reduced ? -16 : progress.interpolate({inputRange: [0, 1], outputRange: [-16, -38]})}],
     },
   ]}>
-    <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-      <Text style={{color: combatColors.echo, fontSize: 8}}>{index + 1} · {'★'.repeat(card.stars)}</Text>
-      <Text style={{color: combatColors.echo, fontSize: 9, fontWeight: '800'}}>{card.castTicks === 0 ? 'ϟ' : `${card.castTicks}T`}</Text>
+    <View style={{flexDirection: 'row', alignItems: 'center', gap: 4}}>
+      <Text numberOfLines={1} adjustsFontSizeToFit minimumFontScale={.8} style={{flex: 1, minWidth: 0, color: palette.cream, fontWeight: '800', fontSize: compact ? 10 : 13, lineHeight: compact ? 12 : 16}}>{card.name}</Text>
+      <Text style={{color: combatColors.echo, fontSize: 9, fontWeight: '800'}}>{card.castTicks === 0 ? 'ϟ' : card.castTicks+'T'}</Text>
     </View>
-    <Text numberOfLines={2} style={{color: palette.cream, fontWeight: '800', fontSize: compact ? 10 : 13, lineHeight: compact ? 12 : 16}}>{card.name}</Text>
-    <Text numberOfLines={compact ? 1 : 3} style={{color: combatColors.echo, fontSize: compact ? 8 : 11}}>{card.rules.replace(/\[|\]/g, '')}</Text>
+    <Text numberOfLines={compact ? 3 : 5} style={{flexShrink: 1, color: combatColors.echo, fontSize: compact ? 8 : 11, lineHeight: compact ? 10 : 14}}>{card.rules.replace(/\[|\]/g, '')}</Text>
+    <View style={{position: 'absolute', top: -5, left: 0, right: 0, alignItems: 'center'}}>
+      <Text style={{color: combatColors.echo, backgroundColor: combatColors.echoSurface, paddingHorizontal: 4, fontSize: 8, lineHeight: 10, letterSpacing: 1}}>{'★'.repeat(card.stars)}</Text>
+    </View>
   </Animated.View>;
 }
