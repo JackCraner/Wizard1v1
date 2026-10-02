@@ -39,6 +39,8 @@ Development builds support `?combat-lab=mixed-heat`, `heat`, `branches`, `chains
 
 For combat visuals, check pause/resume, 0.5× and normal speed, independent concurrent chains, parent-before-child hops, self/Cycle exclamation cues, Imp origins and damage-number positioning. One chain fits one tick; siblings depart together. IDs describe actual causal events rather than inferring dependencies from card positions.
 
+Combat requests a screen wake lock while the fight is visible, including while paused, and releases it at completion or when leaving. Returning to the foreground reacquires it. Native builds use Expo KeepAwake; web requires a supported browser and a secure context (HTTPS or localhost). Plain HTTP Wi-Fi guest links cannot prevent browser sleep. Device battery policies may also deny a lock. Verify on a physical phone after rebuilding the native app.
+
 ## Runtime boundaries
 
 Combat darts update SVG geometry directly from one progress clock, without per-frame React state. Measure each distinct endpoint once per feedback batch, retain causal trigger scheduling, and keep inactive darts static. Native transform/opacity feedback and heat particles use the native animation driver; SVG geometry and width-based bars remain JavaScript-driven. Pause/speed changes preserve normalized progress without per-frame position listeners. Keep particle counts, glow styles and simulation outcomes unchanged when optimizing presentation.

@@ -93,7 +93,7 @@
     "id": "recycler",
     "name": "Recycler",
     "category": "economy",
-    "description": "Trashing a spell refunds 80% of its gold value, rounded down."
+    "description": "Selling a spell refunds 80% of its gold value, rounded down, with a minimum of 1 gold."
   },
   {
     "id": "scavenger",
@@ -153,12 +153,34 @@
     "id": "monster",
     "name": "Monster",
     "category": "defense",
-    "description": "Gain 200 maximum Health, plus 100 extra for each level gained."
+    "description": "Gain 100 maximum Health, plus 50 extra for each level gained."
   },
   {
     "id": "tough-skin",
     "name": "Tough Skin",
     "category": "defense",
     "description": "When your Guard blocks damage, gain 40 Ward."
+  },
+  {
+    "id": "resonance",
+    "name": "Resonance",
+    "category": "offense",
+    "description": "Trigger and Retrigger damage, healing and Ward are 25% stronger.",
+    "triggerMultiplier": 1.25
+  },
+  {
+    "id": "rising-tide",
+    "name": "Rising Tide",
+    "category": "casting",
+    "description": "Every 3 Triggers grant 1 Tide. Retriggers do not count.",
+    "triggersPerReward": 3,
+    "tideReward": 1
+  },
+  {
+    "id": "reactive-barrier",
+    "name": "Reactive Barrier",
+    "category": "defense",
+    "description": "Your first Trigger each tick grants 40 Ward. Retriggers do not count.",
+    "wardReward": 40
   }
 ]

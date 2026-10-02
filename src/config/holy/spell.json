@@ -1308,11 +1308,12 @@
     "domain": "holy",
     "stars": 5,
     "castTicks": 2,
-    "rules": "Gain 120 Ward. Trigger — Fatal Damage: once per combat, remain at 1 Health instead and gain 300 Ward; then remove this card from the sequence.",
+    "rules": "Gain 120 Ward. Trigger — Fatal Damage: once per combat, remain at 1 Health instead and gain 300 Ward. Fragile.",
     "keywords": [
       "ward",
       "gain",
-      "trigger"
+      "trigger",
+      "fragile"
     ],
     "notes": [],
     "combat": {
@@ -1339,12 +1340,13 @@
     },
     "upgrade": {
       "castTicks": 1,
-      "rules": "Gain 150 Ward. Trigger — Fatal Damage: once per combat, remain at 1 Health instead and gain 450 Ward; then remove this card. [Holy Attuned: Cleanse all debuffs when the Trigger resolves.]",
+      "rules": "Gain 150 Ward. Trigger — Fatal Damage: once per combat, remain at 1 Health instead and gain 450 Ward. Fragile. [Holy Attuned: Cleanse all debuffs when the Trigger resolves.]",
       "keywords": [
         "ward",
         "cleanse",
         "gain",
-        "trigger"
+        "trigger",
+        "fragile"
       ],
       "notes": [],
       "combat": {

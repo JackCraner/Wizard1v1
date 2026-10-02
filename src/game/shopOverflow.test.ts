@@ -21,7 +21,7 @@ it('buys multiple temporary bench cards at full price and blocks combat without 
  s=await g.execute(s.id,s.revision,{type:'trash',index:1});
  await expect(g.execute(s.id,s.revision,{type:'fight'})).rejects.toThrow('Reduce your hand to 6');
  s=await g.execute(s.id,s.revision,{type:'trash',index:1});
- expect(s.gold).toBe(11);s=await g.execute(s.id,s.revision,{type:'fight'});
+ expect(s.gold).toBe(13);s=await g.execute(s.id,s.revision,{type:'fight'});
  expect(s.battle?.frames[0].player.spells).toHaveLength(6);
  expect(s.battle?.frames[0].player.spells[0]).toBe('pyroblast');
 });

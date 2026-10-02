@@ -9,23 +9,23 @@ import {createBotStates,prepareBot,grantBotAugment} from './botAI';
 import type {Session} from './model';
 const raw=(g:LocalGameGateway)=>(g as unknown as {session:Session}).session;
 const duel=(deck:string[],augments:string[],enemy=['current'])=>simulate(fighter('A',deck,augments),fighter('B',enemy));
-it('offers only the 27 domain-free augments without duplicates',()=>{
- expect(Object.keys(AUGMENTS)).toHaveLength(27);
+it('offers only the 30 domain-free augments without duplicates',()=>{
+ expect(Object.keys(AUGMENTS)).toHaveLength(30);
  expect(Object.values(AUGMENTS).every(a=>!('domain' in a)&&!a.description.includes('attuned'))).toBe(true);
  let owned:string[]=[];
  for(let round=2;round<30;round+=2){const choices=augmentOffers(round,owned);expect(new Set(choices).size).toBe(choices.length);expect(choices.every(id=>!owned.includes(id))).toBe(true);expect(augmentOffers(round,owned)).toEqual(choices);owned.push(...choices);}
- expect(owned).toHaveLength(27);expect(augmentOffers(30,owned)).toEqual([]);
+ expect(owned).toHaveLength(30);expect(augmentOffers(30,owned)).toEqual([]);
  expect(()=>validateAugments(['wild-garden'])).toThrow();
 });
 it('changes economy values and rounds Recycler refunds down',async()=>{
  expect(shopIncome(['deep-pockets'])).toBe(13);
- expect([0,1,2,3].map(n=>rerollCost(['scavenger'],n))).toEqual([0,0,2,2]);
- expect([1,2,3,4,5].map(n=>trashRefund(['recycler'],n))).toEqual([0,1,2,3,4]);
+ expect([0,1,2,3].map(n=>rerollCost(['scavenger'],n))).toEqual([0,0,1,1]);
+ expect([1,2,3,4,5].map(n=>trashRefund(['recycler'],n))).toEqual([1,1,2,3,4]);
  const g=new LocalGameGateway();let s=await g.start('normal',42);
  Object.assign(raw(g),{augments:['recycler','scavenger','deep-pockets'],spells:['starsurge'],spellXp:[0]});
  s=await g.execute(s.id,s.revision,{type:'trash',index:0});expect(s.gold).toBe(13);
  for(let i=0;i<3;i++)s=await g.execute(s.id,s.revision,{type:'reroll'});
- expect(s.gold).toBe(11);
+ expect(s.gold).toBe(12);
 });
 it('Specialist triples the most common domain weight',()=>{
  let base=0,specialist=0;
@@ -46,5 +46,5 @@ it('redesigned augments use Heat, Empowered and Guard rather than removed status
 });
 it('Super Poison stacks with permanent Poison modifiers, and Glass Cannon still affects DoT',()=>{const a=fighter('A',['healing-seed'],['super-poison','glass-cannon']);a.memory.rules={poisonPower:2};const b=fighter('B',['regrowth']);b.statuses.poison=2;expect(simulate(a,b).frames[1].bot.health).toBe(448);});
 it('Cursed adds one pause and Reckless Loop removes only the normal pause',()=>{const a=fighter('A',['healing-seed'],['toxic-start','cursed']);expect(simulate(a,fighter('B',['healing-seed'])).frames[1].bot.reshuffleRemaining).toBe(2);expect(simulate(a,fighter('B',['healing-seed'],['reckless-loop'])).frames[1].bot.reshuffleRemaining).toBe(1);});
-it('Monster and Glass Cannon adjust starting health',()=>{expect(deriveStats(['monster'],3).health).toBe(1100);expect(deriveStats(['monster','glass-cannon'],3).health).toBe(975);});
+it('Monster and Glass Cannon adjust starting health',()=>{expect(deriveStats(['monster'],3).health).toBe(900);expect(deriveStats(['monster','glass-cannon'],3).health).toBe(775);});
 it('Friendly Imp heals the living Imp first with overflow and does not revive it',()=>{const a=fighter('A',['healing-seed'],['friendly-imp']);a.health=100;a.imp={health:20,maxHealth:30,guard:0};const r=simulate(a,fighter('B',['healing-seed'])).frames[1];expect(r.player.imp?.health).toBe(30);expect(r.player.health).toBe(115);});

@@ -774,8 +774,8 @@
         }
       ]
     },
-    "rules": "Deal 90 damage to the enemy and 90 damage to their Imp if one is alive.",
-    "keywords": [],
+    "rules": "Deal 90 damage to All.",
+    "keywords": ["all"],
     "notes": [],
     "upgrade": {
       "castTicks": 1,
@@ -788,8 +788,8 @@
           }
         ]
       },
-      "rules": "Deal 130 damage to the enemy and 130 damage to their Imp if one is alive.",
-      "keywords": [],
+      "rules": "Deal 130 damage to All.",
+      "keywords": ["all"],
       "notes": []
     }
   },

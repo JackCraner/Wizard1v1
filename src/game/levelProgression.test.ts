@@ -46,14 +46,14 @@ it('levels every player after two rounds, grants one augment and carries increas
  expect(s.round).toBe(5);expect(s.level).toBe(3);
  expect(deriveStats([],s.level).health).toBe(700);
 });
-it('a level-three win grants three trophies and ends the game even when it overshoots 20',async()=>{
+it('a level-three win grants three trophies and ends the game even when it overshoots 25',async()=>{
  const g=new LocalGameGateway();const initial=await g.start(),state=raw(g);
  state.level=3;state.round=5;state.spells=Array(6).fill('spark');
  for(const p of state.lobby.players){p.level=3;p.deck=['current'];}
- state.lobby.players[0].trophies=19;
+ state.lobby.players[0].trophies=24;
  for(const b of Object.values((g as unknown as {bots:Record<string,{lastPreparedRound:number}>}).bots))b.lastPreparedRound=5;
  const s=await g.execute(initial.id,initial.revision,{type:'fight'});
- expect(s.battle!.outcome).toBe('victory');expect(s.trophies).toBe(22);expect(s.wins).toBe(1);
+ expect(s.battle!.outcome).toBe('victory');expect(s.trophies).toBe(27);expect(s.wins).toBe(1);
  expect(s.lobby.finished).toBe(true);expect(s.lobby.winnerIds).toEqual(['player']);
  expect(s.lobby.players.slice(1).every(p=>p.trophies===0)).toBe(true);
 });

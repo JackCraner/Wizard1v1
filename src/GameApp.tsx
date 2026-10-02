@@ -8,18 +8,20 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import type { GameGateway, Session } from './game/model';
 import { useGame } from './useGame';
 import { useOrientation } from './useOrientation';
+import { useCombatAwake } from './useCombatAwake';
 import { Body, Button, Eyebrow, Heading, Panel, styles as s, Title } from './ui';
 import { ShopScreen } from './screens/ShopScreen';
 import { CombatScreen } from './screens/CombatScreen';
 import { MainMenu } from './screens/MainMenu';
 
-export function GameApp({ gateway, initialSession, onMultiplayer, multiplayer = false, visible = true }: { gateway: GameGateway; initialSession?: Session; onMultiplayer?: () => void; multiplayer?: boolean; visible?: boolean }) {
+export function GameApp({ gateway, initialSession, onMultiplayer, multiplayer = false, visible = true, screenAwakeManaged = false }: { gateway: GameGateway; initialSession?: Session; onMultiplayer?: () => void; multiplayer?: boolean; visible?: boolean; screenAwakeManaged?: boolean }) {
   const game = useGame(gateway, initialSession);
   const [choosingDifficulty,setChoosingDifficulty]=useState(false);
   const [library, setLibrary] = useState(false);
   const scroll = useRef<ScrollView>(null);
   const { width, height } = useWindowDimensions();
   const orientationError = useOrientation(multiplayer || game.screen === 'game' || library, visible);
+  useCombatAwake(!screenAwakeManaged && visible && !library && !choosingDifficulty && game.screen === 'game' && !!game.battle && !game.finished);
 
 
   useEffect(() => { scroll.current?.scrollTo({ y: 0, animated: false }); }, [game.screen, game.session?.phase]);

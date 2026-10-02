@@ -4,10 +4,10 @@ A mobile spell auto-battler built with Expo, React Native and TypeScript. Buy an
 
 ## Play
 
-- Build a six-spell combat sequence from five shop offers. Spells cost their star rarity + 1 gold; rerolls cost 2 gold before augment modifiers.
+- Build a six-spell combat sequence from five shop offers. Spells cost their star rarity + 1 gold; rerolls cost 1 gold before augment modifiers. Selling any spell gives 1 gold (Recycler can refund more).
 - Drag offers into your hand to buy, drag matching copies together to merge, or hold a card to inspect. Shopping permits extra cards temporarily; reduce to six before battle.
 - The two most common domains are attuned, with ties decided by the oldest surviving card. Only explicit attuned clauses require them.
-- Start at 500 Health. Every two rounds, everyone gains a level, 100 max Health and an augment choice. Each win awards trophies equal to your level; first to 20 wins.
+- Start at 500 Health. Every two rounds, everyone gains a level, 100 max Health and an augment choice. Each win awards trophies equal to your level; first to 25 wins.
 - Triggers arm after their first completed cast and can chain. Duels last up to 30 ticks, with one reshuffle tick between cycles. There is no mana.
 - **Multiplayer → Local:** an installed Android app hosts two humans and 0–6 bots on Wi-Fi or its own hotspot. Guests scan the Wi-Fi code, then the game code to play in a browser. Keep the host app open. See the [local multiplayer guide](docs/Development.md#local-multiplayer).
 

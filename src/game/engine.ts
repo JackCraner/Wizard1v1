@@ -31,7 +31,7 @@ export function channelPower(deck: readonly string[], index: number) {
     const groupStart = first + Math.floor((index - first) / 3) * 3;
     return Math.min(3, last - groupStart + 1);
 }
-export function deriveStats(augments: readonly string[] = [], level = 1): Stats { return { health: RULES.health + (level - 1) * RULES.healthPerLevel - (augments.includes('glass-cannon') ? 125 : 0) + (augments.includes('monster') ? 200 + (level - 1) * 100 : 0) }; }
+export function deriveStats(augments: readonly string[] = [], level = 1): Stats { return { health: RULES.health + (level - 1) * RULES.healthPerLevel - (augments.includes('glass-cannon') ? 125 : 0) + (augments.includes('monster') ? RULES.monsterHealth + (level - 1) * RULES.monsterHealthPerLevel : 0) }; }
 export function fighter(name: string, spells: SpellId[], augments: string[] = [], xp: number[] = [], acquired: number[] = [], level = 1): Fighter {
     validateDeck(spells);
     validateXp(spells, xp);

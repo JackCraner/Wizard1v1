@@ -1,3 +1,4 @@
+import { AUGMENTS } from './augments';
 import { RULES, channelPower, validateDeck } from './engine';
 import { cardAt } from './upgrades';
 import { activeSpellIndices } from './rotation';
@@ -9,7 +10,7 @@ type Side='player'|'bot';
 const sides:Side[]=['player','bot'];
 const other=(s:Side):Side=>s==='player'?'bot':'player';
 const debuffs=['poison','slow','trap','curse'];
-type Context={parentTriggerId?:number;side:Side;index:number;spell:boolean;scale:number;echo:boolean;empowered:boolean;heat:boolean;quiet:boolean;eventAmount?:number;startWard?:number;startTide?:number;fireBonus?:number;freeHeat?:boolean;breaks?:boolean;heatEmpowered?:boolean;removedWard?:boolean;cost?:number;damage?:number;critical?:boolean;nextDamage?:number;nextCritical?:boolean};
+type Context={triggerEffect?:boolean;parentTriggerId?:number;side:Side;index:number;spell:boolean;scale:number;echo:boolean;empowered:boolean;heat:boolean;quiet:boolean;eventAmount?:number;startWard?:number;startTide?:number;fireBonus?:number;freeHeat?:boolean;breaks?:boolean;heatEmpowered?:boolean;removedWard?:boolean;cost?:number;damage?:number;critical?:boolean;nextDamage?:number;nextCritical?:boolean};
 type Hit={side:Side;amount:number;kind:DamageEvent['kind'];ctx:Context;critical?:boolean;intercept?:boolean;impOnly?:boolean;leech?:number;poison?:boolean;impAttack?:boolean};
 
 /** Deterministic phases: Instant, DoT/deaths, HoT, normal healing/effects/damage, Ward, summons. */
@@ -24,6 +25,7 @@ export function simulate(player:Fighter,bot:Fighter,_seed=RULES.seed):Battle {
  const pendingArms:{side:Side;index:number}[]=[];
  const originOf=(c:Context):CombatOrigin=>({side:c.side,kind:c.index>=0?'spell':'wizard',...(c.index>=0?{index:c.index}:{})});
  const secondWind=new Set<Side>();
+ const triggerCounts={player:0,bot:0},barrierTicks={player:-1,bot:-1};
  for(const side of sides){validateDeck(f[side].spells);f[side].memory.cards??={};f[side].memory.rules??={};if(f[side].shield)f[side].wardCapacity=Math.max(f[side].shield,f[side].wardCapacity??0);}
  const rules=(s:Side)=>f[s].memory.rules!;
  const state=(s:Side,i:number)=>f[s].memory.cards![i]??(f[s].memory.cards![i]={});
@@ -77,10 +79,15 @@ export function simulate(player:Fighter,bot:Fighter,_seed=RULES.seed):Battle {
    f[side].memory.lastTrigger=record;(f[side].memory.triggerHistory??=[]).push(record);
    note(side,'trigger',event==='fatal'?'SAVED · TRIGGER':'TRIGGER',index,undefined,origin);
    const triggerId=++feedbackId;Object.assign(notices[notices.length-1],{triggerId,parentTriggerId,triggerGroup});
-   execute(effects,{...context(side,index),eventAmount:amount,parentTriggerId:triggerId});fired=true;if(event==='fatal')break;
+   const triggerContext={...context(side,index),eventAmount:amount,parentTriggerId:triggerId,triggerEffect:true};
+   execute(effects,triggerContext);
+   triggerCounts[side]++;
+   if(has(side,'rising-tide')&&triggerCounts[side]%AUGMENTS['rising-tide'].triggersPerReward! === 0)add(side,'tide',AUGMENTS['rising-tide'].tideReward!,side,triggerContext);
+   if(has(side,'reactive-barrier')&&barrierTicks[side]!==tick){barrierTicks[side]=tick;ward(side,AUGMENTS['reactive-barrier'].wardReward!,triggerContext);}
+   fired=true;if(event==='fatal')break;
   }return fired;
  }
- function retrigger(c:Context,e:Effect){const u=f[c.side];const last=[...(u.memory.triggerHistory??[])].reverse().find(t=>t.cycle===u.cycle&&state(c.side,t.index).armed&&!(u.broken??[]).includes(t.index)&&(!e.domainFilter||card(c.side,t.index).domain===e.domainFilter));if(!last)return;note(c.side,'retrigger','RETRIGGER',c.index,last.index,{side:c.side,kind:'spell',index:c.index});Object.assign(notices[notices.length-1],{triggerId:++feedbackId,parentTriggerId:c.parentTriggerId,triggerGroup:feedbackId});execute(last.effects,{...context(c.side,last.index),scale:c.scale,quiet:true,eventAmount:last.eventAmount});execute(e.effects??[],{...context(c.side,c.index),scale:c.scale,quiet:true});}
+ function retrigger(c:Context,e:Effect){const u=f[c.side];const last=[...(u.memory.triggerHistory??[])].reverse().find(t=>t.cycle===u.cycle&&state(c.side,t.index).armed&&!(u.broken??[]).includes(t.index)&&(!e.domainFilter||card(c.side,t.index).domain===e.domainFilter));if(!last)return;note(c.side,'retrigger','RETRIGGER',c.index,last.index,{side:c.side,kind:'spell',index:c.index});Object.assign(notices[notices.length-1],{triggerId:++feedbackId,parentTriggerId:c.parentTriggerId,triggerGroup:feedbackId});execute(last.effects,{...context(c.side,last.index),scale:c.scale,quiet:true,triggerEffect:true,eventAmount:last.eventAmount});execute(e.effects??[],{...context(c.side,c.index),scale:c.scale,quiet:true});}
  function execute(effects:Effect[],c:Context){const side=c.side,u=f[side],enemy=f[other(side)];for(const e of effects){if(!effectEnabled(e,u.attuned)||!condition(side,e,c))continue;const target=e.target==='enemy'?other(side):side;let value=e.attunedAmount!==undefined&&attuned(side,e.bonusDomain)?e.attunedAmount:e.amount??0;if(e.bonusWhen&&condition(side,{when:e.bonusWhen},c))value+=e.bonus??0;if(e.addPerStatus)value+=Math.min(e.bonusLimit??Infinity,(u.statuses[e.addPerStatus]??0)*(e.perStatusAmount??0));if(e.perEventAmount)value*=c.eventAmount??0;
    const a=c.index>=0?card(side,c.index).combat?.effects?.find(x=>x.kind==='awaken'):undefined;
    if(e.kind==='damage'&&state(side,c.index).awakened&&a?.awakenedDamage!==undefined)value=a.awakenedDamage;
@@ -92,7 +99,8 @@ export function simulate(player:Fighter,bot:Fighter,_seed=RULES.seed):Battle {
    const critCondition=e.criticalIf&&({previousCost:!!u.memory.previousSelfDamage,lowHealth:u.health<u.maxHealth*.4,poison:!!enemy.statuses.poison,debuff:debuffs.some(k=>enemy.statuses[k]>0),imp:(u.imp?.health??0)>0,regeneration:!!u.statuses.regeneration}[e.criticalIf]);
    const critical=c.spell&&(!!c.nextCritical||!!(c.heatEmpowered&&rules(side).heatCritical)||!!critCondition&&(!e.criticalDomain||e.criticalMultiplier!==undefined||attuned(side,e.criticalDomain)));
    const empowered=c.spell&&(c.empowered||attuned(side,e.empoweredDomain)&&(e.empoweredIf==='imp'&&(u.imp?.health??0)>0||e.empoweredIf==='critical'&&critical));
-   const direct=alternation*(empowered?1.5:1)*(e.when==='echoed'?1:c.scale);
+   const triggerPower=c.triggerEffect&&has(side,'resonance')?AUGMENTS.resonance.triggerMultiplier!:1;
+   const direct=alternation*(empowered?1.5:1)*(e.when==='echoed'?1:c.scale)*triggerPower;
    const active=activeSpellIndices(u);
    const damagePower=power(side)*direct*(c.spell?(c.nextDamage??1)*(has(side,'first-strike')&&c.index===active[0]?1.5:1)*(has(side,'finisher')&&c.index===active.at(-1)?1.5:1)*(has(side,'heavy-hitter')&&card(side,c.index).castTicks===3?1.4:1)*(has(side,'crescendo')?1+u.memory.cycleCasts*.05:1):1)*(critical?(e.criticalMultiplier&&attuned(side,e.criticalDomain)?e.criticalMultiplier:c.heatEmpowered?rules(side).heatCritPower??1.5:1.5):1);
    if(critical)c.critical=true;

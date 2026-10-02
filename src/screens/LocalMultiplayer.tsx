@@ -126,7 +126,7 @@ export function LocalMultiplayer({ onBack }: { onBack: () => void }) {
   const disconnected = !!client?.connectionError || !!snapshot?.room.players.some(p => !p.connected);
   return <View style={s.root}>
     {snapshot?.session && !stopped && <View style={{ flex: 1, display: view === 'game' ? 'flex' : 'none' }}>
-      <GameApp gateway={client!} initialSession={snapshot.session} onMultiplayer={() => setView('room')} multiplayer />
+      <GameApp gateway={client!} initialSession={snapshot.session} onMultiplayer={() => setView('room')} multiplayer visible={view === 'game'} screenAwakeManaged={canHostOnPhone && host} />
       {disconnected && <View style={s.connection}><Text style={s.text}>{client?.connectionError || 'Waiting for the other phone to reconnect…'}</Text>{button('Local room', () => setView('room'))}</View>}
     </View>}
     {(view === 'room' || stopped || !snapshot?.session) && <SafeAreaView style={s.root}>

@@ -1227,9 +1227,10 @@
     "domain": "affliction",
     "stars": 5,
     "castTicks": 2,
-    "rules": "Summon 80 Imp Health. For the rest of combat, your living Imp deals 40 damage after each spell you complete. [Affliction Attuned: 60 damage instead.]",
+    "rules": "Summon 80 Imp Health. For the rest of combat, your living Imp deals 40 damage after each spell you complete. [Affliction Attuned: 60 damage instead.] Fragile.",
     "keywords": [
-      "summon"
+      "summon",
+      "fragile"
     ],
     "notes": [],
     "combat": {
@@ -1243,14 +1244,18 @@
           "amount": 40,
           "bonusDomain": "affliction",
           "attunedAmount": 60
+        },
+        {
+          "kind": "fragile"
         }
       ]
     },
     "upgrade": {
       "castTicks": 1,
-      "rules": "Summon 100 Imp Health. Your living Imp deals 60 after each completed spell. [Affliction Attuned: 80 instead.]",
+      "rules": "Summon 100 Imp Health. Your living Imp deals 60 after each completed spell. [Affliction Attuned: 80 instead.] Fragile.",
       "keywords": [
-        "summon"
+        "summon",
+        "fragile"
       ],
       "notes": [],
       "combat": {
@@ -1264,6 +1269,9 @@
             "amount": 60,
             "bonusDomain": "affliction",
             "attunedAmount": 80
+          },
+          {
+            "kind": "fragile"
           }
         ]
       }

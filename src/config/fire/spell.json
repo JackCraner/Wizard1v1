@@ -1197,14 +1197,18 @@
           "amount": 2,
           "rule": "heatCritPower",
           "requiresAttunement": "fire"
+        },
+        {
+          "kind": "fragile"
         }
       ]
     },
-    "rules": "Deal 100 damage. For the rest of combat, Heat-Empowered spells are guaranteed Critical. [Fire Attuned: those Criticals deal 200% total damage.]",
+    "rules": "Deal 100 damage. For the rest of combat, Heat-Empowered spells are guaranteed Critical. [Fire Attuned: those Criticals deal 200% total damage.] Fragile.",
     "keywords": [
       "empowered",
       "heat",
-      "critical"
+      "critical",
+      "fragile"
     ],
     "notes": [],
     "upgrade": {
@@ -1225,14 +1229,18 @@
             "amount": 2.5,
             "rule": "heatCritPower",
             "requiresAttunement": "fire"
+          },
+          {
+            "kind": "fragile"
           }
         ]
       },
-      "rules": "Deal 130 damage. For the rest of combat, Heat-Empowered spells are guaranteed Critical. [Fire Attuned: those Criticals deal 250% total damage.]",
+      "rules": "Deal 130 damage. For the rest of combat, Heat-Empowered spells are guaranteed Critical. [Fire Attuned: those Criticals deal 250% total damage.] Fragile.",
       "keywords": [
         "empowered",
         "heat",
-        "critical"
+        "critical",
+        "fragile"
       ],
       "notes": []
     }
@@ -1321,6 +1329,9 @@
           "kind": "rule",
           "amount": 1,
           "rule": "livingFlame"
+        },
+        {
+          "kind": "fragile"
         }
       ]
     },
@@ -1341,26 +1352,31 @@
             "amount": 2,
             "rule": "livingFlameHeat",
             "requiresAttunement": "fire"
+          },
+          {
+            "kind": "fragile"
           }
         ]
       },
       "notes": [],
       "castTicks": 1,
-      "rules": "Deal 150 damage. For the rest of combat, your first non-Instant Fire spell each Cycle becomes 1T and Empowered without consuming Heat. [Fire Attuned: after that free Empowered spell completes, gain 2 Heat.]",
+      "rules": "Deal 150 damage. For the rest of combat, your first non-Instant Fire spell each Cycle becomes 1T and Empowered without consuming Heat. [Fire Attuned: after that free Empowered spell completes, gain 2 Heat.] Fragile.",
       "keywords": [
         "empowered",
         "heat",
-        "gain"
+        "gain",
+        "fragile"
       ]
     },
     "stars": 5,
     "castTicks": 2,
-    "rules": "Deal 120 damage. For the rest of combat, your first non-Instant Fire spell each Cycle becomes 1T and Empowered without consuming Heat.",
+    "rules": "Deal 120 damage. For the rest of combat, your first non-Instant Fire spell each Cycle becomes 1T and Empowered without consuming Heat. Fragile.",
     "keywords": [
       "empowered",
       "heat",
       "cycle",
-      "instant"
+      "instant",
+      "fragile"
     ]
   }
 ]

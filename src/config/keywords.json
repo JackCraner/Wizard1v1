@@ -186,5 +186,11 @@
     "aliases": [],
     "description": "Transforms for the rest of the duel when its condition is met.",
     "related": []
+  },
+  "all": {
+    "name": "All",
+    "aliases": [],
+    "description": "Hits the enemy wizard and their Imp for the full damage each.",
+    "related": []
   }
 }

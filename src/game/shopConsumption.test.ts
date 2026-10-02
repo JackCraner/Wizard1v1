@@ -10,7 +10,7 @@ it('consumes exactly the purchased slot, rejects rebuys and refills on reroll',a
  await expect(g.execute(s.id,s.revision,{type:'buy',spell,shopSlot:1})).rejects.toThrow('unavailable');
  await expect(g.execute(s.id,s.revision,{type:'buy',spell})).rejects.toThrow('unavailable');
  s=await g.execute(s.id,s.revision,{type:'reroll'});
- expect(s.gold).toBe(gold-2);expect(s.shop).toEqual(offersFor(1,1,s.spells,s.augments,s.seed).shop);expect(s.shop.every(Boolean)).toBe(true);
+ expect(s.gold).toBe(gold-1);expect(s.shop).toEqual(offersFor(1,1,s.spells,s.augments,s.seed).shop);expect(s.shop.every(Boolean)).toBe(true);
 });
 it('consumes the chosen duplicate offer when buying XP, even with a full hand',async()=>{
  const g=new LocalGameGateway();await g.start();const raw=(g as unknown as {session:Session}).session;

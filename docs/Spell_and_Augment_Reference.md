@@ -2,7 +2,7 @@
 
 Generated from the shipping JSON catalogue. Edit the source configuration, then run `npm run docs:generate`; do not edit these tables by hand.
 
-**130 spells · 27 augments · 6 combat slots.** Shopping can temporarily hold extra spells; reduce to the combat limit before battle. Bracketed clauses require the named Domain attunement. Upgrade columns show the complete upgraded effect. Gold price equals stars + 1. Calculated outcomes round down. See [combat rules](Combat.md) for timing and shared mechanics.
+**130 spells · 30 augments · 6 combat slots.** Shopping can temporarily hold extra spells; reduce to the combat limit before battle. Bracketed clauses require the named Domain attunement. Upgrade columns show the complete upgraded effect. Gold price equals stars + 1. Calculated outcomes round down. See [combat rules](Combat.md) for timing and shared mechanics.
 
 ## Nature
 
@@ -24,7 +24,7 @@ Generated from the shipping JSON catalogue. Edit the source configuration, then 
 | ★★★ | Flourish | 1T | Double your remaining Regeneration duration. | 1T | Double your remaining Regeneration duration. [Nature Attuned: gain 10 Ward for each Regeneration tick added by the doubling.] |
 | ★★★ | Starsurge | 2T | Deal 100 damage. +25% direct damage per unique debuff type on the enemy. | 1T | Deal 100 damage. +25% direct damage per unique debuff type on the enemy. |
 | ★★★ | World Root | 2T | Apply 3 Trap. | 2T | Apply 5 Trap. [Nature Attuned: also apply 1 Slow.] |
-| ★★★ | Starfall | 1T | Deal 90 damage to the enemy and 90 damage to their Imp if one is alive. | 1T | Deal 130 damage to the enemy and 130 damage to their Imp if one is alive. |
+| ★★★ | Starfall | 1T | Deal 90 damage to All. | 1T | Deal 130 damage to All. |
 | ★★★ | Germination | 1T | Heal 80. Gain 3 Regeneration. Fragile. | 1T | Heal 100. Gain 5 Regeneration. Fragile. |
 | ★★★ | Bramble Wall | 1T | Gain 100 Ward. Trigger — Poison Damage: Gain 50 Ward. | 1T | Gain 150 Ward. Trigger — Poison Damage: Gain 70 Ward. |
 | ★★★★ | Venom Bloom | 1T | Apply Poison for 4 ticks. Awaken: after your Poison deals damage 5 times. Awakened: your Poison deals 75% more damage for the rest of combat. | 1T | Apply Poison for 5 ticks. Awaken: after your Poison deals damage 4 times. Awakened: your Poison deals 100% more damage. [Nature Attuned: Awaken after 3 Poison damage events instead.] |
@@ -62,9 +62,9 @@ Generated from the shipping JSON catalogue. Edit the source configuration, then 
 | ★★★★ | Tsunami | 2T | Deal 150 damage. Apply 2 Slow. | 2T | Deal 190 damage. Apply 3 Slow. [Water Attuned: if Echoed, apply 1 additional Slow.] |
 | ★★★★ | Crash | 3T | Deal 220 damage. If Echoed, Crash's Echo resolves at 100% effectiveness. | 3T | Deal 260 damage. If Echoed, Crash's Echo resolves at 150% effectiveness. |
 | ★★★★ | Undertow | 2T | Deal 130 damage. Apply 1 Slow. If Echoed, gain 2 Tide after the Echo resolves. | 2T | Deal 160 damage. Apply 2 Slow. If Echoed, gain 3 Tide after the Echo resolves. |
-| ★★★★★ | Ocean Heart | 2T | Gain 1 Tide. For the rest of combat, Tide activates at 2 instead of 3. [Water Attuned: Gain 2 Tide instead.] | 1T | Gain 2 Tide. For the rest of combat, Tide activates at 2 instead of 3. [Water Attuned: Gain 3 Tide instead.] |
-| ★★★★★ | Tidal Power | 1T | Deal 60 damage. For the rest of combat, your Echoes resolve at 100% effectiveness. [Water Attuned: the first Echo each Cycle also Retriggers your last Trigger.] | 1T | Deal 80 damage. For the rest of combat, your Echoes resolve at 150% effectiveness. [Water Attuned: the first Echo each Cycle also Retriggers your last Trigger.] |
-| ★★★★★ | Maelstrom | 2T | Deal 100 damage. For the rest of combat, the first spell you cast each Cycle Echoes at 50% without consuming Tide. [Water Attuned: that free Echo resolves at 75%.] | 1T | Deal 130 damage. The first spell you cast each Cycle Echoes at 75% without consuming Tide. [Water Attuned: that free Echo resolves at 100%.] |
+| ★★★★★ | Ocean Heart | 2T | Gain 1 Tide. For the rest of combat, Tide activates at 2 instead of 3. [Water Attuned: Gain 2 Tide instead.] Fragile. | 1T | Gain 2 Tide. For the rest of combat, Tide activates at 2 instead of 3. [Water Attuned: Gain 3 Tide instead.] Fragile. |
+| ★★★★★ | Tidal Power | 1T | Deal 60 damage. For the rest of combat, your Echoes resolve at 100% effectiveness. [Water Attuned: the first Echo each Cycle also Retriggers your last Trigger.] Fragile. | 1T | Deal 80 damage. For the rest of combat, your Echoes resolve at 150% effectiveness. [Water Attuned: the first Echo each Cycle also Retriggers your last Trigger.] Fragile. |
+| ★★★★★ | Maelstrom | 2T | Deal 100 damage. For the rest of combat, the first spell you cast each Cycle Echoes at 50% without consuming Tide. [Water Attuned: that free Echo resolves at 75%.] Fragile. | 1T | Deal 130 damage. The first spell you cast each Cycle Echoes at 75% without consuming Tide. [Water Attuned: that free Echo resolves at 100%.] Fragile. |
 
 ## Fire
 
@@ -93,9 +93,9 @@ Generated from the shipping JSON catalogue. Edit the source configuration, then 
 | ★★★★ | Phoenix Renewal | 2T | Heal 120. Trigger — Self-Damage: Heal 20. | 2T | Heal 150. Trigger — Self-Damage: Heal 30. [Fire Attuned: Trigger heals 40 instead.] |
 | ★★★★ | Conflagrate | 2T | Deal 100 damage. Awaken: after you consume Heat twice. Awakened: Deal 200 damage instead. | 2T | Deal 120 damage. Awaken: after you consume Heat twice. Awakened: Deal 260 damage instead. [Fire Attuned: Awaken after your first Heat consumption instead.] |
 | ★★★★ | Blaze | 1T | Deal 160 damage. Take 30 self-damage. | 1T | Deal 200 damage. Take 30 self-damage. [Fire Attuned: Critical while below 40% Health.] |
-| ★★★★★ | Eruption | 3T | Deal 100 damage. For the rest of combat, Heat-Empowered spells are guaranteed Critical. [Fire Attuned: those Criticals deal 200% total damage.] | 3T | Deal 130 damage. For the rest of combat, Heat-Empowered spells are guaranteed Critical. [Fire Attuned: those Criticals deal 250% total damage.] |
+| ★★★★★ | Eruption | 3T | Deal 100 damage. For the rest of combat, Heat-Empowered spells are guaranteed Critical. [Fire Attuned: those Criticals deal 200% total damage.] Fragile. | 3T | Deal 130 damage. For the rest of combat, Heat-Empowered spells are guaranteed Critical. [Fire Attuned: those Criticals deal 250% total damage.] Fragile. |
 | ★★★★★ | Phoenix Guard | 3T | Gain 2 Guard and 2 Heat. Fragile. | 3T | Gain 3 Guard and 3 Heat. Fragile. [Fire Attuned: Heal 100 before this card breaks.] |
-| ★★★★★ | Living Flame | 2T | Deal 120 damage. For the rest of combat, your first non-Instant Fire spell each Cycle becomes 1T and Empowered without consuming Heat. | 1T | Deal 150 damage. For the rest of combat, your first non-Instant Fire spell each Cycle becomes 1T and Empowered without consuming Heat. [Fire Attuned: after that free Empowered spell completes, gain 2 Heat.] |
+| ★★★★★ | Living Flame | 2T | Deal 120 damage. For the rest of combat, your first non-Instant Fire spell each Cycle becomes 1T and Empowered without consuming Heat. Fragile. | 1T | Deal 150 damage. For the rest of combat, your first non-Instant Fire spell each Cycle becomes 1T and Empowered without consuming Heat. [Fire Attuned: after that free Empowered spell completes, gain 2 Heat.] Fragile. |
 
 ## Affliction
 
@@ -125,7 +125,7 @@ Generated from the shipping JSON catalogue. Edit the source configuration, then 
 | ★★★★ | Death Mark | 1T | Deal 10 damage per remaining enemy Poison tick. | 1T | Deal 15 damage per remaining enemy Poison tick. |
 | ★★★★ | Rupture | 3T | Deal 180 damage. If the enemy is Cursed when casting starts, cast in 1T instead. | 3T | Deal 220 damage. If the enemy is Cursed when casting starts, cast in 1T instead. |
 | ★★★★ | Devils Bargain | 1T | Apply 3 Slow to the enemy. Gain 2 Slow. | 1T | Apply 4 Slow to the enemy. Gain 1 Slow. [Affliction Attuned: gain no Slow.] |
-| ★★★★★ | Empowered Imp | 2T | Summon 80 Imp Health. For the rest of combat, your living Imp deals 40 damage after each spell you complete. [Affliction Attuned: 60 damage instead.] | 1T | Summon 100 Imp Health. Your living Imp deals 60 after each completed spell. [Affliction Attuned: 80 instead.] |
+| ★★★★★ | Empowered Imp | 2T | Summon 80 Imp Health. For the rest of combat, your living Imp deals 40 damage after each spell you complete. [Affliction Attuned: 60 damage instead.] Fragile. | 1T | Summon 100 Imp Health. Your living Imp deals 60 after each completed spell. [Affliction Attuned: 80 instead.] Fragile. |
 | ★★★★★ | Doomsday | 1T | Deal 80 damage. If your Imp is alive, sacrifice it and deal additional damage equal to 150% of its current Health. Fragile. | 1T | Deal 100 damage. If your Imp is alive, sacrifice it and deal additional damage equal to 200% of its maximum Health. Fragile. [Affliction Attuned: heal for 25% of the sacrifice damage.] |
 
 ## Holy
@@ -157,7 +157,7 @@ Generated from the shipping JSON catalogue. Edit the source configuration, then 
 | ★★★★ | Redemption | 2T | Cultivate up to 6 Regeneration. Gain 30 Ward per tick consumed. | 2T | Cultivate up to 6 Regeneration. Gain 40 Ward per tick consumed. |
 | ★★★★ | Divine Hands | 2T | Heal 15 per remaining Regeneration tick without consuming it. | 2T | Heal 20 per remaining Regeneration tick without consuming it. [Holy Attuned: gain 1 Guard if you have 8+ Regeneration.] |
 | ★★★★★ | Turn Unholy | 2T | Deal 60 damage. Until this Cycle ends, your healing becomes damage to the enemy instead. [Holy Attuned: converted healing also heals you for 50% of its value.] | 1T | Deal 80 damage. Until this Cycle ends, your healing becomes damage to the enemy instead. [Holy Attuned: converted healing also heals you for 75% of its value.] |
-| ★★★★★ | Divine Intervention | 2T | Gain 120 Ward. Trigger — Fatal Damage: once per combat, remain at 1 Health instead and gain 300 Ward; then remove this card from the sequence. | 1T | Gain 150 Ward. Trigger — Fatal Damage: once per combat, remain at 1 Health instead and gain 450 Ward; then remove this card. [Holy Attuned: Cleanse all debuffs when the Trigger resolves.] |
+| ★★★★★ | Divine Intervention | 2T | Gain 120 Ward. Trigger — Fatal Damage: once per combat, remain at 1 Health instead and gain 300 Ward. Fragile. | 1T | Gain 150 Ward. Trigger — Fatal Damage: once per combat, remain at 1 Health instead and gain 450 Ward. Fragile. [Holy Attuned: Cleanse all debuffs when the Trigger resolves.] |
 
 ## Augments
 
@@ -180,7 +180,7 @@ All augments are available to every build. Every 2 completed rounds grants a lev
 | Last Stand | Below 30% Health, spells start 1T faster (minimum 1T). |
 | Second Wind | Once per combat, reaching 30% Health restores 120 Health. |
 | Specialist | Your most common domain has triple shop weight. |
-| Recycler | Trashing a spell refunds 80% of its gold value, rounded down. |
+| Recycler | Selling a spell refunds 80% of its gold value, rounded down, with a minimum of 1 gold. |
 | Scavenger | Your first two rerolls each shop are free. |
 | Wildfire | Applying Poison while you have Heat also deals 20 damage. |
 | Super Poison | Your Poison deals 100% more damage. Stacks with other damage modifiers. |
@@ -190,5 +190,8 @@ All augments are available to every build. Every 2 completed rounds grants a lev
 | Friendly Imp | Direct healing restores your living Imp first; excess healing restores you. |
 | Bloom | When your Poison expires, deal 60 damage. |
 | Criticality | Your first Critical spell each Cycle grants 2 Heat. |
-| Monster | Gain 200 maximum Health, plus 100 extra for each level gained. |
+| Monster | Gain 100 maximum Health, plus 50 extra for each level gained. |
 | Tough Skin | When your Guard blocks damage, gain 40 Ward. |
+| Resonance | Trigger and Retrigger damage, healing and Ward are 25% stronger. |
+| Rising Tide | Every 3 Triggers grant 1 Tide. Retriggers do not count. |
+| Reactive Barrier | Your first Trigger each tick grants 40 Ward. Retriggers do not count. |

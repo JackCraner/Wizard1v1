@@ -34,6 +34,7 @@ Six active spells maximum in combat. During shopping, extra spells may be purcha
 - Retrigger repeats the latest eligible Armed friendly Trigger payload from this Cycle, ignoring its per-tick limit. It does not replace Trigger history, activate further Triggers or repeat another Retrigger. Dormant and broken copies are ineligible. Percentage payloads retain the original event amount.
 - Awaken transforms that copy once per duel when its condition is met. Conditions can be reached before its first cast. Feathered wings unfurl outside the card and fade over one playback tick without extending combat timing. The wings respect pause, speed and reduced motion; the awakened border and updated text remain.
 - Fragile leaves only after both the original cast and its Echo complete. Removed cards compress the sequence and return next duel. Divine Intervention instead breaks after its fatal-damage Trigger fires.
+- Ocean Heart, Tidal Power, Maelstrom, Eruption, Living Flame and Empowered Imp are Fragile at both upgrade levels. Their lasting combat effects survive the card breaking and reset next duel. Transformation: Bear and Venom Bloom remain reusable so their Trigger and Awaken benefits stay available.
 - One Oath at a time. New Oaths replace old ones. They inspect following completed spells, including their Echo, rather than elapsed ticks. Direct damage includes damage absorbed by Ward/Imp; Health costs do not count. Safe Oaths track actual Health loss. Rewards resolve immediately after the qualifying completion.
 - Conditional 'if Echoed, gain/apply X' bonuses happen once, at the printed whole amount. The ordinary payload still uses the reserved Echo effectiveness.
 - Permanent spell rules use a source-card marker rather than extra status icons. Heat/Tide predictions use currently held counters only.
@@ -42,7 +43,7 @@ Six active spells maximum in combat. During shopping, extra spells may be purcha
 
 ## Progression
 
-Start level 1 at 500 Health. Each shopping round resets gold to 10 (13 with Deep Pockets); unspent gold does not carry over. After every two rounds, all players gain a level, 100 max Health and one permanent augment. Wins award trophies equal to current level; 20 trophies wins. Resolve every duel before awarding shared tournament victories. All 27 augments are available to every build.
+Start level 1 at 500 Health. Each shopping round resets gold to 10 (13 with Deep Pockets); unspent gold does not carry over. After every two rounds, all players gain a level, 100 max Health and one permanent augment. Wins award trophies equal to current level; 25 trophies wins. Resolve every duel before awarding shared tournament victories. All 30 augments are available to every build.
 
 Momentum now Empowers the spell after three consecutive printed 1T completions. Blood Infusion grants 1 Heat on self Health loss. Criticality grants 2 Heat on the first Critical spell each Cycle. Tough Skin grants 40 Ward when Guard blocks damage. Hot Stuff applies its existing +10% outgoing/incoming damage while Heat is held.
 
@@ -71,3 +72,5 @@ Heat uses the same compact, pausable icon pulse as Tide when five stacks are rea
 At each level-up, each augment offer slot has one free reroll. Replacements use the run seed and exclude owned augments and all currently displayed choices. A used slot stays disabled until the next level-up; choosing an augment still ends the reward phase.
 
 The main floating-number region sits below the status boxes and includes all damage and healing events, including Trigger chains and Imp targets. Imp panels retain their local damage readout. Compact combat cards reserve space for the two-row number region above the cast bars.
+
+Trigger augments: Resonance increases Trigger and Retrigger damage, healing and Ward by 25%, rounded down; it does not boost status charges or normal casts. Rising Tide grants 1 Tide per three natural Trigger activations across the combat. Reactive Barrier grants 40 Ward on the first natural Trigger each tick, through the normal delayed Ward phase and non-stacking Ward rules. Retriggers do not count toward either reward. Each fighter tracks these rewards independently; causal chains and once-per-tick Trigger limits are unchanged.

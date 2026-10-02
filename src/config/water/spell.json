@@ -1243,13 +1243,17 @@
           "kind": "rule",
           "amount": 2,
           "rule": "tideThreshold"
+        },
+        {
+          "kind": "fragile"
         }
       ]
     },
-    "rules": "Gain 1 Tide. For the rest of combat, Tide activates at 2 instead of 3. [Water Attuned: Gain 2 Tide instead.]",
+    "rules": "Gain 1 Tide. For the rest of combat, Tide activates at 2 instead of 3. [Water Attuned: Gain 2 Tide instead.] Fragile.",
     "keywords": [
       "gain",
-      "tide"
+      "tide",
+      "fragile"
     ],
     "notes": [],
     "upgrade": {
@@ -1268,13 +1272,17 @@
             "kind": "rule",
             "amount": 2,
             "rule": "tideThreshold"
+          },
+          {
+            "kind": "fragile"
           }
         ]
       },
-      "rules": "Gain 2 Tide. For the rest of combat, Tide activates at 2 instead of 3. [Water Attuned: Gain 3 Tide instead.]",
+      "rules": "Gain 2 Tide. For the rest of combat, Tide activates at 2 instead of 3. [Water Attuned: Gain 3 Tide instead.] Fragile.",
       "keywords": [
         "gain",
-        "tide"
+        "tide",
+        "fragile"
       ],
       "notes": []
     }
@@ -1301,14 +1309,18 @@
           "amount": 1,
           "rule": "echoRetrigger",
           "requiresAttunement": "water"
+        },
+        {
+          "kind": "fragile"
         }
       ]
     },
-    "rules": "Deal 60 damage. For the rest of combat, your Echoes resolve at 100% effectiveness. [Water Attuned: the first Echo each Cycle also Retriggers your last Trigger.]",
+    "rules": "Deal 60 damage. For the rest of combat, your Echoes resolve at 100% effectiveness. [Water Attuned: the first Echo each Cycle also Retriggers your last Trigger.] Fragile.",
     "keywords": [
       "cycle",
       "echo",
-      "trigger"
+      "trigger",
+      "fragile"
     ],
     "notes": [],
     "upgrade": {
@@ -1329,14 +1341,18 @@
             "amount": 1,
             "rule": "echoRetrigger",
             "requiresAttunement": "water"
+          },
+          {
+            "kind": "fragile"
           }
         ]
       },
-      "rules": "Deal 80 damage. For the rest of combat, your Echoes resolve at 150% effectiveness. [Water Attuned: the first Echo each Cycle also Retriggers your last Trigger.]",
+      "rules": "Deal 80 damage. For the rest of combat, your Echoes resolve at 150% effectiveness. [Water Attuned: the first Echo each Cycle also Retriggers your last Trigger.] Fragile.",
       "keywords": [
         "cycle",
         "echo",
-        "trigger"
+        "trigger",
+        "fragile"
       ],
       "notes": []
     }
@@ -1358,6 +1374,9 @@
           "rule": "cycleEcho",
           "bonusDomain": "water",
           "attunedAmount": 0.75
+        },
+        {
+          "kind": "fragile"
         }
       ]
     },
@@ -1374,25 +1393,30 @@
             "rule": "cycleEcho",
             "bonusDomain": "water",
             "attunedAmount": 1
+          },
+          {
+            "kind": "fragile"
           }
         ]
       },
       "notes": [],
       "castTicks": 1,
-      "rules": "Deal 130 damage. The first spell you cast each Cycle Echoes at 75% without consuming Tide. [Water Attuned: that free Echo resolves at 100%.]",
+      "rules": "Deal 130 damage. The first spell you cast each Cycle Echoes at 75% without consuming Tide. [Water Attuned: that free Echo resolves at 100%.] Fragile.",
       "keywords": [
         "cycle",
         "echo",
-        "tide"
+        "tide",
+        "fragile"
       ]
     },
     "stars": 5,
     "castTicks": 2,
-    "rules": "Deal 100 damage. For the rest of combat, the first spell you cast each Cycle Echoes at 50% without consuming Tide. [Water Attuned: that free Echo resolves at 75%.]",
+    "rules": "Deal 100 damage. For the rest of combat, the first spell you cast each Cycle Echoes at 50% without consuming Tide. [Water Attuned: that free Echo resolves at 75%.] Fragile.",
     "keywords": [
       "cycle",
       "echo",
-      "tide"
+      "tide",
+      "fragile"
     ]
   }
 ]
