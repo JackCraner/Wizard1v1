@@ -94,12 +94,11 @@ export function CombatConnections({frame,speed,playing,children}:{frame:CombatFr
     if(!source||!target||!wizard)return null;
     const [a,b,c,h]=await Promise.all([once(source),once(target),once(rack??source),once(wizard)]);
     const local=(p:Point)=>({x:p.x-origin.x,y:p.y-origin.y});
-    // Opposing casts use separate vertical lanes through the arena.
-    const destination=local(b);destination.y+=f.offensive?(f.side==='player'?16:-16):0;
-    const siblings=casts.filter(cast=>cast.target===f.target),lane=siblings.indexOf(f),width=size.height<500?126:180;
-    const feedbackWidth=width/siblings.length;
-    const feedback={x:h.x-origin.x-width/2+lane*feedbackWidth,y:h.y-origin.y+(size.height<500?42:60)};
-    return {...f,from:local(a),to:destination,rack:local(c),feedback,feedbackWidth,key:frame.tick+'-'+frame.presentationPhase+'-'+i};
+    // Direct throws follow the actual target; impact receipts retain reserved HUD space.
+    const destination=local(b);
+    const width=size.height<500?126:180;
+    const feedback=f.offensive?{x:destination.x-width/2,y:h.y-origin.y+(size.height<500?42:60)}:{x:a.x-origin.x-width/2,y:a.y-origin.y-62};
+    return {...f,from:local(a),to:destination,rack:local(c),feedback,feedbackWidth:width,key:frame.tick+'-'+frame.presentationPhase+'-'+i};
    }));
    if(!cancelled)setFlights(launched.filter((f):f is PositionedFlight=>!!f));
    if(!cancelled)setLinks(next.filter((l):l is Link=>!!l));
