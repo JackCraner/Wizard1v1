@@ -7,12 +7,12 @@ const results = {
   defeat: { title: 'LOST', color: '#ffb3a6', wash: '#4d2427b8', emblem: '✧' },
 };
 
-export function CombatResult({ outcome, level, compact, actionLabel, onContinue, busy }: { outcome: keyof typeof results; level: number; compact: boolean; actionLabel: string; onContinue: () => void; busy: boolean }) {
+export function CombatResult({ outcome, level, compact, narrow=false, actionLabel, onContinue, busy }: { narrow?:boolean; outcome: keyof typeof results; level: number; compact: boolean; actionLabel: string; onContinue: () => void; busy: boolean }) {
   const result = results[outcome];
   return <View pointerEvents="box-none" style={[StyleSheet.absoluteFill, { justifyContent: 'center', zIndex: 80 }]}>
-   <View style={{flexDirection:'row',alignItems:'center',paddingHorizontal:compact?16:32,paddingVertical:compact?9:16,gap:16,backgroundColor:result.wash,borderTopWidth:1,borderBottomWidth:1,borderColor:result.color+'99'}}>
+   <View style={{flexDirection:narrow?'column':'row',alignItems:'center',paddingHorizontal:compact?16:32,paddingVertical:compact?9:16,gap:16,backgroundColor:result.wash,borderTopWidth:1,borderBottomWidth:1,borderColor:result.color+'99'}}>
     <View accessible accessibilityRole="text" accessibilityLiveRegion="polite" accessibilityLabel={`${result.title}${outcome === 'victory' ? `, +${level} trophies` : ''}`}
-      style={{ flex:1, alignItems: 'center', gap: 3 }}>
+      style={{ flex:narrow?undefined:1, alignItems: 'center', gap: 3 }}>
       <View style={{ flexDirection: 'row', alignItems: 'center', gap: 16 }}>
         <View style={{ width: compact ? 58 : 100, height: 1, backgroundColor: result.color + '88' }}/>
         <Text style={{ color: result.color, fontSize: compact ? 20 : 26 }}>{result.emblem}</Text>

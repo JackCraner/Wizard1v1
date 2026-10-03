@@ -1,3 +1,5 @@
+import {spellFlights} from '../game/spellFlights';
+import {SpellFlight,type PositionedFlight} from './SpellFlight';
 import { combatColors, palette } from '../theme';
 import {createContext,memo,useCallback,useContext,useEffect,useMemo,useRef,useState,type ReactNode} from 'react';
 import {AccessibilityInfo,Animated,Platform,StyleSheet,View,type ViewProps} from 'react-native';
@@ -65,15 +67,16 @@ function DartSequence({links,speed,playing,reducedMotion}:{links:Link[];speed:nu
 
 /** One coordinate space for cards, Health bars and Imps, including across sides. */
 export function CombatConnections({frame,speed,playing,children}:{frame:CombatFrame;speed:number;playing:boolean;children:ReactNode}){
- const root=useRef<View>(null),anchors=useRef(new Map<string,View>()),[links,setLinks]=useState<Link[]>([]),[reducedMotion,setReducedMotion]=useState(false),[size,setSize]=useState({width:0,height:0});
+ const root=useRef<View>(null),anchors=useRef(new Map<string,View>()),[links,setLinks]=useState<Link[]>([]),[flights,setFlights]=useState<PositionedFlight[]>([]),[reducedMotion,setReducedMotion]=useState(false),[size,setSize]=useState({width:0,height:0});
  const register=useCallback((key:string,view:View|null)=>{if(view)anchors.current.set(key,view);else anchors.current.delete(key);},[]);
  useEffect(()=>{let active=true;AccessibilityInfo.isReduceMotionEnabled().then(v=>{if(active)setReducedMotion(v);});const sub=AccessibilityInfo.addEventListener('reduceMotionChanged',setReducedMotion);return()=>{active=false;sub.remove();};},[]);
  const schedule=useMemo(()=>triggerSchedule(frame),[frame]);
+ const casts=useMemo(()=>spellFlights(frame),[frame]);
  const context=useMemo(()=>({register,reducedMotion}),[register,reducedMotion]);
  useEffect(()=>{
   let cancelled=false;
   const measure=(view:View)=>new Promise<Point>(resolve=>view.measureInWindow((x,y,w,h)=>resolve({x:x+w/2,y:y+h/2})));
-  if(!schedule.length){setLinks(previous=>previous.length?[]:previous);return;}
+  if(!schedule.length&&!casts.length){setLinks(previous=>previous.length?[]:previous);setFlights(previous=>previous.length?[]:previous);return;}
   const request=requestAnimationFrame(async()=>{
    if(!root.current)return;
    const origin=await new Promise<Point>(resolve=>root.current!.measureInWindow((x,y)=>resolve({x,y})));
@@ -85,12 +88,27 @@ export function CombatConnections({frame,speed,playing,children}:{frame:CombatFr
     const [a,b]=await Promise.all([once(from),once(to)]);
     return {from:{x:a.x-origin.x,y:a.y-origin.y},to:{x:b.x-origin.x,y:b.y-origin.y},retrigger:n.status==='retrigger',key:`${frame.tick}-${n.triggerId??i}-${n.status}`,order,jumps};
    }));
+   const launched=await Promise.all(casts.map(async(f,i)=>{
+    const source=anchors.current.get(f.side+':launch'),target=anchors.current.get(f.target+(f.imp?':imp':':wizard')),rack=anchors.current.get(f.side+':spell:'+f.index);
+    const wizard=anchors.current.get(f.target+':wizard');
+    if(!source||!target||!wizard)return null;
+    const [a,b,c,h]=await Promise.all([once(source),once(target),once(rack??source),once(wizard)]);
+    const local=(p:Point)=>({x:p.x-origin.x,y:p.y-origin.y});
+    // Opposing casts use separate vertical lanes through the arena.
+    const destination=local(b);destination.y+=f.offensive?(f.side==='player'?16:-16):0;
+    const siblings=casts.filter(cast=>cast.target===f.target),lane=siblings.indexOf(f),width=size.height<500?126:180;
+    const feedbackWidth=width/siblings.length;
+    const feedback={x:h.x-origin.x-width/2+lane*feedbackWidth,y:h.y-origin.y+(size.height<500?42:60)};
+    return {...f,from:local(a),to:destination,rack:local(c),feedback,feedbackWidth,key:frame.tick+'-'+frame.presentationPhase+'-'+i};
+   }));
+   if(!cancelled)setFlights(launched.filter((f):f is PositionedFlight=>!!f));
    if(!cancelled)setLinks(next.filter((l):l is Link=>!!l));
   });
   return()=>{cancelled=true;cancelAnimationFrame(request);};
- },[schedule,frame.tick,size.width,size.height]);
+ },[schedule,casts,frame.tick,size.width,size.height]);
  return <Context.Provider value={context}><View ref={root} collapsable={false} onLayout={e=>setSize(e.nativeEvent.layout)} style={{flex:1}}>
   {children}
+  <View pointerEvents="none" style={[StyleSheet.absoluteFill,{zIndex:85}]}>{flights.map(f=><SpellFlight key={f.key} flight={f} playing={playing} speed={speed} reducedMotion={reducedMotion}/>)}</View>
   <View pointerEvents="none" style={[StyleSheet.absoluteFill,{zIndex:90}]}><Svg width={size.width} height={size.height}><DartSequence key={links.map(l=>l.key).join('|')} links={links} speed={speed} reducedMotion={reducedMotion} playing={playing}/></Svg></View>
  </View></Context.Provider>;
 }
