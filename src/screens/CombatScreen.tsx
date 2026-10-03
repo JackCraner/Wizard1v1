@@ -44,12 +44,11 @@ export function CombatScreen({game}:{game:ReturnType<typeof useGame>}){
     <View style={{width:compact?126:180,gap:compact?5:9,alignItems:'stretch'}}>
      <Text numberOfLines={1} style={{color:'#e8dbc5',fontSize:11,fontWeight:'700',textAlign:'center'}}>{side==='player'?'You':u.name} · Lv {u.level}</Text>
      <CombatAnchor id={side+':wizard'} style={{alignItems:'center'}}><HealthCircle fighter={u} compact={compact}/></CombatAnchor>
-     <View style={{height:compact?60:72}}/>
+     <View style={{height:compact?72:88}}>{!showResult&&<DamageNumbers side={side} compact={compact} frame={current} playing={game.active&&!game.paused} speed={speed}/>}</View>
      <EffectBar fighter={u} compact={compact} playing={playing} speed={speed} group="buff" onInspect={()=>game.setPaused(true)}/>
      <EffectBar fighter={u} compact={compact} playing={playing} speed={speed} group="debuff" onInspect={()=>game.setPaused(true)}/>
      <View style={{flexDirection:'row',justifyContent:'center'}}><ImpPanel frame={residual??current} side={side} compact={compact}/></View>
      <AugmentInventory augments={u.augments} compact inline onInspect={()=>game.setPaused(true)}/>
-     <View pointerEvents="none" style={{position:'absolute',bottom:0,left:0,right:0,alignItems:'center'}}>{!showResult&&residual&&<DamageNumbers side={side} compact={compact} frame={residual} playing={game.active&&!game.paused} speed={speed}/>}</View>
      {oath&&<Text numberOfLines={2} style={{color:'#ffe0a0',fontSize:9}}>Oath · {oath.condition==='safe'?'No Health loss':oath.condition==='damage100'?'Deal 100+ direct damage':'No direct damage'} · {oath.remaining} spells</Text>}
     </View>
    </View>;})}

@@ -90,15 +90,13 @@ export function CombatConnections({frame,speed,playing,children}:{frame:CombatFr
    }));
    const launched=await Promise.all(casts.map(async(f,i)=>{
     const source=anchors.current.get(f.side+':launch'),target=anchors.current.get(f.target+(f.imp?':imp':':wizard')),rack=anchors.current.get(f.side+':spell:'+f.index);
-    const wizard=anchors.current.get(f.target+':wizard');
-    if(!source||!target||!wizard)return null;
-    const [a,b,c,h]=await Promise.all([once(source),once(target),once(rack??source),once(wizard)]);
+    if(!source||!target)return null;
+    const [a,b,c]=await Promise.all([once(source),once(target),once(rack??source)]);
     const local=(p:Point)=>({x:p.x-origin.x,y:p.y-origin.y});
     // Direct throws follow the actual target; impact receipts retain reserved HUD space.
     const destination=local(b);
     const width=size.height<500?126:180;
-    const feedback=f.offensive?{x:destination.x-width/2,y:h.y-origin.y+(size.height<500?42:60)}:{x:a.x-origin.x-width/2,y:a.y-origin.y-62};
-    return {...f,from:local(a),to:destination,rack:local(c),feedback,feedbackWidth:width,key:frame.tick+'-'+frame.presentationPhase+'-'+i};
+    return {...f,from:local(a),to:destination,rack:local(c),feedbackWidth:width,key:frame.tick+'-'+frame.presentationPhase+'-'+i};
    }));
    if(!cancelled)setFlights(launched.filter((f):f is PositionedFlight=>!!f));
    if(!cancelled)setLinks(next.filter((l):l is Link=>!!l));

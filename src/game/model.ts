@@ -167,6 +167,7 @@ export interface CastEvent {
 }
 export interface CombatContribution { side: 'player' | 'bot'; index: number; amount: number }
 export interface DamageEvent {
+    status?: 'poison' | 'curse' | 'trap';
     contributions?: CombatContribution[];
     sourceSide?: "player"|"bot";
     sourceIndex?:number;

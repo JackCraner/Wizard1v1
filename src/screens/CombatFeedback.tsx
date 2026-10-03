@@ -1,10 +1,12 @@
+import {healthFeedback,type HealthReceipt} from '../game/healthFeedback';
+import {COMBAT_TICK_MS} from '../game/playback';
 import {combatNumberSize} from './combatNumberSize';
 import {TideIcon,StatusIconPulse} from './TideIcon';
 import {RULES} from '../game/engine';
 import { palette, DOMAIN_COLORS, combatColors } from '../theme';
 import {KEYWORD_DOMAINS} from '../game/attunement';
 import { STATUS_ART } from '../components/cards/spellArt';
-import { useEffect, useRef, useState } from 'react';
+import { useState } from 'react';
 import { Animated, Image, Modal, Pressable, ScrollView, Text, View } from 'react-native';
 import {useFeedbackProgress} from './useFeedbackProgress';
 import { KEYWORDS } from '../config/catalogue';
@@ -43,21 +45,20 @@ export function EffectBar({fighter,compact,group,highlight=[],playing=true,speed
    <Modal visible={!!info} transparent animationType="fade" onRequestClose={()=>setSelected(null)}><View style={{flex:1,alignItems:'center',justifyContent:'center',backgroundColor:'#0009',padding:24}}><View accessibilityViewIsModal style={{width:'100%',maxWidth:330,padding:16,gap:10,backgroundColor:'#191710',borderColor:color,borderWidth:1,borderRadius:6}}><Text style={{color,fontWeight:'800'}}>{bad?'− Debuff':'+ Buff'} · {info?.name} · {selected==='oath'?oathProgress:`${selected?displayed[selected]:0} ${selected?unit(selected):""}`}</Text><Text style={{color:palette.parchmentMuted}}>{info?.description}</Text><Pressable accessibilityRole="button" onPress={()=>setSelected(null)} style={{padding:10,borderWidth:1,borderColor:color}}><Text style={{color,textAlign:'center'}}>Close</Text></Pressable></View></View></Modal>
  </View>;
 }
-type Hit={target?:'wizard'|'imp'|'ward';side:'player'|'bot';amount:number;critical:boolean;healing:boolean;key:string;lane:number};
-function FloatingHit({hit,height,playing,speed,onDone}:{hit:Hit;height:number;playing:boolean;speed:number;onDone:(key:string)=>void}) {
- const progress=useFeedbackProgress(playing,1450/speed,()=>onDone(hit.key));
- const size=combatNumberSize(hit.amount,height<32,hit.critical);
- return <View style={{position:'absolute',left:`${hit.lane*(100/3)}%`,top:0,width:'33.333%',height:'100%',alignItems:'center',justifyContent:'center'}}><Animated.Text numberOfLines={1} adjustsFontSizeToFit style={{maxWidth:'96%',fontWeight:'900',color:hit.healing?'#87f5a0':hit.target==='ward'?palette.ward:'#ff7770',textShadowColor:palette.shadow,textShadowRadius:5,textShadowOffset:{width:1,height:2},fontSize:size,opacity:progress.interpolate({inputRange:[0,.65,1],outputRange:[1,1,0],extrapolate:'clamp'})}}>{hit.healing?'+':'−'}{Math.abs(hit.amount)}{hit.critical?'!':''}</Animated.Text></View>;
+function FloatingHit({hit,compact,progress}:{hit:HealthReceipt;compact:boolean;progress:Animated.Value}){
+ const fade=Math.min(.06,(hit.end-hit.start)/4);
+ const opacity=progress.interpolate({inputRange:[hit.start-.001,hit.start,hit.end-fade,hit.end],outputRange:[0,1,1,0],extrapolate:'clamp'});
+ const label=hit.label+(hit.target==='wizard'?'':hit.target==='imp'?' · Imp':' · Ward');
+ const size=combatNumberSize(hit.amount,compact,hit.critical);
+ return <Animated.View accessibilityLabel={label+': '+(hit.healing?'+':'−')+hit.amount} style={{position:'absolute',left:hit.slot%2?'50%':0,top:Math.floor(hit.slot/2)*(compact?36:44),width:'50%',height:compact?36:44,alignItems:'center',justifyContent:'center',opacity,overflow:'hidden'}}>
+  <Text numberOfLines={1} style={{fontSize:compact?8:9,lineHeight:compact?9:11,maxWidth:'96%',color:palette.parchmentMuted}}>{label}</Text>
+  <Text numberOfLines={1} adjustsFontSizeToFit style={{maxWidth:'96%',fontWeight:'900',color:hit.healing?'#87f5a0':hit.target==='ward'?palette.ward:hit.label==='Poison'?'#c6a2ff':'#ff7770',fontSize:size,lineHeight:compact?26:32,textShadowColor:palette.shadow,textShadowRadius:4}}>{hit.healing?'+':'−'}{hit.amount}{hit.critical?'!':''}</Text>
+ </Animated.View>;
 }
-export function DamageNumbers({frame,side,compact=false,playing=true,speed=1}:{frame:CombatFrame;side:'player'|'bot';compact?:boolean;playing?:boolean;speed?:number}) {
- const [hits,setHits]=useState<Hit[]>([]);const previous=useRef(frame.tick),seen=useRef(new Set<string>());
- useEffect(()=>{
-   const sequential=frame.tick===previous.current||(playing&&frame.tick===previous.current+1);previous.current=frame.tick;
-   if(!sequential)seen.current.clear();
-   const incoming=[...(frame.damageEvents??[]).filter(hit=>hit.side===side).map((hit,i)=>({...hit,healing:false,key:frame.tick+'-'+frame.presentationPhase+'-damage-'+i})),...(frame.healingEvents??[]).filter(hit=>hit.side===side).map((hit,i)=>({...hit,healing:true,critical:false,key:frame.tick+'-'+frame.presentationPhase+'-heal-'+i}))].filter(hit=>!seen.current.has(hit.key));
-   incoming.forEach(hit=>seen.current.add(hit.key));
-   setHits(old=>{const next=sequential?[...old]:[];for(const hit of incoming){if(next.length===3)next.shift();const occupied=new Set(next.map(h=>h.lane));let lane=0;while(occupied.has(lane))lane++;next.push({...hit,lane});}return next;});
- },[frame,side]);
- // Reserve space in the health-bar header; feedback never rises into the card row.
- return <View pointerEvents="none" style={{width:216,maxWidth:'65%',height:compact?28:36,flexShrink:0,overflow:'hidden'}}>{hits.map(hit=><FloatingHit key={hit.key} hit={hit} height={compact?28:36} playing={playing} speed={speed} onDone={key=>setHits(old=>old.filter(h=>h.key!==key))}/>)}</View>;
+function NumberBatch({frame,side,compact,playing,speed}:{frame:CombatFrame;side:'player'|'bot';compact:boolean;playing:boolean;speed:number}){
+ const progress=useFeedbackProgress(playing,COMBAT_TICK_MS/speed);
+ return <>{healthFeedback(frame,side).map(hit=><FloatingHit key={hit.key} hit={hit} compact={compact} progress={progress}/>)}</>;
+}
+export function DamageNumbers({frame,side,compact=false,playing=true,speed=1}:{frame:CombatFrame;side:'player'|'bot';compact?:boolean;playing?:boolean;speed?:number}){
+ return <View pointerEvents="none" style={{height:compact?72:88,width:'100%'}}><NumberBatch key={frame.tick+':'+frame.presentationPhase} frame={frame} side={side} compact={compact} playing={playing} speed={speed}/></View>;
 }
